@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?><?xml-stylesheet type='text/xsl' href='_UpgradeReport_Files/UpgradeReport.xslt'?><UpgradeLog>
+<Properties><Property Name="Solution" Value="standard">
+</Property><Property Name="Solution File" Value="D:\PROJECTS\standard\standard.sln">
+</Property><Property Name="Date" Value="24 February 2014">
+</Property><Property Name="Time" Value="22:46 PM">
+</Property><Property Name="Log Number" Value="2">
+</Property></Properties><Event ErrorLevel="0" Project="standard" Source="standard.csproj" Description="The project file does not require conversion.">
+</Event><Event ErrorLevel="3" Project="standard" Source="standard.csproj" Description="No Conversion Required">
+</Event><Event ErrorLevel="0" Project="" Source="standard.sln" Description="Solution converted successfully">
+</Event><Event ErrorLevel="3" Project="" Source="standard.sln" Description="Converted">
+</Event></UpgradeLog>

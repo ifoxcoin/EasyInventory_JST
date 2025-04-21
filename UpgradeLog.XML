@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?><?xml-stylesheet type='text/xsl' href='_UpgradeReport_Files/UpgradeReport.xslt'?><UpgradeLog>
+<Properties><Property Name="Solution" Value="cardwell">
+</Property><Property Name="Solution File" Value="D:\PROJECTS\MY SOFT\cardwell\cardwell.sln">
+</Property><Property Name="Date" Value="Sunday, April 22, 2012">
+</Property><Property Name="Time" Value="11:50 AM">
+</Property></Properties><Event ErrorLevel="0" Project="cardwell" Source="cardwell.csproj" Description="Project converted successfully">
+</Event><Event ErrorLevel="3" Project="cardwell" Source="cardwell.csproj" Description="Converted">
+</Event><Event ErrorLevel="0" Project="" Source="cardwell.sln" Description="Solution converted successfully">
+</Event><Event ErrorLevel="3" Project="" Source="cardwell.sln" Description="Converted">
+</Event><Event ErrorLevel="0" Project="cardwell" Source="cardwell.csproj" Description="Scan complete: Upgrade not required for project files.">
+</Event></UpgradeLog>
