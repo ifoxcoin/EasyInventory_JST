@@ -224,6 +224,8 @@ namespace standard.trans
         private DataGridViewTextBoxColumn cStock;
         private DataGridViewTextBoxColumn cRate;
         private DataGridViewTextBoxColumn cAmount;
+        private DataGridViewTextBoxColumn cTaxPercentage;
+        private DataGridViewTextBoxColumn cTaxAmount;
         private DataGridViewTextBoxColumn cCostRate;
         private DataGridViewTextBoxColumn cCatID;
         private DataGridViewTextBoxColumn cItemID;
@@ -287,19 +289,20 @@ namespace standard.trans
                         dgvSales["cItemID", r].Value = item.li.item_id;
                         dgvSales["cCategory", r].Value = item.cat.cat_name;
                         dgvSales["cCatId", r].Value = item.cat.cat_id;
-                        if (lblRateType.Text.ToUpper() == "MRP")
+                        dgvSales["cTaxPercentage", r].Value = item.li.item_taxpercentage;
+                        if (lblRateType.Text.ToUpper() == "MRP  (D)")
                         {
                             dgvSales["cRate", r].Value = item.li.item_mrp;
                         }
-                        else if (lblRateType.Text.ToUpper() == "WHOLE SALE RATE")
+                        else if (lblRateType.Text.ToUpper() == "WHOLE SALE RATE  (C)")
                         {
                             dgvSales["cRate", r].Value = item.li.item_wholesalerate;
                         }
-                        else if (lblRateType.Text.ToUpper() == "SPECIAL RATE")
+                        else if (lblRateType.Text.ToUpper() == "SPECIAL RATE  (B)")
                         {
                             dgvSales["cRate", r].Value = item.li.item_specialrate;
                         }
-                        else if (lblRateType.Text.ToUpper() == "SUPER SPECIAL RATE")
+                        else if (lblRateType.Text.ToUpper() == "SUPER SPECIAL RATE  (A)")
                         {
                             dgvSales["cRate", r].Value = item.li.item_supersepecialrate;
                         }
@@ -356,19 +359,21 @@ namespace standard.trans
                         dgvSales["cItemID", r].Value = item.li.item_id;
                         dgvSales["cCategory", r].Value = item.cat.cat_name;
                         dgvSales["cCatId", r].Value = item.cat.cat_id;
-                        if (lblRateType.Text.ToUpper() == "MRP")
+                        dgvSales["cTaxPercentage", r].Value = item.li.item_taxpercentage;
+                        dgvSales["cTaxPercentage", r].Value = item.li.item_taxpercentage;
+                        if (lblRateType.Text.ToUpper() == "MRP (D)")
                         {
                             dgvSales["cRate", r].Value = item.li.item_mrp;
                         }
-                        else if (lblRateType.Text.ToUpper() == "WHOLE SALE RATE")
+                        else if (lblRateType.Text.ToUpper() == "WHOLE SALE RATE (C)")
                         {
                             dgvSales["cRate", r].Value = item.li.item_wholesalerate;
                         }
-                        else if (lblRateType.Text.ToUpper() == "SPECIAL RATE")
+                        else if (lblRateType.Text.ToUpper() == "SPECIAL RATE (B)")
                         {
                             dgvSales["cRate", r].Value = item.li.item_specialrate;
                         }
-                        else if (lblRateType.Text.ToUpper() == "SUPER SPECIAL RATE")
+                        else if (lblRateType.Text.ToUpper() == "SUPER SPECIAL RATE  (A)")
                         {
                             dgvSales["cRate", r].Value = item.li.item_supersepecialrate;
                         }
@@ -600,7 +605,7 @@ namespace standard.trans
                     }
                 }               
                 loadReport(Convert.ToInt32(id));
-                LoadAddressPrint(Convert.ToInt32(cboissueto.SelectedValue));
+                //LoadAddressPrint(Convert.ToInt32(cboissueto.SelectedValue));
                 ClearData();
                 LoadData();
                 cboissueto.Focus();
@@ -665,12 +670,15 @@ namespace standard.trans
             list.Add("cQty");
             list.Add("cAmount");
             list.Add("cCostAmount");
+            list.Add("cTaxAmount");
             List<decimal> totalSNo = bus.getTotalSNo(dgvSales, "cSNo", list);
             txttotqty.Value = Convert.ToDecimal(totalSNo[0].ToString("N0"));
             txttotamt.Text = totalSNo[1].ToString("0.00");
+            string d5 = totalSNo[3].ToString("0.00");
             decimal d = totalSNo[2];
             List<decimal> list2 = new List<decimal>();
             list2.Add(txttotamt.Value);
+            list2.Add(txtTaxAmt.Value);
             decimal d2 = 0m;
             decimal value = txtDisPer.Value;
             decimal d3 = (txttotamt.Value + d2) * value / 100m;
@@ -680,8 +688,9 @@ namespace standard.trans
             decimal value2 = txtTaxPer.Value;
             decimal d4 = (txtnetamt.Value - txtothercharges.Value) * value2 / 100m;
             txtnetamt.Text = $"{d4 + txtnetamt.Value:0.00}";
-            txtTaxAmt.Text = string.Format("{0:0.00}", d4.ToString("N2"));
-            txtFinalnetamount.Text = Math.Round(txtnetamt.Value).ToString();
+            txtTaxAmt.Text = d5.ToString();
+            txtTaxAmt.Text = string.Format("{0:0.00}", txtTaxAmt.Value.ToString("N2"));
+            txtFinalnetamount.Text = Math.Round(txtnetamt.Value + txtTaxAmt.Value).ToString();
             txtFinalnetamount.Text = string.Format("{0:0.00}", txtFinalnetamount.Value.ToString("N2"));
             txtothercharges.Text = string.Format("{0:0.00}", txtothercharges.Value.ToString("N2"));
             txtRoundOff.Text = $"{txtFinalnetamount.Value - txtnetamt.Value:0.00}";
@@ -743,19 +752,20 @@ namespace standard.trans
                             dgvSales["cItemID", r].Value = item.li.item_id;
                             dgvSales["cCategory", r].Value = item.cat.cat_name;
                             dgvSales["cCatId", r].Value = item.cat.cat_id;
-                            if (lblRateType.Text.ToUpper() == "MRP")
+                            dgvSales["cTaxPercentage", r].Value = item.li.item_taxpercentage;
+                            if (lblRateType.Text.ToUpper() == "MRP  (D)")
                             {
                                 dgvSales["cRate", r].Value = item.li.item_mrp;
                             }
-                            else if (lblRateType.Text.ToUpper() == "WHOLE SALE RATE")
+                            else if (lblRateType.Text.ToUpper() == "WHOLE SALE RATE  (C)")
                             {
                                 dgvSales["cRate", r].Value = item.li.item_wholesalerate;
                             }
-                            else if (lblRateType.Text.ToUpper() == "SPECIAL RATE")
+                            else if (lblRateType.Text.ToUpper() == "SPECIAL RATE  (B)")
                             {
                                 dgvSales["cRate", r].Value = item.li.item_specialrate;
                             }
-                            else if (lblRateType.Text.ToUpper() == "SUPER SPECIAL RATE")
+                            else if (lblRateType.Text.ToUpper() == "SUPER SPECIAL RATE  (A)")
                             {
                                 dgvSales["cRate", r].Value = item.li.item_supersepecialrate;
                             }
@@ -1270,10 +1280,11 @@ namespace standard.trans
             }
             int r = dgvSales.CurrentCell.RowIndex;
             int columnIndex = dgvSales.CurrentCell.ColumnIndex;
-            decimal result4;
-            decimal result;
-            decimal result2;
-            decimal result3;
+            decimal costRate;
+            decimal qty;
+            decimal stock;
+            decimal rate;
+            decimal taxPercentage;
             if (columnIndex == cCategory.Index)
             {
                 if (Convert.ToString(dgvSales["cCategory", r].Value) == string.Empty && !dgvSales.CurrentRow.IsNewRow)
@@ -1333,19 +1344,20 @@ namespace standard.trans
                                 dgvSales["cItemID", r].Value = item2.li.item_id;
                                 dgvSales["cCategory", r].Value = item2.cat.cat_name;
                                 dgvSales["cCatId", r].Value = item2.cat.cat_id;
-                                if (lblRateType.Text.ToUpper() == "MRP")
+                                dgvSales["cTaxPercentage", r].Value = item2.li.item_taxpercentage;
+                                if (lblRateType.Text.ToUpper() == "MRP  (D)")
                                 {
                                     dgvSales["cRate", r].Value = item2.li.item_mrp;
                                 }
-                                else if (lblRateType.Text.ToUpper() == "WHOLE SALE RATE")
+                                else if (lblRateType.Text.ToUpper() == "WHOLE SALE RATE  (C)")
                                 {
                                     dgvSales["cRate", r].Value = item2.li.item_wholesalerate;
                                 }
-                                else if (lblRateType.Text.ToUpper() == "SPECIAL RATE")
+                                else if (lblRateType.Text.ToUpper() == "SPECIAL RATE  (B)")
                                 {
                                     dgvSales["cRate", r].Value = item2.li.item_specialrate;
                                 }
-                                else if (lblRateType.Text.ToUpper() == "SUPER SPECIAL RATE")
+                                else if (lblRateType.Text.ToUpper() == "SUPER SPECIAL RATE  (A)")
                                 {
                                     dgvSales["cRate", r].Value = item2.li.item_supersepecialrate;
                                 }
@@ -1389,19 +1401,19 @@ namespace standard.trans
                             dgvSales["cItemID", r].Value = item4.li.item_id;
                             dgvSales["cCategory", r].Value = item4.cat.cat_name;
                             dgvSales["cCatId", r].Value = item4.cat.cat_id;
-                            if (lblRateType.Text.ToUpper() == "MRP")
+                            if (lblRateType.Text.ToUpper() == "MRP  (D)")
                             {
                                 dgvSales["cRate", r].Value = item4.li.item_mrp;
                             }
-                            else if (lblRateType.Text.ToUpper() == "WHOLE SALE RATE")
+                            else if (lblRateType.Text.ToUpper() == "WHOLE SALE RATE  (C)")
                             {
                                 dgvSales["cRate", r].Value = item4.li.item_wholesalerate;
                             }
-                            else if (lblRateType.Text.ToUpper() == "SPECIAL RATE")
+                            else if (lblRateType.Text.ToUpper() == "SPECIAL RATE  (B)")
                             {
                                 dgvSales["cRate", r].Value = item4.li.item_specialrate;
                             }
-                            else if (lblRateType.Text.ToUpper() == "SUPER SPECIAL RATE")
+                            else if (lblRateType.Text.ToUpper() == "SUPER SPECIAL RATE  (A)")
                             {
                                 dgvSales["cRate", r].Value = item4.li.item_supersepecialrate;
                             }
@@ -1425,23 +1437,25 @@ namespace standard.trans
                 {
                     dgvSales.Rows.RemoveAt(r);
                 }
-                decimal.TryParse(Convert.ToString(dgvSales["cQty", r].Value), out result);
-                result = Math.Abs(result);
-                decimal.TryParse(Convert.ToString(dgvSales["cStock", r].Value), out result2);
-                result2 = Math.Abs(result2);
-                dgvSales["cQty", r].Value = ((result > 0m) ? ((object)result) : null);
-                dgvSales["cQty", r].Value = ((result <= result2) ? ((object)result) : null);
-                if (result > result2)
+                decimal.TryParse(Convert.ToString(dgvSales["cQty", r].Value), out qty);
+                qty = Math.Abs(qty);
+                decimal.TryParse(Convert.ToString(dgvSales["cStock", r].Value), out stock);
+                stock = Math.Abs(stock);
+                dgvSales["cQty", r].Value = ((qty > 0m) ? ((object)qty) : null);
+                dgvSales["cQty", r].Value = ((qty <= stock) ? ((object)qty) : null);
+                if (qty > stock)
                 {
-                    MessageBox.Show("You have only " + result2 + " Qty", "Info", MessageBoxButtons.OK, MessageBoxIcon.Hand);
+                    MessageBox.Show("You have only " + stock + " Qty", "Info", MessageBoxButtons.OK, MessageBoxIcon.Hand);
                     dgvSales.CurrentCell = dgvSales["cQty", dgvSales.CurrentRow.Index];
                     dgvSales.BeginEdit(selectAll: true);
                     dgvSales.Focus();
                 }
-                decimal.TryParse(Convert.ToString(dgvSales["cRate", r].Value), out result3);
-                decimal.TryParse(Convert.ToString(dgvSales["cCostRate", r].Value), out result4);
-                dgvSales["cAmount", r].Value = ((result3 > 0m && result > 0m) ? ((object)(result3 * result)) : null);
-                dgvSales["cCostAmount", r].Value = ((result4 > 0m && result > 0m) ? ((object)(result4 * result)) : null);
+                decimal.TryParse(Convert.ToString(dgvSales["cRate", r].Value), out rate);
+                decimal.TryParse(Convert.ToString(dgvSales["cCostRate", r].Value), out costRate);
+                decimal.TryParse(Convert.ToString(dgvSales["cTaxPercentage", r].Value), out taxPercentage);
+                dgvSales["cAmount", r].Value = ((rate > 0m && qty > 0m) ? ((object)(rate * qty)) : null);
+                dgvSales["cTaxAmount", r].Value = ((rate > 0m && qty > 0m) ? ((object)((rate * qty) * taxPercentage/100)) : null);
+                dgvSales["cCostAmount", r].Value = ((costRate > 0m && qty > 0m) ? ((object)(costRate * qty)) : null);
                 calacTotal();
                 SetColumnIndex method = Mymethod;
                 dgvSales.BeginInvoke(method, "cSNo");
@@ -1449,21 +1463,21 @@ namespace standard.trans
             }
             else if (columnIndex == cRate.Index)
             {
-                decimal.TryParse(Convert.ToString(dgvSales["cQty", r].Value), out result);
-                result = Math.Abs(result);
-                decimal.TryParse(Convert.ToString(dgvSales["cStock", r].Value), out result2);
-                result2 = Math.Abs(result2);
+                decimal.TryParse(Convert.ToString(dgvSales["cQty", r].Value), out qty);
+                qty = Math.Abs(qty);
+                decimal.TryParse(Convert.ToString(dgvSales["cStock", r].Value), out stock);
+                stock = Math.Abs(stock);
                 if (Convert.ToString(dgvSales["cItemName", r].Value) == string.Empty && !dgvSales.CurrentRow.IsNewRow)
                 {
                     dgvSales.Rows.RemoveAt(r);
                 }
-                decimal.TryParse(Convert.ToString(dgvSales["cRate", r].Value), out result3);
-                result3 = Math.Abs(result3);
-                decimal.TryParse(Convert.ToString(dgvSales["cRate", r].Value), out result3);
-                decimal.TryParse(Convert.ToString(dgvSales["cCostRate", r].Value), out result4);
-                dgvSales["cAmount", r].Value = ((result3 > 0m && result > 0m) ? ((object)(result3 * result)) : null);
-                dgvSales["cCostAmount", r].Value = ((result4 > 0m && result > 0m) ? ((object)(result4 * result)) : null);
-                dgvSales["cRate", r].Value = result3.ToString("N2");
+                decimal.TryParse(Convert.ToString(dgvSales["cRate", r].Value), out rate);
+                rate = Math.Abs(rate);
+                decimal.TryParse(Convert.ToString(dgvSales["cRate", r].Value), out rate);
+                decimal.TryParse(Convert.ToString(dgvSales["cCostRate", r].Value), out costRate);
+                dgvSales["cAmount", r].Value = ((rate > 0m && qty > 0m) ? ((object)(rate * qty)) : null);
+                dgvSales["cCostAmount", r].Value = ((costRate > 0m && qty > 0m) ? ((object)(costRate * qty)) : null);
+                dgvSales["cRate", r].Value = rate.ToString("N2");
                 calacTotal();
                 SetColumnIndex method = Mymethod;
                 dgvSales.BeginInvoke(method, "cCategory");
@@ -1673,22 +1687,24 @@ namespace standard.trans
         {
             this.components = new System.ComponentModel.Container();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle8 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle10 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle11 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmSales));
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle12 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle13 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle14 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle15 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle16 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle17 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle18 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle7 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle8 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle9 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmSales));
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle10 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle11 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle12 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle13 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle14 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle15 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle16 = new System.Windows.Forms.DataGridViewCellStyle();
             this.tablemain = new System.Windows.Forms.TableLayoutPanel();
             this.tableentry = new System.Windows.Forms.TableLayoutPanel();
             this.lblopno = new System.Windows.Forms.Label();
@@ -1733,17 +1749,6 @@ namespace standard.trans
             this.txtothercharges = new mylib.decimalbox(this.components);
             this.pnlentry = new System.Windows.Forms.Panel();
             this.dgvSales = new mylib.mygrid();
-            this.cSNo = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.cCategory = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.cItemName = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.cQty = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.cStock = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.cRate = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.cAmount = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.cCostRate = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.cCatID = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.cItemID = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.cCostAmount = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.pnlview = new System.Windows.Forms.Panel();
             this.tableview = new System.Windows.Forms.TableLayoutPanel();
             this.lblsubtitle = new System.Windows.Forms.Label();
@@ -1785,6 +1790,19 @@ namespace standard.trans
             this.label6 = new System.Windows.Forms.Label();
             this.lblBillNo = new System.Windows.Forms.Label();
             this.txtSearchBillNo = new System.Windows.Forms.TextBox();
+            this.cSNo = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.cCategory = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.cItemName = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.cQty = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.cStock = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.cRate = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.cAmount = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.cTaxPercentage = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.cTaxAmount = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.cCostRate = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.cCatID = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.cItemID = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.cCostAmount = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.tablemain.SuspendLayout();
             this.tableentry.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.ledgermasterBindingSource)).BeginInit();
@@ -2569,6 +2587,8 @@ namespace standard.trans
             this.cStock,
             this.cRate,
             this.cAmount,
+            this.cTaxPercentage,
+            this.cTaxAmount,
             this.cCostRate,
             this.cCatID,
             this.cItemID,
@@ -2580,8 +2600,8 @@ namespace standard.trans
             this.dgvSales.Name = "dgvSales";
             this.dgvSales.RowHeadersVisible = false;
             this.dgvSales.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.AutoSizeToAllHeaders;
-            dataGridViewCellStyle8.Font = new System.Drawing.Font("Tahoma", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.dgvSales.RowsDefaultCellStyle = dataGridViewCellStyle8;
+            dataGridViewCellStyle10.Font = new System.Drawing.Font("Tahoma", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.dgvSales.RowsDefaultCellStyle = dataGridViewCellStyle10;
             this.dgvSales.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect;
             this.dgvSales.ShowCellToolTips = false;
             this.dgvSales.Size = new System.Drawing.Size(1356, 430);
@@ -2591,113 +2611,6 @@ namespace standard.trans
             this.dgvSales.RowsAdded += new System.Windows.Forms.DataGridViewRowsAddedEventHandler(this.dgopen_RowsAdded);
             this.dgvSales.RowsRemoved += new System.Windows.Forms.DataGridViewRowsRemovedEventHandler(this.dgopen_RowsRemoved);
             this.dgvSales.KeyDown += new System.Windows.Forms.KeyEventHandler(this.dgopen_KeyDown);
-            // 
-            // cSNo
-            // 
-            this.cSNo.HeaderText = "SNO";
-            this.cSNo.Name = "cSNo";
-            this.cSNo.ReadOnly = true;
-            this.cSNo.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-            this.cSNo.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
-            this.cSNo.Width = 55;
-            // 
-            // cCategory
-            // 
-            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            this.cCategory.DefaultCellStyle = dataGridViewCellStyle2;
-            this.cCategory.HeaderText = "CATEGORY";
-            this.cCategory.Name = "cCategory";
-            this.cCategory.Width = 120;
-            // 
-            // cItemName
-            // 
-            this.cItemName.HeaderText = "ITEM NAME";
-            this.cItemName.Name = "cItemName";
-            this.cItemName.Width = 600;
-            // 
-            // cQty
-            // 
-            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle3.Format = "N0";
-            dataGridViewCellStyle3.NullValue = null;
-            this.cQty.DefaultCellStyle = dataGridViewCellStyle3;
-            this.cQty.HeaderText = "QTY";
-            this.cQty.MaxInputLength = 8;
-            this.cQty.Name = "cQty";
-            this.cQty.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-            this.cQty.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
-            this.cQty.Width = 110;
-            // 
-            // cStock
-            // 
-            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle4.BackColor = System.Drawing.Color.Red;
-            dataGridViewCellStyle4.ForeColor = System.Drawing.Color.White;
-            dataGridViewCellStyle4.Format = "N0";
-            dataGridViewCellStyle4.NullValue = "0";
-            dataGridViewCellStyle4.SelectionForeColor = System.Drawing.Color.White;
-            this.cStock.DefaultCellStyle = dataGridViewCellStyle4;
-            this.cStock.HeaderText = "STOCK";
-            this.cStock.Name = "cStock";
-            this.cStock.ReadOnly = true;
-            this.cStock.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-            this.cStock.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
-            this.cStock.Width = 110;
-            // 
-            // cRate
-            // 
-            dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            dataGridViewCellStyle5.Format = "N2";
-            this.cRate.DefaultCellStyle = dataGridViewCellStyle5;
-            this.cRate.HeaderText = "RATE";
-            this.cRate.MaxInputLength = 10;
-            this.cRate.Name = "cRate";
-            this.cRate.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-            this.cRate.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
-            this.cRate.Width = 110;
-            // 
-            // cAmount
-            // 
-            dataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            dataGridViewCellStyle6.Format = "N2";
-            this.cAmount.DefaultCellStyle = dataGridViewCellStyle6;
-            this.cAmount.HeaderText = "AMOUNT";
-            this.cAmount.Name = "cAmount";
-            this.cAmount.ReadOnly = true;
-            this.cAmount.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-            this.cAmount.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
-            this.cAmount.Width = 110;
-            // 
-            // cCostRate
-            // 
-            dataGridViewCellStyle7.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            dataGridViewCellStyle7.Format = "N2";
-            this.cCostRate.DefaultCellStyle = dataGridViewCellStyle7;
-            this.cCostRate.HeaderText = "COST RATE";
-            this.cCostRate.Name = "cCostRate";
-            this.cCostRate.ReadOnly = true;
-            this.cCostRate.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-            this.cCostRate.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
-            this.cCostRate.Width = 130;
-            // 
-            // cCatID
-            // 
-            this.cCatID.HeaderText = "CatID";
-            this.cCatID.Name = "cCatID";
-            this.cCatID.Visible = false;
-            // 
-            // cItemID
-            // 
-            this.cItemID.HeaderText = "ItemID";
-            this.cItemID.Name = "cItemID";
-            this.cItemID.Visible = false;
-            // 
-            // cCostAmount
-            // 
-            this.cCostAmount.HeaderText = "CostAmount";
-            this.cCostAmount.Name = "cCostAmount";
-            this.cCostAmount.Visible = false;
-            this.cCostAmount.Width = 130;
             // 
             // pnlview
             // 
@@ -2751,14 +2664,14 @@ namespace standard.trans
             this.dglist.AutoGenerateColumns = false;
             this.dglist.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.DisplayedCells;
             this.dglist.BackgroundColor = System.Drawing.Color.White;
-            dataGridViewCellStyle9.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle9.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle9.Font = new System.Drawing.Font("Tahoma", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle9.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle9.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle9.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle9.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dglist.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle9;
+            dataGridViewCellStyle11.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle11.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle11.Font = new System.Drawing.Font("Tahoma", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle11.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle11.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle11.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle11.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dglist.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle11;
             this.dglist.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dglist.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.ldelete,
@@ -2860,9 +2773,9 @@ namespace standard.trans
             // smdateDataGridViewTextBoxColumn
             // 
             this.smdateDataGridViewTextBoxColumn.DataPropertyName = "sm_date";
-            dataGridViewCellStyle10.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle10.Format = "dd-MM-yyyy";
-            this.smdateDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle10;
+            dataGridViewCellStyle12.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle12.Format = "dd-MM-yyyy";
+            this.smdateDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle12;
             this.smdateDataGridViewTextBoxColumn.HeaderText = "Bill Date";
             this.smdateDataGridViewTextBoxColumn.Name = "smdateDataGridViewTextBoxColumn";
             this.smdateDataGridViewTextBoxColumn.ReadOnly = true;
@@ -2879,9 +2792,9 @@ namespace standard.trans
             // smtotqtyDataGridViewTextBoxColumn
             // 
             this.smtotqtyDataGridViewTextBoxColumn.DataPropertyName = "sm_totqty";
-            dataGridViewCellStyle11.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle11.Format = "N0";
-            this.smtotqtyDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle11;
+            dataGridViewCellStyle13.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle13.Format = "N0";
+            this.smtotqtyDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle13;
             this.smtotqtyDataGridViewTextBoxColumn.HeaderText = "Total Qty";
             this.smtotqtyDataGridViewTextBoxColumn.Name = "smtotqtyDataGridViewTextBoxColumn";
             this.smtotqtyDataGridViewTextBoxColumn.ReadOnly = true;
@@ -2890,9 +2803,9 @@ namespace standard.trans
             // smtotamountDataGridViewTextBoxColumn
             // 
             this.smtotamountDataGridViewTextBoxColumn.DataPropertyName = "sm_totamount";
-            dataGridViewCellStyle12.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            dataGridViewCellStyle12.Format = "N2";
-            this.smtotamountDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle12;
+            dataGridViewCellStyle14.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            dataGridViewCellStyle14.Format = "N2";
+            this.smtotamountDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle14;
             this.smtotamountDataGridViewTextBoxColumn.HeaderText = "Total Amount";
             this.smtotamountDataGridViewTextBoxColumn.Name = "smtotamountDataGridViewTextBoxColumn";
             this.smtotamountDataGridViewTextBoxColumn.ReadOnly = true;
@@ -2901,9 +2814,9 @@ namespace standard.trans
             // smdisamountDataGridViewTextBoxColumn
             // 
             this.smdisamountDataGridViewTextBoxColumn.DataPropertyName = "sm_disamount";
-            dataGridViewCellStyle13.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            dataGridViewCellStyle13.Format = "N2";
-            this.smdisamountDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle13;
+            dataGridViewCellStyle15.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            dataGridViewCellStyle15.Format = "N2";
+            this.smdisamountDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle15;
             this.smdisamountDataGridViewTextBoxColumn.HeaderText = "Discount";
             this.smdisamountDataGridViewTextBoxColumn.Name = "smdisamountDataGridViewTextBoxColumn";
             this.smdisamountDataGridViewTextBoxColumn.ReadOnly = true;
@@ -2911,9 +2824,9 @@ namespace standard.trans
             // smpackingchargeDataGridViewTextBoxColumn
             // 
             this.smpackingchargeDataGridViewTextBoxColumn.DataPropertyName = "sm_packingcharge";
-            dataGridViewCellStyle14.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            dataGridViewCellStyle14.Format = "N2";
-            this.smpackingchargeDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle14;
+            dataGridViewCellStyle16.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            dataGridViewCellStyle16.Format = "N2";
+            this.smpackingchargeDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle16;
             this.smpackingchargeDataGridViewTextBoxColumn.HeaderText = "Other Charges";
             this.smpackingchargeDataGridViewTextBoxColumn.Name = "smpackingchargeDataGridViewTextBoxColumn";
             this.smpackingchargeDataGridViewTextBoxColumn.ReadOnly = true;
@@ -2921,9 +2834,9 @@ namespace standard.trans
             // smprofitDataGridViewTextBoxColumn
             // 
             this.smprofitDataGridViewTextBoxColumn.DataPropertyName = "sm_profit";
-            dataGridViewCellStyle15.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            dataGridViewCellStyle15.Format = "N2";
-            this.smprofitDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle15;
+            dataGridViewCellStyle17.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            dataGridViewCellStyle17.Format = "N2";
+            this.smprofitDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle17;
             this.smprofitDataGridViewTextBoxColumn.HeaderText = "Profit";
             this.smprofitDataGridViewTextBoxColumn.Name = "smprofitDataGridViewTextBoxColumn";
             this.smprofitDataGridViewTextBoxColumn.ReadOnly = true;
@@ -2932,9 +2845,9 @@ namespace standard.trans
             // smnetamountDataGridViewTextBoxColumn
             // 
             this.smnetamountDataGridViewTextBoxColumn.DataPropertyName = "sm_netamount";
-            dataGridViewCellStyle16.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            dataGridViewCellStyle16.Format = "N2";
-            this.smnetamountDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle16;
+            dataGridViewCellStyle18.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            dataGridViewCellStyle18.Format = "N2";
+            this.smnetamountDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle18;
             this.smnetamountDataGridViewTextBoxColumn.HeaderText = "Net Amt";
             this.smnetamountDataGridViewTextBoxColumn.Name = "smnetamountDataGridViewTextBoxColumn";
             this.smnetamountDataGridViewTextBoxColumn.ReadOnly = true;
@@ -3202,6 +3115,136 @@ namespace standard.trans
             this.txtSearchBillNo.Size = new System.Drawing.Size(123, 46);
             this.txtSearchBillNo.TabIndex = 7;
             this.txtSearchBillNo.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtSearchBillNo_KeyDown_1);
+            // 
+            // cSNo
+            // 
+            this.cSNo.HeaderText = "SNO";
+            this.cSNo.Name = "cSNo";
+            this.cSNo.ReadOnly = true;
+            this.cSNo.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.cSNo.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            this.cSNo.Width = 50;
+            // 
+            // cCategory
+            // 
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            this.cCategory.DefaultCellStyle = dataGridViewCellStyle2;
+            this.cCategory.HeaderText = "CATEGORY";
+            this.cCategory.Name = "cCategory";
+            this.cCategory.Width = 120;
+            // 
+            // cItemName
+            // 
+            this.cItemName.HeaderText = "ITEM NAME";
+            this.cItemName.Name = "cItemName";
+            this.cItemName.Width = 250;
+            // 
+            // cQty
+            // 
+            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle3.Format = "N0";
+            dataGridViewCellStyle3.NullValue = null;
+            this.cQty.DefaultCellStyle = dataGridViewCellStyle3;
+            this.cQty.HeaderText = "QTY";
+            this.cQty.MaxInputLength = 8;
+            this.cQty.Name = "cQty";
+            this.cQty.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.cQty.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            // 
+            // cStock
+            // 
+            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle4.BackColor = System.Drawing.Color.Red;
+            dataGridViewCellStyle4.ForeColor = System.Drawing.Color.White;
+            dataGridViewCellStyle4.Format = "N0";
+            dataGridViewCellStyle4.NullValue = "0";
+            dataGridViewCellStyle4.SelectionForeColor = System.Drawing.Color.White;
+            this.cStock.DefaultCellStyle = dataGridViewCellStyle4;
+            this.cStock.HeaderText = "STOCK";
+            this.cStock.Name = "cStock";
+            this.cStock.ReadOnly = true;
+            this.cStock.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.cStock.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            // 
+            // cRate
+            // 
+            dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            dataGridViewCellStyle5.Format = "N2";
+            this.cRate.DefaultCellStyle = dataGridViewCellStyle5;
+            this.cRate.HeaderText = "RATE";
+            this.cRate.MaxInputLength = 10;
+            this.cRate.Name = "cRate";
+            this.cRate.ReadOnly = true;
+            this.cRate.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.cRate.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            this.cRate.Width = 120;
+            // 
+            // cAmount
+            // 
+            dataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            dataGridViewCellStyle6.Format = "N2";
+            this.cAmount.DefaultCellStyle = dataGridViewCellStyle6;
+            this.cAmount.HeaderText = "AMOUNT";
+            this.cAmount.Name = "cAmount";
+            this.cAmount.ReadOnly = true;
+            this.cAmount.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.cAmount.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            this.cAmount.Width = 130;
+            // 
+            // cTaxPercentage
+            // 
+            dataGridViewCellStyle7.Format = "N2";
+            dataGridViewCellStyle7.NullValue = null;
+            this.cTaxPercentage.DefaultCellStyle = dataGridViewCellStyle7;
+            this.cTaxPercentage.HeaderText = "TAX %";
+            this.cTaxPercentage.Name = "cTaxPercentage";
+            this.cTaxPercentage.ReadOnly = true;
+            this.cTaxPercentage.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.cTaxPercentage.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            this.cTaxPercentage.Width = 120;
+            // 
+            // cTaxAmount
+            // 
+            dataGridViewCellStyle8.Format = "N2";
+            dataGridViewCellStyle8.NullValue = null;
+            this.cTaxAmount.DefaultCellStyle = dataGridViewCellStyle8;
+            this.cTaxAmount.HeaderText = "TAX AMOUNT";
+            this.cTaxAmount.Name = "cTaxAmount";
+            this.cTaxAmount.ReadOnly = true;
+            this.cTaxAmount.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.cTaxAmount.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            this.cTaxAmount.Width = 130;
+            // 
+            // cCostRate
+            // 
+            dataGridViewCellStyle9.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            dataGridViewCellStyle9.Format = "N2";
+            this.cCostRate.DefaultCellStyle = dataGridViewCellStyle9;
+            this.cCostRate.HeaderText = "COST RATE";
+            this.cCostRate.Name = "cCostRate";
+            this.cCostRate.ReadOnly = true;
+            this.cCostRate.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.cCostRate.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            this.cCostRate.Width = 130;
+            // 
+            // cCatID
+            // 
+            this.cCatID.HeaderText = "CatID";
+            this.cCatID.Name = "cCatID";
+            this.cCatID.Visible = false;
+            // 
+            // cItemID
+            // 
+            this.cItemID.HeaderText = "ItemID";
+            this.cItemID.Name = "cItemID";
+            this.cItemID.Visible = false;
+            // 
+            // cCostAmount
+            // 
+            this.cCostAmount.HeaderText = "CostAmount";
+            this.cCostAmount.Name = "cCostAmount";
+            this.cCostAmount.Visible = false;
+            this.cCostAmount.Width = 130;
             // 
             // frmSales
             // 

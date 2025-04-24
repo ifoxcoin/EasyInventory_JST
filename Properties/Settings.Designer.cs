@@ -33,16 +33,5 @@ namespace standard.Properties {
                 return ((string)(this["constr"]));
             }
         }
-        
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.SpecialSettingAttribute(global::System.Configuration.SpecialSetting.ConnectionString)]
-        [global::System.Configuration.DefaultSettingValueAttribute("Data Source=IFOX\\IFOXSQLSERVER;Initial Catalog=EasyInv_JST;Persist Security Info=" +
-            "True;User ID=sa")]
-        public string EasyInv_JSTConnectionString {
-            get {
-                return ((string)(this["EasyInv_JSTConnectionString"]));
-            }
-        }
     }
 }

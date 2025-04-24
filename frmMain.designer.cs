@@ -41,6 +41,7 @@
             this.ribbonButtonaccgroup = new System.Windows.Forms.RibbonButton();
             this.ribbonButtonaccmaster = new System.Windows.Forms.RibbonButton();
             this.ribbonBtnItem = new System.Windows.Forms.RibbonButton();
+            this.ribbonBtnRoute = new System.Windows.Forms.RibbonButton();
             this.ribbonPanel5 = new System.Windows.Forms.RibbonPanel();
             this.btnPurchase = new System.Windows.Forms.RibbonButton();
             this.ribbonPanel6 = new System.Windows.Forms.RibbonPanel();
@@ -194,6 +195,7 @@
             this.ribbonPanelaccounts.Items.Add(this.ribbonButtonaccgroup);
             this.ribbonPanelaccounts.Items.Add(this.ribbonButtonaccmaster);
             this.ribbonPanelaccounts.Items.Add(this.ribbonBtnItem);
+            this.ribbonPanelaccounts.Items.Add(this.ribbonBtnRoute);
             this.ribbonPanelaccounts.Text = "Master";
             // 
             // ribbonButtonaccgroup
@@ -216,6 +218,13 @@
             this.ribbonBtnItem.SmallImage = ((System.Drawing.Image)(resources.GetObject("ribbonBtnItem.SmallImage")));
             this.ribbonBtnItem.Text = "Item";
             this.ribbonBtnItem.Click += new System.EventHandler(this.ribbonBtnItem_Click);
+            //
+            // ribbonBtnRoute
+            // 
+            this.ribbonBtnRoute.Image = global::standard.Properties.Resources.route;
+            this.ribbonBtnItem.SmallImage = global::standard.Properties.Resources.route;
+            this.ribbonBtnRoute.Text = "Route";
+            this.ribbonBtnRoute.Click += new System.EventHandler(this.ribbonBtnRoute_Click);
             // 
             // ribbonPanel5
             // 
@@ -620,6 +629,7 @@
         private System.Windows.Forms.RibbonOrbMenuItem ribbonOrbMenuItemcalc;
         private mylib.a1panel a1Panelatt;
         private System.Windows.Forms.RibbonButton ribbonBtnItem;
+        private System.Windows.Forms.RibbonButton ribbonBtnRoute;
         private System.Windows.Forms.RibbonOrbMenuItem ribbonOrbhelp;
         private System.Windows.Forms.RibbonPanel ribbonPanel1;
         private System.Windows.Forms.RibbonPanel ribbonPanel2;

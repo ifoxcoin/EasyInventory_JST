@@ -87,10 +87,6 @@ namespace standard.master
 
 		private Label label12;
 
-		private Label label13;
-
-		private Label label14;
-
 		private Label label15;
 
 		private TextBox txtTransport;
@@ -135,46 +131,6 @@ namespace standard.master
 
 		private BindingSource ledgermasterBindingSource;
 
-		private DataGridViewTextBoxColumn ledidDataGridViewTextBoxColumn;
-
-		private DataGridViewTextBoxColumn lednameDataGridViewTextBoxColumn;
-
-		private DataGridViewTextBoxColumn ledaccountcodeDataGridViewTextBoxColumn;
-
-		private DataGridViewTextBoxColumn ledaccounttypeDataGridViewTextBoxColumn;
-
-		private DataGridViewTextBoxColumn ledaddressDataGridViewTextBoxColumn;
-
-		private DataGridViewTextBoxColumn ledaddress1DataGridViewTextBoxColumn;
-
-		private DataGridViewTextBoxColumn ledaddress2DataGridViewTextBoxColumn;
-
-		private DataGridViewTextBoxColumn ledtnameDataGridViewTextBoxColumn;
-
-		private DataGridViewTextBoxColumn ledtaddressDataGridViewTextBoxColumn;
-
-		private DataGridViewTextBoxColumn ledtaddress1DataGridViewTextBoxColumn;
-
-		private DataGridViewTextBoxColumn ledtaddress2DataGridViewTextBoxColumn;
-
-		private DataGridViewTextBoxColumn ledpincodeDataGridViewTextBoxColumn;
-
-		private DataGridViewTextBoxColumn ledtransportDataGridViewTextBoxColumn;
-
-		private DataGridViewTextBoxColumn ledownernameDataGridViewTextBoxColumn;
-
-		private DataGridViewTextBoxColumn ledownerphoneDataGridViewTextBoxColumn;
-
-		private DataGridViewTextBoxColumn ledmanagernameDataGridViewTextBoxColumn;
-
-		private DataGridViewTextBoxColumn ledmanagerphoneDataGridViewTextBoxColumn;
-
-		private DataGridViewTextBoxColumn ledtinDataGridViewTextBoxColumn;
-
-		private DataGridViewTextBoxColumn ledcstDataGridViewTextBoxColumn;
-
-		private DataGridViewTextBoxColumn ledrefnoDataGridViewTextBoxColumn;
-
 		private Label label23;
 
 		private decimalbox txtDisPer;
@@ -187,6 +143,44 @@ namespace standard.master
 
 		private Label lblCount;
         private CheckBox cbIsFreight;
+        private Label lblAreaCode;
+        private Label lblDeliveryOrder;
+        private ComboBox cboAreaCode;
+        private BindingSource routeBindingSource;
+        private TextBox txtDeliveryOrder;
+        private TextBox txtSearchByAreaCode;
+        private Label lblSearchAreaCode;
+        private DataGridViewTextBoxColumn ledidDataGridViewTextBoxColumn;
+        private DataGridViewTextBoxColumn ledagidDataGridViewTextBoxColumn;
+        private DataGridViewTextBoxColumn lednameDataGridViewTextBoxColumn;
+        private DataGridViewTextBoxColumn ledaccountcodeDataGridViewTextBoxColumn;
+        private DataGridViewTextBoxColumn ledratetypeDataGridViewTextBoxColumn;
+        private DataGridViewTextBoxColumn ledaccounttypeDataGridViewTextBoxColumn;
+        private DataGridViewTextBoxColumn ledareacodeDataGridViewTextBoxColumn;
+        private DataGridViewTextBoxColumn leddeliveryorderDataGridViewTextBoxColumn;
+        private DataGridViewTextBoxColumn ledaddressDataGridViewTextBoxColumn;
+        private DataGridViewTextBoxColumn ledaddress1DataGridViewTextBoxColumn;
+        private DataGridViewTextBoxColumn ledaddress2DataGridViewTextBoxColumn;
+        private DataGridViewTextBoxColumn ledtnameDataGridViewTextBoxColumn;
+        private DataGridViewTextBoxColumn ledtaddressDataGridViewTextBoxColumn;
+        private DataGridViewTextBoxColumn ledtaddress1DataGridViewTextBoxColumn;
+        private DataGridViewTextBoxColumn ledtaddress2DataGridViewTextBoxColumn;
+        private DataGridViewTextBoxColumn ledpincodeDataGridViewTextBoxColumn;
+        private DataGridViewTextBoxColumn ledtransportDataGridViewTextBoxColumn;
+        private DataGridViewTextBoxColumn ledownerphoneDataGridViewTextBoxColumn;
+        private DataGridViewTextBoxColumn ledownernameDataGridViewTextBoxColumn;
+        private DataGridViewTextBoxColumn ledmanagernameDataGridViewTextBoxColumn;
+        private DataGridViewTextBoxColumn ledmanagerphoneDataGridViewTextBoxColumn;
+        private DataGridViewTextBoxColumn ledtinDataGridViewTextBoxColumn;
+        private DataGridViewCheckBoxColumn ledisfreightDataGridViewCheckBoxColumn;
+        private DataGridViewTextBoxColumn ledcstDataGridViewTextBoxColumn;
+        private DataGridViewTextBoxColumn leddisperDataGridViewTextBoxColumn;
+        private DataGridViewTextBoxColumn ledrefnoDataGridViewTextBoxColumn;
+        private DataGridViewTextBoxColumn usersuidDataGridViewTextBoxColumn;
+        private DataGridViewTextBoxColumn usersnameDataGridViewTextBoxColumn;
+        private DataGridViewTextBoxColumn comnameDataGridViewTextBoxColumn;
+        private DataGridViewTextBoxColumn comidDataGridViewTextBoxColumn;
+        private DataGridViewTextBoxColumn ledudateDataGridViewTextBoxColumn;
         private TextBox txtCode;
 
 		public frmLedger()
@@ -234,6 +228,8 @@ namespace standard.master
 			txtOwnerPhone.Text = string.Empty;
 			txtManagerName.Text = string.Empty;
 			txtManagerPhone.Text = string.Empty;
+            cboAreaCode.SelectedIndex = 0;
+            txtDeliveryOrder.Text = string.Empty;
 			txtTin.Text = string.Empty;
             cbIsFreight.Checked = false;
 			txtCst.Text = string.Empty;
@@ -249,11 +245,12 @@ namespace standard.master
 
 		private void LoadData()
 		{
-			txtPartyName.Focus();
+			txtPartyName.Select();
 			cboType.SelectedIndex = 0;
 			cboratetype.SelectedIndex = 0;
 			InventoryDataContext inventoryDataContext = new InventoryDataContext();
-			uspledgermasterSelectResultBindingSource.DataSource = inventoryDataContext.usp_ledgermasterSelect(null, null, null, null, null);
+            routeBindingSource.DataSource = inventoryDataContext.usp_routeSelect(null,null);
+			uspledgermasterSelectResultBindingSource.DataSource = inventoryDataContext.usp_ledgermasterSelect(null, null, null, null, null, null);
 			ledgermasterBindingSource.DataSource = inventoryDataContext.ledgermasters.Where((ledgermaster li) => li.led_accounttype == "Agent" || li.led_id == 0);
 			FillGridReference();
 		}
@@ -265,7 +262,7 @@ namespace standard.master
 			{
 				int rowIndex = dgview.CurrentCell.RowIndex;
 				id = Convert.ToInt32(dgview["ledidDataGridViewTextBoxColumn", rowIndex].Value);
-				ISingleResult<usp_ledgermasterSelectResult> singleResult = inventoryDataContext.usp_ledgermasterSelect(id, null, null, null, null);
+				ISingleResult<usp_ledgermasterSelectResult> singleResult = inventoryDataContext.usp_ledgermasterSelect(id, null, null, null, null, null);
 				cboType.SelectedIndex = 0;
 				cboratetype.SelectedIndex = 0;
 				foreach (usp_ledgermasterSelectResult item in singleResult)
@@ -299,7 +296,10 @@ namespace standard.master
 					txtOwnerPhone.Text = Convert.ToString(item.led_ownerphone);
 					txtManagerName.Text = Convert.ToString(item.led_managername);
 					txtManagerPhone.Text = Convert.ToString(item.led_managerphone);
-					txtTin.Text = Convert.ToString(item.led_tin);
+                    cboAreaCode.Text = item.led_areacode;
+                    cboratetype.Text = item.led_ratetype;
+                    txtDeliveryOrder.Text = Convert.ToString(item.led_deliveryorder);
+                    txtTin.Text = Convert.ToString(item.led_tin);
                     cbIsFreight.Checked = Convert.ToBoolean(item.led_isfreight);
                     txtCst.Text = Convert.ToString(item.led_cst);
 					txtTamilPartyName.Text = Convert.ToString(item.led_tname);
@@ -349,6 +349,12 @@ namespace standard.master
 				ledgermaster.led_ownerphone = txtOwnerPhone.Text.Trim();
 				ledgermaster.led_managername = txtManagerName.Text.Trim();
 				ledgermaster.led_managerphone = txtManagerPhone.Text.Trim();
+                if (cboAreaCode.Text == "---Select---")
+                {
+                    cboAreaCode.Text = "";
+                }
+                ledgermaster.led_areacode = cboAreaCode.Text.Trim();
+                ledgermaster.led_deliveryorder = txtDeliveryOrder.Text.Trim();
 				ledgermaster.led_agid = Convert.ToInt32(cboReference.SelectedValue);
 				ledgermaster.led_tin = txtTin.Text.Trim();
                 ledgermaster.led_isfreight = cbIsFreight.Checked;
@@ -384,14 +390,14 @@ namespace standard.master
 				{
 					if (MessageBox.Show("Are you sure to save?", "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.No)
 					{
-						inventoryDataContext.usp_ledgermasterInsert(ledgermaster.led_agid, ledgermaster.led_accountcode, ledgermaster.led_accounttype, ledgermaster.led_name, ledgermaster.led_address, ledgermaster.led_address1, ledgermaster.led_address2, ledgermaster.led_tname, ledgermaster.led_taddress, ledgermaster.led_taddress1, ledgermaster.led_taddress2, ledgermaster.led_pincode, ledgermaster.led_transport, ledgermaster.led_ownerphone, ledgermaster.led_ownername, ledgermaster.led_managername, ledgermaster.led_managerphone, ledgermaster.led_tin, ledgermaster.led_isfreight, ledgermaster.led_cst, ledgermaster.led_refno, global.ucode, global.comid, global.sysdate, ledgermaster.led_ratetype, ledgermaster.led_disper);
+						inventoryDataContext.usp_ledgermasterInsert(ledgermaster.led_agid, ledgermaster.led_accountcode, ledgermaster.led_accounttype, ledgermaster.led_name, ledgermaster.led_address, ledgermaster.led_address1, ledgermaster.led_address2, ledgermaster.led_tname, ledgermaster.led_taddress, ledgermaster.led_taddress1, ledgermaster.led_taddress2, ledgermaster.led_pincode, ledgermaster.led_transport, ledgermaster.led_ownerphone, ledgermaster.led_ownername, ledgermaster.led_managername, ledgermaster.led_managerphone, ledgermaster.led_areacode, ledgermaster.led_deliveryorder, ledgermaster.led_tin, ledgermaster.led_isfreight, ledgermaster.led_cst, ledgermaster.led_refno, global.ucode, global.comid, global.sysdate, ledgermaster.led_ratetype, ledgermaster.led_disper);
 						MessageBox.Show("Record saved successfully...", "Information", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
 						goto IL_0521;
 					}
 				}
 				else if (MessageBox.Show("Are you sure to update?", "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.No)
 				{
-					inventoryDataContext.usp_ledgermasterUpdate(id, ledgermaster.led_agid, ledgermaster.led_accountcode, ledgermaster.led_accounttype, ledgermaster.led_name, ledgermaster.led_address, ledgermaster.led_address1, ledgermaster.led_address2, ledgermaster.led_tname, ledgermaster.led_taddress, ledgermaster.led_taddress1, ledgermaster.led_taddress2, ledgermaster.led_pincode, ledgermaster.led_transport, ledgermaster.led_ownerphone, ledgermaster.led_ownername, ledgermaster.led_managername, ledgermaster.led_managerphone, ledgermaster.led_tin,ledgermaster.led_isfreight, ledgermaster.led_cst, ledgermaster.led_refno, global.ucode, global.comid, global.sysdate, ledgermaster.led_ratetype, ledgermaster.led_disper);
+					inventoryDataContext.usp_ledgermasterUpdate(id, ledgermaster.led_agid, ledgermaster.led_accountcode, ledgermaster.led_accounttype, ledgermaster.led_name, ledgermaster.led_address, ledgermaster.led_address1, ledgermaster.led_address2, ledgermaster.led_tname, ledgermaster.led_taddress, ledgermaster.led_taddress1, ledgermaster.led_taddress2, ledgermaster.led_pincode, ledgermaster.led_transport, ledgermaster.led_ownerphone, ledgermaster.led_ownername, ledgermaster.led_managername, ledgermaster.led_managerphone, ledgermaster.led_areacode, ledgermaster.led_deliveryorder,ledgermaster.led_tin,ledgermaster.led_isfreight, ledgermaster.led_cst, ledgermaster.led_refno, global.ucode, global.comid, global.sysdate, ledgermaster.led_ratetype, ledgermaster.led_disper);
 					MessageBox.Show("Record updated successfully...", "Information", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
 					goto IL_0521;
 				}
@@ -497,7 +503,7 @@ namespace standard.master
 			{
 				num = null;
 			}
-			dgview.DataSource = inventoryDataContext.usp_ledgermasterSelect(null, null, txtSearch.Text, txtSearchbyCity.Text, num);
+			dgview.DataSource = inventoryDataContext.usp_ledgermasterSelect(null, null, txtSearch.Text, txtSearchbyCity.Text, txtSearchByAreaCode.Text, num);
 		}
 
 		private void txtSearchItemCode_TextChanged(object sender, EventArgs e)
@@ -509,7 +515,7 @@ namespace standard.master
 			{
 				num = null;
 			}
-			dgview.DataSource = inventoryDataContext.usp_ledgermasterSelect(null, null, txtSearch.Text, txtSearchbyCity.Text, num);
+			dgview.DataSource = inventoryDataContext.usp_ledgermasterSelect(null, null, txtSearch.Text, txtSearchbyCity.Text, txtSearchByAreaCode.Text, num);
 		}
 
 		private void txtPartyName_KeyDown(object sender, KeyEventArgs e)
@@ -533,9 +539,9 @@ namespace standard.master
 			{
 				num = null;
 			}
-			CountofLedgers = inventoryDataContext.usp_ledgermasterSelect(null, null, null, null, num).Count();
+			CountofLedgers = inventoryDataContext.usp_ledgermasterSelect(null, null, null, null, null, num).Count();
 			lblCount.Text = CountofLedgers.ToString();
-			dgview.DataSource = inventoryDataContext.usp_ledgermasterSelect(null, null, null, null, num);
+			dgview.DataSource = inventoryDataContext.usp_ledgermasterSelect(null, null, null, null, null, num);
 		}
 
 		private void txtCode_KeyPress(object sender, KeyPressEventArgs e)
@@ -571,15 +577,21 @@ namespace standard.master
             this.txtSearch = new System.Windows.Forms.TextBox();
             this.label20 = new System.Windows.Forms.Label();
             this.txtSearchbyCity = new System.Windows.Forms.TextBox();
-            this.label24 = new System.Windows.Forms.Label();
+            this.txtSearchByAreaCode = new System.Windows.Forms.TextBox();
+            this.lblCount = new System.Windows.Forms.Label();
             this.cboGridReference = new System.Windows.Forms.ComboBox();
             this.ledgermasterBindingSource1 = new System.Windows.Forms.BindingSource(this.components);
-            this.lblCount = new System.Windows.Forms.Label();
+            this.label24 = new System.Windows.Forms.Label();
+            this.lblSearchAreaCode = new System.Windows.Forms.Label();
             this.dgview = new System.Windows.Forms.DataGridView();
             this.ledidDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.ledagidDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.lednameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ledaccountcodeDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.ledratetypeDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ledaccounttypeDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.ledareacodeDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.leddeliveryorderDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ledaddressDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ledaddress1DataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ledaddress2DataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -589,13 +601,20 @@ namespace standard.master
             this.ledtaddress2DataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ledpincodeDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ledtransportDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.ledownernameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ledownerphoneDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.ledownernameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ledmanagernameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ledmanagerphoneDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ledtinDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.ledisfreightDataGridViewCheckBoxColumn = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.ledcstDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.leddisperDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ledrefnoDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.usersuidDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.usersnameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.comnameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.comidDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.ledudateDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.uspledgermasterSelectResultBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.tblEntry = new System.Windows.Forms.TableLayoutPanel();
             this.txtPartyName = new System.Windows.Forms.TextBox();
@@ -606,13 +625,9 @@ namespace standard.master
             this.cboType = new System.Windows.Forms.ComboBox();
             this.label15 = new System.Windows.Forms.Label();
             this.label8 = new System.Windows.Forms.Label();
-            this.label13 = new System.Windows.Forms.Label();
-            this.label14 = new System.Windows.Forms.Label();
             this.label9 = new System.Windows.Forms.Label();
             this.txtOwnerName = new System.Windows.Forms.TextBox();
-            this.txtManagerName = new System.Windows.Forms.TextBox();
             this.txtOwnerPhone = new System.Windows.Forms.TextBox();
-            this.txtManagerPhone = new System.Windows.Forms.TextBox();
             this.txtTin = new System.Windows.Forms.TextBox();
             this.label16 = new System.Windows.Forms.Label();
             this.label11 = new System.Windows.Forms.Label();
@@ -640,10 +655,17 @@ namespace standard.master
             this.txtTransport = new System.Windows.Forms.TextBox();
             this.label23 = new System.Windows.Forms.Label();
             this.txtDisPer = new mylib.decimalbox(this.components);
-            this.label6 = new System.Windows.Forms.Label();
             this.label21 = new System.Windows.Forms.Label();
             this.txtCst = new System.Windows.Forms.TextBox();
             this.cbIsFreight = new System.Windows.Forms.CheckBox();
+            this.txtManagerName = new System.Windows.Forms.TextBox();
+            this.txtManagerPhone = new System.Windows.Forms.TextBox();
+            this.lblAreaCode = new System.Windows.Forms.Label();
+            this.lblDeliveryOrder = new System.Windows.Forms.Label();
+            this.label6 = new System.Windows.Forms.Label();
+            this.cboAreaCode = new System.Windows.Forms.ComboBox();
+            this.routeBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.txtDeliveryOrder = new System.Windows.Forms.TextBox();
             this.tblCommand = new System.Windows.Forms.TableLayoutPanel();
             this.cmdclose = new mylib.lightbutton();
             this.btnClear = new mylib.lightbutton();
@@ -657,6 +679,7 @@ namespace standard.master
             ((System.ComponentModel.ISupportInitialize)(this.uspledgermasterSelectResultBindingSource)).BeginInit();
             this.tblEntry.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.ledgermasterBindingSource)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.routeBindingSource)).BeginInit();
             this.tblCommand.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -717,22 +740,25 @@ namespace standard.master
             // 
             // tblSearch
             // 
-            this.tblSearch.ColumnCount = 8;
-            this.tblSearch.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 300F));
-            this.tblSearch.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 300F));
-            this.tblSearch.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 225F));
-            this.tblSearch.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 330F));
-            this.tblSearch.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 150F));
-            this.tblSearch.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 330F));
-            this.tblSearch.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 150F));
-            this.tblSearch.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tblSearch.ColumnCount = 9;
+            this.tblSearch.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 11.11111F));
+            this.tblSearch.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 11.11111F));
+            this.tblSearch.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 11.11111F));
+            this.tblSearch.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 11.11111F));
+            this.tblSearch.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 11.11111F));
+            this.tblSearch.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 11.11111F));
+            this.tblSearch.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 11.11111F));
+            this.tblSearch.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 11.11111F));
+            this.tblSearch.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 11.11111F));
             this.tblSearch.Controls.Add(this.lblSearch, 0, 0);
             this.tblSearch.Controls.Add(this.txtSearch, 1, 0);
             this.tblSearch.Controls.Add(this.label20, 2, 0);
             this.tblSearch.Controls.Add(this.txtSearchbyCity, 3, 0);
-            this.tblSearch.Controls.Add(this.label24, 4, 0);
-            this.tblSearch.Controls.Add(this.cboGridReference, 5, 0);
-            this.tblSearch.Controls.Add(this.lblCount, 6, 0);
+            this.tblSearch.Controls.Add(this.txtSearchByAreaCode, 5, 0);
+            this.tblSearch.Controls.Add(this.lblCount, 8, 0);
+            this.tblSearch.Controls.Add(this.cboGridReference, 7, 0);
+            this.tblSearch.Controls.Add(this.label24, 6, 0);
+            this.tblSearch.Controls.Add(this.lblSearchAreaCode, 4, 0);
             this.tblSearch.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tblSearch.Location = new System.Drawing.Point(5, 447);
             this.tblSearch.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
@@ -749,10 +775,10 @@ namespace standard.master
             this.lblSearch.BackColor = System.Drawing.Color.Transparent;
             this.lblSearch.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
             this.lblSearch.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.lblSearch.Location = new System.Drawing.Point(4, 15);
+            this.lblSearch.Location = new System.Drawing.Point(4, 1);
             this.lblSearch.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblSearch.Name = "lblSearch";
-            this.lblSearch.Size = new System.Drawing.Size(289, 28);
+            this.lblSearch.Size = new System.Drawing.Size(166, 56);
             this.lblSearch.TabIndex = 0;
             this.lblSearch.Text = "Search By Ledger Name";
             this.lblSearch.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -762,11 +788,11 @@ namespace standard.master
             this.txtSearch.BackColor = System.Drawing.Color.White;
             this.txtSearch.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.txtSearch.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
-            this.txtSearch.Location = new System.Drawing.Point(304, 5);
+            this.txtSearch.Location = new System.Drawing.Point(208, 5);
             this.txtSearch.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.txtSearch.MaxLength = 50;
             this.txtSearch.Name = "txtSearch";
-            this.txtSearch.Size = new System.Drawing.Size(290, 35);
+            this.txtSearch.Size = new System.Drawing.Size(195, 35);
             this.txtSearch.TabIndex = 0;
             this.txtSearch.TextChanged += new System.EventHandler(this.txtSearch_TextChanged);
             this.txtSearch.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtPartyName_KeyDown);
@@ -778,7 +804,7 @@ namespace standard.master
             this.label20.BackColor = System.Drawing.Color.Transparent;
             this.label20.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
             this.label20.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.label20.Location = new System.Drawing.Point(604, 15);
+            this.label20.Location = new System.Drawing.Point(412, 15);
             this.label20.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label20.Name = "label20";
             this.label20.Size = new System.Drawing.Size(180, 28);
@@ -791,29 +817,40 @@ namespace standard.master
             this.txtSearchbyCity.BackColor = System.Drawing.Color.White;
             this.txtSearchbyCity.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.txtSearchbyCity.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
-            this.txtSearchbyCity.Location = new System.Drawing.Point(829, 5);
+            this.txtSearchbyCity.Location = new System.Drawing.Point(616, 5);
             this.txtSearchbyCity.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.txtSearchbyCity.MaxLength = 50;
             this.txtSearchbyCity.Name = "txtSearchbyCity";
-            this.txtSearchbyCity.Size = new System.Drawing.Size(290, 35);
+            this.txtSearchbyCity.Size = new System.Drawing.Size(195, 35);
             this.txtSearchbyCity.TabIndex = 1;
             this.txtSearchbyCity.TextChanged += new System.EventHandler(this.txtSearchItemCode_TextChanged);
             this.txtSearchbyCity.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtPartyName_KeyDown);
             // 
-            // label24
+            // txtSearchByAreaCode
             // 
-            this.label24.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.label24.AutoSize = true;
-            this.label24.BackColor = System.Drawing.Color.Transparent;
-            this.label24.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
-            this.label24.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.label24.Location = new System.Drawing.Point(1159, 15);
-            this.label24.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label24.Name = "label24";
-            this.label24.Size = new System.Drawing.Size(131, 28);
-            this.label24.TabIndex = 2;
-            this.label24.Text = "Reference";
-            this.label24.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.txtSearchByAreaCode.BackColor = System.Drawing.Color.White;
+            this.txtSearchByAreaCode.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.txtSearchByAreaCode.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
+            this.txtSearchByAreaCode.Location = new System.Drawing.Point(1024, 5);
+            this.txtSearchByAreaCode.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.txtSearchByAreaCode.MaxLength = 50;
+            this.txtSearchByAreaCode.Name = "txtSearchByAreaCode";
+            this.txtSearchByAreaCode.Size = new System.Drawing.Size(195, 35);
+            this.txtSearchByAreaCode.TabIndex = 13;
+            this.txtSearchByAreaCode.TextChanged += new System.EventHandler(this.txtSearchByAreaCode_TextChanged);
+            // 
+            // lblCount
+            // 
+            this.lblCount.AutoSize = true;
+            this.lblCount.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold);
+            this.lblCount.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(192)))), ((int)(((byte)(0)))));
+            this.lblCount.Location = new System.Drawing.Point(1640, 0);
+            this.lblCount.Margin = new System.Windows.Forms.Padding(8, 0, 8, 0);
+            this.lblCount.Name = "lblCount";
+            this.lblCount.Size = new System.Drawing.Size(24, 35);
+            this.lblCount.TabIndex = 11;
+            this.lblCount.Text = ".";
+            this.lblCount.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // cboGridReference
             // 
@@ -825,26 +862,43 @@ namespace standard.master
             this.cboGridReference.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.cboGridReference.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
             this.cboGridReference.FormattingEnabled = true;
-            this.cboGridReference.Location = new System.Drawing.Point(1309, 5);
+            this.cboGridReference.Location = new System.Drawing.Point(1432, 5);
             this.cboGridReference.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.cboGridReference.Name = "cboGridReference";
-            this.cboGridReference.Size = new System.Drawing.Size(289, 36);
+            this.cboGridReference.Size = new System.Drawing.Size(195, 36);
             this.cboGridReference.TabIndex = 2;
             this.cboGridReference.ValueMember = "led_id";
             this.cboGridReference.TextChanged += new System.EventHandler(this.cboGridReference_TextChanged);
             // 
-            // lblCount
+            // label24
             // 
-            this.lblCount.AutoSize = true;
-            this.lblCount.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold);
-            this.lblCount.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(192)))), ((int)(((byte)(0)))));
-            this.lblCount.Location = new System.Drawing.Point(1643, 0);
-            this.lblCount.Margin = new System.Windows.Forms.Padding(8, 0, 8, 0);
-            this.lblCount.Name = "lblCount";
-            this.lblCount.Size = new System.Drawing.Size(24, 35);
-            this.lblCount.TabIndex = 11;
-            this.lblCount.Text = ".";
-            this.lblCount.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.label24.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.label24.AutoSize = true;
+            this.label24.BackColor = System.Drawing.Color.Transparent;
+            this.label24.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
+            this.label24.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
+            this.label24.Location = new System.Drawing.Point(1228, 15);
+            this.label24.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label24.Name = "label24";
+            this.label24.Size = new System.Drawing.Size(131, 28);
+            this.label24.TabIndex = 2;
+            this.label24.Text = "Reference";
+            this.label24.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // lblSearchAreaCode
+            // 
+            this.lblSearchAreaCode.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblSearchAreaCode.AutoSize = true;
+            this.lblSearchAreaCode.BackColor = System.Drawing.Color.Transparent;
+            this.lblSearchAreaCode.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
+            this.lblSearchAreaCode.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
+            this.lblSearchAreaCode.Location = new System.Drawing.Point(820, 1);
+            this.lblSearchAreaCode.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblSearchAreaCode.Name = "lblSearchAreaCode";
+            this.lblSearchAreaCode.Size = new System.Drawing.Size(189, 56);
+            this.lblSearchAreaCode.TabIndex = 12;
+            this.lblSearchAreaCode.Text = "Search By Area Code";
+            this.lblSearchAreaCode.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // dgview
             // 
@@ -871,9 +925,13 @@ namespace standard.master
             this.dgview.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
             this.dgview.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.ledidDataGridViewTextBoxColumn,
+            this.ledagidDataGridViewTextBoxColumn,
             this.lednameDataGridViewTextBoxColumn,
             this.ledaccountcodeDataGridViewTextBoxColumn,
+            this.ledratetypeDataGridViewTextBoxColumn,
             this.ledaccounttypeDataGridViewTextBoxColumn,
+            this.ledareacodeDataGridViewTextBoxColumn,
+            this.leddeliveryorderDataGridViewTextBoxColumn,
             this.ledaddressDataGridViewTextBoxColumn,
             this.ledaddress1DataGridViewTextBoxColumn,
             this.ledaddress2DataGridViewTextBoxColumn,
@@ -883,13 +941,20 @@ namespace standard.master
             this.ledtaddress2DataGridViewTextBoxColumn,
             this.ledpincodeDataGridViewTextBoxColumn,
             this.ledtransportDataGridViewTextBoxColumn,
-            this.ledownernameDataGridViewTextBoxColumn,
             this.ledownerphoneDataGridViewTextBoxColumn,
+            this.ledownernameDataGridViewTextBoxColumn,
             this.ledmanagernameDataGridViewTextBoxColumn,
             this.ledmanagerphoneDataGridViewTextBoxColumn,
             this.ledtinDataGridViewTextBoxColumn,
+            this.ledisfreightDataGridViewCheckBoxColumn,
             this.ledcstDataGridViewTextBoxColumn,
-            this.ledrefnoDataGridViewTextBoxColumn});
+            this.leddisperDataGridViewTextBoxColumn,
+            this.ledrefnoDataGridViewTextBoxColumn,
+            this.usersuidDataGridViewTextBoxColumn,
+            this.usersnameDataGridViewTextBoxColumn,
+            this.comnameDataGridViewTextBoxColumn,
+            this.comidDataGridViewTextBoxColumn,
+            this.ledudateDataGridViewTextBoxColumn});
             this.dgview.Cursor = System.Windows.Forms.Cursors.Default;
             this.dgview.DataSource = this.uspledgermasterSelectResultBindingSource;
             dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
@@ -932,27 +997,60 @@ namespace standard.master
             this.ledidDataGridViewTextBoxColumn.ReadOnly = true;
             this.ledidDataGridViewTextBoxColumn.Visible = false;
             // 
+            // ledagidDataGridViewTextBoxColumn
+            // 
+            this.ledagidDataGridViewTextBoxColumn.DataPropertyName = "led_agid";
+            this.ledagidDataGridViewTextBoxColumn.HeaderText = "led_agid";
+            this.ledagidDataGridViewTextBoxColumn.Name = "ledagidDataGridViewTextBoxColumn";
+            this.ledagidDataGridViewTextBoxColumn.ReadOnly = true;
+            this.ledagidDataGridViewTextBoxColumn.Visible = false;
+            // 
             // lednameDataGridViewTextBoxColumn
             // 
             this.lednameDataGridViewTextBoxColumn.DataPropertyName = "led_name";
             this.lednameDataGridViewTextBoxColumn.HeaderText = "Name";
             this.lednameDataGridViewTextBoxColumn.Name = "lednameDataGridViewTextBoxColumn";
             this.lednameDataGridViewTextBoxColumn.ReadOnly = true;
-            this.lednameDataGridViewTextBoxColumn.Width = 250;
+            this.lednameDataGridViewTextBoxColumn.Width = 200;
             // 
             // ledaccountcodeDataGridViewTextBoxColumn
             // 
             this.ledaccountcodeDataGridViewTextBoxColumn.DataPropertyName = "led_accountcode";
-            this.ledaccountcodeDataGridViewTextBoxColumn.HeaderText = "Accountcode";
+            this.ledaccountcodeDataGridViewTextBoxColumn.HeaderText = "Account Code";
             this.ledaccountcodeDataGridViewTextBoxColumn.Name = "ledaccountcodeDataGridViewTextBoxColumn";
             this.ledaccountcodeDataGridViewTextBoxColumn.ReadOnly = true;
+            // 
+            // ledratetypeDataGridViewTextBoxColumn
+            // 
+            this.ledratetypeDataGridViewTextBoxColumn.DataPropertyName = "led_ratetype";
+            this.ledratetypeDataGridViewTextBoxColumn.HeaderText = "led_ratetype";
+            this.ledratetypeDataGridViewTextBoxColumn.Name = "ledratetypeDataGridViewTextBoxColumn";
+            this.ledratetypeDataGridViewTextBoxColumn.ReadOnly = true;
+            this.ledratetypeDataGridViewTextBoxColumn.Visible = false;
             // 
             // ledaccounttypeDataGridViewTextBoxColumn
             // 
             this.ledaccounttypeDataGridViewTextBoxColumn.DataPropertyName = "led_accounttype";
-            this.ledaccounttypeDataGridViewTextBoxColumn.HeaderText = "Accounttype";
+            this.ledaccounttypeDataGridViewTextBoxColumn.HeaderText = "Account Type";
             this.ledaccounttypeDataGridViewTextBoxColumn.Name = "ledaccounttypeDataGridViewTextBoxColumn";
             this.ledaccounttypeDataGridViewTextBoxColumn.ReadOnly = true;
+            this.ledaccounttypeDataGridViewTextBoxColumn.Width = 200;
+            // 
+            // ledareacodeDataGridViewTextBoxColumn
+            // 
+            this.ledareacodeDataGridViewTextBoxColumn.DataPropertyName = "led_areacode";
+            this.ledareacodeDataGridViewTextBoxColumn.HeaderText = "Area Code";
+            this.ledareacodeDataGridViewTextBoxColumn.Name = "ledareacodeDataGridViewTextBoxColumn";
+            this.ledareacodeDataGridViewTextBoxColumn.ReadOnly = true;
+            this.ledareacodeDataGridViewTextBoxColumn.Width = 200;
+            // 
+            // leddeliveryorderDataGridViewTextBoxColumn
+            // 
+            this.leddeliveryorderDataGridViewTextBoxColumn.DataPropertyName = "led_deliveryorder";
+            this.leddeliveryorderDataGridViewTextBoxColumn.HeaderText = "Delivery Order";
+            this.leddeliveryorderDataGridViewTextBoxColumn.Name = "leddeliveryorderDataGridViewTextBoxColumn";
+            this.leddeliveryorderDataGridViewTextBoxColumn.ReadOnly = true;
+            this.leddeliveryorderDataGridViewTextBoxColumn.Width = 200;
             // 
             // ledaddressDataGridViewTextBoxColumn
             // 
@@ -960,6 +1058,8 @@ namespace standard.master
             this.ledaddressDataGridViewTextBoxColumn.HeaderText = "Address";
             this.ledaddressDataGridViewTextBoxColumn.Name = "ledaddressDataGridViewTextBoxColumn";
             this.ledaddressDataGridViewTextBoxColumn.ReadOnly = true;
+            this.ledaddressDataGridViewTextBoxColumn.ToolTipText = "Addr";
+            this.ledaddressDataGridViewTextBoxColumn.Width = 250;
             // 
             // ledaddress1DataGridViewTextBoxColumn
             // 
@@ -967,6 +1067,7 @@ namespace standard.master
             this.ledaddress1DataGridViewTextBoxColumn.HeaderText = "Address 1";
             this.ledaddress1DataGridViewTextBoxColumn.Name = "ledaddress1DataGridViewTextBoxColumn";
             this.ledaddress1DataGridViewTextBoxColumn.ReadOnly = true;
+            this.ledaddress1DataGridViewTextBoxColumn.Width = 250;
             // 
             // ledaddress2DataGridViewTextBoxColumn
             // 
@@ -978,9 +1079,10 @@ namespace standard.master
             // ledtnameDataGridViewTextBoxColumn
             // 
             this.ledtnameDataGridViewTextBoxColumn.DataPropertyName = "led_tname";
-            this.ledtnameDataGridViewTextBoxColumn.HeaderText = " Tamil Name";
+            this.ledtnameDataGridViewTextBoxColumn.HeaderText = "Tamil Name";
             this.ledtnameDataGridViewTextBoxColumn.Name = "ledtnameDataGridViewTextBoxColumn";
             this.ledtnameDataGridViewTextBoxColumn.ReadOnly = true;
+            this.ledtnameDataGridViewTextBoxColumn.Width = 200;
             // 
             // ledtaddressDataGridViewTextBoxColumn
             // 
@@ -1022,21 +1124,21 @@ namespace standard.master
             this.ledtransportDataGridViewTextBoxColumn.ReadOnly = true;
             this.ledtransportDataGridViewTextBoxColumn.Visible = false;
             // 
-            // ledownernameDataGridViewTextBoxColumn
-            // 
-            this.ledownernameDataGridViewTextBoxColumn.DataPropertyName = "led_ownername";
-            this.ledownernameDataGridViewTextBoxColumn.HeaderText = "Owner Name";
-            this.ledownernameDataGridViewTextBoxColumn.Name = "ledownernameDataGridViewTextBoxColumn";
-            this.ledownernameDataGridViewTextBoxColumn.ReadOnly = true;
-            this.ledownernameDataGridViewTextBoxColumn.Visible = false;
-            // 
             // ledownerphoneDataGridViewTextBoxColumn
             // 
             this.ledownerphoneDataGridViewTextBoxColumn.DataPropertyName = "led_ownerphone";
-            this.ledownerphoneDataGridViewTextBoxColumn.HeaderText = "Owner Phone";
+            this.ledownerphoneDataGridViewTextBoxColumn.HeaderText = "led_ownerphone";
             this.ledownerphoneDataGridViewTextBoxColumn.Name = "ledownerphoneDataGridViewTextBoxColumn";
             this.ledownerphoneDataGridViewTextBoxColumn.ReadOnly = true;
             this.ledownerphoneDataGridViewTextBoxColumn.Visible = false;
+            // 
+            // ledownernameDataGridViewTextBoxColumn
+            // 
+            this.ledownernameDataGridViewTextBoxColumn.DataPropertyName = "led_ownername";
+            this.ledownernameDataGridViewTextBoxColumn.HeaderText = "led_ownername";
+            this.ledownernameDataGridViewTextBoxColumn.Name = "ledownernameDataGridViewTextBoxColumn";
+            this.ledownernameDataGridViewTextBoxColumn.ReadOnly = true;
+            this.ledownernameDataGridViewTextBoxColumn.Visible = false;
             // 
             // ledmanagernameDataGridViewTextBoxColumn
             // 
@@ -1062,6 +1164,14 @@ namespace standard.master
             this.ledtinDataGridViewTextBoxColumn.ReadOnly = true;
             this.ledtinDataGridViewTextBoxColumn.Visible = false;
             // 
+            // ledisfreightDataGridViewCheckBoxColumn
+            // 
+            this.ledisfreightDataGridViewCheckBoxColumn.DataPropertyName = "led_isfreight";
+            this.ledisfreightDataGridViewCheckBoxColumn.HeaderText = "led_isfreight";
+            this.ledisfreightDataGridViewCheckBoxColumn.Name = "ledisfreightDataGridViewCheckBoxColumn";
+            this.ledisfreightDataGridViewCheckBoxColumn.ReadOnly = true;
+            this.ledisfreightDataGridViewCheckBoxColumn.Visible = false;
+            // 
             // ledcstDataGridViewTextBoxColumn
             // 
             this.ledcstDataGridViewTextBoxColumn.DataPropertyName = "led_cst";
@@ -1070,6 +1180,14 @@ namespace standard.master
             this.ledcstDataGridViewTextBoxColumn.ReadOnly = true;
             this.ledcstDataGridViewTextBoxColumn.Visible = false;
             // 
+            // leddisperDataGridViewTextBoxColumn
+            // 
+            this.leddisperDataGridViewTextBoxColumn.DataPropertyName = "led_disper";
+            this.leddisperDataGridViewTextBoxColumn.HeaderText = "led_disper";
+            this.leddisperDataGridViewTextBoxColumn.Name = "leddisperDataGridViewTextBoxColumn";
+            this.leddisperDataGridViewTextBoxColumn.ReadOnly = true;
+            this.leddisperDataGridViewTextBoxColumn.Visible = false;
+            // 
             // ledrefnoDataGridViewTextBoxColumn
             // 
             this.ledrefnoDataGridViewTextBoxColumn.DataPropertyName = "led_refno";
@@ -1077,6 +1195,46 @@ namespace standard.master
             this.ledrefnoDataGridViewTextBoxColumn.Name = "ledrefnoDataGridViewTextBoxColumn";
             this.ledrefnoDataGridViewTextBoxColumn.ReadOnly = true;
             this.ledrefnoDataGridViewTextBoxColumn.Visible = false;
+            // 
+            // usersuidDataGridViewTextBoxColumn
+            // 
+            this.usersuidDataGridViewTextBoxColumn.DataPropertyName = "users_uid";
+            this.usersuidDataGridViewTextBoxColumn.HeaderText = "users_uid";
+            this.usersuidDataGridViewTextBoxColumn.Name = "usersuidDataGridViewTextBoxColumn";
+            this.usersuidDataGridViewTextBoxColumn.ReadOnly = true;
+            this.usersuidDataGridViewTextBoxColumn.Visible = false;
+            // 
+            // usersnameDataGridViewTextBoxColumn
+            // 
+            this.usersnameDataGridViewTextBoxColumn.DataPropertyName = "users_name";
+            this.usersnameDataGridViewTextBoxColumn.HeaderText = "users_name";
+            this.usersnameDataGridViewTextBoxColumn.Name = "usersnameDataGridViewTextBoxColumn";
+            this.usersnameDataGridViewTextBoxColumn.ReadOnly = true;
+            this.usersnameDataGridViewTextBoxColumn.Visible = false;
+            // 
+            // comnameDataGridViewTextBoxColumn
+            // 
+            this.comnameDataGridViewTextBoxColumn.DataPropertyName = "com_name";
+            this.comnameDataGridViewTextBoxColumn.HeaderText = "com_name";
+            this.comnameDataGridViewTextBoxColumn.Name = "comnameDataGridViewTextBoxColumn";
+            this.comnameDataGridViewTextBoxColumn.ReadOnly = true;
+            this.comnameDataGridViewTextBoxColumn.Visible = false;
+            // 
+            // comidDataGridViewTextBoxColumn
+            // 
+            this.comidDataGridViewTextBoxColumn.DataPropertyName = "com_id";
+            this.comidDataGridViewTextBoxColumn.HeaderText = "com_id";
+            this.comidDataGridViewTextBoxColumn.Name = "comidDataGridViewTextBoxColumn";
+            this.comidDataGridViewTextBoxColumn.ReadOnly = true;
+            this.comidDataGridViewTextBoxColumn.Visible = false;
+            // 
+            // ledudateDataGridViewTextBoxColumn
+            // 
+            this.ledudateDataGridViewTextBoxColumn.DataPropertyName = "led_udate";
+            this.ledudateDataGridViewTextBoxColumn.HeaderText = "led_udate";
+            this.ledudateDataGridViewTextBoxColumn.Name = "ledudateDataGridViewTextBoxColumn";
+            this.ledudateDataGridViewTextBoxColumn.ReadOnly = true;
+            this.ledudateDataGridViewTextBoxColumn.Visible = false;
             // 
             // uspledgermasterSelectResultBindingSource
             // 
@@ -1100,13 +1258,9 @@ namespace standard.master
             this.tblEntry.Controls.Add(this.cboType, 1, 2);
             this.tblEntry.Controls.Add(this.label15, 2, 0);
             this.tblEntry.Controls.Add(this.label8, 2, 1);
-            this.tblEntry.Controls.Add(this.label13, 2, 2);
-            this.tblEntry.Controls.Add(this.label14, 2, 3);
             this.tblEntry.Controls.Add(this.label9, 2, 4);
             this.tblEntry.Controls.Add(this.txtOwnerName, 3, 0);
-            this.tblEntry.Controls.Add(this.txtManagerName, 3, 2);
             this.tblEntry.Controls.Add(this.txtOwnerPhone, 3, 1);
-            this.tblEntry.Controls.Add(this.txtManagerPhone, 3, 3);
             this.tblEntry.Controls.Add(this.txtTin, 3, 4);
             this.tblEntry.Controls.Add(this.label16, 0, 7);
             this.tblEntry.Controls.Add(this.label11, 0, 6);
@@ -1133,10 +1287,16 @@ namespace standard.master
             this.tblEntry.Controls.Add(this.txtTransport, 3, 5);
             this.tblEntry.Controls.Add(this.label23, 2, 6);
             this.tblEntry.Controls.Add(this.txtDisPer, 3, 6);
-            this.tblEntry.Controls.Add(this.label6, 6, 0);
             this.tblEntry.Controls.Add(this.label21, 4, 7);
             this.tblEntry.Controls.Add(this.txtCst, 5, 7);
             this.tblEntry.Controls.Add(this.cbIsFreight, 3, 7);
+            this.tblEntry.Controls.Add(this.txtManagerName, 6, 0);
+            this.tblEntry.Controls.Add(this.txtManagerPhone, 6, 1);
+            this.tblEntry.Controls.Add(this.lblAreaCode, 2, 2);
+            this.tblEntry.Controls.Add(this.lblDeliveryOrder, 2, 3);
+            this.tblEntry.Controls.Add(this.label6, 2, 7);
+            this.tblEntry.Controls.Add(this.cboAreaCode, 3, 2);
+            this.tblEntry.Controls.Add(this.txtDeliveryOrder, 3, 3);
             this.tblEntry.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tblEntry.Location = new System.Drawing.Point(5, 61);
             this.tblEntry.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
@@ -1278,37 +1438,6 @@ namespace standard.master
             this.label8.Text = "Owner Phone";
             this.label8.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
-            // label13
-            // 
-            this.label13.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.label13.AutoSize = true;
-            this.label13.BackColor = System.Drawing.Color.Transparent;
-            this.label13.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
-            this.label13.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.label13.Location = new System.Drawing.Point(529, 101);
-            this.label13.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label13.Name = "label13";
-            this.label13.Size = new System.Drawing.Size(189, 28);
-            this.label13.TabIndex = 20;
-            this.label13.Text = "Manager Name";
-            this.label13.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.label13.Click += new System.EventHandler(this.label13_Click);
-            // 
-            // label14
-            // 
-            this.label14.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.label14.AutoSize = true;
-            this.label14.BackColor = System.Drawing.Color.Transparent;
-            this.label14.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
-            this.label14.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.label14.Location = new System.Drawing.Point(529, 147);
-            this.label14.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label14.Name = "label14";
-            this.label14.Size = new System.Drawing.Size(194, 28);
-            this.label14.TabIndex = 22;
-            this.label14.Text = "Manager Phone";
-            this.label14.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
             // label9
             // 
             this.label9.Anchor = System.Windows.Forms.AnchorStyles.Left;
@@ -1337,19 +1466,6 @@ namespace standard.master
             this.txtOwnerName.TabIndex = 9;
             this.txtOwnerName.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtPartyName_KeyDown);
             // 
-            // txtManagerName
-            // 
-            this.txtManagerName.BackColor = System.Drawing.Color.White;
-            this.txtManagerName.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.txtManagerName.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
-            this.txtManagerName.Location = new System.Drawing.Point(754, 97);
-            this.txtManagerName.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.txtManagerName.MaxLength = 50;
-            this.txtManagerName.Name = "txtManagerName";
-            this.txtManagerName.Size = new System.Drawing.Size(290, 35);
-            this.txtManagerName.TabIndex = 11;
-            this.txtManagerName.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtPartyName_KeyDown);
-            // 
             // txtOwnerPhone
             // 
             this.txtOwnerPhone.BackColor = System.Drawing.Color.White;
@@ -1362,19 +1478,6 @@ namespace standard.master
             this.txtOwnerPhone.Size = new System.Drawing.Size(290, 35);
             this.txtOwnerPhone.TabIndex = 10;
             this.txtOwnerPhone.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtPartyName_KeyDown);
-            // 
-            // txtManagerPhone
-            // 
-            this.txtManagerPhone.BackColor = System.Drawing.Color.White;
-            this.txtManagerPhone.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.txtManagerPhone.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
-            this.txtManagerPhone.Location = new System.Drawing.Point(754, 143);
-            this.txtManagerPhone.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.txtManagerPhone.MaxLength = 50;
-            this.txtManagerPhone.Name = "txtManagerPhone";
-            this.txtManagerPhone.Size = new System.Drawing.Size(290, 35);
-            this.txtManagerPhone.TabIndex = 12;
-            this.txtManagerPhone.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtPartyName_KeyDown);
             // 
             // txtTin
             // 
@@ -1550,7 +1653,7 @@ namespace standard.master
             this.lbltamil.Name = "lbltamil";
             this.tblEntry.SetRowSpan(this.lbltamil, 2);
             this.lbltamil.Size = new System.Drawing.Size(520, 88);
-            this.lbltamil.TabIndex = 21;
+            this.lbltamil.TabIndex = 22;
             // 
             // label19
             // 
@@ -1577,7 +1680,7 @@ namespace standard.master
             this.txtTamilAdd3.MaxLength = 50;
             this.txtTamilAdd3.Name = "txtTamilAdd3";
             this.txtTamilAdd3.Size = new System.Drawing.Size(290, 35);
-            this.txtTamilAdd3.TabIndex = 20;
+            this.txtTamilAdd3.TabIndex = 21;
             this.txtTamilAdd3.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtPartyName_KeyDown);
             this.txtTamilAdd3.KeyUp += new System.Windows.Forms.KeyEventHandler(this.txtTamilAdd3_KeyUp);
             this.txtTamilAdd3.Leave += new System.EventHandler(this.txtTamilAdd3_Leave);
@@ -1607,7 +1710,7 @@ namespace standard.master
             this.txtTamilAdd2.MaxLength = 50;
             this.txtTamilAdd2.Name = "txtTamilAdd2";
             this.txtTamilAdd2.Size = new System.Drawing.Size(290, 35);
-            this.txtTamilAdd2.TabIndex = 19;
+            this.txtTamilAdd2.TabIndex = 20;
             this.txtTamilAdd2.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtPartyName_KeyDown);
             this.txtTamilAdd2.KeyUp += new System.Windows.Forms.KeyEventHandler(this.txtTamilAdd2_KeyUp);
             this.txtTamilAdd2.Leave += new System.EventHandler(this.txtTamilAdd2_Leave);
@@ -1637,7 +1740,7 @@ namespace standard.master
             this.txtTamilAdd1.MaxLength = 50;
             this.txtTamilAdd1.Name = "txtTamilAdd1";
             this.txtTamilAdd1.Size = new System.Drawing.Size(290, 35);
-            this.txtTamilAdd1.TabIndex = 18;
+            this.txtTamilAdd1.TabIndex = 19;
             this.txtTamilAdd1.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtPartyName_KeyDown);
             this.txtTamilAdd1.KeyUp += new System.Windows.Forms.KeyEventHandler(this.txtTamilAdd1_KeyUp);
             this.txtTamilAdd1.Leave += new System.EventHandler(this.txtTamilAdd1_Leave);
@@ -1667,7 +1770,7 @@ namespace standard.master
             this.txtTamilPartyName.MaxLength = 50;
             this.txtTamilPartyName.Name = "txtTamilPartyName";
             this.txtTamilPartyName.Size = new System.Drawing.Size(290, 35);
-            this.txtTamilPartyName.TabIndex = 17;
+            this.txtTamilPartyName.TabIndex = 18;
             this.txtTamilPartyName.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtPartyName_KeyDown);
             this.txtTamilPartyName.KeyUp += new System.Windows.Forms.KeyEventHandler(this.txtTamilPartyName_KeyUp);
             this.txtTamilPartyName.Leave += new System.EventHandler(this.txtTamilPartyName_Leave);
@@ -1690,7 +1793,8 @@ namespace standard.master
             this.cboratetype.Margin = new System.Windows.Forms.Padding(6);
             this.cboratetype.Name = "cboratetype";
             this.cboratetype.Size = new System.Drawing.Size(286, 36);
-            this.cboratetype.TabIndex = 16;
+            this.cboratetype.TabIndex = 17;
+            this.cboratetype.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtPartyName_KeyDown);
             // 
             // label22
             // 
@@ -1771,20 +1875,7 @@ namespace standard.master
             0,
             0});
             this.txtDisPer.TextChanged += new System.EventHandler(this.txtDiscount_TextChanged);
-            // 
-            // label6
-            // 
-            this.label6.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.label6.AutoSize = true;
-            this.label6.BackColor = System.Drawing.Color.Transparent;
-            this.label6.Font = new System.Drawing.Font("Georgia", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label6.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.label6.Location = new System.Drawing.Point(1579, 11);
-            this.label6.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(0, 24);
-            this.label6.TabIndex = 2;
-            this.label6.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.txtDisPer.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtPartyName_KeyDown);
             // 
             // label21
             // 
@@ -1812,7 +1903,7 @@ namespace standard.master
             this.txtCst.MaxLength = 50;
             this.txtCst.Name = "txtCst";
             this.txtCst.Size = new System.Drawing.Size(290, 35);
-            this.txtCst.TabIndex = 22;
+            this.txtCst.TabIndex = 23;
             this.txtCst.Visible = false;
             this.txtCst.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtPartyName_KeyDown);
             // 
@@ -1826,9 +1917,116 @@ namespace standard.master
             this.cbIsFreight.Location = new System.Drawing.Point(753, 329);
             this.cbIsFreight.Name = "cbIsFreight";
             this.cbIsFreight.Size = new System.Drawing.Size(151, 32);
-            this.cbIsFreight.TabIndex = 40;
+            this.cbIsFreight.TabIndex = 16;
             this.cbIsFreight.Text = "Is Freight";
             this.cbIsFreight.UseVisualStyleBackColor = false;
+            // 
+            // txtManagerName
+            // 
+            this.txtManagerName.BackColor = System.Drawing.Color.White;
+            this.txtManagerName.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.txtManagerName.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
+            this.txtManagerName.Location = new System.Drawing.Point(1579, 5);
+            this.txtManagerName.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.txtManagerName.MaxLength = 50;
+            this.txtManagerName.Name = "txtManagerName";
+            this.txtManagerName.Size = new System.Drawing.Size(253, 35);
+            this.txtManagerName.TabIndex = 11;
+            this.txtManagerName.Visible = false;
+            this.txtManagerName.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtPartyName_KeyDown);
+            // 
+            // txtManagerPhone
+            // 
+            this.txtManagerPhone.BackColor = System.Drawing.Color.White;
+            this.txtManagerPhone.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.txtManagerPhone.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
+            this.txtManagerPhone.Location = new System.Drawing.Point(1579, 51);
+            this.txtManagerPhone.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.txtManagerPhone.MaxLength = 50;
+            this.txtManagerPhone.Name = "txtManagerPhone";
+            this.txtManagerPhone.Size = new System.Drawing.Size(253, 35);
+            this.txtManagerPhone.TabIndex = 12;
+            this.txtManagerPhone.Visible = false;
+            this.txtManagerPhone.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtPartyName_KeyDown);
+            // 
+            // lblAreaCode
+            // 
+            this.lblAreaCode.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblAreaCode.AutoSize = true;
+            this.lblAreaCode.BackColor = System.Drawing.Color.Transparent;
+            this.lblAreaCode.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
+            this.lblAreaCode.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
+            this.lblAreaCode.Location = new System.Drawing.Point(529, 101);
+            this.lblAreaCode.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblAreaCode.Name = "lblAreaCode";
+            this.lblAreaCode.Size = new System.Drawing.Size(130, 28);
+            this.lblAreaCode.TabIndex = 17;
+            this.lblAreaCode.Text = "Area Code";
+            this.lblAreaCode.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // lblDeliveryOrder
+            // 
+            this.lblDeliveryOrder.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblDeliveryOrder.AutoSize = true;
+            this.lblDeliveryOrder.BackColor = System.Drawing.Color.Transparent;
+            this.lblDeliveryOrder.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
+            this.lblDeliveryOrder.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
+            this.lblDeliveryOrder.Location = new System.Drawing.Point(529, 147);
+            this.lblDeliveryOrder.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblDeliveryOrder.Name = "lblDeliveryOrder";
+            this.lblDeliveryOrder.Size = new System.Drawing.Size(180, 28);
+            this.lblDeliveryOrder.TabIndex = 17;
+            this.lblDeliveryOrder.Text = "Delivery Order";
+            this.lblDeliveryOrder.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // label6
+            // 
+            this.label6.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.label6.AutoSize = true;
+            this.label6.BackColor = System.Drawing.Color.Transparent;
+            this.label6.Font = new System.Drawing.Font("Georgia", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label6.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
+            this.label6.Location = new System.Drawing.Point(529, 333);
+            this.label6.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(0, 24);
+            this.label6.TabIndex = 2;
+            this.label6.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // cboAreaCode
+            // 
+            this.cboAreaCode.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
+            this.cboAreaCode.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
+            this.cboAreaCode.DataSource = this.routeBindingSource;
+            this.cboAreaCode.DisplayMember = "rt_name";
+            this.cboAreaCode.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.cboAreaCode.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
+            this.cboAreaCode.FormattingEnabled = true;
+            this.cboAreaCode.Location = new System.Drawing.Point(754, 97);
+            this.cboAreaCode.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.cboAreaCode.Name = "cboAreaCode";
+            this.cboAreaCode.Size = new System.Drawing.Size(289, 36);
+            this.cboAreaCode.TabIndex = 11;
+            this.cboAreaCode.ValueMember = "rt_id";
+            this.cboAreaCode.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtPartyName_KeyDown);
+            // 
+            // routeBindingSource
+            // 
+            this.routeBindingSource.DataSource = typeof(standard.classes.route);
+            // 
+            // txtDeliveryOrder
+            // 
+            this.txtDeliveryOrder.BackColor = System.Drawing.Color.White;
+            this.txtDeliveryOrder.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.txtDeliveryOrder.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtDeliveryOrder.Location = new System.Drawing.Point(754, 143);
+            this.txtDeliveryOrder.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.txtDeliveryOrder.MaxLength = 50;
+            this.txtDeliveryOrder.Name = "txtDeliveryOrder";
+            this.txtDeliveryOrder.Size = new System.Drawing.Size(290, 35);
+            this.txtDeliveryOrder.TabIndex = 12;
+            this.txtDeliveryOrder.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtPartyName_KeyDown);
+            this.txtDeliveryOrder.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtDeliveryOrder_KeyPress);
             // 
             // tblCommand
             // 
@@ -1938,10 +2136,31 @@ namespace standard.master
             this.tblEntry.ResumeLayout(false);
             this.tblEntry.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.ledgermasterBindingSource)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.routeBindingSource)).EndInit();
             this.tblCommand.ResumeLayout(false);
             this.tblCommand.PerformLayout();
             this.ResumeLayout(false);
 
 		}
-	}
+
+        private void txtDeliveryOrder_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar))
+            {
+                e.Handled = true;
+            }
+        }
+
+        private void txtSearchByAreaCode_TextChanged(object sender, EventArgs e)
+        {
+            InventoryDataContext inventoryDataContext = new InventoryDataContext();
+            int? num = Convert.ToInt32(cboGridReference.SelectedValue);
+            int? num2 = num;
+            if (num2.GetValueOrDefault() == 0 && num2.HasValue)
+            {
+                num = null;
+            }
+            dgview.DataSource = inventoryDataContext.usp_ledgermasterSelect(null, null, txtSearch.Text, txtSearchbyCity.Text, txtSearchByAreaCode.Text, num);
+        }
+    }
 }

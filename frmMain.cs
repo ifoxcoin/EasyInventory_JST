@@ -210,6 +210,23 @@ namespace standard
             frm.Show();
         }
 
+        private void ribbonBtnRoute_Click(object sender, EventArgs e)
+        {
+            frmRoute frm = new frmRoute();
+            if (!bu.CheckRights(Convert.ToString(frm.Tag), frm.Text))
+            {
+                frm.Close();
+                MessageBox.Show("Rights failed...");
+                return;
+            }
+            foreach (Form F in this.MdiChildren)
+                if (frm.Name == F.Name)
+                { MessageBox.Show("Already Opened.."); return; }
+            frm.MdiParent = this;
+            frm.WindowState = FormWindowState.Maximized;
+            frm.Show();
+        }
+
         private void ribbonPurchase_Click(object sender, EventArgs e)
         {
             //frmPurchase frm = new frmPurchase();

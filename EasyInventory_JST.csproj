@@ -193,6 +193,9 @@
     <Compile Include="master\frmPwd.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="master\frmRoute.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="master\frmSettings.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -249,6 +252,9 @@
     <None Include="classes\Inventory.dbml.layout">
       <DependentUpon>Inventory.dbml</DependentUpon>
     </None>
+    <EmbeddedResource Include="master\frmRoute.resx">
+      <DependentUpon>frmRoute.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="report\purinv.rdlc" />
     <EmbeddedResource Include="report\rptAddPrintNoGst.rdlc" />
     <EmbeddedResource Include="report\rptAddStickerPrint.rdlc" />
@@ -282,6 +288,7 @@
     <EmbeddedResource Include="report\rptAddPrint.rdlc" />
     <EmbeddedResource Include="report\rptPurchaseSummary.rdlc" />
     <EmbeddedResource Include="report\rptSupplierOutstanding.rdlc" />
+    <EmbeddedResource Include="report\rptSalesInvoice.rdlc" />
     <EmbeddedResource Include="report\salinv.rdlc" />
     <EmbeddedResource Include="trans\frmPackingReceipt.resx">
       <DependentUpon>frmPackingReceipt.cs</DependentUpon>
@@ -382,7 +389,9 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="Properties\DataSources\standard.classes.company.datasource" />
+    <None Include="Properties\DataSources\standard.classes.ledgermaster1.datasource" />
     <None Include="Properties\DataSources\standard.classes.packingreceipt.datasource" />
+    <None Include="Properties\DataSources\standard.classes.route.datasource" />
     <None Include="Properties\DataSources\standard.classes.usp_categorySelectResult.datasource" />
     <None Include="Properties\DataSources\standard.classes.usp_commissionreceiptSelectResult.datasource" />
     <None Include="Properties\DataSources\standard.classes.usp_companySelectResult.datasource" />
@@ -392,6 +401,7 @@
     <None Include="Properties\DataSources\standard.classes.usp_LedgerOutstandingRptResult.datasource" />
     <None Include="Properties\DataSources\standard.classes.usp_LedgerwiseOutstandingReportResult.datasource" />
     <None Include="Properties\DataSources\standard.classes.usp_OutstandingReportResult.datasource" />
+    <None Include="Properties\DataSources\standard.classes.usp_routeSelectResult.datasource" />
     <None Include="Properties\DataSources\standard.classes.usp_SupplierOutstandingRptResult.datasource" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -454,6 +464,7 @@
     <Content Include="bin\x86\Debug\mymain.dll" />
     <Content Include="bin\x86\Debug\System.Windows.Forms.Ribbon35.dll" />
     <Content Include="Clock.ico" />
+    <None Include="Resources\route.png" />
     <None Include="Resources\PaymentRpt.png" />
     <None Include="Resources\56_32x32.png" />
     <None Include="Resources\help.png" />

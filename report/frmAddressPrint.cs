@@ -38,10 +38,10 @@ namespace standard.report
             classes.InventoryDataContext db = new classes.InventoryDataContext();
             using (db)
             {
-                ledgermasterBindingSource.DataSource = db.usp_ledgermasterSelect(null, null, null, null,null);
+                ledgermasterBindingSource.DataSource = db.usp_ledgermasterSelect(null, null, null, null, null,null);
                 cboName.SelectedValue = 0;
 
-                var cusdata = db.usp_ledgermasterSelect(null, null, null, null,null);
+                var cusdata = db.usp_ledgermasterSelect(null, null, null, null, null,null);
                 foreach (var li in cusdata)
                 {
                     party.Add(li.led_name);
@@ -91,7 +91,7 @@ namespace standard.report
                 reportViewer1.LocalReport.DataSources.Clear();
 
 
-                var data = db.usp_ledgermasterSelect(ledgerID, null, null, null,null);
+                var data = db.usp_ledgermasterSelect(ledgerID, null, null, null, null,null);
                 if (_isCoverPrint == true)
                 {
                     if (_isWithGst == true)
@@ -137,7 +137,7 @@ namespace standard.report
                 reportViewer1.LocalReport.Refresh();
                 reportViewer1.LocalReport.DataSources.Clear();
                 int id = Convert.ToInt32(cboName.SelectedValue);
-                var data = db.usp_ledgermasterSelect(id, null, null, null,null);
+                var data = db.usp_ledgermasterSelect(id, null, null, null, null,null);
                 if(_isCoverPrint==true)
                 {
                     if(_isWithGst==true)
