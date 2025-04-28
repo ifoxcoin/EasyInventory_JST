@@ -217,15 +217,21 @@ namespace standard.trans
         private decimalbox txtFinalnetamount;
 
         private Label txtRoundOff;
+        private Label lblFrieght;
+        private decimalbox txtFrieght;
         private DataGridViewTextBoxColumn cSNo;
         private DataGridViewTextBoxColumn cCategory;
         private DataGridViewTextBoxColumn cItemName;
         private DataGridViewTextBoxColumn cQty;
+        private DataGridViewTextBoxColumn cItemUnitType;
         private DataGridViewTextBoxColumn cStock;
         private DataGridViewTextBoxColumn cRate;
-        private DataGridViewTextBoxColumn cAmount;
         private DataGridViewTextBoxColumn cTaxPercentage;
         private DataGridViewTextBoxColumn cTaxAmount;
+        private DataGridViewTextBoxColumn cUnitValue;
+        private DataGridViewTextBoxColumn cUnit;
+        private DataGridViewTextBoxColumn cFrieghtCharge;
+        private DataGridViewTextBoxColumn cAmount;
         private DataGridViewTextBoxColumn cCostRate;
         private DataGridViewTextBoxColumn cCatID;
         private DataGridViewTextBoxColumn cItemID;
@@ -290,6 +296,9 @@ namespace standard.trans
                         dgvSales["cCategory", r].Value = item.cat.cat_name;
                         dgvSales["cCatId", r].Value = item.cat.cat_id;
                         dgvSales["cTaxPercentage", r].Value = item.li.item_taxpercentage;
+                        dgvSales["cUnit", r].Value = item.li.item_unit;
+                        dgvSales["cUnitValue", r].Value = item.li.item_quantity;
+                        dgvSales["cItemUnitType", r].Value = item.li.item_unittype;
                         if (lblRateType.Text.ToUpper() == "MRP  (D)")
                         {
                             dgvSales["cRate", r].Value = item.li.item_mrp;
@@ -360,7 +369,9 @@ namespace standard.trans
                         dgvSales["cCategory", r].Value = item.cat.cat_name;
                         dgvSales["cCatId", r].Value = item.cat.cat_id;
                         dgvSales["cTaxPercentage", r].Value = item.li.item_taxpercentage;
-                        dgvSales["cTaxPercentage", r].Value = item.li.item_taxpercentage;
+                        dgvSales["cUnit", r].Value = item.li.item_unit;
+                        dgvSales["cUnitValue", r].Value = item.li.item_quantity;
+                        dgvSales["cItemUnitType", r].Value = item.li.item_unittype;
                         if (lblRateType.Text.ToUpper() == "MRP (D)")
                         {
                             dgvSales["cRate", r].Value = item.li.item_mrp;
@@ -546,7 +557,14 @@ namespace standard.trans
                         salesmaster.sm_roundamount = Convert.ToDecimal(txtRoundOff.Text);
                         salesmaster.sm_disamount = txtDiscount.Value;
                         salesmaster.sm_taxamount = txtTaxAmt.Value;
-                        salesmaster.sm_taxpercentage = txtTaxPer.Value;
+                        foreach (DataGridViewRow dr in dgvSales.Rows)
+                        {
+                            if (!dr.IsNewRow)
+                            {
+                                salesmaster.sm_taxpercentage = Convert.ToDecimal(dr.Cells["cTaxPercentage"].Value); // or the actual column name for tax %
+                                break;
+                            }
+                        }
                         salesmaster.sm_bookno = "S";
                         salesmaster.sm_date = dtpsaldate.Value;
                         salesmaster.sm_itemcount = dgvSales.Rows.Count - 1;
@@ -568,8 +586,14 @@ namespace standard.trans
                                     salesdetail.sd_totamount = Convert.ToDecimal(item2.Cells["cAmount"].Value);
                                     salesdetail.item_id = Convert.ToInt32(item2.Cells["cCatID"].Value);
                                     salesdetail.sd_qty = Convert.ToInt32(item2.Cells["cQty"].Value);
+                                    salesdetail.sd_taxpercentage = Convert.ToInt32(item2.Cells["cTaxPercentage"].Value);
+                                    salesdetail.sd_taxamount = Convert.ToInt32(item2.Cells["cTaxAmount"].Value);
+                                    salesdetail.sd_unit = Convert.ToString(item2.Cells["cUnit"].Value);
+                                    salesdetail.sd_unitvalue = Convert.ToInt32(item2.Cells["cUnitValue"].Value);
+                                    salesdetail.sd_itemunittype = Convert.ToString(item2.Cells["cItemUnitType"].Value);
                                     decimal? num = Convert.ToDecimal(item2.Cells["cStock"].Value);
-                                    inventoryDataContext.usp_salesdetailsInsert(id, salesdetail.item_id, salesdetail.sd_qty, salesdetail.sd_rate, salesdetail.sd_costrate, salesdetail.sd_totamount);
+                                    inventoryDataContext.usp_salesdetailsInsert(id, salesdetail.item_id, salesdetail.sd_qty, salesdetail.sd_rate, salesdetail.sd_costrate, salesdetail.sd_totamount, salesdetail.sd_taxpercentage, salesdetail.sd_taxamount,
+                                        salesdetail.sd_unit, salesdetail.sd_unitvalue,salesdetail.sd_itemunittype);
                                     inventoryDataContext.usp_stockInsert(id, "SALES", salesdetail.item_id, global.comid, 0m, salesdetail.sd_qty, global.sysdate);
                                 }
                             }
@@ -594,8 +618,11 @@ namespace standard.trans
                                     salesdetail.sd_totamount = Convert.ToDecimal(item3.Cells["cAmount"].Value);
                                     salesdetail.item_id = Convert.ToInt32(item3.Cells["cCatID"].Value);
                                     salesdetail.sd_qty = Convert.ToInt32(item3.Cells["cQty"].Value);
+                                    salesdetail.sd_unitvalue = Convert.ToInt32(item3.Cells["cUnitValue"].Value);
+                                    salesdetail.sd_unit = Convert.ToString(item3.Cells["cUnit"].Value);
+                                    salesdetail.sd_itemunittype = Convert.ToString(item3.Cells["cItemUnitType"].Value);
                                     decimal? num = Convert.ToDecimal(item3.Cells["cQty"].Value);
-                                    inventoryDataContext.usp_salesdetailsInsert(id, salesdetail.item_id, salesdetail.sd_qty, salesdetail.sd_rate, salesdetail.sd_costrate, salesdetail.sd_totamount);
+                                    inventoryDataContext.usp_salesdetailsInsert(id, salesdetail.item_id, salesdetail.sd_qty, salesdetail.sd_rate, salesdetail.sd_costrate, salesdetail.sd_totamount, salesdetail.sd_taxpercentage, salesdetail.sd_taxamount, salesdetail.sd_unit, salesdetail.sd_unitvalue, salesdetail.sd_itemunittype);
                                     inventoryDataContext.usp_stockInsert(id, "SALES", salesdetail.item_id, global.comid, 0m, salesdetail.sd_qty, global.sysdate);
                                 }
                             }
@@ -605,7 +632,7 @@ namespace standard.trans
                     }
                 }               
                 loadReport(Convert.ToInt32(id));
-                //LoadAddressPrint(Convert.ToInt32(cboissueto.SelectedValue));
+                LoadAddressPrint(Convert.ToInt32(cboissueto.SelectedValue));
                 ClearData();
                 LoadData();
                 cboissueto.Focus();
@@ -671,9 +698,14 @@ namespace standard.trans
             list.Add("cAmount");
             list.Add("cCostAmount");
             list.Add("cTaxAmount");
+            list.Add("cUnit");
+            list.Add("cUnitValue");
+            list.Add("cItemUnitType");
+            list.Add("cFrieghtCharge");
             List<decimal> totalSNo = bus.getTotalSNo(dgvSales, "cSNo", list);
             txttotqty.Value = Convert.ToDecimal(totalSNo[0].ToString("N0"));
             txttotamt.Text = totalSNo[1].ToString("0.00");
+            txtFrieght.Text = totalSNo[7].ToString("0.00");
             string d5 = totalSNo[3].ToString("0.00");
             decimal d = totalSNo[2];
             List<decimal> list2 = new List<decimal>();
@@ -683,14 +715,14 @@ namespace standard.trans
             decimal value = txtDisPer.Value;
             decimal d3 = (txttotamt.Value + d2) * value / 100m;
             txtDiscount.Text = string.Format("{0:0.00}", d3.ToString("N2"));
-            txtProfit.Text = $"{txttotamt.Value + d2 - (d + d3):0.00}";
-            txtnetamt.Text = $"{txttotamt.Value + d2 + txtothercharges.Value - d3:0.00}";
+            txtProfit.Text = $"{txttotamt.Value + d2 - (d + d3):0.00}";           
+            txtTaxAmt.Text = d5.ToString();
+            txtnetamt.Text = $"{txttotamt.Value + d2 + txtTaxAmt.Value + txtothercharges.Value - d3:0.00}";
             decimal value2 = txtTaxPer.Value;
             decimal d4 = (txtnetamt.Value - txtothercharges.Value) * value2 / 100m;
             txtnetamt.Text = $"{d4 + txtnetamt.Value:0.00}";
-            txtTaxAmt.Text = d5.ToString();
             txtTaxAmt.Text = string.Format("{0:0.00}", txtTaxAmt.Value.ToString("N2"));
-            txtFinalnetamount.Text = Math.Round(txtnetamt.Value + txtTaxAmt.Value).ToString();
+            txtFinalnetamount.Text = Math.Round(txtnetamt.Value).ToString();
             txtFinalnetamount.Text = string.Format("{0:0.00}", txtFinalnetamount.Value.ToString("N2"));
             txtothercharges.Text = string.Format("{0:0.00}", txtothercharges.Value.ToString("N2"));
             txtRoundOff.Text = $"{txtFinalnetamount.Value - txtnetamt.Value:0.00}";
@@ -753,6 +785,9 @@ namespace standard.trans
                             dgvSales["cCategory", r].Value = item.cat.cat_name;
                             dgvSales["cCatId", r].Value = item.cat.cat_id;
                             dgvSales["cTaxPercentage", r].Value = item.li.item_taxpercentage;
+                            dgvSales["cUnit", r].Value = item.li.item_unit;
+                            dgvSales["cUnitValue", r].Value = item.li.item_quantity;
+                            dgvSales["cItemUnitType", r].Value = item.li.item_unittype;
                             if (lblRateType.Text.ToUpper() == "MRP  (D)")
                             {
                                 dgvSales["cRate", r].Value = item.li.item_mrp;
@@ -898,6 +933,7 @@ namespace standard.trans
             decimal num5 = 0m;
             decimal num6 = 0m;
             decimal num7 = 0m;
+            long? ledid = 0;
             string empty = string.Empty;
             long num8 = 0L;
             string empty2 = string.Empty;
@@ -926,52 +962,59 @@ namespace standard.trans
                         num6 = item.sm_taxamount;
                         num7 = item.sm_taxpercentage;
                         value = general.MoneyToText(amount);
+
+                        ledid = item.led_id;
                     }
                     ISingleResult<usp_companySelectResult> singleResult2 = inventoryDataContext.usp_companySelect(1L);
-                    using (IEnumerator<usp_companySelectResult> enumerator2 = singleResult2.GetEnumerator())
-                    {
-                        if (enumerator2.MoveNext())
-                        {
-                            usp_companySelectResult current2 = enumerator2.Current;
-                            list.Add(new ReportParameter("com_name", current2.com_name));
-                            list.Add(new ReportParameter("com_add1", current2.com_add1));
-                            list.Add(new ReportParameter("com_add2", current2.com_add2));
-                            list.Add(new ReportParameter("com_add3", current2.com_add3));
-                            list.Add(new ReportParameter("com_city", current2.com_city));
-                            list.Add(new ReportParameter("com_pin", current2.com_pin));
-                            list.Add(new ReportParameter("com_phone", current2.com_phone));
-                            list.Add(new ReportParameter("com_mobile1", current2.com_mobile1));
-                            list.Add(new ReportParameter("com_tin", current2.com_tin));
-                            list.Add(new ReportParameter("com_cst", current2.com_cst));
-                            list.Add(new ReportParameter("com_email", current2.com_email));
-                            list.Add(new ReportParameter("com_pan", current2.com_pan));
-                            list.Add(new ReportParameter("com_cstdate", Convert.ToDateTime(current2.com_cstdate).ToString("dd-MMM-yyyy")));
-                        }
-                    }
-                    list.Add(new ReportParameter("ordno", num8.ToString()));
-                    list.Add(new ReportParameter("orddate", $"{dateTime:dd-MMM-yyyy}"));
-                    list.Add(new ReportParameter("rstext", value));
-                    list.Add(new ReportParameter("am_acccode", empty2));
-                    list.Add(new ReportParameter("am_account", empty3));
-                    list.Add(new ReportParameter("am_bank", empty4));
-                    list.Add(new ReportParameter("title", empty5));
-                    list.Add(new ReportParameter("mi_totamt", num3.ToString("0.00")));
-                    list.Add(new ReportParameter("mi_discount", num5.ToString("0.00")));
-                    list.Add(new ReportParameter("mi_discount", num5.ToString("0.00")));
-                    list.Add(new ReportParameter("mi_taxamt", num6.ToString("0.00")));
-                    list.Add(new ReportParameter("mi_taxper", num7.ToString("0.00")));
-                    list.Add(new ReportParameter("mi_packing", num2.ToString("0.00")));
-                    list.Add(new ReportParameter("mi_netamt", amount.ToString("0.00")));
-                    list.Add(new ReportParameter("mi_roundamt", num.ToString("0.00")));
+                    //using (IEnumerator<usp_companySelectResult> enumerator2 = singleResult2.GetEnumerator())
+                    //{
+                    //    if (enumerator2.MoveNext())
+                    //    {
+                    //        usp_companySelectResult current2 = enumerator2.Current;
+                    //        list.Add(new ReportParameter("com_name", current2.com_name));
+                    //        list.Add(new ReportParameter("com_add1", current2.com_add1));
+                    //        list.Add(new ReportParameter("com_add2", current2.com_add2));
+                    //        list.Add(new ReportParameter("com_add3", current2.com_add3));
+                    //        list.Add(new ReportParameter("com_city", current2.com_city));
+                    //        list.Add(new ReportParameter("com_pin", current2.com_pin));
+                    //        list.Add(new ReportParameter("com_phone", current2.com_phone));
+                    //        list.Add(new ReportParameter("com_mobile1", current2.com_mobile1));
+                    //        list.Add(new ReportParameter("com_tin", current2.com_tin));
+                    //        list.Add(new ReportParameter("com_cst", current2.com_cst));
+                    //        list.Add(new ReportParameter("com_email", current2.com_email));
+                    //        list.Add(new ReportParameter("com_pan", current2.com_pan));
+                    //        list.Add(new ReportParameter("com_cstdate", Convert.ToDateTime(current2.com_cstdate).ToString("dd-MMM-yyyy")));
+                    //    }
+                    //}
+                    //list.Add(new ReportParameter("ordno", num8.ToString()));
+                    //list.Add(new ReportParameter("orddate", $"{dateTime:dd-MMM-yyyy}"));
+                    //list.Add(new ReportParameter("rstext", value));
+                    //list.Add(new ReportParameter("am_acccode", empty2));
+                    //list.Add(new ReportParameter("am_account", empty3));
+                    //list.Add(new ReportParameter("am_bank", empty4));
+                    //list.Add(new ReportParameter("title", empty5));
+                    //list.Add(new ReportParameter("mi_totamt", num3.ToString("0.00")));
+                    //list.Add(new ReportParameter("mi_discount", num5.ToString("0.00")));
+                    //list.Add(new ReportParameter("mi_discount", num5.ToString("0.00")));
+                    //list.Add(new ReportParameter("mi_taxamt", num6.ToString("0.00")));
+                    //list.Add(new ReportParameter("mi_taxper", num7.ToString("0.00")));
+                    //list.Add(new ReportParameter("mi_packing", num2.ToString("0.00")));
+                    //list.Add(new ReportParameter("mi_netamt", amount.ToString("0.00")));
+                    //list.Add(new ReportParameter("mi_roundamt", num.ToString("0.00")));
                     frmRpt frmRpt = new frmRpt();
                     frmRpt.WindowState = FormWindowState.Maximized;
                     ISingleResult<usp_salesmasterSelectResult> dataSourceValue = inventoryDataContext.usp_salesmasterSelect(smid, null, null, null, null, null);
                     ISingleResult<usp_salesdetailsSelectResult> dataSourceValue2 = inventoryDataContext.usp_salesdetailsSelect(smid, null, null, null, null, null);
+                    ISingleResult<usp_companySelectResult> dataSourceValue3 = inventoryDataContext.usp_companySelect(null);
+                    //ISingleResult<usp_ledgermasterSelectResult> dataSourceValue4 = inventoryDataContext.usp_ledgermasterSelect(ledid, null,null,null,null, null);
                     frmRpt.reportview.RefreshReport();
-                    frmRpt.reportview.LocalReport.ReportEmbeddedResource = "standard.report.salinv.rdlc";
+                    //frmRpt.reportview.LocalReport.ReportEmbeddedResource = "standard.report.rptSalesInvoice.rdlc";
+                    frmRpt.reportview.LocalReport.ReportEmbeddedResource = "standard.report.rptSalesEstimate.rdlc";
                     frmRpt.reportview.LocalReport.DataSources.Clear();
-                    frmRpt.reportview.LocalReport.DataSources.Add(new ReportDataSource("usp_minvoiceSelect", dataSourceValue));
-                    frmRpt.reportview.LocalReport.DataSources.Add(new ReportDataSource("ds_usp_dinvoiceSelect", dataSourceValue2));
+                    frmRpt.reportview.LocalReport.DataSources.Add(new ReportDataSource("usp_salesMasterSelect", dataSourceValue));
+                    frmRpt.reportview.LocalReport.DataSources.Add(new ReportDataSource("usp_salesDetailSelect", dataSourceValue2));
+                    frmRpt.reportview.LocalReport.DataSources.Add(new ReportDataSource("usp_companySelect", dataSourceValue3));
+                   // frmRpt.reportview.LocalReport.DataSources.Add(new ReportDataSource("usp_ledgermasterSelect", dataSourceValue4));
                     frmRpt.reportview.LocalReport.SetParameters(list);
                     frmRpt.reportview.ZoomMode = ZoomMode.Percent;
                     frmRpt.reportview.ZoomPercent = 120;
@@ -993,21 +1036,21 @@ namespace standard.trans
                     //frmRpt.ShowDialog();
 
                     // Ask to send via WhatsApp
-                    DialogResult result = MessageBox.Show("Do you want to send this bill via WhatsApp?", "Send to WhatsApp", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-                    if (result == DialogResult.Yes)
-                    {
-                        int ledgerId = Convert.ToInt32(cboissueto.SelectedValue);
-                        string customerPhone = GetCustomerPhoneNumber(ledgerId);
+                    //DialogResult result = MessageBox.Show("Do you want to send this bill via WhatsApp?", "Send to WhatsApp", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                    //if (result == DialogResult.Yes)
+                    //{
+                    //    int ledgerId = Convert.ToInt32(cboissueto.SelectedValue);
+                    //    string customerPhone = GetCustomerPhoneNumber(ledgerId);
 
-                        if (!string.IsNullOrEmpty(customerPhone))
-                        {
-                            SendViaWhatsApp(customerPhone, pdfFilePath);
-                        }
-                        else
-                        {
-                            MessageBox.Show("Customer phone number not found!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        }
-                    }
+                    //    if (!string.IsNullOrEmpty(customerPhone))
+                    //    {
+                    //        SendViaWhatsApp(customerPhone, pdfFilePath);
+                    //    }
+                    //    else
+                    //    {
+                    //        MessageBox.Show("Customer phone number not found!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    //    }
+                    //}
                 }
             }
         }
@@ -1089,6 +1132,12 @@ namespace standard.trans
                 dgvSales["cStock", dgvSales.RowCount - 1].Value = "0";
                 dgvSales["cAmount", dgvSales.RowCount - 1].Value = item.sd_totamount;
                 dgvSales["cQty", dgvSales.RowCount - 1].Value = item.sd_qty;
+                dgvSales["cTaxPercentage", dgvSales.RowCount - 1].Value = item.sd_taxpercentage;
+                dgvSales["cTaxAmount", dgvSales.RowCount - 1].Value = item.sd_taxamount;
+                dgvSales["cUnit", dgvSales.RowCount - 1].Value = item.sd_unit;
+                dgvSales["cUnitValue", dgvSales.RowCount - 1].Value = item.sd_unitvalue;
+                dgvSales["cItemUnitType", dgvSales.RowCount - 1].Value = item.sd_itemunittype;
+                dgvSales["cFrieghtCharge", dgvSales.RowCount - 1].Value = (item.sd_unitvalue * item.sd_qty).ToString("N2");
                 dgvSales["cCostAmount", dgvSales.RowCount - 1].Value = (item.sd_qty * item.sd_costrate).ToString("N2");
                 ISingleResult<usp_stockSelectResult> singleResult3 = inventoryDataContext.usp_stockSelect(item.item_id, null, null);
                 foreach (usp_stockSelectResult item2 in singleResult3)
@@ -1098,13 +1147,14 @@ namespace standard.trans
                     decimal? stock = item2.stock;
                     dataGridViewCell.Value = (decimal?)sd_qty + stock;
                 }
+                //txtTaxAmt.Value = item.sd_taxamount;
             }
             dgvSales.AllowUserToAddRows = true;
             txtProfit.Value = value;
             txtDiscount.Value = Convert.ToDecimal(num2.ToString("N2"));
-            txtTaxAmt.Value = Convert.ToDecimal(num3.ToString("N2"));
-            txtTaxPer.Value = Convert.ToDecimal(num4.ToString("N2"));
-            calacTotal();
+            //txtTaxAmt.Value = Convert.ToDecimal(num3.ToString("N2"));
+            txtTaxPer.Value = Convert.ToDecimal(num4.ToString("N2"));           
+            //calacTotal();
             LoadStock();
             pnlview.Enabled = false;
             tablemain.Enabled = true;
@@ -1285,6 +1335,7 @@ namespace standard.trans
             decimal stock;
             decimal rate;
             decimal taxPercentage;
+            decimal unitValue;
             if (columnIndex == cCategory.Index)
             {
                 if (Convert.ToString(dgvSales["cCategory", r].Value) == string.Empty && !dgvSales.CurrentRow.IsNewRow)
@@ -1345,6 +1396,9 @@ namespace standard.trans
                                 dgvSales["cCategory", r].Value = item2.cat.cat_name;
                                 dgvSales["cCatId", r].Value = item2.cat.cat_id;
                                 dgvSales["cTaxPercentage", r].Value = item2.li.item_taxpercentage;
+                                dgvSales["cUnit", r].Value = item2.li.item_unit;
+                                dgvSales["cUnitValue", r].Value = item2.li.item_quantity;
+                                dgvSales["cItemUnitType", r].Value = item2.li.item_unittype;
                                 if (lblRateType.Text.ToUpper() == "MRP  (D)")
                                 {
                                     dgvSales["cRate", r].Value = item2.li.item_mrp;
@@ -1453,6 +1507,8 @@ namespace standard.trans
                 decimal.TryParse(Convert.ToString(dgvSales["cRate", r].Value), out rate);
                 decimal.TryParse(Convert.ToString(dgvSales["cCostRate", r].Value), out costRate);
                 decimal.TryParse(Convert.ToString(dgvSales["cTaxPercentage", r].Value), out taxPercentage);
+                decimal.TryParse(Convert.ToString(dgvSales["cUnitValue", r].Value), out unitValue);
+                dgvSales["cFrieghtCharge", r].Value = ((rate > 0m && qty > 0m) ? ((object)(unitValue * qty)) : null);
                 dgvSales["cAmount", r].Value = ((rate > 0m && qty > 0m) ? ((object)(rate * qty)) : null);
                 dgvSales["cTaxAmount", r].Value = ((rate > 0m && qty > 0m) ? ((object)((rate * qty) * taxPercentage/100)) : null);
                 dgvSales["cCostAmount", r].Value = ((costRate > 0m && qty > 0m) ? ((object)(costRate * qty)) : null);
@@ -1741,12 +1797,14 @@ namespace standard.trans
             this.txtnetamt = new mylib.decimalbox(this.components);
             this.lblnetamt = new System.Windows.Forms.Label();
             this.txtFinalnetamount = new mylib.decimalbox(this.components);
-            this.txtRoundOff = new System.Windows.Forms.Label();
             this.txtDiscount = new mylib.decimalbox(this.components);
-            this.txtTaxPer = new mylib.decimalbox(this.components);
             this.label7 = new System.Windows.Forms.Label();
-            this.lblTaxPer = new System.Windows.Forms.Label();
             this.txtothercharges = new mylib.decimalbox(this.components);
+            this.txtRoundOff = new System.Windows.Forms.Label();
+            this.lblTaxPer = new System.Windows.Forms.Label();
+            this.txtTaxPer = new mylib.decimalbox(this.components);
+            this.lblFrieght = new System.Windows.Forms.Label();
+            this.txtFrieght = new mylib.decimalbox(this.components);
             this.pnlentry = new System.Windows.Forms.Panel();
             this.dgvSales = new mylib.mygrid();
             this.pnlview = new System.Windows.Forms.Panel();
@@ -1794,11 +1852,15 @@ namespace standard.trans
             this.cCategory = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.cItemName = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.cQty = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.cItemUnitType = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.cStock = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.cRate = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.cAmount = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.cTaxPercentage = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.cTaxAmount = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.cUnitValue = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.cUnit = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.cFrieghtCharge = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.cAmount = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.cCostRate = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.cCatID = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.cItemID = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -2173,12 +2235,14 @@ namespace standard.trans
             this.tablesum.Controls.Add(this.tableLayoutPanel2, 11, 0);
             this.tablesum.Controls.Add(this.lblnetamt, 9, 1);
             this.tablesum.Controls.Add(this.txtFinalnetamount, 10, 1);
-            this.tablesum.Controls.Add(this.txtRoundOff, 11, 1);
             this.tablesum.Controls.Add(this.txtDiscount, 4, 1);
-            this.tablesum.Controls.Add(this.txtTaxPer, 7, 0);
             this.tablesum.Controls.Add(this.label7, 3, 1);
-            this.tablesum.Controls.Add(this.lblTaxPer, 6, 0);
             this.tablesum.Controls.Add(this.txtothercharges, 1, 1);
+            this.tablesum.Controls.Add(this.txtRoundOff, 11, 1);
+            this.tablesum.Controls.Add(this.lblTaxPer, 8, 0);
+            this.tablesum.Controls.Add(this.txtTaxPer, 8, 1);
+            this.tablesum.Controls.Add(this.lblFrieght, 6, 0);
+            this.tablesum.Controls.Add(this.txtFrieght, 7, 0);
             this.tablesum.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tablesum.Location = new System.Drawing.Point(7, 592);
             this.tablesum.Margin = new System.Windows.Forms.Padding(5, 7, 5, 7);
@@ -2249,6 +2313,7 @@ namespace standard.trans
             this.txtProfit.Location = new System.Drawing.Point(1055, 7);
             this.txtProfit.Margin = new System.Windows.Forms.Padding(5, 7, 5, 7);
             this.txtProfit.Name = "txtProfit";
+            this.txtProfit.ReadOnly = true;
             this.txtProfit.RightAlign = true;
             this.txtProfit.Size = new System.Drawing.Size(140, 42);
             this.txtProfit.TabIndex = 6;
@@ -2284,6 +2349,7 @@ namespace standard.trans
             this.txtDisPer.Location = new System.Drawing.Point(420, 7);
             this.txtDisPer.Margin = new System.Windows.Forms.Padding(5, 7, 5, 7);
             this.txtDisPer.Name = "txtDisPer";
+            this.txtDisPer.ReadOnly = true;
             this.txtDisPer.RightAlign = true;
             this.txtDisPer.Size = new System.Drawing.Size(100, 42);
             this.txtDisPer.TabIndex = 1;
@@ -2334,6 +2400,7 @@ namespace standard.trans
             this.txtTaxAmt.Location = new System.Drawing.Point(700, 50);
             this.txtTaxAmt.Margin = new System.Windows.Forms.Padding(5, 7, 5, 7);
             this.txtTaxAmt.Name = "txtTaxAmt";
+            this.txtTaxAmt.ReadOnly = true;
             this.txtTaxAmt.RightAlign = true;
             this.txtTaxAmt.Size = new System.Drawing.Size(140, 42);
             this.txtTaxAmt.TabIndex = 2;
@@ -2432,6 +2499,7 @@ namespace standard.trans
             this.txtFinalnetamount.Location = new System.Drawing.Point(1055, 50);
             this.txtFinalnetamount.Margin = new System.Windows.Forms.Padding(5, 7, 5, 7);
             this.txtFinalnetamount.Name = "txtFinalnetamount";
+            this.txtFinalnetamount.ReadOnly = true;
             this.txtFinalnetamount.RightAlign = true;
             this.txtFinalnetamount.Size = new System.Drawing.Size(140, 42);
             this.txtFinalnetamount.TabIndex = 6;
@@ -2442,20 +2510,6 @@ namespace standard.trans
             0,
             0,
             0});
-            // 
-            // txtRoundOff
-            // 
-            this.txtRoundOff.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.txtRoundOff.AutoSize = true;
-            this.txtRoundOff.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold);
-            this.txtRoundOff.ForeColor = System.Drawing.Color.Red;
-            this.txtRoundOff.Location = new System.Drawing.Point(1205, 47);
-            this.txtRoundOff.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
-            this.txtRoundOff.Name = "txtRoundOff";
-            this.txtRoundOff.Size = new System.Drawing.Size(24, 35);
-            this.txtRoundOff.TabIndex = 12;
-            this.txtRoundOff.Text = ".";
-            this.txtRoundOff.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // txtDiscount
             // 
@@ -2481,30 +2535,6 @@ namespace standard.trans
             this.txtDiscount.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtDiscount_KeyDown);
             this.txtDiscount.Leave += new System.EventHandler(this.txtDiscount_Leave);
             // 
-            // txtTaxPer
-            // 
-            this.txtTaxPer.AllowFormat = false;
-            this.txtTaxPer.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.txtTaxPer.BackColor = System.Drawing.Color.White;
-            this.txtTaxPer.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.txtTaxPer.DecimalPlaces = 2;
-            this.txtTaxPer.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtTaxPer.Location = new System.Drawing.Point(700, 7);
-            this.txtTaxPer.Margin = new System.Windows.Forms.Padding(5, 7, 5, 7);
-            this.txtTaxPer.Name = "txtTaxPer";
-            this.txtTaxPer.RightAlign = true;
-            this.txtTaxPer.Size = new System.Drawing.Size(140, 42);
-            this.txtTaxPer.TabIndex = 1;
-            this.txtTaxPer.TabStop = false;
-            this.txtTaxPer.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.txtTaxPer.Value = new decimal(new int[] {
-            0,
-            0,
-            0,
-            0});
-            this.txtTaxPer.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtTaxPer_KeyDown);
-            this.txtTaxPer.Leave += new System.EventHandler(this.txtTaxPer_Leave);
-            // 
             // label7
             // 
             this.label7.Anchor = System.Windows.Forms.AnchorStyles.Left;
@@ -2517,19 +2547,6 @@ namespace standard.trans
             this.label7.Size = new System.Drawing.Size(132, 43);
             this.label7.TabIndex = 10;
             this.label7.Text = "Discount Amt";
-            // 
-            // lblTaxPer
-            // 
-            this.lblTaxPer.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.lblTaxPer.AutoSize = true;
-            this.lblTaxPer.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblTaxPer.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.lblTaxPer.Location = new System.Drawing.Point(600, 0);
-            this.lblTaxPer.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
-            this.lblTaxPer.Name = "lblTaxPer";
-            this.lblTaxPer.Size = new System.Drawing.Size(77, 43);
-            this.lblTaxPer.TabIndex = 10;
-            this.lblTaxPer.Text = "Tax %";
             // 
             // txtothercharges
             // 
@@ -2554,6 +2571,96 @@ namespace standard.trans
             0});
             this.txtothercharges.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtothers_KeyDown);
             this.txtothercharges.Leave += new System.EventHandler(this.txtothercharges_Leave);
+            // 
+            // txtRoundOff
+            // 
+            this.txtRoundOff.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.txtRoundOff.AutoSize = true;
+            this.txtRoundOff.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold);
+            this.txtRoundOff.ForeColor = System.Drawing.Color.Red;
+            this.txtRoundOff.Location = new System.Drawing.Point(1205, 47);
+            this.txtRoundOff.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
+            this.txtRoundOff.Name = "txtRoundOff";
+            this.txtRoundOff.Size = new System.Drawing.Size(24, 35);
+            this.txtRoundOff.TabIndex = 12;
+            this.txtRoundOff.Text = ".";
+            this.txtRoundOff.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.txtRoundOff.Visible = false;
+            // 
+            // lblTaxPer
+            // 
+            this.lblTaxPer.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblTaxPer.AutoSize = true;
+            this.lblTaxPer.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblTaxPer.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
+            this.lblTaxPer.Location = new System.Drawing.Point(850, 0);
+            this.lblTaxPer.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
+            this.lblTaxPer.Name = "lblTaxPer";
+            this.lblTaxPer.Size = new System.Drawing.Size(50, 43);
+            this.lblTaxPer.TabIndex = 10;
+            this.lblTaxPer.Text = "Tax %";
+            this.lblTaxPer.Visible = false;
+            // 
+            // txtTaxPer
+            // 
+            this.txtTaxPer.AllowFormat = false;
+            this.txtTaxPer.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.txtTaxPer.BackColor = System.Drawing.Color.White;
+            this.txtTaxPer.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.txtTaxPer.DecimalPlaces = 2;
+            this.txtTaxPer.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtTaxPer.Location = new System.Drawing.Point(850, 50);
+            this.txtTaxPer.Margin = new System.Windows.Forms.Padding(5, 7, 5, 7);
+            this.txtTaxPer.Name = "txtTaxPer";
+            this.txtTaxPer.RightAlign = true;
+            this.txtTaxPer.Size = new System.Drawing.Size(60, 42);
+            this.txtTaxPer.TabIndex = 1;
+            this.txtTaxPer.TabStop = false;
+            this.txtTaxPer.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.txtTaxPer.Value = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
+            this.txtTaxPer.Visible = false;
+            this.txtTaxPer.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtTaxPer_KeyDown);
+            this.txtTaxPer.Leave += new System.EventHandler(this.txtTaxPer_Leave);
+            // 
+            // lblFrieght
+            // 
+            this.lblFrieght.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblFrieght.AutoSize = true;
+            this.lblFrieght.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblFrieght.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
+            this.lblFrieght.Location = new System.Drawing.Point(600, 0);
+            this.lblFrieght.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
+            this.lblFrieght.Name = "lblFrieght";
+            this.lblFrieght.Size = new System.Drawing.Size(89, 43);
+            this.lblFrieght.TabIndex = 13;
+            this.lblFrieght.Text = "Frieght";
+            // 
+            // txtFrieght
+            // 
+            this.txtFrieght.AllowFormat = false;
+            this.txtFrieght.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.txtFrieght.BackColor = System.Drawing.Color.White;
+            this.txtFrieght.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.txtFrieght.DecimalPlaces = 2;
+            this.txtFrieght.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtFrieght.Location = new System.Drawing.Point(700, 7);
+            this.txtFrieght.Margin = new System.Windows.Forms.Padding(5, 7, 5, 7);
+            this.txtFrieght.Name = "txtFrieght";
+            this.txtFrieght.ReadOnly = true;
+            this.txtFrieght.RightAlign = true;
+            this.txtFrieght.Size = new System.Drawing.Size(140, 42);
+            this.txtFrieght.TabIndex = 14;
+            this.txtFrieght.TabStop = false;
+            this.txtFrieght.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.txtFrieght.Value = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
             // 
             // pnlentry
             // 
@@ -2584,11 +2691,15 @@ namespace standard.trans
             this.cCategory,
             this.cItemName,
             this.cQty,
+            this.cItemUnitType,
             this.cStock,
             this.cRate,
-            this.cAmount,
             this.cTaxPercentage,
             this.cTaxAmount,
+            this.cUnitValue,
+            this.cUnit,
+            this.cFrieghtCharge,
+            this.cAmount,
             this.cCostRate,
             this.cCatID,
             this.cItemID,
@@ -3137,7 +3248,6 @@ namespace standard.trans
             // 
             this.cItemName.HeaderText = "ITEM NAME";
             this.cItemName.Name = "cItemName";
-            this.cItemName.Width = 250;
             // 
             // cQty
             // 
@@ -3150,6 +3260,11 @@ namespace standard.trans
             this.cQty.Name = "cQty";
             this.cQty.Resizable = System.Windows.Forms.DataGridViewTriState.False;
             this.cQty.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            // 
+            // cItemUnitType
+            // 
+            this.cItemUnitType.HeaderText = "ITEM UNIT TYPE";
+            this.cItemUnitType.Name = "cItemUnitType";
             // 
             // cStock
             // 
@@ -3179,23 +3294,11 @@ namespace standard.trans
             this.cRate.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
             this.cRate.Width = 120;
             // 
-            // cAmount
-            // 
-            dataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            dataGridViewCellStyle6.Format = "N2";
-            this.cAmount.DefaultCellStyle = dataGridViewCellStyle6;
-            this.cAmount.HeaderText = "AMOUNT";
-            this.cAmount.Name = "cAmount";
-            this.cAmount.ReadOnly = true;
-            this.cAmount.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-            this.cAmount.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
-            this.cAmount.Width = 130;
-            // 
             // cTaxPercentage
             // 
-            dataGridViewCellStyle7.Format = "N2";
-            dataGridViewCellStyle7.NullValue = null;
-            this.cTaxPercentage.DefaultCellStyle = dataGridViewCellStyle7;
+            dataGridViewCellStyle6.Format = "N2";
+            dataGridViewCellStyle6.NullValue = null;
+            this.cTaxPercentage.DefaultCellStyle = dataGridViewCellStyle6;
             this.cTaxPercentage.HeaderText = "TAX %";
             this.cTaxPercentage.Name = "cTaxPercentage";
             this.cTaxPercentage.ReadOnly = true;
@@ -3205,15 +3308,42 @@ namespace standard.trans
             // 
             // cTaxAmount
             // 
-            dataGridViewCellStyle8.Format = "N2";
-            dataGridViewCellStyle8.NullValue = null;
-            this.cTaxAmount.DefaultCellStyle = dataGridViewCellStyle8;
+            dataGridViewCellStyle7.Format = "N2";
+            dataGridViewCellStyle7.NullValue = null;
+            this.cTaxAmount.DefaultCellStyle = dataGridViewCellStyle7;
             this.cTaxAmount.HeaderText = "TAX AMOUNT";
             this.cTaxAmount.Name = "cTaxAmount";
             this.cTaxAmount.ReadOnly = true;
             this.cTaxAmount.Resizable = System.Windows.Forms.DataGridViewTriState.False;
             this.cTaxAmount.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
             this.cTaxAmount.Width = 130;
+            // 
+            // cUnitValue
+            // 
+            this.cUnitValue.HeaderText = "UNIT VALUE";
+            this.cUnitValue.Name = "cUnitValue";
+            // 
+            // cUnit
+            // 
+            this.cUnit.HeaderText = "UNIT";
+            this.cUnit.Name = "cUnit";
+            // 
+            // cFrieghtCharge
+            // 
+            this.cFrieghtCharge.HeaderText = "FRIEGHT CHARGE";
+            this.cFrieghtCharge.Name = "cFrieghtCharge";
+            // 
+            // cAmount
+            // 
+            dataGridViewCellStyle8.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            dataGridViewCellStyle8.Format = "N2";
+            this.cAmount.DefaultCellStyle = dataGridViewCellStyle8;
+            this.cAmount.HeaderText = "AMOUNT";
+            this.cAmount.Name = "cAmount";
+            this.cAmount.ReadOnly = true;
+            this.cAmount.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.cAmount.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            this.cAmount.Width = 130;
             // 
             // cCostRate
             // 

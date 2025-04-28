@@ -21,8 +21,8 @@
       <Column Name="cr_newbalance" Type="System.Decimal" DbType="Decimal(12,2) NOT NULL" CanBeNull="false" />
       <Column Name="cr_isclose" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
       <Association Name="salesmaster_commissionreceipt" Member="salesmaster" ThisKey="sm_id" OtherKey="sm_id" Type="salesmaster" IsForeignKey="true" />
-      <Association Name="ledgermaster_commissionreceipt" Member="ledgermaster" ThisKey="led_agid" OtherKey="led_id" Type="ledgermaster" IsForeignKey="true" />
       <Association Name="company_commissionreceipt" Member="company" ThisKey="com_id" OtherKey="com_id" Type="company" IsForeignKey="true" />
+      <Association Name="ledgermaster_commissionreceipt" Member="ledgermaster" ThisKey="led_agid" OtherKey="led_id" Type="ledgermaster" IsForeignKey="true" />
     </Type>
   </Table>
   <Table Name="dbo.form" Member="forms">
@@ -71,8 +71,8 @@
       <Column Name="pr_newbalance" Type="System.Decimal" DbType="Decimal(12,2) NOT NULL" CanBeNull="false" />
       <Column Name="pr_isclose" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
       <Association Name="salesmaster_packingreceipt" Member="salesmaster" ThisKey="sm_id" OtherKey="sm_id" Type="salesmaster" IsForeignKey="true" />
-      <Association Name="ledgermaster_packingreceipt" Member="ledgermaster" ThisKey="led_agid" OtherKey="led_id" Type="ledgermaster" IsForeignKey="true" />
       <Association Name="company_packingreceipt" Member="company" ThisKey="com_id" OtherKey="com_id" Type="company" IsForeignKey="true" />
+      <Association Name="ledgermaster_packingreceipt" Member="ledgermaster" ThisKey="led_agid" OtherKey="led_id" Type="ledgermaster" IsForeignKey="true" />
     </Type>
   </Table>
   <Table Name="dbo.purchasedetails" Member="purchasedetails">
@@ -100,19 +100,6 @@
       <Column Name="V" Type="System.Char" DbType="Char(1)" CanBeNull="true" />
       <Column Name="P" Type="System.Char" DbType="Char(1)" CanBeNull="true" />
       <Association Name="form_right" Member="form" ThisKey="formcode" OtherKey="formcode" Type="form" IsForeignKey="true" />
-    </Type>
-  </Table>
-  <Table Name="dbo.salesdetails" Member="salesdetails">
-    <Type Name="salesdetail">
-      <Column Name="sd_id" Type="System.Int64" DbType="BigInt NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
-      <Column Name="sm_id" Type="System.Int64" DbType="BigInt" CanBeNull="true" />
-      <Column Name="item_id" Type="System.Int64" DbType="BigInt" CanBeNull="true" />
-      <Column Name="sd_qty" Type="System.Decimal" DbType="Decimal(18,3) NOT NULL" CanBeNull="false" />
-      <Column Name="sd_rate" Type="System.Decimal" DbType="Decimal(18,3) NOT NULL" CanBeNull="false" />
-      <Column Name="sd_costrate" Type="System.Decimal" DbType="Decimal(18,3) NOT NULL" CanBeNull="false" />
-      <Column Name="sd_totamount" Type="System.Decimal" DbType="Decimal(18,3) NOT NULL" CanBeNull="false" />
-      <Association Name="salesmaster_salesdetail" Member="salesmaster" ThisKey="sm_id" OtherKey="sm_id" Type="salesmaster" IsForeignKey="true" />
-      <Association Name="item_salesdetail" Member="item" ThisKey="item_id" OtherKey="item_id" Type="item" IsForeignKey="true" />
     </Type>
   </Table>
   <Table Name="dbo.salesmaster" Member="salesmasters">
@@ -143,8 +130,8 @@
       <Column Name="sm_roundamount" Type="System.Decimal" DbType="Decimal(18,3)" CanBeNull="true" />
       <Association Name="salesmaster_commissionreceipt" Member="commissionreceipts" ThisKey="sm_id" OtherKey="sm_id" Type="commissionreceipt" />
       <Association Name="salesmaster_packingreceipt" Member="packingreceipts" ThisKey="sm_id" OtherKey="sm_id" Type="packingreceipt" />
-      <Association Name="salesmaster_salesdetail" Member="salesdetails" ThisKey="sm_id" OtherKey="sm_id" Type="salesdetail" />
       <Association Name="salesmaster_receipt" Member="receipts" ThisKey="sm_id" OtherKey="sm_id" Type="receipt" />
+      <Association Name="salesmaster_salesdetail" Member="salesdetails" ThisKey="sm_id" OtherKey="sm_id" Type="salesdetail" />
       <Association Name="user_salesmaster" Member="user" ThisKey="users_uid" OtherKey="users_uid" Type="user" IsForeignKey="true" />
       <Association Name="ledgermaster_salesmaster" Member="ledgermaster" ThisKey="led_id" OtherKey="led_id" Type="ledgermaster" IsForeignKey="true" />
     </Type>
@@ -167,8 +154,8 @@
       <Column Name="stock_addqty" Type="System.Decimal" DbType="Decimal(12,2) NOT NULL" CanBeNull="false" />
       <Column Name="stock_lessqty" Type="System.Decimal" DbType="Decimal(12,2) NOT NULL" CanBeNull="false" />
       <Column Name="stock_date" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
-      <Association Name="company_stock" Member="company" ThisKey="com_id" OtherKey="com_id" Type="company" IsForeignKey="true" />
       <Association Name="item_stock" Member="item" ThisKey="item_id" OtherKey="item_id" Type="item" IsForeignKey="true" />
+      <Association Name="company_stock" Member="company" ThisKey="com_id" OtherKey="com_id" Type="company" IsForeignKey="true" />
     </Type>
   </Table>
   <Table Name="dbo.users" Member="users">
@@ -184,8 +171,8 @@
       <Association Name="user_openingbalance" Member="openingbalances" ThisKey="users_uid" OtherKey="users_uid" Type="openingbalance" />
       <Association Name="user_purchasemaster" Member="purchasemasters" ThisKey="users_uid" OtherKey="users_uid" Type="purchasemaster" />
       <Association Name="user_category" Member="categories" ThisKey="users_uid" OtherKey="users_uid" Type="category" />
-      <Association Name="user_ledgermaster" Member="ledgermasters" ThisKey="users_uid" OtherKey="users_uid" Type="ledgermaster" />
       <Association Name="user_item" Member="items" ThisKey="users_uid" OtherKey="users_uid" Type="item" />
+      <Association Name="user_ledgermaster" Member="ledgermasters" ThisKey="users_uid" OtherKey="users_uid" Type="ledgermaster" />
     </Type>
   </Table>
   <Table Name="dbo.openingbalance" Member="openingbalances">
@@ -232,8 +219,8 @@
       <Column Name="rec_isclose" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
       <Association Name="salesmaster_receipt" Member="salesmaster" ThisKey="sm_id" OtherKey="sm_id" Type="salesmaster" IsForeignKey="true" />
       <Association Name="openingbalance_receipt" Member="openingbalance" ThisKey="sm_id" OtherKey="ob_id" Type="openingbalance" IsForeignKey="true" />
-      <Association Name="ledgermaster_receipt" Member="ledgermaster" ThisKey="led_id" OtherKey="led_id" Type="ledgermaster" IsForeignKey="true" />
       <Association Name="company_receipt" Member="company" ThisKey="com_id" OtherKey="com_id" Type="company" IsForeignKey="true" />
+      <Association Name="ledgermaster_receipt" Member="ledgermaster" ThisKey="led_id" OtherKey="led_id" Type="ledgermaster" IsForeignKey="true" />
     </Type>
   </Table>
   <Table Name="dbo.payment" Member="payments">
@@ -249,10 +236,10 @@
       <Column Name="pay_paidamt" Type="System.Decimal" DbType="Decimal(12,2) NOT NULL" CanBeNull="false" />
       <Column Name="pay_newbalance" Type="System.Decimal" DbType="Decimal(12,2) NOT NULL" CanBeNull="false" />
       <Column Name="pay_isclose" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
-      <Association Name="ledgermaster_payment" Member="ledgermaster" ThisKey="led_id" OtherKey="led_id" Type="ledgermaster" IsForeignKey="true" />
-      <Association Name="ledgermaster_payment1" Member="ledgermaster1" ThisKey="led_id" OtherKey="led_id" Type="ledgermaster" IsForeignKey="true" />
       <Association Name="company_payment" Member="company" ThisKey="com_id" OtherKey="com_id" Type="company" IsForeignKey="true" />
       <Association Name="company_payment1" Member="company1" ThisKey="com_id" OtherKey="com_id" Type="company" IsForeignKey="true" />
+      <Association Name="ledgermaster_payment" Member="ledgermaster" ThisKey="led_id" OtherKey="led_id" Type="ledgermaster" IsForeignKey="true" />
+      <Association Name="ledgermaster_payment1" Member="ledgermaster1" ThisKey="led_id" OtherKey="led_id" Type="ledgermaster" IsForeignKey="true" />
     </Type>
   </Table>
   <Table Name="dbo.purchasemaster" Member="purchasemasters">
@@ -271,8 +258,8 @@
       <Column Name="pm_paid" Type="System.Decimal" DbType="Decimal(18,3)" CanBeNull="true" />
       <Association Name="purchasemaster_purchasedetail" Member="purchasedetails" ThisKey="pm_id" OtherKey="pm_id" Type="purchasedetail" />
       <Association Name="user_purchasemaster" Member="user" ThisKey="users_uid" OtherKey="users_uid" Type="user" IsForeignKey="true" />
-      <Association Name="ledgermaster_purchasemaster" Member="ledgermaster" ThisKey="led_id" OtherKey="led_id" Type="ledgermaster" IsForeignKey="true" />
       <Association Name="company_purchasemaster" Member="company" ThisKey="com_id" OtherKey="com_id" Type="company" IsForeignKey="true" />
+      <Association Name="ledgermaster_purchasemaster" Member="ledgermaster" ThisKey="led_id" OtherKey="led_id" Type="ledgermaster" IsForeignKey="true" />
     </Type>
   </Table>
   <Table Name="dbo.category" Member="categories">
@@ -288,6 +275,86 @@
       <Association Name="category_item" Member="items" ThisKey="cat_id" OtherKey="cat_id" Type="item" />
       <Association Name="user_category" Member="user" ThisKey="users_uid" OtherKey="users_uid" Type="user" IsForeignKey="true" />
       <Association Name="company_category" Member="company" ThisKey="com_id" OtherKey="com_id" Type="company" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.route" Member="routes">
+    <Type Name="route">
+      <Column Name="rt_id" Type="System.Int64" DbType="BigInt NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="rt_name" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="rt_vehicleno" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="rt_udate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="users_uid" Type="System.Int64" DbType="BigInt" CanBeNull="true" />
+      <Association Name="route_ledgermaster" Member="ledgermasters" ThisKey="rt_id" OtherKey="rt_id" Type="ledgermaster" />
+    </Type>
+  </Table>
+  <Table Name="dbo.item" Member="items">
+    <Type Name="item">
+      <Column Name="item_id" Type="System.Int64" DbType="BigInt NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="item_code" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="item_name" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="cat_id" Type="System.Int64" DbType="BigInt" CanBeNull="true" />
+      <Column Name="item_purchaserate" Type="System.Decimal" DbType="Decimal(18,3) NOT NULL" CanBeNull="false" />
+      <Column Name="item_costrate" Type="System.Decimal" DbType="Decimal(18,3) NOT NULL" CanBeNull="false" />
+      <Column Name="item_mrp" Type="System.Decimal" DbType="Decimal(18,3) NOT NULL" CanBeNull="false" />
+      <Column Name="item_wholesalerate" Type="System.Decimal" DbType="Decimal(18,3) NOT NULL" CanBeNull="false" />
+      <Column Name="item_specialrate" Type="System.Decimal" DbType="Decimal(18,3) NOT NULL" CanBeNull="false" />
+      <Column Name="item_supersepecialrate" Type="System.Decimal" DbType="Decimal(18,3) NOT NULL" CanBeNull="false" />
+      <Column Name="users_uid" Type="System.Int64" DbType="BigInt" CanBeNull="true" />
+      <Column Name="com_id" Type="System.Int64" DbType="BigInt" CanBeNull="true" />
+      <Column Name="item_udate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="item_serial" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="item_fullname" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="item_tamilname" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="item_taxpercentage" Type="System.Decimal" DbType="Decimal(18,3) NOT NULL" CanBeNull="false" />
+      <Column Name="item_unit" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="item_quantity" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="item_unittype" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Association Name="item_purchasedetail" Member="purchasedetails" ThisKey="item_id" OtherKey="item_id" Type="purchasedetail" />
+      <Association Name="item_stock" Member="stocks" ThisKey="item_id" OtherKey="item_id" Type="stock" />
+      <Association Name="item_salesdetail" Member="salesdetails" ThisKey="item_id" OtherKey="item_id" Type="salesdetail" />
+      <Association Name="category_item" Member="category" ThisKey="cat_id" OtherKey="cat_id" Type="category" IsForeignKey="true" />
+      <Association Name="user_item" Member="user" ThisKey="users_uid" OtherKey="users_uid" Type="user" IsForeignKey="true" />
+      <Association Name="company_item" Member="company" ThisKey="com_id" OtherKey="com_id" Type="company" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.company" Member="companies">
+    <Type Name="company">
+      <Column Name="com_id" Type="System.Int64" DbType="BigInt NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="com_name" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="com_add1" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="com_add2" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="com_add3" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="com_city" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="com_state" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="com_country" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="com_phone" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="com_mobile1" Type="System.String" DbType="NVarChar(15)" CanBeNull="true" />
+      <Column Name="com_mobile2" Type="System.String" DbType="NVarChar(15)" CanBeNull="true" />
+      <Column Name="com_fax" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="com_pin" Type="System.String" DbType="NVarChar(7)" CanBeNull="true" />
+      <Column Name="com_email" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="com_web" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="com_default" Type="System.Char" DbType="Char(1)" CanBeNull="true" />
+      <Column Name="com_tin" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="com_cst" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="com_cstdate" Type="System.DateTime" DbType="Date" CanBeNull="true" />
+      <Column Name="com_pan" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="com_gstin" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
+      <Column Name="com_bankname" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
+      <Column Name="com_branch" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
+      <Column Name="com_fssai" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="com_accountnumber" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="com_code" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Association Name="company_commissionreceipt" Member="commissionreceipts" ThisKey="com_id" OtherKey="com_id" Type="commissionreceipt" />
+      <Association Name="company_packingreceipt" Member="packingreceipts" ThisKey="com_id" OtherKey="com_id" Type="packingreceipt" />
+      <Association Name="company_stock" Member="stocks" ThisKey="com_id" OtherKey="com_id" Type="stock" />
+      <Association Name="company_receipt" Member="receipts" ThisKey="com_id" OtherKey="com_id" Type="receipt" />
+      <Association Name="company_payment" Member="payments" ThisKey="com_id" OtherKey="com_id" Type="payment" />
+      <Association Name="company_payment1" Member="payments1" ThisKey="com_id" OtherKey="com_id" Type="payment" />
+      <Association Name="company_purchasemaster" Member="purchasemasters" ThisKey="com_id" OtherKey="com_id" Type="purchasemaster" />
+      <Association Name="company_category" Member="categories" ThisKey="com_id" OtherKey="com_id" Type="category" />
+      <Association Name="company_item" Member="items" ThisKey="com_id" OtherKey="com_id" Type="item" />
+      <Association Name="company_ledgermaster" Member="ledgermasters" ThisKey="com_id" OtherKey="com_id" Type="ledgermaster" />
     </Type>
   </Table>
   <Table Name="dbo.ledgermaster" Member="ledgermasters">
@@ -319,8 +386,9 @@
       <Column Name="led_udate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
       <Column Name="led_disper" Type="System.Decimal" DbType="Decimal(8,2) NOT NULL" CanBeNull="false" />
       <Column Name="led_isfreight" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
-      <Column Name="led_areacode" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
       <Column Name="led_deliveryorder" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="rt_id" Type="System.Int64" DbType="BigInt NOT NULL" CanBeNull="false" />
+      <Column Name="led_state" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
       <Association Name="ledgermaster_commissionreceipt" Member="commissionreceipts" ThisKey="led_id" OtherKey="led_agid" Type="commissionreceipt" />
       <Association Name="ledgermaster_packingreceipt" Member="packingreceipts" ThisKey="led_id" OtherKey="led_agid" Type="packingreceipt" />
       <Association Name="ledgermaster_salesmaster" Member="salesmasters" ThisKey="led_id" OtherKey="led_id" Type="salesmaster" />
@@ -329,86 +397,27 @@
       <Association Name="ledgermaster_payment" Member="payments" ThisKey="led_id" OtherKey="led_id" Type="payment" />
       <Association Name="ledgermaster_payment1" Member="payments1" ThisKey="led_id" OtherKey="led_id" Type="payment" />
       <Association Name="ledgermaster_purchasemaster" Member="purchasemasters" ThisKey="led_id" OtherKey="led_id" Type="purchasemaster" />
-      <Association Name="user_ledgermaster" Member="user" ThisKey="users_uid" OtherKey="users_uid" Type="user" IsForeignKey="true" />
       <Association Name="company_ledgermaster" Member="company" ThisKey="com_id" OtherKey="com_id" Type="company" IsForeignKey="true" />
+      <Association Name="user_ledgermaster" Member="user" ThisKey="users_uid" OtherKey="users_uid" Type="user" IsForeignKey="true" />
+      <Association Name="route_ledgermaster" Member="route" ThisKey="rt_id" OtherKey="rt_id" Type="route" IsForeignKey="true" />
     </Type>
   </Table>
-  <Table Name="dbo.route" Member="routes">
-    <Type Name="route">
-      <Column Name="rt_id" Type="System.Int64" DbType="BigInt NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
-      <Column Name="rt_name" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
-      <Column Name="rt_vehicleno" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
-      <Column Name="rt_udate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
-      <Column Name="users_uid" Type="System.Int64" DbType="BigInt" CanBeNull="true" />
-    </Type>
-  </Table>
-  <Table Name="dbo.company" Member="companies">
-    <Type Name="company">
-      <Column Name="com_id" Type="System.Int64" DbType="BigInt NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
-      <Column Name="com_name" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
-      <Column Name="com_add1" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
-      <Column Name="com_add2" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
-      <Column Name="com_add3" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
-      <Column Name="com_city" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
-      <Column Name="com_state" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
-      <Column Name="com_country" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
-      <Column Name="com_phone" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
-      <Column Name="com_mobile1" Type="System.String" DbType="NVarChar(15)" CanBeNull="true" />
-      <Column Name="com_mobile2" Type="System.String" DbType="NVarChar(15)" CanBeNull="true" />
-      <Column Name="com_fax" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
-      <Column Name="com_pin" Type="System.String" DbType="NVarChar(7)" CanBeNull="true" />
-      <Column Name="com_email" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
-      <Column Name="com_web" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
-      <Column Name="com_default" Type="System.Char" DbType="Char(1)" CanBeNull="true" />
-      <Column Name="com_tin" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
-      <Column Name="com_cst" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
-      <Column Name="com_cstdate" Type="System.DateTime" DbType="Date" CanBeNull="true" />
-      <Column Name="com_pan" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
-      <Column Name="com_gstin" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
-      <Column Name="com_bankname" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
-      <Column Name="com_branch" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
-      <Column Name="com_fssai" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
-      <Column Name="com_accountnumber" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
-      <Association Name="company_commissionreceipt" Member="commissionreceipts" ThisKey="com_id" OtherKey="com_id" Type="commissionreceipt" />
-      <Association Name="company_packingreceipt" Member="packingreceipts" ThisKey="com_id" OtherKey="com_id" Type="packingreceipt" />
-      <Association Name="company_stock" Member="stocks" ThisKey="com_id" OtherKey="com_id" Type="stock" />
-      <Association Name="company_receipt" Member="receipts" ThisKey="com_id" OtherKey="com_id" Type="receipt" />
-      <Association Name="company_payment" Member="payments" ThisKey="com_id" OtherKey="com_id" Type="payment" />
-      <Association Name="company_payment1" Member="payments1" ThisKey="com_id" OtherKey="com_id" Type="payment" />
-      <Association Name="company_purchasemaster" Member="purchasemasters" ThisKey="com_id" OtherKey="com_id" Type="purchasemaster" />
-      <Association Name="company_category" Member="categories" ThisKey="com_id" OtherKey="com_id" Type="category" />
-      <Association Name="company_ledgermaster" Member="ledgermasters" ThisKey="com_id" OtherKey="com_id" Type="ledgermaster" />
-      <Association Name="company_item" Member="items" ThisKey="com_id" OtherKey="com_id" Type="item" />
-    </Type>
-  </Table>
-  <Table Name="dbo.item" Member="items">
-    <Type Name="item">
-      <Column Name="item_id" Type="System.Int64" DbType="BigInt NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
-      <Column Name="item_code" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
-      <Column Name="item_name" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
-      <Column Name="cat_id" Type="System.Int64" DbType="BigInt" CanBeNull="true" />
-      <Column Name="item_purchaserate" Type="System.Decimal" DbType="Decimal(18,3) NOT NULL" CanBeNull="false" />
-      <Column Name="item_costrate" Type="System.Decimal" DbType="Decimal(18,3) NOT NULL" CanBeNull="false" />
-      <Column Name="item_mrp" Type="System.Decimal" DbType="Decimal(18,3) NOT NULL" CanBeNull="false" />
-      <Column Name="item_wholesalerate" Type="System.Decimal" DbType="Decimal(18,3) NOT NULL" CanBeNull="false" />
-      <Column Name="item_specialrate" Type="System.Decimal" DbType="Decimal(18,3) NOT NULL" CanBeNull="false" />
-      <Column Name="item_supersepecialrate" Type="System.Decimal" DbType="Decimal(18,3) NOT NULL" CanBeNull="false" />
-      <Column Name="users_uid" Type="System.Int64" DbType="BigInt" CanBeNull="true" />
-      <Column Name="com_id" Type="System.Int64" DbType="BigInt" CanBeNull="true" />
-      <Column Name="item_udate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
-      <Column Name="item_serial" Type="System.Int32" DbType="Int" CanBeNull="true" />
-      <Column Name="item_fullname" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
-      <Column Name="item_tamilname" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
-      <Column Name="item_taxpercentage" Type="System.Decimal" DbType="Decimal(18,3) NOT NULL" CanBeNull="false" />
-      <Column Name="item_unit" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
-      <Column Name="item_quantity" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Column Name="item_unittype" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
-      <Association Name="item_purchasedetail" Member="purchasedetails" ThisKey="item_id" OtherKey="item_id" Type="purchasedetail" />
-      <Association Name="item_salesdetail" Member="salesdetails" ThisKey="item_id" OtherKey="item_id" Type="salesdetail" />
-      <Association Name="item_stock" Member="stocks" ThisKey="item_id" OtherKey="item_id" Type="stock" />
-      <Association Name="category_item" Member="category" ThisKey="cat_id" OtherKey="cat_id" Type="category" IsForeignKey="true" />
-      <Association Name="company_item" Member="company" ThisKey="com_id" OtherKey="com_id" Type="company" IsForeignKey="true" />
-      <Association Name="user_item" Member="user" ThisKey="users_uid" OtherKey="users_uid" Type="user" IsForeignKey="true" />
+  <Table Name="dbo.salesdetails" Member="salesdetails">
+    <Type Name="salesdetail">
+      <Column Name="sd_id" Type="System.Int64" DbType="BigInt NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="sm_id" Type="System.Int64" DbType="BigInt" CanBeNull="true" />
+      <Column Name="item_id" Type="System.Int64" DbType="BigInt" CanBeNull="true" />
+      <Column Name="sd_qty" Type="System.Decimal" DbType="Decimal(18,3) NOT NULL" CanBeNull="false" />
+      <Column Name="sd_rate" Type="System.Decimal" DbType="Decimal(18,3) NOT NULL" CanBeNull="false" />
+      <Column Name="sd_costrate" Type="System.Decimal" DbType="Decimal(18,3) NOT NULL" CanBeNull="false" />
+      <Column Name="sd_totamount" Type="System.Decimal" DbType="Decimal(18,3) NOT NULL" CanBeNull="false" />
+      <Column Name="sd_taxpercentage" Type="System.Decimal" DbType="Decimal(18,3) NOT NULL" CanBeNull="false" />
+      <Column Name="sd_taxamount" Type="System.Decimal" DbType="Decimal(18,3) NOT NULL" CanBeNull="false" />
+      <Column Name="sd_unit" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="sd_unitvalue" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="sd_itemunittype" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Association Name="item_salesdetail" Member="item" ThisKey="item_id" OtherKey="item_id" Type="item" IsForeignKey="true" />
+      <Association Name="salesmaster_salesdetail" Member="salesmaster" ThisKey="sm_id" OtherKey="sm_id" Type="salesmaster" IsForeignKey="true" />
     </Type>
   </Table>
   <Function Name="dbo.usp_AgentComissionReport" Method="usp_AgentComissionReport">
@@ -812,80 +821,6 @@
     <Parameter Name="sm_id" Type="System.Int64" DbType="BigInt" />
     <Return Type="System.Int32" />
   </Function>
-  <Function Name="dbo.usp_salesdetailsInsert" Method="usp_salesdetailsInsert">
-    <Parameter Name="sm_id" Type="System.Int64" DbType="BigInt" />
-    <Parameter Name="item_id" Type="System.Int64" DbType="BigInt" />
-    <Parameter Name="sd_qty" Type="System.Decimal" DbType="Decimal(18,3)" />
-    <Parameter Name="sd_rate" Type="System.Decimal" DbType="Decimal(18,3)" />
-    <Parameter Name="sd_costrate" Type="System.Decimal" DbType="Decimal(18,3)" />
-    <Parameter Name="sd_totamount" Type="System.Decimal" DbType="Decimal(18,3)" />
-    <ElementType Name="usp_salesdetailsInsertResult">
-      <Column Name="sd_id" Type="System.Int64" DbType="BigInt NOT NULL" CanBeNull="false" />
-      <Column Name="sm_id" Type="System.Int64" DbType="BigInt" CanBeNull="true" />
-      <Column Name="item_id" Type="System.Int64" DbType="BigInt" CanBeNull="true" />
-      <Column Name="sd_qty" Type="System.Decimal" DbType="Decimal(18,3) NOT NULL" CanBeNull="false" />
-      <Column Name="sd_rate" Type="System.Decimal" DbType="Decimal(18,3) NOT NULL" CanBeNull="false" />
-      <Column Name="sd_costrate" Type="System.Decimal" DbType="Decimal(18,3) NOT NULL" CanBeNull="false" />
-      <Column Name="sd_totamount" Type="System.Decimal" DbType="Decimal(18,3) NOT NULL" CanBeNull="false" />
-    </ElementType>
-  </Function>
-  <Function Name="dbo.usp_salesdetailsSelect" Method="usp_salesdetailsSelect">
-    <Parameter Name="sm_id" Type="System.Int64" DbType="BigInt" />
-    <Parameter Name="fdate" Type="System.DateTime" DbType="Date" />
-    <Parameter Name="tdate" Type="System.DateTime" DbType="Date" />
-    <Parameter Name="led_id" Type="System.Int64" DbType="BigInt" />
-    <Parameter Name="item_id" Type="System.Int64" DbType="BigInt" />
-    <Parameter Name="cat_id" Type="System.Int64" DbType="BigInt" />
-    <ElementType Name="usp_salesdetailsSelectResult">
-      <Column Name="sd_id" Type="System.Int64" DbType="BigInt NOT NULL" CanBeNull="false" />
-      <Column Name="sm_id" Type="System.Int64" DbType="BigInt NOT NULL" CanBeNull="false" />
-      <Column Name="sm_refno" Type="System.Int64" DbType="BigInt NOT NULL" CanBeNull="false" />
-      <Column Name="sm_date" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
-      <Column Name="sm_disamount" Type="System.Decimal" DbType="Decimal(18,3) NOT NULL" CanBeNull="false" />
-      <Column Name="sm_netamount" Type="System.Decimal" DbType="Decimal(18,3) NOT NULL" CanBeNull="false" />
-      <Column Name="sm_packingcharge" Type="System.Decimal" DbType="Decimal(18,3) NOT NULL" CanBeNull="false" />
-      <Column Name="sm_totamount" Type="System.Decimal" DbType="Decimal(18,3) NOT NULL" CanBeNull="false" />
-      <Column Name="sm_profit" Type="System.Decimal" DbType="Decimal(18,3) NOT NULL" CanBeNull="false" />
-      <Column Name="sm_totqty" Type="System.Decimal" DbType="Decimal(18,3) NOT NULL" CanBeNull="false" />
-      <Column Name="led_name" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
-      <Column Name="led_address" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
-      <Column Name="led_address1" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
-      <Column Name="led_address2" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
-      <Column Name="cat_id" Type="System.Int64" DbType="BigInt NOT NULL" CanBeNull="false" />
-      <Column Name="cat_name" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
-      <Column Name="item_id" Type="System.Int64" DbType="BigInt NOT NULL" CanBeNull="false" />
-      <Column Name="item_code" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
-      <Column Name="item_name" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
-      <Column Name="item_purchaserate" Type="System.Decimal" DbType="Decimal(18,3) NOT NULL" CanBeNull="false" />
-      <Column Name="item_costrate" Type="System.Decimal" DbType="Decimal(18,3) NOT NULL" CanBeNull="false" />
-      <Column Name="item_mrp" Type="System.Decimal" DbType="Decimal(18,3) NOT NULL" CanBeNull="false" />
-      <Column Name="item_specialrate" Type="System.Decimal" DbType="Decimal(18,3) NOT NULL" CanBeNull="false" />
-      <Column Name="item_supersepecialrate" Type="System.Decimal" DbType="Decimal(18,3) NOT NULL" CanBeNull="false" />
-      <Column Name="item_wholesalerate" Type="System.Decimal" DbType="Decimal(18,3) NOT NULL" CanBeNull="false" />
-      <Column Name="sd_qty" Type="System.Decimal" DbType="Decimal(18,3) NOT NULL" CanBeNull="false" />
-      <Column Name="sd_rate" Type="System.Decimal" DbType="Decimal(18,3) NOT NULL" CanBeNull="false" />
-      <Column Name="sd_costrate" Type="System.Decimal" DbType="Decimal(18,3) NOT NULL" CanBeNull="false" />
-      <Column Name="sd_totamount" Type="System.Decimal" DbType="Decimal(18,3) NOT NULL" CanBeNull="false" />
-    </ElementType>
-  </Function>
-  <Function Name="dbo.usp_salesdetailsUpdate" Method="usp_salesdetailsUpdate">
-    <Parameter Name="sd_id" Type="System.Int64" DbType="BigInt" />
-    <Parameter Name="sm_id" Type="System.Int64" DbType="BigInt" />
-    <Parameter Name="item_id" Type="System.Int64" DbType="BigInt" />
-    <Parameter Name="sd_qty" Type="System.Decimal" DbType="Decimal(18,3)" />
-    <Parameter Name="sd_rate" Type="System.Decimal" DbType="Decimal(18,3)" />
-    <Parameter Name="sd_costrate" Type="System.Decimal" DbType="Decimal(18,3)" />
-    <Parameter Name="sd_totamount" Type="System.Decimal" DbType="Decimal(18,3)" />
-    <ElementType Name="usp_salesdetailsUpdateResult">
-      <Column Name="sd_id" Type="System.Int64" DbType="BigInt NOT NULL" CanBeNull="false" />
-      <Column Name="sm_id" Type="System.Int64" DbType="BigInt" CanBeNull="true" />
-      <Column Name="item_id" Type="System.Int64" DbType="BigInt" CanBeNull="true" />
-      <Column Name="sd_qty" Type="System.Decimal" DbType="Decimal(18,3) NOT NULL" CanBeNull="false" />
-      <Column Name="sd_rate" Type="System.Decimal" DbType="Decimal(18,3) NOT NULL" CanBeNull="false" />
-      <Column Name="sd_costrate" Type="System.Decimal" DbType="Decimal(18,3) NOT NULL" CanBeNull="false" />
-      <Column Name="sd_totamount" Type="System.Decimal" DbType="Decimal(18,3) NOT NULL" CanBeNull="false" />
-    </ElementType>
-  </Function>
   <Function Name="dbo.usp_salesmasterDelete" Method="usp_salesmasterDelete">
     <Parameter Name="sm_id" Type="System.Int64" DbType="BigInt" />
     <Return Type="System.Int32" />
@@ -934,50 +869,6 @@
       <Column Name="sm_iscommissionclose" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
       <Column Name="sm_ispackingclose" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
       <Column Name="users_uid" Type="System.Int64" DbType="BigInt" CanBeNull="true" />
-      <Column Name="sm_udate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
-      <Column Name="sm_desc" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
-      <Column Name="sm_isclose" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
-      <Column Name="sm_taxamount" Type="System.Decimal" DbType="Decimal(18,3) NOT NULL" CanBeNull="false" />
-      <Column Name="sm_taxpercentage" Type="System.Decimal" DbType="Decimal(18,3) NOT NULL" CanBeNull="false" />
-      <Column Name="sm_roundamount" Type="System.Decimal" DbType="Decimal(18,3)" CanBeNull="true" />
-    </ElementType>
-  </Function>
-  <Function Name="dbo.usp_salesmasterSelect" Method="usp_salesmasterSelect">
-    <Parameter Name="sm_id" Type="System.Int64" DbType="BigInt" />
-    <Parameter Name="led_id" Type="System.Int64" DbType="BigInt" />
-    <Parameter Name="fdate" Type="System.DateTime" DbType="DateTime" />
-    <Parameter Name="tdate" Type="System.DateTime" DbType="DateTime" />
-    <Parameter Name="IsClose" Parameter="isClose" Type="System.Boolean" DbType="Bit" />
-    <Parameter Name="sm_refno" Type="System.Int64" DbType="BigInt" />
-    <ElementType Name="usp_salesmasterSelectResult">
-      <Column Name="sm_id" Type="System.Int64" DbType="BigInt NOT NULL" CanBeNull="false" />
-      <Column Name="sm_bookno" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
-      <Column Name="sm_refno" Type="System.Int64" DbType="BigInt NOT NULL" CanBeNull="false" />
-      <Column Name="sm_date" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
-      <Column Name="led_id" Type="System.Int64" DbType="BigInt" CanBeNull="true" />
-      <Column Name="led_address2" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
-      <Column Name="led_pincode" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
-      <Column Name="led_tin" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
-      <Column Name="led_cst" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
-      <Column Name="led_name" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
-      <Column Name="led_address" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
-      <Column Name="led_address1" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
-      <Column Name="led_transport" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
-      <Column Name="led_ownerphone" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
-      <Column Name="sm_totqty" Type="System.Decimal" DbType="Decimal(18,3) NOT NULL" CanBeNull="false" />
-      <Column Name="sm_totamount" Type="System.Decimal" DbType="Decimal(18,3) NOT NULL" CanBeNull="false" />
-      <Column Name="sm_itemcount" Type="System.Int64" DbType="BigInt" CanBeNull="true" />
-      <Column Name="sm_profit" Type="System.Decimal" DbType="Decimal(18,3) NOT NULL" CanBeNull="false" />
-      <Column Name="sm_disamount" Type="System.Decimal" DbType="Decimal(18,3) NOT NULL" CanBeNull="false" />
-      <Column Name="sm_packingcharge" Type="System.Decimal" DbType="Decimal(18,3) NOT NULL" CanBeNull="false" />
-      <Column Name="sm_netamount" Type="System.Decimal" DbType="Decimal(18,3) NOT NULL" CanBeNull="false" />
-      <Column Name="sm_received" Type="System.Decimal" DbType="Decimal(18,3) NOT NULL" CanBeNull="false" />
-      <Column Name="sm_paidcommission" Type="System.Decimal" DbType="Decimal(18,3) NOT NULL" CanBeNull="false" />
-      <Column Name="sm_paidcommission1" Type="System.Decimal" DbType="Decimal(18,3) NOT NULL" CanBeNull="false" />
-      <Column Name="sm_iscommissionclose" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
-      <Column Name="sm_ispackingclose" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
-      <Column Name="users_uid" Type="System.Int64" DbType="BigInt" CanBeNull="true" />
-      <Column Name="users_name" Type="System.String" DbType="NVarChar(25)" CanBeNull="true" />
       <Column Name="sm_udate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
       <Column Name="sm_desc" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
       <Column Name="sm_isclose" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
@@ -1674,129 +1565,6 @@
       <Column Name="cat_udate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
     </ElementType>
   </Function>
-  <Function Name="dbo.usp_ledgermasterInsert" Method="usp_ledgermasterInsert">
-    <Parameter Name="led_agid" Type="System.Int64" DbType="BigInt" />
-    <Parameter Name="led_accountcode" Type="System.String" DbType="NVarChar(100)" />
-    <Parameter Name="led_accounttype" Type="System.String" DbType="NVarChar(100)" />
-    <Parameter Name="led_name" Type="System.String" DbType="NVarChar(100)" />
-    <Parameter Name="led_address" Type="System.String" DbType="NVarChar(100)" />
-    <Parameter Name="led_address1" Type="System.String" DbType="NVarChar(100)" />
-    <Parameter Name="led_address2" Type="System.String" DbType="NVarChar(100)" />
-    <Parameter Name="led_tname" Type="System.String" DbType="NVarChar(100)" />
-    <Parameter Name="led_taddress" Type="System.String" DbType="NVarChar(100)" />
-    <Parameter Name="led_taddress1" Type="System.String" DbType="NVarChar(100)" />
-    <Parameter Name="led_taddress2" Type="System.String" DbType="NVarChar(100)" />
-    <Parameter Name="led_pincode" Type="System.String" DbType="NVarChar(100)" />
-    <Parameter Name="led_transport" Type="System.String" DbType="NVarChar(100)" />
-    <Parameter Name="led_ownerphone" Type="System.String" DbType="NVarChar(100)" />
-    <Parameter Name="led_ownername" Type="System.String" DbType="NVarChar(100)" />
-    <Parameter Name="led_managername" Type="System.String" DbType="NVarChar(100)" />
-    <Parameter Name="led_managerphone" Type="System.String" DbType="NVarChar(100)" />
-    <Parameter Name="led_areacode" Type="System.String" DbType="NVarChar(100)" />
-    <Parameter Name="led_deliveryorder" Type="System.String" DbType="NVarChar(100)" />
-    <Parameter Name="led_tin" Type="System.String" DbType="NVarChar(100)" />
-    <Parameter Name="led_isfreight" Type="System.Boolean" DbType="Bit" />
-    <Parameter Name="led_cst" Type="System.String" DbType="NVarChar(100)" />
-    <Parameter Name="led_refno" Type="System.String" DbType="NVarChar(100)" />
-    <Parameter Name="users_uid" Type="System.Int64" DbType="BigInt" />
-    <Parameter Name="com_id" Type="System.Int64" DbType="BigInt" />
-    <Parameter Name="led_udate" Type="System.DateTime" DbType="DateTime" />
-    <Parameter Name="led_ratetype" Type="System.String" DbType="NVarChar(100)" />
-    <Parameter Name="led_disper" Type="System.Decimal" DbType="Decimal(8,2)" />
-    <ElementType Name="usp_ledgermasterInsertResult">
-      <Column Name="led_id" Type="System.Int64" DbType="BigInt NOT NULL" CanBeNull="false" />
-      <Column Name="led_agid" Type="System.Int64" DbType="BigInt" CanBeNull="true" />
-      <Column Name="led_accountcode" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
-      <Column Name="led_accounttype" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
-      <Column Name="led_name" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
-      <Column Name="led_address" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
-      <Column Name="led_address1" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
-      <Column Name="led_address2" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
-      <Column Name="led_tname" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
-      <Column Name="led_taddress" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
-      <Column Name="led_taddress1" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
-      <Column Name="led_taddress2" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
-      <Column Name="led_pincode" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
-      <Column Name="led_transport" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
-      <Column Name="led_ownerphone" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
-      <Column Name="led_ownername" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
-      <Column Name="led_managername" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
-      <Column Name="led_managerphone" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
-      <Column Name="led_areacode" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
-      <Column Name="led_deliveryorder" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
-      <Column Name="led_tin" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
-      <Column Name="led_isfreight" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
-      <Column Name="led_cst" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
-      <Column Name="led_refno" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
-      <Column Name="users_uid" Type="System.Int64" DbType="BigInt" CanBeNull="true" />
-      <Column Name="com_id" Type="System.Int64" DbType="BigInt" CanBeNull="true" />
-      <Column Name="led_udate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
-      <Column Name="led_ratetype" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
-      <Column Name="led_disper" Type="System.Decimal" DbType="Decimal(8,2) NOT NULL" CanBeNull="false" />
-    </ElementType>
-  </Function>
-  <Function Name="dbo.usp_ledgermasterUpdate" Method="usp_ledgermasterUpdate">
-    <Parameter Name="led_id" Type="System.Int64" DbType="BigInt" />
-    <Parameter Name="led_agid" Type="System.Int64" DbType="BigInt" />
-    <Parameter Name="led_accountcode" Type="System.String" DbType="NVarChar(100)" />
-    <Parameter Name="led_accounttype" Type="System.String" DbType="NVarChar(100)" />
-    <Parameter Name="led_name" Type="System.String" DbType="NVarChar(100)" />
-    <Parameter Name="led_address" Type="System.String" DbType="NVarChar(100)" />
-    <Parameter Name="led_address1" Type="System.String" DbType="NVarChar(100)" />
-    <Parameter Name="led_address2" Type="System.String" DbType="NVarChar(100)" />
-    <Parameter Name="led_tname" Type="System.String" DbType="NVarChar(100)" />
-    <Parameter Name="led_taddress" Type="System.String" DbType="NVarChar(100)" />
-    <Parameter Name="led_taddress1" Type="System.String" DbType="NVarChar(100)" />
-    <Parameter Name="led_taddress2" Type="System.String" DbType="NVarChar(100)" />
-    <Parameter Name="led_pincode" Type="System.String" DbType="NVarChar(100)" />
-    <Parameter Name="led_transport" Type="System.String" DbType="NVarChar(100)" />
-    <Parameter Name="led_ownerphone" Type="System.String" DbType="NVarChar(100)" />
-    <Parameter Name="led_ownername" Type="System.String" DbType="NVarChar(100)" />
-    <Parameter Name="led_managername" Type="System.String" DbType="NVarChar(100)" />
-    <Parameter Name="led_managerphone" Type="System.String" DbType="NVarChar(100)" />
-    <Parameter Name="led_areacode" Type="System.String" DbType="NVarChar(100)" />
-    <Parameter Name="led_deliveryorder" Type="System.String" DbType="NVarChar(100)" />
-    <Parameter Name="led_tin" Type="System.String" DbType="NVarChar(100)" />
-    <Parameter Name="led_isfreight" Type="System.Boolean" DbType="Bit" />
-    <Parameter Name="led_cst" Type="System.String" DbType="NVarChar(100)" />
-    <Parameter Name="led_refno" Type="System.String" DbType="NVarChar(100)" />
-    <Parameter Name="users_uid" Type="System.Int64" DbType="BigInt" />
-    <Parameter Name="com_id" Type="System.Int64" DbType="BigInt" />
-    <Parameter Name="led_udate" Type="System.DateTime" DbType="DateTime" />
-    <Parameter Name="led_ratetype" Type="System.String" DbType="NVarChar(100)" />
-    <Parameter Name="led_disper" Type="System.Decimal" DbType="Decimal(8,2)" />
-    <ElementType Name="usp_ledgermasterUpdateResult">
-      <Column Name="led_id" Type="System.Int64" DbType="BigInt NOT NULL" CanBeNull="false" />
-      <Column Name="led_agid" Type="System.Int64" DbType="BigInt" CanBeNull="true" />
-      <Column Name="led_accountcode" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
-      <Column Name="led_accounttype" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
-      <Column Name="led_name" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
-      <Column Name="led_address" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
-      <Column Name="led_address1" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
-      <Column Name="led_address2" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
-      <Column Name="led_tname" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
-      <Column Name="led_taddress" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
-      <Column Name="led_taddress1" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
-      <Column Name="led_taddress2" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
-      <Column Name="led_pincode" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
-      <Column Name="led_transport" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
-      <Column Name="led_ownerphone" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
-      <Column Name="led_ownername" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
-      <Column Name="led_managername" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
-      <Column Name="led_managerphone" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
-      <Column Name="led_areacode" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
-      <Column Name="led_deliveryorder" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
-      <Column Name="led_tin" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
-      <Column Name="led_isfreight" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
-      <Column Name="led_cst" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
-      <Column Name="led_refno" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
-      <Column Name="users_uid" Type="System.Int64" DbType="BigInt" CanBeNull="true" />
-      <Column Name="com_id" Type="System.Int64" DbType="BigInt" CanBeNull="true" />
-      <Column Name="led_udate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
-      <Column Name="led_ratetype" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
-      <Column Name="led_disper" Type="System.Decimal" DbType="Decimal(8,2) NOT NULL" CanBeNull="false" />
-    </ElementType>
-  </Function>
   <Function Name="dbo.usp_routeInsert" Method="usp_routeInsert">
     <Parameter Name="rt_name" Type="System.String" DbType="NVarChar(100)" />
     <Parameter Name="rt_vehicleno" Type="System.String" DbType="NVarChar(100)" />
@@ -1820,132 +1588,6 @@
       <Column Name="users_uid" Type="System.Int64" DbType="BigInt" CanBeNull="true" />
       <Column Name="rt_udate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
     </ElementType>
-  </Function>
-  <Function Name="dbo.usp_ledgermasterSelect" Method="usp_ledgermasterSelect">
-    <Parameter Name="led_id" Type="System.Int64" DbType="BigInt" />
-    <Parameter Name="accounttype" Type="System.String" DbType="NVarChar(50)" />
-    <Parameter Name="searchbyname" Type="System.String" DbType="NVarChar(50)" />
-    <Parameter Name="searchbycode" Type="System.String" DbType="NVarChar(50)" />
-    <Parameter Name="searchbyareacode" Type="System.String" DbType="NVarChar(50)" />
-    <Parameter Name="led_agid" Type="System.Int64" DbType="BigInt" />
-    <ElementType Name="usp_ledgermasterSelectResult">
-      <Column Name="led_id" Type="System.Int64" DbType="BigInt NOT NULL" CanBeNull="false" />
-      <Column Name="led_agid" Type="System.Int64" DbType="BigInt" CanBeNull="true" />
-      <Column Name="led_accountcode" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
-      <Column Name="led_ratetype" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
-      <Column Name="led_accounttype" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
-      <Column Name="led_name" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
-      <Column Name="led_address" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
-      <Column Name="led_address1" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
-      <Column Name="led_address2" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
-      <Column Name="led_tname" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
-      <Column Name="led_taddress" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
-      <Column Name="led_taddress1" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
-      <Column Name="led_taddress2" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
-      <Column Name="led_pincode" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
-      <Column Name="led_transport" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
-      <Column Name="led_ownerphone" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
-      <Column Name="led_ownername" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
-      <Column Name="led_managername" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
-      <Column Name="led_managerphone" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
-      <Column Name="led_areacode" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
-      <Column Name="led_deliveryorder" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
-      <Column Name="led_tin" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
-      <Column Name="led_isfreight" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
-      <Column Name="led_cst" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
-      <Column Name="led_disper" Type="System.Decimal" DbType="Decimal(8,2) NOT NULL" CanBeNull="false" />
-      <Column Name="led_refno" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
-      <Column Name="users_uid" Type="System.Int64" DbType="BigInt" CanBeNull="true" />
-      <Column Name="users_name" Type="System.String" DbType="NVarChar(25)" CanBeNull="true" />
-      <Column Name="com_name" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
-      <Column Name="com_id" Type="System.Int64" DbType="BigInt" CanBeNull="true" />
-      <Column Name="led_udate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
-    </ElementType>
-  </Function>
-  <Function Name="dbo.usp_companyInsert" Method="usp_companyInsert">
-    <Parameter Name="com_name" Type="System.String" DbType="NVarChar(100)" />
-    <Parameter Name="com_add1" Type="System.String" DbType="NVarChar(50)" />
-    <Parameter Name="com_add2" Type="System.String" DbType="NVarChar(50)" />
-    <Parameter Name="com_add3" Type="System.String" DbType="NVarChar(50)" />
-    <Parameter Name="com_city" Type="System.String" DbType="NVarChar(50)" />
-    <Parameter Name="com_state" Type="System.String" DbType="NVarChar(50)" />
-    <Parameter Name="com_country" Type="System.String" DbType="NVarChar(50)" />
-    <Parameter Name="com_phone" Type="System.String" DbType="NVarChar(50)" />
-    <Parameter Name="com_mobile1" Type="System.String" DbType="NVarChar(15)" />
-    <Parameter Name="com_mobile2" Type="System.String" DbType="NVarChar(15)" />
-    <Parameter Name="com_fax" Type="System.String" DbType="NVarChar(50)" />
-    <Parameter Name="com_pin" Type="System.String" DbType="NVarChar(7)" />
-    <Parameter Name="com_email" Type="System.String" DbType="NVarChar(50)" />
-    <Parameter Name="com_web" Type="System.String" DbType="NVarChar(50)" />
-    <Parameter Name="com_default" Type="System.Char" DbType="Char(1)" />
-    <Parameter Name="com_tin" Type="System.String" DbType="NVarChar(50)" />
-    <Parameter Name="com_cst" Type="System.String" DbType="NVarChar(50)" />
-    <Parameter Name="com_cstdate" Type="System.DateTime" DbType="Date" />
-    <Parameter Name="com_pan" Type="System.String" DbType="NVarChar(50)" />
-    <Parameter Name="com_gstin" Type="System.String" DbType="NVarChar(100)" />
-    <Parameter Name="com_bankname" Type="System.String" DbType="NVarChar(100)" />
-    <Parameter Name="com_branch" Type="System.String" DbType="NVarChar(100)" />
-    <Parameter Name="com_fssai" Type="System.String" DbType="NVarChar(100)" />
-    <Parameter Name="com_accountnumber" Type="System.String" DbType="NVarChar(100)" />
-    <Return Type="System.Int32" />
-  </Function>
-  <Function Name="dbo.usp_companySelect" Method="usp_companySelect">
-    <Parameter Name="com_id" Type="System.Int64" DbType="BigInt" />
-    <ElementType Name="usp_companySelectResult">
-      <Column Name="com_id" Type="System.Int64" DbType="BigInt NOT NULL" CanBeNull="false" />
-      <Column Name="com_name" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
-      <Column Name="com_add1" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
-      <Column Name="com_add2" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
-      <Column Name="com_add3" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
-      <Column Name="com_city" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
-      <Column Name="com_state" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
-      <Column Name="com_country" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
-      <Column Name="com_phone" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
-      <Column Name="com_mobile1" Type="System.String" DbType="NVarChar(15)" CanBeNull="true" />
-      <Column Name="com_mobile2" Type="System.String" DbType="NVarChar(15)" CanBeNull="true" />
-      <Column Name="com_fax" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
-      <Column Name="com_pin" Type="System.String" DbType="NVarChar(7)" CanBeNull="true" />
-      <Column Name="com_email" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
-      <Column Name="com_web" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
-      <Column Name="com_default" Type="System.Char" DbType="Char(1)" CanBeNull="true" />
-      <Column Name="com_tin" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
-      <Column Name="com_cstdate" Type="System.DateTime" DbType="Date" CanBeNull="true" />
-      <Column Name="com_cst" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
-      <Column Name="com_pan" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
-      <Column Name="com_gstin" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
-      <Column Name="com_bankname" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
-      <Column Name="com_branch" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
-      <Column Name="com_fssai" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
-      <Column Name="com_accountnumber" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
-    </ElementType>
-  </Function>
-  <Function Name="dbo.usp_companyUpdate" Method="usp_companyUpdate">
-    <Parameter Name="com_id" Type="System.Int64" DbType="BigInt" />
-    <Parameter Name="com_name" Type="System.String" DbType="NVarChar(100)" />
-    <Parameter Name="com_add1" Type="System.String" DbType="NVarChar(50)" />
-    <Parameter Name="com_add2" Type="System.String" DbType="NVarChar(50)" />
-    <Parameter Name="com_add3" Type="System.String" DbType="NVarChar(50)" />
-    <Parameter Name="com_city" Type="System.String" DbType="NVarChar(50)" />
-    <Parameter Name="com_state" Type="System.String" DbType="NVarChar(50)" />
-    <Parameter Name="com_country" Type="System.String" DbType="NVarChar(50)" />
-    <Parameter Name="com_phone" Type="System.String" DbType="NVarChar(50)" />
-    <Parameter Name="com_mobile1" Type="System.String" DbType="NVarChar(15)" />
-    <Parameter Name="com_mobile2" Type="System.String" DbType="NVarChar(15)" />
-    <Parameter Name="com_fax" Type="System.String" DbType="NVarChar(50)" />
-    <Parameter Name="com_pin" Type="System.String" DbType="NVarChar(7)" />
-    <Parameter Name="com_email" Type="System.String" DbType="NVarChar(50)" />
-    <Parameter Name="com_web" Type="System.String" DbType="NVarChar(50)" />
-    <Parameter Name="com_default" Type="System.Char" DbType="Char(1)" />
-    <Parameter Name="com_tin" Type="System.String" DbType="NVarChar(50)" />
-    <Parameter Name="com_cst" Type="System.String" DbType="NVarChar(50)" />
-    <Parameter Name="com_cstdate" Type="System.DateTime" DbType="Date" />
-    <Parameter Name="com_pan" Type="System.String" DbType="NVarChar(50)" />
-    <Parameter Name="com_gstin" Type="System.String" DbType="NVarChar(100)" />
-    <Parameter Name="com_bankname" Type="System.String" DbType="NVarChar(100)" />
-    <Parameter Name="com_branch" Type="System.String" DbType="NVarChar(100)" />
-    <Parameter Name="com_fssai" Type="System.String" DbType="NVarChar(100)" />
-    <Parameter Name="com_accountnumber" Type="System.String" DbType="NVarChar(100)" />
-    <Return Type="System.Int32" />
   </Function>
   <Function Name="dbo.usp_itemInsert" Method="usp_itemInsert">
     <Parameter Name="item_code" Type="System.String" DbType="NVarChar(100)" />
@@ -2063,6 +1705,410 @@
       <Column Name="users_uid" Type="System.Int64" DbType="BigInt" CanBeNull="true" />
       <Column Name="com_id" Type="System.Int64" DbType="BigInt" CanBeNull="true" />
       <Column Name="item_udate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+    </ElementType>
+  </Function>
+  <Function Name="dbo.usp_companyInsert" Method="usp_companyInsert">
+    <Parameter Name="com_name" Type="System.String" DbType="NVarChar(100)" />
+    <Parameter Name="com_add1" Type="System.String" DbType="NVarChar(50)" />
+    <Parameter Name="com_add2" Type="System.String" DbType="NVarChar(50)" />
+    <Parameter Name="com_add3" Type="System.String" DbType="NVarChar(50)" />
+    <Parameter Name="com_city" Type="System.String" DbType="NVarChar(50)" />
+    <Parameter Name="com_state" Type="System.String" DbType="NVarChar(50)" />
+    <Parameter Name="com_country" Type="System.String" DbType="NVarChar(50)" />
+    <Parameter Name="com_phone" Type="System.String" DbType="NVarChar(50)" />
+    <Parameter Name="com_mobile1" Type="System.String" DbType="NVarChar(15)" />
+    <Parameter Name="com_mobile2" Type="System.String" DbType="NVarChar(15)" />
+    <Parameter Name="com_fax" Type="System.String" DbType="NVarChar(50)" />
+    <Parameter Name="com_pin" Type="System.String" DbType="NVarChar(7)" />
+    <Parameter Name="com_email" Type="System.String" DbType="NVarChar(50)" />
+    <Parameter Name="com_web" Type="System.String" DbType="NVarChar(50)" />
+    <Parameter Name="com_default" Type="System.Char" DbType="Char(1)" />
+    <Parameter Name="com_tin" Type="System.String" DbType="NVarChar(50)" />
+    <Parameter Name="com_cst" Type="System.String" DbType="NVarChar(50)" />
+    <Parameter Name="com_cstdate" Type="System.DateTime" DbType="Date" />
+    <Parameter Name="com_pan" Type="System.String" DbType="NVarChar(50)" />
+    <Parameter Name="com_gstin" Type="System.String" DbType="NVarChar(100)" />
+    <Parameter Name="com_bankname" Type="System.String" DbType="NVarChar(100)" />
+    <Parameter Name="com_branch" Type="System.String" DbType="NVarChar(100)" />
+    <Parameter Name="com_fssai" Type="System.String" DbType="NVarChar(100)" />
+    <Parameter Name="com_accountnumber" Type="System.String" DbType="NVarChar(100)" />
+    <Parameter Name="com_code" Type="System.Int32" DbType="Int" />
+    <Return Type="System.Int32" />
+  </Function>
+  <Function Name="dbo.usp_companyUpdate" Method="usp_companyUpdate">
+    <Parameter Name="com_id" Type="System.Int64" DbType="BigInt" />
+    <Parameter Name="com_name" Type="System.String" DbType="NVarChar(100)" />
+    <Parameter Name="com_add1" Type="System.String" DbType="NVarChar(50)" />
+    <Parameter Name="com_add2" Type="System.String" DbType="NVarChar(50)" />
+    <Parameter Name="com_add3" Type="System.String" DbType="NVarChar(50)" />
+    <Parameter Name="com_city" Type="System.String" DbType="NVarChar(50)" />
+    <Parameter Name="com_state" Type="System.String" DbType="NVarChar(50)" />
+    <Parameter Name="com_country" Type="System.String" DbType="NVarChar(50)" />
+    <Parameter Name="com_phone" Type="System.String" DbType="NVarChar(50)" />
+    <Parameter Name="com_mobile1" Type="System.String" DbType="NVarChar(15)" />
+    <Parameter Name="com_mobile2" Type="System.String" DbType="NVarChar(15)" />
+    <Parameter Name="com_fax" Type="System.String" DbType="NVarChar(50)" />
+    <Parameter Name="com_pin" Type="System.String" DbType="NVarChar(7)" />
+    <Parameter Name="com_email" Type="System.String" DbType="NVarChar(50)" />
+    <Parameter Name="com_web" Type="System.String" DbType="NVarChar(50)" />
+    <Parameter Name="com_default" Type="System.Char" DbType="Char(1)" />
+    <Parameter Name="com_tin" Type="System.String" DbType="NVarChar(50)" />
+    <Parameter Name="com_cst" Type="System.String" DbType="NVarChar(50)" />
+    <Parameter Name="com_cstdate" Type="System.DateTime" DbType="Date" />
+    <Parameter Name="com_pan" Type="System.String" DbType="NVarChar(50)" />
+    <Parameter Name="com_gstin" Type="System.String" DbType="NVarChar(100)" />
+    <Parameter Name="com_bankname" Type="System.String" DbType="NVarChar(100)" />
+    <Parameter Name="com_branch" Type="System.String" DbType="NVarChar(100)" />
+    <Parameter Name="com_fssai" Type="System.String" DbType="NVarChar(100)" />
+    <Parameter Name="com_accountnumber" Type="System.String" DbType="NVarChar(100)" />
+    <Parameter Name="com_code" Type="System.Int32" DbType="Int" />
+    <Return Type="System.Int32" />
+  </Function>
+  <Function Name="dbo.usp_ledgermasterInsert" Method="usp_ledgermasterInsert">
+    <Parameter Name="led_agid" Type="System.Int64" DbType="BigInt" />
+    <Parameter Name="led_accountcode" Type="System.String" DbType="NVarChar(100)" />
+    <Parameter Name="led_accounttype" Type="System.String" DbType="NVarChar(100)" />
+    <Parameter Name="led_name" Type="System.String" DbType="NVarChar(100)" />
+    <Parameter Name="led_address" Type="System.String" DbType="NVarChar(100)" />
+    <Parameter Name="led_address1" Type="System.String" DbType="NVarChar(100)" />
+    <Parameter Name="led_address2" Type="System.String" DbType="NVarChar(100)" />
+    <Parameter Name="led_state" Type="System.String" DbType="NVarChar(100)" />
+    <Parameter Name="led_tname" Type="System.String" DbType="NVarChar(100)" />
+    <Parameter Name="led_taddress" Type="System.String" DbType="NVarChar(100)" />
+    <Parameter Name="led_taddress1" Type="System.String" DbType="NVarChar(100)" />
+    <Parameter Name="led_taddress2" Type="System.String" DbType="NVarChar(100)" />
+    <Parameter Name="led_pincode" Type="System.String" DbType="NVarChar(100)" />
+    <Parameter Name="led_transport" Type="System.String" DbType="NVarChar(100)" />
+    <Parameter Name="led_ownerphone" Type="System.String" DbType="NVarChar(100)" />
+    <Parameter Name="led_ownername" Type="System.String" DbType="NVarChar(100)" />
+    <Parameter Name="led_managername" Type="System.String" DbType="NVarChar(100)" />
+    <Parameter Name="led_managerphone" Type="System.String" DbType="NVarChar(100)" />
+    <Parameter Name="led_deliveryorder" Type="System.String" DbType="NVarChar(100)" />
+    <Parameter Name="led_tin" Type="System.String" DbType="NVarChar(100)" />
+    <Parameter Name="led_isfreight" Type="System.Boolean" DbType="Bit" />
+    <Parameter Name="led_cst" Type="System.String" DbType="NVarChar(100)" />
+    <Parameter Name="led_refno" Type="System.String" DbType="NVarChar(100)" />
+    <Parameter Name="users_uid" Type="System.Int64" DbType="BigInt" />
+    <Parameter Name="com_id" Type="System.Int64" DbType="BigInt" />
+    <Parameter Name="rt_id" Type="System.Int64" DbType="BigInt" />
+    <Parameter Name="led_udate" Type="System.DateTime" DbType="DateTime" />
+    <Parameter Name="led_ratetype" Type="System.String" DbType="NVarChar(100)" />
+    <Parameter Name="led_disper" Type="System.Decimal" DbType="Decimal(8,2)" />
+    <ElementType Name="usp_ledgermasterInsertResult">
+      <Column Name="led_id" Type="System.Int64" DbType="BigInt NOT NULL" CanBeNull="false" />
+      <Column Name="led_agid" Type="System.Int64" DbType="BigInt" CanBeNull="true" />
+      <Column Name="led_accountcode" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="led_accounttype" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="led_name" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="led_address" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="led_address1" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="led_address2" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="led_state" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="led_tname" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="led_taddress" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="led_taddress1" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="led_taddress2" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="led_pincode" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="led_transport" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="led_ownerphone" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="led_ownername" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="led_managername" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="led_managerphone" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="led_deliveryorder" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="led_tin" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="led_isfreight" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="led_cst" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="led_refno" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="users_uid" Type="System.Int64" DbType="BigInt" CanBeNull="true" />
+      <Column Name="com_id" Type="System.Int64" DbType="BigInt" CanBeNull="true" />
+      <Column Name="rt_id" Type="System.Int64" DbType="BigInt" CanBeNull="true" />
+      <Column Name="led_udate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="led_ratetype" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="led_disper" Type="System.Decimal" DbType="Decimal(8,2) NOT NULL" CanBeNull="false" />
+    </ElementType>
+  </Function>
+  <Function Name="dbo.usp_ledgermasterUpdate" Method="usp_ledgermasterUpdate">
+    <Parameter Name="led_id" Type="System.Int64" DbType="BigInt" />
+    <Parameter Name="led_agid" Type="System.Int64" DbType="BigInt" />
+    <Parameter Name="led_accountcode" Type="System.String" DbType="NVarChar(100)" />
+    <Parameter Name="led_accounttype" Type="System.String" DbType="NVarChar(100)" />
+    <Parameter Name="led_name" Type="System.String" DbType="NVarChar(100)" />
+    <Parameter Name="led_address" Type="System.String" DbType="NVarChar(100)" />
+    <Parameter Name="led_address1" Type="System.String" DbType="NVarChar(100)" />
+    <Parameter Name="led_address2" Type="System.String" DbType="NVarChar(100)" />
+    <Parameter Name="led_state" Type="System.String" DbType="NVarChar(100)" />
+    <Parameter Name="led_tname" Type="System.String" DbType="NVarChar(100)" />
+    <Parameter Name="led_taddress" Type="System.String" DbType="NVarChar(100)" />
+    <Parameter Name="led_taddress1" Type="System.String" DbType="NVarChar(100)" />
+    <Parameter Name="led_taddress2" Type="System.String" DbType="NVarChar(100)" />
+    <Parameter Name="led_pincode" Type="System.String" DbType="NVarChar(100)" />
+    <Parameter Name="led_transport" Type="System.String" DbType="NVarChar(100)" />
+    <Parameter Name="led_ownerphone" Type="System.String" DbType="NVarChar(100)" />
+    <Parameter Name="led_ownername" Type="System.String" DbType="NVarChar(100)" />
+    <Parameter Name="led_managername" Type="System.String" DbType="NVarChar(100)" />
+    <Parameter Name="led_managerphone" Type="System.String" DbType="NVarChar(100)" />
+    <Parameter Name="led_deliveryorder" Type="System.String" DbType="NVarChar(100)" />
+    <Parameter Name="led_tin" Type="System.String" DbType="NVarChar(100)" />
+    <Parameter Name="led_isfreight" Type="System.Boolean" DbType="Bit" />
+    <Parameter Name="led_cst" Type="System.String" DbType="NVarChar(100)" />
+    <Parameter Name="led_refno" Type="System.String" DbType="NVarChar(100)" />
+    <Parameter Name="users_uid" Type="System.Int64" DbType="BigInt" />
+    <Parameter Name="com_id" Type="System.Int64" DbType="BigInt" />
+    <Parameter Name="rt_id" Type="System.Int64" DbType="BigInt" />
+    <Parameter Name="led_udate" Type="System.DateTime" DbType="DateTime" />
+    <Parameter Name="led_ratetype" Type="System.String" DbType="NVarChar(100)" />
+    <Parameter Name="led_disper" Type="System.Decimal" DbType="Decimal(8,2)" />
+    <ElementType Name="usp_ledgermasterUpdateResult">
+      <Column Name="led_id" Type="System.Int64" DbType="BigInt NOT NULL" CanBeNull="false" />
+      <Column Name="led_agid" Type="System.Int64" DbType="BigInt" CanBeNull="true" />
+      <Column Name="led_accountcode" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="led_accounttype" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="led_name" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="led_address" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="led_address1" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="led_address2" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="led_state" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="led_tname" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="led_taddress" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="led_taddress1" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="led_taddress2" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="led_pincode" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="led_transport" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="led_ownerphone" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="led_ownername" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="led_managername" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="led_managerphone" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="led_deliveryorder" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="led_tin" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="led_isfreight" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="led_cst" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="led_refno" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="users_uid" Type="System.Int64" DbType="BigInt" CanBeNull="true" />
+      <Column Name="com_id" Type="System.Int64" DbType="BigInt" CanBeNull="true" />
+      <Column Name="rt_id" Type="System.Int64" DbType="BigInt" CanBeNull="true" />
+      <Column Name="led_udate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="led_ratetype" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="led_disper" Type="System.Decimal" DbType="Decimal(8,2) NOT NULL" CanBeNull="false" />
+    </ElementType>
+  </Function>
+  <Function Name="dbo.usp_ledgermasterSelect" Method="usp_ledgermasterSelect">
+    <Parameter Name="led_id" Type="System.Int64" DbType="BigInt" />
+    <Parameter Name="accounttype" Type="System.String" DbType="NVarChar(50)" />
+    <Parameter Name="searchbyname" Type="System.String" DbType="NVarChar(50)" />
+    <Parameter Name="searchbycode" Type="System.String" DbType="NVarChar(50)" />
+    <Parameter Name="searchbyareacode" Type="System.String" DbType="NVarChar(50)" />
+    <Parameter Name="led_agid" Type="System.Int64" DbType="BigInt" />
+    <ElementType Name="usp_ledgermasterSelectResult">
+      <Column Name="led_id" Type="System.Int64" DbType="BigInt NOT NULL" CanBeNull="false" />
+      <Column Name="led_agid" Type="System.Int64" DbType="BigInt" CanBeNull="true" />
+      <Column Name="led_accountcode" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="led_ratetype" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="led_accounttype" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="led_name" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="led_address" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="led_address1" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="led_address2" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="led_tname" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="led_taddress" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="led_taddress1" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="led_taddress2" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="led_state" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="led_pincode" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="led_transport" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="led_ownerphone" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="led_ownername" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="led_managername" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="led_managerphone" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="led_deliveryorder" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="led_tin" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="led_isfreight" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="led_cst" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="led_disper" Type="System.Decimal" DbType="Decimal(8,2) NOT NULL" CanBeNull="false" />
+      <Column Name="led_refno" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="users_uid" Type="System.Int64" DbType="BigInt" CanBeNull="true" />
+      <Column Name="users_name" Type="System.String" DbType="NVarChar(25)" CanBeNull="true" />
+      <Column Name="com_name" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="com_id" Type="System.Int64" DbType="BigInt" CanBeNull="true" />
+      <Column Name="led_udate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="rt_id" Type="System.Int64" DbType="BigInt NOT NULL" CanBeNull="false" />
+      <Column Name="rt_name" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="rt_vehicleno" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+    </ElementType>
+  </Function>
+  <Function Name="dbo.usp_salesmasterSelect" Method="usp_salesmasterSelect">
+    <Parameter Name="sm_id" Type="System.Int64" DbType="BigInt" />
+    <Parameter Name="led_id" Type="System.Int64" DbType="BigInt" />
+    <Parameter Name="fdate" Type="System.DateTime" DbType="DateTime" />
+    <Parameter Name="tdate" Type="System.DateTime" DbType="DateTime" />
+    <Parameter Name="IsClose" Parameter="isClose" Type="System.Boolean" DbType="Bit" />
+    <Parameter Name="sm_refno" Type="System.Int64" DbType="BigInt" />
+    <ElementType Name="usp_salesmasterSelectResult">
+      <Column Name="sm_id" Type="System.Int64" DbType="BigInt NOT NULL" CanBeNull="false" />
+      <Column Name="sm_bookno" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="sm_refno" Type="System.Int64" DbType="BigInt NOT NULL" CanBeNull="false" />
+      <Column Name="sm_date" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="led_accountcode" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="led_tin" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="led_id" Type="System.Int64" DbType="BigInt" CanBeNull="true" />
+      <Column Name="led_address2" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="led_pincode" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="led_tin1" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="led_cst" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="led_name" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="led_address" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="led_address1" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="led_state" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="led_transport" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="led_ownerphone" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="sm_totqty" Type="System.Decimal" DbType="Decimal(18,3) NOT NULL" CanBeNull="false" />
+      <Column Name="sm_totamount" Type="System.Decimal" DbType="Decimal(18,3) NOT NULL" CanBeNull="false" />
+      <Column Name="sm_itemcount" Type="System.Int64" DbType="BigInt" CanBeNull="true" />
+      <Column Name="sm_profit" Type="System.Decimal" DbType="Decimal(18,3) NOT NULL" CanBeNull="false" />
+      <Column Name="sm_disamount" Type="System.Decimal" DbType="Decimal(18,3) NOT NULL" CanBeNull="false" />
+      <Column Name="sm_packingcharge" Type="System.Decimal" DbType="Decimal(18,3) NOT NULL" CanBeNull="false" />
+      <Column Name="sm_netamount" Type="System.Decimal" DbType="Decimal(18,3) NOT NULL" CanBeNull="false" />
+      <Column Name="sm_received" Type="System.Decimal" DbType="Decimal(18,3) NOT NULL" CanBeNull="false" />
+      <Column Name="sm_paidcommission" Type="System.Decimal" DbType="Decimal(18,3) NOT NULL" CanBeNull="false" />
+      <Column Name="sm_paidcommission1" Type="System.Decimal" DbType="Decimal(18,3) NOT NULL" CanBeNull="false" />
+      <Column Name="sm_iscommissionclose" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="sm_ispackingclose" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="users_uid" Type="System.Int64" DbType="BigInt" CanBeNull="true" />
+      <Column Name="users_name" Type="System.String" DbType="NVarChar(25)" CanBeNull="true" />
+      <Column Name="sm_udate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="sm_desc" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="sm_isclose" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="sm_taxamount" Type="System.Decimal" DbType="Decimal(18,3) NOT NULL" CanBeNull="false" />
+      <Column Name="sm_taxpercentage" Type="System.Decimal" DbType="Decimal(18,3) NOT NULL" CanBeNull="false" />
+      <Column Name="sm_roundamount" Type="System.Decimal" DbType="Decimal(18,3)" CanBeNull="true" />
+    </ElementType>
+  </Function>
+  <Function Name="dbo.usp_companySelect" Method="usp_companySelect">
+    <Parameter Name="com_id" Type="System.Int64" DbType="BigInt" />
+    <ElementType Name="usp_companySelectResult">
+      <Column Name="com_id" Type="System.Int64" DbType="BigInt NOT NULL" CanBeNull="false" />
+      <Column Name="com_name" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="com_add1" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="com_add2" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="com_add3" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="com_city" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="com_state" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="com_country" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="com_phone" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="com_mobile1" Type="System.String" DbType="NVarChar(15)" CanBeNull="true" />
+      <Column Name="com_mobile2" Type="System.String" DbType="NVarChar(15)" CanBeNull="true" />
+      <Column Name="com_fax" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="com_pin" Type="System.String" DbType="NVarChar(7)" CanBeNull="true" />
+      <Column Name="com_email" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="com_web" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="com_default" Type="System.Char" DbType="Char(1)" CanBeNull="true" />
+      <Column Name="com_tin" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="com_cstdate" Type="System.DateTime" DbType="Date" CanBeNull="true" />
+      <Column Name="com_cst" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="com_pan" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="com_gstin" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
+      <Column Name="com_bankname" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
+      <Column Name="com_branch" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
+      <Column Name="com_fssai" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="com_accountnumber" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="com_code" Type="System.Int32" DbType="Int" CanBeNull="true" />
+    </ElementType>
+  </Function>
+  <Function Name="dbo.usp_salesdetailsInsert" Method="usp_salesdetailsInsert">
+    <Parameter Name="sm_id" Type="System.Int64" DbType="BigInt" />
+    <Parameter Name="item_id" Type="System.Int64" DbType="BigInt" />
+    <Parameter Name="sd_qty" Type="System.Decimal" DbType="Decimal(18,3)" />
+    <Parameter Name="sd_rate" Type="System.Decimal" DbType="Decimal(18,3)" />
+    <Parameter Name="sd_costrate" Type="System.Decimal" DbType="Decimal(18,3)" />
+    <Parameter Name="sd_totamount" Type="System.Decimal" DbType="Decimal(18,3)" />
+    <Parameter Name="sd_taxpercentage" Type="System.Decimal" DbType="Decimal(18,3)" />
+    <Parameter Name="sd_taxamount" Type="System.Decimal" DbType="Decimal(18,3)" />
+    <Parameter Name="sd_unit" Type="System.String" DbType="NVarChar(100)" />
+    <Parameter Name="sd_unitvalue" Type="System.Int32" DbType="Int" />
+    <Parameter Name="sd_itemunittype" Type="System.String" DbType="NVarChar(100)" />
+    <ElementType Name="usp_salesdetailsInsertResult">
+      <Column Name="sd_id" Type="System.Int64" DbType="BigInt NOT NULL" CanBeNull="false" />
+      <Column Name="sm_id" Type="System.Int64" DbType="BigInt" CanBeNull="true" />
+      <Column Name="item_id" Type="System.Int64" DbType="BigInt" CanBeNull="true" />
+      <Column Name="sd_qty" Type="System.Decimal" DbType="Decimal(18,3) NOT NULL" CanBeNull="false" />
+      <Column Name="sd_rate" Type="System.Decimal" DbType="Decimal(18,3) NOT NULL" CanBeNull="false" />
+      <Column Name="sd_costrate" Type="System.Decimal" DbType="Decimal(18,3) NOT NULL" CanBeNull="false" />
+      <Column Name="sd_totamount" Type="System.Decimal" DbType="Decimal(18,3) NOT NULL" CanBeNull="false" />
+      <Column Name="sd_taxpercentage" Type="System.Decimal" DbType="Decimal(18,3) NOT NULL" CanBeNull="false" />
+      <Column Name="sd_taxamount" Type="System.Decimal" DbType="Decimal(18,3) NOT NULL" CanBeNull="false" />
+      <Column Name="sd_unit" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="sd_unitvalue" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="sd_itemunittype" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+    </ElementType>
+  </Function>
+  <Function Name="dbo.usp_salesdetailsSelect" Method="usp_salesdetailsSelect">
+    <Parameter Name="sm_id" Type="System.Int64" DbType="BigInt" />
+    <Parameter Name="fdate" Type="System.DateTime" DbType="Date" />
+    <Parameter Name="tdate" Type="System.DateTime" DbType="Date" />
+    <Parameter Name="led_id" Type="System.Int64" DbType="BigInt" />
+    <Parameter Name="item_id" Type="System.Int64" DbType="BigInt" />
+    <Parameter Name="cat_id" Type="System.Int64" DbType="BigInt" />
+    <ElementType Name="usp_salesdetailsSelectResult">
+      <Column Name="sd_id" Type="System.Int64" DbType="BigInt NOT NULL" CanBeNull="false" />
+      <Column Name="sm_id" Type="System.Int64" DbType="BigInt NOT NULL" CanBeNull="false" />
+      <Column Name="sm_refno" Type="System.Int64" DbType="BigInt NOT NULL" CanBeNull="false" />
+      <Column Name="sm_date" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="sm_disamount" Type="System.Decimal" DbType="Decimal(18,3) NOT NULL" CanBeNull="false" />
+      <Column Name="sm_netamount" Type="System.Decimal" DbType="Decimal(18,3) NOT NULL" CanBeNull="false" />
+      <Column Name="sm_packingcharge" Type="System.Decimal" DbType="Decimal(18,3) NOT NULL" CanBeNull="false" />
+      <Column Name="sm_totamount" Type="System.Decimal" DbType="Decimal(18,3) NOT NULL" CanBeNull="false" />
+      <Column Name="sm_profit" Type="System.Decimal" DbType="Decimal(18,3) NOT NULL" CanBeNull="false" />
+      <Column Name="sm_totqty" Type="System.Decimal" DbType="Decimal(18,3) NOT NULL" CanBeNull="false" />
+      <Column Name="led_name" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="led_address" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="led_address1" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="led_address2" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="cat_id" Type="System.Int64" DbType="BigInt NOT NULL" CanBeNull="false" />
+      <Column Name="cat_name" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="item_id" Type="System.Int64" DbType="BigInt NOT NULL" CanBeNull="false" />
+      <Column Name="item_code" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="item_name" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="item_unit" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="item_unittype" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="item_quantity" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="item_purchaserate" Type="System.Decimal" DbType="Decimal(18,3) NOT NULL" CanBeNull="false" />
+      <Column Name="item_costrate" Type="System.Decimal" DbType="Decimal(18,3) NOT NULL" CanBeNull="false" />
+      <Column Name="item_mrp" Type="System.Decimal" DbType="Decimal(18,3) NOT NULL" CanBeNull="false" />
+      <Column Name="item_specialrate" Type="System.Decimal" DbType="Decimal(18,3) NOT NULL" CanBeNull="false" />
+      <Column Name="item_supersepecialrate" Type="System.Decimal" DbType="Decimal(18,3) NOT NULL" CanBeNull="false" />
+      <Column Name="item_wholesalerate" Type="System.Decimal" DbType="Decimal(18,3) NOT NULL" CanBeNull="false" />
+      <Column Name="sd_qty" Type="System.Decimal" DbType="Decimal(18,3) NOT NULL" CanBeNull="false" />
+      <Column Name="sd_rate" Type="System.Decimal" DbType="Decimal(18,3) NOT NULL" CanBeNull="false" />
+      <Column Name="sd_costrate" Type="System.Decimal" DbType="Decimal(18,3) NOT NULL" CanBeNull="false" />
+      <Column Name="sd_totamount" Type="System.Decimal" DbType="Decimal(18,3) NOT NULL" CanBeNull="false" />
+      <Column Name="sd_taxpercentage" Type="System.Decimal" DbType="Decimal(18,3) NOT NULL" CanBeNull="false" />
+      <Column Name="sd_taxamount" Type="System.Decimal" DbType="Decimal(18,3) NOT NULL" CanBeNull="false" />
+      <Column Name="sd_unit" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="sd_unitvalue" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="sd_itemunittype" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+    </ElementType>
+  </Function>
+  <Function Name="dbo.usp_salesdetailsUpdate" Method="usp_salesdetailsUpdate">
+    <Parameter Name="sd_id" Type="System.Int64" DbType="BigInt" />
+    <Parameter Name="sm_id" Type="System.Int64" DbType="BigInt" />
+    <Parameter Name="item_id" Type="System.Int64" DbType="BigInt" />
+    <Parameter Name="sd_qty" Type="System.Decimal" DbType="Decimal(18,3)" />
+    <Parameter Name="sd_rate" Type="System.Decimal" DbType="Decimal(18,3)" />
+    <Parameter Name="sd_costrate" Type="System.Decimal" DbType="Decimal(18,3)" />
+    <Parameter Name="sd_totamount" Type="System.Decimal" DbType="Decimal(18,3)" />
+    <Parameter Name="sd_unit" Type="System.String" DbType="NVarChar(100)" />
+    <Parameter Name="sd_unitvalue" Type="System.Int32" DbType="Int" />
+    <Parameter Name="sd_itemunittype" Type="System.String" DbType="NVarChar(100)" />
+    <ElementType Name="usp_salesdetailsUpdateResult">
+      <Column Name="sd_id" Type="System.Int64" DbType="BigInt NOT NULL" CanBeNull="false" />
+      <Column Name="sm_id" Type="System.Int64" DbType="BigInt" CanBeNull="true" />
+      <Column Name="item_id" Type="System.Int64" DbType="BigInt" CanBeNull="true" />
+      <Column Name="sd_qty" Type="System.Decimal" DbType="Decimal(18,3) NOT NULL" CanBeNull="false" />
+      <Column Name="sd_rate" Type="System.Decimal" DbType="Decimal(18,3) NOT NULL" CanBeNull="false" />
+      <Column Name="sd_costrate" Type="System.Decimal" DbType="Decimal(18,3) NOT NULL" CanBeNull="false" />
+      <Column Name="sd_totamount" Type="System.Decimal" DbType="Decimal(18,3) NOT NULL" CanBeNull="false" />
+      <Column Name="sd_unit" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="sd_unitvalue" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="sd_itemunittype" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
     </ElementType>
   </Function>
 </Database>

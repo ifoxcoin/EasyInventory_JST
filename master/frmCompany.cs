@@ -157,6 +157,8 @@ namespace standard.master
         private Label lblGSTIN;
         private TextBox txtFssai;
         private Label lblFssai;
+        private TextBox txtCode;
+        private Label label1;
         private TabControl tabemp;
 
 		public frmCompany()
@@ -208,6 +210,7 @@ namespace standard.master
             txtBranch.Text = string.Empty;
             txtFssai.Text = string.Empty;
             txtAccNo.Text = string.Empty;
+            txtCode.Text = string.Empty;
             dtpcstdate.Value = global.sysdate;
 			dtpcstdate.Checked = false;
 			cmddelete.Enabled = false;
@@ -269,7 +272,7 @@ namespace standard.master
                     txtBankName.Text = item.com_bankname;
                     txtBranch.Text = item.com_branch;
                     txtFssai.Text = item.com_fssai;
-                    txtAccNo.Text = item.com_fssai;
+                    txtAccNo.Text = item.com_accountnumber;
                     dtpcstdate.Checked = ((!(item.com_cstdate == global.NullDate)) ? true : false);
 					dtpcstdate.Value = (dtpcstdate.Checked ? Convert.ToDateTime(item.com_cstdate) : global.sysdate);
 				}
@@ -304,7 +307,8 @@ namespace standard.master
                 cm.com_branch = txtBranch.Text.Trim();
                 cm.com_fssai = txtFssai.Text.Trim();
                 cm.com_accountnumber = txtAccNo.Text.Trim();
-				cm.com_cstdate = (dtpcstdate.Checked ? dtpcstdate.Value.Date : new DateTime(1900, 1, 1));
+                cm.com_code = Convert.ToInt32(txtCode.Text.Trim());
+                cm.com_cstdate = (dtpcstdate.Checked ? dtpcstdate.Value.Date : new DateTime(1900, 1, 1));
 				InventoryDataContext inventoryDataContext;
 				if (pnlentry.Enabled)
 				{
@@ -316,7 +320,7 @@ namespace standard.master
 					else
 					{
 						inventoryDataContext = new InventoryDataContext();
-						if (cm.com_default == 'Y')
+						if (cm.com_default == 'N')
 						{
 							dbcon dbcon = new dbcon(global.constring);
 							using (dbcon)
@@ -356,14 +360,14 @@ namespace standard.master
 				{
 					if (MessageBox.Show("Are you sure to save?", "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.No)
 					{
-						inventoryDataContext.usp_companyInsert(cm.com_name, cm.com_add1, cm.com_add2, cm.com_add3, cm.com_city, cm.com_state, cm.com_country, cm.com_phone, cm.com_mobile1, cm.com_mobile2, cm.com_fax, cm.com_pin, cm.com_email, cm.com_web, cm.com_default, cm.com_tin, cm.com_cst, cm.com_cstdate, cm.com_pan, cm.com_gstin, cm.com_bankname, cm.com_branch, cm.com_fssai, cm.com_accountnumber);
+						inventoryDataContext.usp_companyInsert(cm.com_name, cm.com_add1, cm.com_add2, cm.com_add3, cm.com_city, cm.com_state, cm.com_country, cm.com_phone, cm.com_mobile1, cm.com_mobile2, cm.com_fax, cm.com_pin, cm.com_email, cm.com_web, cm.com_default, cm.com_tin, cm.com_cst, cm.com_cstdate, cm.com_pan, cm.com_gstin, cm.com_bankname, cm.com_branch, cm.com_fssai, cm.com_accountnumber, cm.com_code);
 						MessageBox.Show("Record saved successfully...", "Information", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
 						goto IL_083f;
 					}
 				}
 				else if (MessageBox.Show("Are you sure to update?", "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.No)
 				{
-					inventoryDataContext.usp_companyUpdate(id, cm.com_name, cm.com_add1, cm.com_add2, cm.com_add3, cm.com_city, cm.com_state, cm.com_country, cm.com_phone, cm.com_mobile1, cm.com_mobile2, cm.com_fax, cm.com_pin, cm.com_email, cm.com_web, cm.com_default, cm.com_tin, cm.com_cst, cm.com_cstdate, cm.com_pan, cm.com_gstin, cm.com_bankname, cm.com_branch, cm.com_fssai, cm.com_accountnumber);
+					inventoryDataContext.usp_companyUpdate(id, cm.com_name, cm.com_add1, cm.com_add2, cm.com_add3, cm.com_city, cm.com_state, cm.com_country, cm.com_phone, cm.com_mobile1, cm.com_mobile2, cm.com_fax, cm.com_pin, cm.com_email, cm.com_web, cm.com_default, cm.com_tin, cm.com_cst, cm.com_cstdate, cm.com_pan, cm.com_gstin, cm.com_bankname, cm.com_branch, cm.com_fssai, cm.com_accountnumber, cm.com_code);
 					MessageBox.Show("Record updated successfully...", "Information", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
 					goto IL_083f;
 				}
@@ -642,6 +646,8 @@ namespace standard.master
             this.lblAccNo = new System.Windows.Forms.Label();
             this.txtBankName = new System.Windows.Forms.TextBox();
             this.lblBankName = new System.Windows.Forms.Label();
+            this.label1 = new System.Windows.Forms.Label();
+            this.txtCode = new System.Windows.Forms.TextBox();
             this.pnlview.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgview)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.companyBindingSource)).BeginInit();
@@ -1048,6 +1054,8 @@ namespace standard.master
             // 
             // tabdetail
             // 
+            this.tabdetail.Controls.Add(this.txtCode);
+            this.tabdetail.Controls.Add(this.label1);
             this.tabdetail.Controls.Add(this.txtFssai);
             this.tabdetail.Controls.Add(this.lblFssai);
             this.tabdetail.Controls.Add(this.txtGSTIN);
@@ -1084,7 +1092,7 @@ namespace standard.master
             this.txtFssai.MaxLength = 50;
             this.txtFssai.Name = "txtFssai";
             this.txtFssai.Size = new System.Drawing.Size(165, 29);
-            this.txtFssai.TabIndex = 71;
+            this.txtFssai.TabIndex = 9;
             this.txtFssai.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtFssai_KeyPress);
             // 
             // lblFssai
@@ -1106,7 +1114,7 @@ namespace standard.master
             this.txtGSTIN.MaxLength = 50;
             this.txtGSTIN.Name = "txtGSTIN";
             this.txtGSTIN.Size = new System.Drawing.Size(165, 29);
-            this.txtGSTIN.TabIndex = 69;
+            this.txtGSTIN.TabIndex = 8;
             // 
             // lblGSTIN
             // 
@@ -1138,17 +1146,17 @@ namespace standard.master
             // 
             // txtpin
             // 
-            this.txtpin.Location = new System.Drawing.Point(111, 191);
+            this.txtpin.Location = new System.Drawing.Point(111, 291);
             this.txtpin.Mask = "000-000";
             this.txtpin.Name = "txtpin";
             this.txtpin.Size = new System.Drawing.Size(165, 29);
-            this.txtpin.TabIndex = 6;
+            this.txtpin.TabIndex = 10;
             this.txtpin.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtpin_KeyDown);
             // 
             // lblpin
             // 
             this.lblpin.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.lblpin.Location = new System.Drawing.Point(6, 191);
+            this.lblpin.Location = new System.Drawing.Point(6, 295);
             this.lblpin.Name = "lblpin";
             this.lblpin.Size = new System.Drawing.Size(100, 20);
             this.lblpin.TabIndex = 66;
@@ -1487,7 +1495,7 @@ namespace standard.master
             this.txtBranch.MaxLength = 100;
             this.txtBranch.Name = "txtBranch";
             this.txtBranch.Size = new System.Drawing.Size(181, 29);
-            this.txtBranch.TabIndex = 61;
+            this.txtBranch.TabIndex = 2;
             // 
             // lblBranch
             // 
@@ -1508,7 +1516,7 @@ namespace standard.master
             this.txtAccNo.MaxLength = 50;
             this.txtAccNo.Name = "txtAccNo";
             this.txtAccNo.Size = new System.Drawing.Size(180, 29);
-            this.txtAccNo.TabIndex = 59;
+            this.txtAccNo.TabIndex = 1;
             this.txtAccNo.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtAccNo_KeyPress);
             // 
             // lblAccNo
@@ -1527,7 +1535,7 @@ namespace standard.master
             this.txtBankName.MaxLength = 100;
             this.txtBankName.Name = "txtBankName";
             this.txtBankName.Size = new System.Drawing.Size(181, 29);
-            this.txtBankName.TabIndex = 56;
+            this.txtBankName.TabIndex = 0;
             // 
             // lblBankName
             // 
@@ -1538,6 +1546,27 @@ namespace standard.master
             this.lblBankName.TabIndex = 55;
             this.lblBankName.Text = "Bank Name";
             this.lblBankName.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // label1
+            // 
+            this.label1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
+            this.label1.Location = new System.Drawing.Point(6, 194);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(100, 20);
+            this.label1.TabIndex = 72;
+            this.label1.Text = "Code";
+            this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // txtCode
+            // 
+            this.txtCode.BackColor = System.Drawing.Color.White;
+            this.txtCode.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold);
+            this.txtCode.Location = new System.Drawing.Point(111, 190);
+            this.txtCode.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.txtCode.MaxLength = 50;
+            this.txtCode.Name = "txtCode";
+            this.txtCode.Size = new System.Drawing.Size(165, 29);
+            this.txtCode.TabIndex = 6;
             // 
             // frmCompany
             // 
