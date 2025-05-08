@@ -37,6 +37,34 @@
       </ConnectionProperties>
       <rd:DataSourceID>86696b9a-1bbb-4484-9637-86d8ce05609d</rd:DataSourceID>
     </DataSource>
+    <DataSource Name="standardclasses5">
+      <ConnectionProperties>
+        <DataProvider>System.Data.DataSet</DataProvider>
+        <ConnectString>/* Local Connection */</ConnectString>
+      </ConnectionProperties>
+      <rd:DataSourceID>667969e2-edcd-490b-a973-ec9d55657530</rd:DataSourceID>
+    </DataSource>
+    <DataSource Name="standardclasses6">
+      <ConnectionProperties>
+        <DataProvider>System.Data.DataSet</DataProvider>
+        <ConnectString>/* Local Connection */</ConnectString>
+      </ConnectionProperties>
+      <rd:DataSourceID>8efbe819-139b-4235-8f56-29a45c400628</rd:DataSourceID>
+    </DataSource>
+    <DataSource Name="standardclasses7">
+      <ConnectionProperties>
+        <DataProvider>System.Data.DataSet</DataProvider>
+        <ConnectString>/* Local Connection */</ConnectString>
+      </ConnectionProperties>
+      <rd:DataSourceID>0966d6aa-f566-46f6-9c24-ebd9cffbc9ba</rd:DataSourceID>
+    </DataSource>
+    <DataSource Name="standardclasses8">
+      <ConnectionProperties>
+        <DataProvider>System.Data.DataSet</DataProvider>
+        <ConnectString>/* Local Connection */</ConnectString>
+      </ConnectionProperties>
+      <rd:DataSourceID>4cee0991-d0f0-4c65-83da-7e953f23f3e5</rd:DataSourceID>
+    </DataSource>
   </DataSources>
   <DataSets>
     <DataSet Name="usp_salesMasterSelect">
@@ -200,167 +228,6 @@
         <rd:ObjectDataSourceType>standard.classes.usp_salesmasterSelectResult, classes.Inventory.designer.cs.dll, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null</rd:ObjectDataSourceType>
       </rd:DataSetInfo>
     </DataSet>
-    <DataSet Name="usp_salesDetailSelect">
-      <Query>
-        <DataSourceName>standardclasses2</DataSourceName>
-        <CommandText>/* Local Query */</CommandText>
-      </Query>
-      <Fields>
-        <Field Name="cat_id">
-          <DataField>cat_id</DataField>
-          <rd:TypeName>System.Int64</rd:TypeName>
-        </Field>
-        <Field Name="cat_name">
-          <DataField>cat_name</DataField>
-          <rd:TypeName>System.String</rd:TypeName>
-        </Field>
-        <Field Name="item_code">
-          <DataField>item_code</DataField>
-          <rd:TypeName>System.String</rd:TypeName>
-        </Field>
-        <Field Name="item_costrate">
-          <DataField>item_costrate</DataField>
-          <rd:TypeName>System.Decimal</rd:TypeName>
-        </Field>
-        <Field Name="item_id">
-          <DataField>item_id</DataField>
-          <rd:TypeName>System.Int64</rd:TypeName>
-        </Field>
-        <Field Name="item_mrp">
-          <DataField>item_mrp</DataField>
-          <rd:TypeName>System.Decimal</rd:TypeName>
-        </Field>
-        <Field Name="item_name">
-          <DataField>item_name</DataField>
-          <rd:TypeName>System.String</rd:TypeName>
-        </Field>
-        <Field Name="item_purchaserate">
-          <DataField>item_purchaserate</DataField>
-          <rd:TypeName>System.Decimal</rd:TypeName>
-        </Field>
-        <Field Name="item_quantity">
-          <DataField>item_quantity</DataField>
-          <rd:TypeName>System.Int32</rd:TypeName>
-        </Field>
-        <Field Name="item_specialrate">
-          <DataField>item_specialrate</DataField>
-          <rd:TypeName>System.Decimal</rd:TypeName>
-        </Field>
-        <Field Name="item_supersepecialrate">
-          <DataField>item_supersepecialrate</DataField>
-          <rd:TypeName>System.Decimal</rd:TypeName>
-        </Field>
-        <Field Name="item_unit">
-          <DataField>item_unit</DataField>
-          <rd:TypeName>System.String</rd:TypeName>
-        </Field>
-        <Field Name="item_unittype">
-          <DataField>item_unittype</DataField>
-          <rd:TypeName>System.String</rd:TypeName>
-        </Field>
-        <Field Name="item_wholesalerate">
-          <DataField>item_wholesalerate</DataField>
-          <rd:TypeName>System.Decimal</rd:TypeName>
-        </Field>
-        <Field Name="led_address">
-          <DataField>led_address</DataField>
-          <rd:TypeName>System.String</rd:TypeName>
-        </Field>
-        <Field Name="led_address1">
-          <DataField>led_address1</DataField>
-          <rd:TypeName>System.String</rd:TypeName>
-        </Field>
-        <Field Name="led_address2">
-          <DataField>led_address2</DataField>
-          <rd:TypeName>System.String</rd:TypeName>
-        </Field>
-        <Field Name="led_name">
-          <DataField>led_name</DataField>
-          <rd:TypeName>System.String</rd:TypeName>
-        </Field>
-        <Field Name="sd_costrate">
-          <DataField>sd_costrate</DataField>
-          <rd:TypeName>System.Decimal</rd:TypeName>
-        </Field>
-        <Field Name="sd_id">
-          <DataField>sd_id</DataField>
-          <rd:TypeName>System.Int64</rd:TypeName>
-        </Field>
-        <Field Name="sd_itemunittype">
-          <DataField>sd_itemunittype</DataField>
-          <rd:TypeName>System.String</rd:TypeName>
-        </Field>
-        <Field Name="sd_qty">
-          <DataField>sd_qty</DataField>
-          <rd:TypeName>System.Decimal</rd:TypeName>
-        </Field>
-        <Field Name="sd_rate">
-          <DataField>sd_rate</DataField>
-          <rd:TypeName>System.Decimal</rd:TypeName>
-        </Field>
-        <Field Name="sd_taxamount">
-          <DataField>sd_taxamount</DataField>
-          <rd:TypeName>System.Decimal</rd:TypeName>
-        </Field>
-        <Field Name="sd_taxpercentage">
-          <DataField>sd_taxpercentage</DataField>
-          <rd:TypeName>System.Decimal</rd:TypeName>
-        </Field>
-        <Field Name="sd_totamount">
-          <DataField>sd_totamount</DataField>
-          <rd:TypeName>System.Decimal</rd:TypeName>
-        </Field>
-        <Field Name="sd_unit">
-          <DataField>sd_unit</DataField>
-          <rd:TypeName>System.String</rd:TypeName>
-        </Field>
-        <Field Name="sd_unitvalue">
-          <DataField>sd_unitvalue</DataField>
-          <rd:TypeName>System.Int32</rd:TypeName>
-        </Field>
-        <Field Name="sm_date">
-          <DataField>sm_date</DataField>
-          <rd:TypeName>System.Nullable`1[[System.DateTime, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]</rd:TypeName>
-        </Field>
-        <Field Name="sm_disamount">
-          <DataField>sm_disamount</DataField>
-          <rd:TypeName>System.Decimal</rd:TypeName>
-        </Field>
-        <Field Name="sm_id">
-          <DataField>sm_id</DataField>
-          <rd:TypeName>System.Int64</rd:TypeName>
-        </Field>
-        <Field Name="sm_netamount">
-          <DataField>sm_netamount</DataField>
-          <rd:TypeName>System.Decimal</rd:TypeName>
-        </Field>
-        <Field Name="sm_packingcharge">
-          <DataField>sm_packingcharge</DataField>
-          <rd:TypeName>System.Decimal</rd:TypeName>
-        </Field>
-        <Field Name="sm_profit">
-          <DataField>sm_profit</DataField>
-          <rd:TypeName>System.Decimal</rd:TypeName>
-        </Field>
-        <Field Name="sm_refno">
-          <DataField>sm_refno</DataField>
-          <rd:TypeName>System.Int64</rd:TypeName>
-        </Field>
-        <Field Name="sm_totamount">
-          <DataField>sm_totamount</DataField>
-          <rd:TypeName>System.Decimal</rd:TypeName>
-        </Field>
-        <Field Name="sm_totqty">
-          <DataField>sm_totqty</DataField>
-          <rd:TypeName>System.Decimal</rd:TypeName>
-        </Field>
-      </Fields>
-      <rd:DataSetInfo>
-        <rd:DataSetName>standard.classes</rd:DataSetName>
-        <rd:TableName>usp_salesdetailsSelectResult</rd:TableName>
-        <rd:ObjectDataSourceType>standard.classes.usp_salesdetailsSelectResult, classes.Inventory.designer.cs.dll, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null</rd:ObjectDataSourceType>
-      </rd:DataSetInfo>
-    </DataSet>
     <DataSet Name="usp_companySelect">
       <Query>
         <DataSourceName>standardclasses4</DataSourceName>
@@ -478,6 +345,191 @@
         <rd:ObjectDataSourceType>standard.classes.company, classes.Inventory.designer.cs.dll, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null</rd:ObjectDataSourceType>
       </rd:DataSetInfo>
     </DataSet>
+    <DataSet Name="usp_salesDetailSelect">
+      <Query>
+        <DataSourceName>standardclasses8</DataSourceName>
+        <CommandText>/* Local Query */</CommandText>
+      </Query>
+      <Fields>
+        <Field Name="cat_id">
+          <DataField>cat_id</DataField>
+          <rd:TypeName>System.Int64</rd:TypeName>
+        </Field>
+        <Field Name="cat_name">
+          <DataField>cat_name</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="com_id">
+          <DataField>com_id</DataField>
+          <rd:TypeName>System.Int64</rd:TypeName>
+        </Field>
+        <Field Name="com_name">
+          <DataField>com_name</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="item_code">
+          <DataField>item_code</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="item_costrate">
+          <DataField>item_costrate</DataField>
+          <rd:TypeName>System.Decimal</rd:TypeName>
+        </Field>
+        <Field Name="item_fullname">
+          <DataField>item_fullname</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="item_id">
+          <DataField>item_id</DataField>
+          <rd:TypeName>System.Int64</rd:TypeName>
+        </Field>
+        <Field Name="item_mrp">
+          <DataField>item_mrp</DataField>
+          <rd:TypeName>System.Decimal</rd:TypeName>
+        </Field>
+        <Field Name="item_name">
+          <DataField>item_name</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="item_perunitrate">
+          <DataField>item_perunitrate</DataField>
+          <rd:TypeName>System.Decimal</rd:TypeName>
+        </Field>
+        <Field Name="item_purchaserate">
+          <DataField>item_purchaserate</DataField>
+          <rd:TypeName>System.Decimal</rd:TypeName>
+        </Field>
+        <Field Name="item_quantity">
+          <DataField>item_quantity</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="item_specialrate">
+          <DataField>item_specialrate</DataField>
+          <rd:TypeName>System.Decimal</rd:TypeName>
+        </Field>
+        <Field Name="item_supersepecialrate">
+          <DataField>item_supersepecialrate</DataField>
+          <rd:TypeName>System.Decimal</rd:TypeName>
+        </Field>
+        <Field Name="item_unit">
+          <DataField>item_unit</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="item_unittype">
+          <DataField>item_unittype</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="item_wholesalerate">
+          <DataField>item_wholesalerate</DataField>
+          <rd:TypeName>System.Decimal</rd:TypeName>
+        </Field>
+        <Field Name="led_address">
+          <DataField>led_address</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="led_address1">
+          <DataField>led_address1</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="led_address2">
+          <DataField>led_address2</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="led_name">
+          <DataField>led_name</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="sd_costrate">
+          <DataField>sd_costrate</DataField>
+          <rd:TypeName>System.Decimal</rd:TypeName>
+        </Field>
+        <Field Name="sd_id">
+          <DataField>sd_id</DataField>
+          <rd:TypeName>System.Int64</rd:TypeName>
+        </Field>
+        <Field Name="sd_itemunittype">
+          <DataField>sd_itemunittype</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="sd_perunitrate">
+          <DataField>sd_perunitrate</DataField>
+          <rd:TypeName>System.Decimal</rd:TypeName>
+        </Field>
+        <Field Name="sd_qty">
+          <DataField>sd_qty</DataField>
+          <rd:TypeName>System.Decimal</rd:TypeName>
+        </Field>
+        <Field Name="sd_rate">
+          <DataField>sd_rate</DataField>
+          <rd:TypeName>System.Decimal</rd:TypeName>
+        </Field>
+        <Field Name="sd_taxamount">
+          <DataField>sd_taxamount</DataField>
+          <rd:TypeName>System.Decimal</rd:TypeName>
+        </Field>
+        <Field Name="sd_taxpercentage">
+          <DataField>sd_taxpercentage</DataField>
+          <rd:TypeName>System.Decimal</rd:TypeName>
+        </Field>
+        <Field Name="sd_totamount">
+          <DataField>sd_totamount</DataField>
+          <rd:TypeName>System.Decimal</rd:TypeName>
+        </Field>
+        <Field Name="sd_totfrieght">
+          <DataField>sd_totfrieght</DataField>
+          <rd:TypeName>System.Decimal</rd:TypeName>
+        </Field>
+        <Field Name="sd_unit">
+          <DataField>sd_unit</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="sd_unitvalue">
+          <DataField>sd_unitvalue</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="sm_date">
+          <DataField>sm_date</DataField>
+          <rd:TypeName>System.Nullable`1[[System.DateTime, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]</rd:TypeName>
+        </Field>
+        <Field Name="sm_disamount">
+          <DataField>sm_disamount</DataField>
+          <rd:TypeName>System.Decimal</rd:TypeName>
+        </Field>
+        <Field Name="sm_id">
+          <DataField>sm_id</DataField>
+          <rd:TypeName>System.Int64</rd:TypeName>
+        </Field>
+        <Field Name="sm_netamount">
+          <DataField>sm_netamount</DataField>
+          <rd:TypeName>System.Decimal</rd:TypeName>
+        </Field>
+        <Field Name="sm_packingcharge">
+          <DataField>sm_packingcharge</DataField>
+          <rd:TypeName>System.Decimal</rd:TypeName>
+        </Field>
+        <Field Name="sm_profit">
+          <DataField>sm_profit</DataField>
+          <rd:TypeName>System.Decimal</rd:TypeName>
+        </Field>
+        <Field Name="sm_refno">
+          <DataField>sm_refno</DataField>
+          <rd:TypeName>System.Int64</rd:TypeName>
+        </Field>
+        <Field Name="sm_totamount">
+          <DataField>sm_totamount</DataField>
+          <rd:TypeName>System.Decimal</rd:TypeName>
+        </Field>
+        <Field Name="sm_totqty">
+          <DataField>sm_totqty</DataField>
+          <rd:TypeName>System.Decimal</rd:TypeName>
+        </Field>
+      </Fields>
+      <rd:DataSetInfo>
+        <rd:DataSetName>standard.classes</rd:DataSetName>
+        <rd:TableName>usp_salesdetailsSelectResult</rd:TableName>
+        <rd:ObjectDataSourceType>standard.classes.usp_salesdetailsSelectResult, classes.Inventory.designer.cs.dll, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null</rd:ObjectDataSourceType>
+      </rd:DataSetInfo>
+    </DataSet>
   </DataSets>
   <ReportSections>
     <ReportSection>
@@ -496,7 +548,7 @@
                         <Style />
                       </TextRun>
                       <TextRun>
-                        <Value>=Sum(Fields!sm_refno.Value, "usp_salesDetailSelect")</Value>
+                        <Value>=First(Fields!sm_refno.Value, "usp_salesDetailSelect")</Value>
                         <Style />
                       </TextRun>
                     </TextRuns>
@@ -757,7 +809,7 @@
                                 <Paragraph>
                                   <TextRuns>
                                     <TextRun>
-                                      <Value>=Format(Fields!sd_rate.Value, "N2")</Value>
+                                      <Value>=Format(Fields!sd_perunitrate.Value, "N2")</Value>
                                       <Style />
                                     </TextRun>
                                   </TextRuns>
@@ -821,7 +873,7 @@
                                 <Paragraph>
                                   <TextRuns>
                                     <TextRun>
-                                      <Value>=Fields!item_name.Value</Value>
+                                      <Value>=Fields!item_fullname.Value</Value>
                                       <Style />
                                     </TextRun>
                                   </TextRuns>
@@ -885,7 +937,7 @@
                                 <Paragraph>
                                   <TextRuns>
                                     <TextRun>
-                                      <Value>=Format(Fields!sd_totamount.Value, "N2")</Value>
+                                      <Value>=Format(Fields!sd_rate.Value * Fields!sd_qty.Value, "N2")</Value>
                                       <Style />
                                     </TextRun>
                                   </TextRuns>
@@ -1050,7 +1102,7 @@
                                 <Paragraph>
                                   <TextRuns>
                                     <TextRun>
-                                      <Value>=sum(Fields!sd_totamount.Value)</Value>
+                                      <Value>=Format(Sum(Fields!sd_rate.Value * Fields!sd_qty.Value), "N2")</Value>
                                       <Style />
                                     </TextRun>
                                   </TextRuns>
@@ -1215,7 +1267,7 @@
                                 <Paragraph>
                                   <TextRuns>
                                     <TextRun>
-                                      <Value>=Fields!sd_taxamount.Value</Value>
+                                      <Value>=FormatNumber(Fields!sd_taxamount.Value,2)</Value>
                                       <Style />
                                     </TextRun>
                                   </TextRuns>
@@ -1380,7 +1432,7 @@
                                 <Paragraph>
                                   <TextRuns>
                                     <TextRun>
-                                      <Value>=sum(Fields!sd_unitvalue.Value * Fields!sd_qty.Value)</Value>
+                                      <Value>=FormatNumber(Fields!sd_totfrieght.Value, 2)</Value>
                                       <Style />
                                     </TextRun>
                                   </TextRuns>
@@ -1545,8 +1597,10 @@
                                 <Paragraph>
                                   <TextRuns>
                                     <TextRun>
-                                      <Value>=(sum(Fields!sd_totamount.Value)) + Fields!sd_taxamount.Value + sum(Fields!sd_qty.Value*Fields!sd_unitvalue.Value)</Value>
-                                      <Style />
+                                      <Value>=FormatNumber((sum(Fields!sd_totamount.Value))  - Fields!sd_totfrieght.Value, 2)</Value>
+                                      <Style>
+                                        <FontWeight>Bold</FontWeight>
+                                      </Style>
                                     </TextRun>
                                   </TextRuns>
                                   <Style>
@@ -1655,15 +1709,18 @@
                   <Paragraph>
                     <TextRuns>
                       <TextRun>
-                        <Value>=Format(First(Fields!sm_date.Value, "usp_salesDetailSelect"),"dd-MM-yy")</Value>
+                        <Value>=Format(First(Fields!sm_date.Value, "usp_salesDetailSelect"),"dd-MM-yyyy")</Value>
                         <Style />
                       </TextRun>
                     </TextRuns>
-                    <Style />
+                    <Style>
+                      <TextAlign>Right</TextAlign>
+                    </Style>
                   </Paragraph>
                 </Paragraphs>
                 <rd:DefaultName>Textbox54</rd:DefaultName>
-                <Left>9.96879cm</Left>
+                <Top>0.03528cm</Top>
+                <Left>14.22167cm</Left>
                 <Height>0.6cm</Height>
                 <Width>2.5cm</Width>
                 <ZIndex>4</ZIndex>

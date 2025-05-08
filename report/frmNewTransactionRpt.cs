@@ -1,22 +1,16 @@
 ﻿using Microsoft.Reporting.WinForms;
-using Microsoft.Reporting.WinForms.Internal;
 using standard.classes;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
-using System.Data.SqlClient;
 using System.Diagnostics;
-using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Windows.Forms;
 
 namespace standard.report
 {
-    public partial class frmTransactionRpt : Form
+    public partial class frmNewTransactionRpt : Form
     {
 
         public string _ReportName = "";
@@ -33,7 +27,7 @@ namespace standard.report
                 _ReportName = value;
             }
         }
-        public frmTransactionRpt()
+        public frmNewTransactionRpt()
         {
             InitializeComponent();
         }
@@ -48,18 +42,7 @@ namespace standard.report
         AutoCompleteStringCollection customerautocompletelist = new AutoCompleteStringCollection();
         private void LoadData()
         {
-            //TimeSpan ts = new TimeSpan(10, 0, 0, 0);
-            //dtpfdate.Value = dtpfdate.Value.Subtract(ts);
-            DateTime todaydate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day);
-
-
-            if (todaydate.Date > new DateTime(DateTime.Now.Year, 04, 01))
-                dtpfdate.Value = new DateTime(DateTime.Now.Year, 04, 01);
-
-            else
-                dtpfdate.Value = new DateTime(DateTime.Now.Year - 1, 04, 01);
-
-
+            dtpfdate.Value = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day);
 
             classes.InventoryDataContext db = new classes.InventoryDataContext();
             using (db)
@@ -81,6 +64,7 @@ namespace standard.report
                 ledgermasterCityBindingSource.DataSource = sup.Select(x => x.led_address2).Distinct();
                 uspledgermasterCustomerCityBindingSource.DataSource = cus.Select(x => x.led_address2).Distinct();
                 uspledgermasterCustomerSelectResultBindingSource.DataSource = db.usp_ledgermasterSelect(null, "CUSTOMER", null, null, null, null);
+                routeBindingSource.DataSource = db.routes.Select((route rt) => rt);
                 foreach (var li in sup)
                 {
                     partyautocompletelist.Add(li.led_name);
@@ -98,13 +82,9 @@ namespace standard.report
 
 
             }
-            if (_ReportName == "Receipt Report" || _ReportName == "Outstanding Report" || _ReportName == "Ledger Outstanding Report" ||_ReportName == "Supplier Outstanding Report")
+            if (_ReportName == "Receipt Report" || _ReportName == "Outstanding Report" || _ReportName == "Ledger Outstanding Report" || _ReportName == "Supplier Outstanding Report")
             {
-                chkIsSummary.Visible = false;
-                lblPartyType.Visible = false;
-                cboPartyType.Visible = false;
                 lblReference.Visible = false;
-                cboReference.Visible = false;
                 txtCityNames.Visible = false;
                 btnAddSearch.Visible = false;
                 btnClear.Visible = false;
@@ -118,43 +98,32 @@ namespace standard.report
             }
             else if (_ReportName == "Ledger Report")
             {
-                chkIsSummary.Visible = false;
                 dtpfdate.Visible = false;
-                dtptdate.Visible = false;
                 lblfdate.Visible = false;
-                lblhyp.Visible = false;
                 cboCity.Visible = false;
                 cboName.Visible = false;
                 lblLedger.Visible = false;
                 lblCity.Visible = false;
                 lblReference.Visible = false;
-                cboReference.Visible = false;
                 txtCityNames.Visible = false;
                 btnAddSearch.Visible = false;
                 btnClear.Visible = false;
                 cboCityName.Visible = false;
                 lblCityName.Visible = false;
-                cboPartyType.SelectedIndex = 0;
             }
             else if (_ReportName == "AgentCommission Report" || _ReportName == "Agent Outstanding Report")
             {
 
 
-                chkIsSummary.Visible = false;
                 dtpfdate.Visible = false;
-                dtptdate.Visible = false;
                 lblfdate.Visible = false;
-                lblhyp.Visible = false;
                 //cboCity.Visible = false; //Arun
                 //lblCity.Visible = false; //Arun
 
                 //cboCity.Visible = false;  //arun
                 //lblCity.Visible = false;  //arun
                 cboCity.SelectedIndex = 1;
-                lblPartyType.Visible = false;
-                cboPartyType.Visible = false;
                 lblReference.Visible = false;
-                cboReference.Visible = false;
 
                 cboName.Visible = true;
                 lblLedger.Visible = true;
@@ -163,10 +132,7 @@ namespace standard.report
             else
             {
                 dtpfdate.Select();
-                lblPartyType.Visible = false;
-                cboPartyType.Visible = false;
                 lblReference.Visible = false;
-                cboReference.Visible = false;
                 txtCityNames.Visible = false;
                 btnAddSearch.Visible = false;
                 btnClear.Visible = false;
@@ -240,7 +206,6 @@ namespace standard.report
                 reportViewer1.LocalReport.Refresh();
                 reportViewer1.LocalReport.DataSources.Clear();
                 int ledid = Convert.ToInt32(cboName.SelectedValue);
-                int agledid = Convert.ToInt32(cboReference.SelectedValue);
                 //   var data = db.usp_ledgermasterSelect(id, null, null, null);
 
                 if (_ReportName == "Purchase Report")
@@ -252,7 +217,7 @@ namespace standard.report
                         //rparam.Add(new ReportParameter("city", cboCity.Text));
                         //rparam.Add(new ReportParameter("partyname", cboName.Text));
                         reportViewer1.RefreshReport();
-                        var data = db.usp_purchasemasterSelect(null, ledid, dtpfdate.Value, dtptdate.Value,null, null);
+                        var data = db.usp_purchasemasterSelect(null, ledid, dtpfdate.Value, null, null, null);
                         var ledgerData = db.usp_ledgermasterSelect(ledid, null, null, null, null, null);
                         reportViewer1.LocalReport.ReportEmbeddedResource = "standard.report.rptPurchaseSummary.rdlc";
                         //reportViewer1.LocalReport.SetParameters(rparam);
@@ -264,7 +229,7 @@ namespace standard.report
                     else
                     {
 
-                        var data = db.usp_purchasedetailsSelect(null, ledid, dtpfdate.Value, dtptdate.Value, null, null);
+                        var data = db.usp_purchasedetailsSelect(null, ledid, dtpfdate.Value, null, null, null);
                         reportViewer1.LocalReport.ReportEmbeddedResource = "standard.report.rptPurchaseDetail.rdlc";
                         ReportDataSource reportsource = new ReportDataSource("DataSet1", data.ToList());
                         reportViewer1.LocalReport.DataSources.Add(reportsource);
@@ -275,7 +240,7 @@ namespace standard.report
                 {
                     if (_ReportType == "Summary")
                     {
-                        var data = db.usp_salesmasterSelect(null, ledid, dtpfdate.Value, dtptdate.Value, null, null,null);
+                        var data = db.usp_salesmasterSelect(null, ledid, dtpfdate.Value, null, null, null, null);
                         var ledgerData = db.usp_ledgermasterSelect(ledid, null, null, null, null, null);
                         reportViewer1.LocalReport.ReportEmbeddedResource = "standard.report.rptSalesSummary.rdlc";
                         ReportDataSource reportsource = new ReportDataSource("DataSet1", data.ToList());
@@ -286,7 +251,7 @@ namespace standard.report
                     }
                     else
                     {
-                        var data = db.usp_salesdetailsSelect(null, dtpfdate.Value, dtptdate.Value, ledid, null, null,null);
+                        var data = db.usp_salesdetailsSelect(null, dtpfdate.Value, null, ledid, null, null, null);
                         reportViewer1.LocalReport.ReportEmbeddedResource = "standard.report.rptSalesDetail.rdlc";
                         ReportDataSource reportsource = new ReportDataSource("DataSet1", data.ToList());
                         reportViewer1.LocalReport.DataSources.Add(reportsource);
@@ -295,7 +260,7 @@ namespace standard.report
                 }
                 else if (_ReportName == "Receipt Report")
                 {
-                    var data = db.usp_receiptSelect(null, ledid, dtpfdate.Value, dtptdate.Value);
+                    var data = db.usp_receiptSelect(null, ledid, dtpfdate.Value, null);
                     reportViewer1.LocalReport.ReportEmbeddedResource = "standard.report.rptReceipt.rdlc";
                     ReportDataSource reportsource = new ReportDataSource("DataSet1", data.ToList());
                     reportViewer1.LocalReport.DataSources.Add(reportsource);
@@ -313,7 +278,7 @@ namespace standard.report
                     //rparam.Add(new ReportParameter("city", cboCity.Text));
                     //rparam.Add(new ReportParameter("partyname", cboName.Text));
                     reportViewer1.RefreshReport();
-                    var data = db.usp_LedgerOutstandingRpt(ledid, dtpfdate.Value, dtptdate.Value);
+                    var data = db.usp_LedgerOutstandingRpt(ledid, dtpfdate.Value, null);
                     var ledgerData = db.usp_ledgermasterSelect(ledid, null, null, null, null, null);
                     reportViewer1.LocalReport.ReportEmbeddedResource = "standard.report.rptLedgersOutstanding.rdlc";
                     //reportViewer1.LocalReport.SetParameters(rparam);
@@ -335,7 +300,7 @@ namespace standard.report
                     //rparam.Add(new ReportParameter("city", cboCity.Text));
                     //rparam.Add(new ReportParameter("partyname", cboName.Text));
                     reportViewer1.RefreshReport();
-                    var data = db.usp_SupplierOutstandingRpt(ledid, dtpfdate.Value, dtptdate.Value);
+                    var data = db.usp_SupplierOutstandingRpt(ledid, dtpfdate.Value, null);
                     var ledgerData = db.usp_ledgermasterSelect(ledid, null, null, null, null, null);
                     reportViewer1.LocalReport.ReportEmbeddedResource = "standard.report.rptSupplierOutstanding.rdlc";
                     //reportViewer1.LocalReport.SetParameters(rparam);
@@ -362,24 +327,13 @@ namespace standard.report
                     ReportDataSource reportsource = new ReportDataSource("DataSet1", data.ToList());
                     reportViewer1.LocalReport.DataSources.Add(reportsource);
                 }
-                else if (_ReportName == "Ledger Report")
+
+                else if (_ReportName == "Customer Load Way Report")
                 {
-                    if (cboPartyType.SelectedIndex <= 0)
-                    {
-                        var data = db.usp_ledgermasterSelect(null, null, null, null, null, null);
-                        reportViewer1.LocalReport.ReportEmbeddedResource = "standard.report.rptLedger.rdlc";
-                        ReportDataSource reportsource = new ReportDataSource("DataSet1", data.ToList());
-                        reportViewer1.LocalReport.DataSources.Add(reportsource);
-                    }
-                    else
-                    {
-                        if (cboPartyType.Text.Trim().ToUpper() != "CUSTOMER")
-                            agledid = 0;
-                        var data = db.usp_ledgermasterSelect(null, cboPartyType.Text, null, null, null, null);
-                        reportViewer1.LocalReport.ReportEmbeddedResource = "standard.report.rptLedger.rdlc";
-                        ReportDataSource reportsource = new ReportDataSource("DataSet1", data.ToList());
-                        reportViewer1.LocalReport.DataSources.Add(reportsource);
-                    }
+                    var data = db.usp_getCutomerByRoute(Convert.ToInt32(cboRoute.SelectedValue.ToString()), dtpfdate.Value.Date).ToList();
+                    reportViewer1.LocalReport.ReportEmbeddedResource = "standard.report.rptSalesLoadWay.rdlc";
+                    ReportDataSource reportsource = new ReportDataSource("usp_getCustomerByRoute", data.ToList());
+                    reportViewer1.LocalReport.DataSources.Add(reportsource);
                 }
                 // reportViewer1.SetDisplayMode(DisplayMode.PrintLayout);
                 reportViewer1.ZoomMode = ZoomMode.Percent;
@@ -408,27 +362,18 @@ namespace standard.report
 
         private void cmdList_Click(object sender, EventArgs e)
         {
-            LoadReport();
-        }
-
-        private void chkIsSummary_CheckedChanged(object sender, EventArgs e)
-        {
-            if (chkIsSummary.Checked == false)
+            if (cboRoute.SelectedIndex <= 0)
             {
-                _ReportType = "Detail";
-                chkIsSummary.Text = "DETAILED";
-                chkIsSummary.BackColor = Color.Green;
-                chkIsSummary.ForeColor = Color.White;
-
+                MessageBox.Show("Please select the route.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                cboRoute.Focus();
+                return;
             }
             else
             {
-                _ReportType = "Summary";
-                chkIsSummary.Text = "SUMMARY";
-                chkIsSummary.BackColor = Color.Red;
-                chkIsSummary.ForeColor = Color.White;
+                LoadReport();
             }
         }
+
 
         private void cmdexit_Click(object sender, EventArgs e)
         {
@@ -441,7 +386,6 @@ namespace standard.report
             //if (cboPartyType.Text.Trim().ToUpper() != "CUSTOMER")
             //{
             lblReference.Visible = false;
-                cboReference.Visible = false;
 
             //}
             //else
@@ -591,12 +535,6 @@ namespace standard.report
                 cmdList_Click(null, null);
         }
 
-        private void dtpfdate_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.KeyCode == Keys.Enter)
-                dtptdate.Focus();
-        }
-
         private void dtptdate_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Enter)
@@ -658,7 +596,7 @@ namespace standard.report
                     cboCityName.DataSource = cityList;
                 }
             }
-            else 
+            else
             {
                 reportViewer1.Reset();
             }
@@ -666,36 +604,36 @@ namespace standard.report
 
         private void btnSend_Click(object sender, EventArgs e)
         {
-           if (reportViewer1.LocalReport.DataSources.Count < 2)
+            if (reportViewer1.LocalReport.DataSources.Count < 2)
             {
                 MessageBox.Show("You have not loaded the report!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
             else
-            { 
-            byte[] reportBytes = reportViewer1.LocalReport.Render("PDF"); // Get report as PDF bytes
-
-            // Get the user's Downloads folder
-            string downloadsPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Downloads");
-            string todayDate = DateTime.Now.ToString("dd-MM-yyyy_HH-mm-ss");
-            string Name = cboName.Text.Trim();
-            string baseFileName = cboCity.Text + "_" + Name + "_" + todayDate + "_" + "receipt";
-            string pdfFilePath = Path.Combine(downloadsPath, baseFileName + ".pdf");
-
-            File.WriteAllBytes(pdfFilePath, reportBytes);
-
-            int ledgerId =Convert.ToInt32( cboName.SelectedValue);
-            // Fetch the phone number from Ledger Master based on the current report
-            string customerPhone = GetCustomerPhoneNumber(ledgerId);
-
-            if (!string.IsNullOrEmpty(customerPhone))
             {
-                SendViaWhatsApp(customerPhone, pdfFilePath); // Send the temp file with the fetched phone number
-            }
-            else
-            {
-                MessageBox.Show("Customer phone number not found!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
+                byte[] reportBytes = reportViewer1.LocalReport.Render("PDF"); // Get report as PDF bytes
+
+                // Get the user's Downloads folder
+                string downloadsPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Downloads");
+                string todayDate = DateTime.Now.ToString("dd-MM-yyyy_HH-mm-ss");
+                string Name = cboName.Text.Trim();
+                string baseFileName = cboCity.Text + "_" + Name + "_" + todayDate + "_" + "receipt";
+                string pdfFilePath = Path.Combine(downloadsPath, baseFileName + ".pdf");
+
+                File.WriteAllBytes(pdfFilePath, reportBytes);
+
+                int ledgerId = Convert.ToInt32(cboName.SelectedValue);
+                // Fetch the phone number from Ledger Master based on the current report
+                string customerPhone = GetCustomerPhoneNumber(ledgerId);
+
+                if (!string.IsNullOrEmpty(customerPhone))
+                {
+                    SendViaWhatsApp(customerPhone, pdfFilePath); // Send the temp file with the fetched phone number
+                }
+                else
+                {
+                    MessageBox.Show("Customer phone number not found!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
             }
         }
 
@@ -725,6 +663,30 @@ namespace standard.report
 
             // Open the file dialog for the user to manually attach the file
             Process.Start("explorer.exe", filePath);
+        }
+
+        private void cmdList_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (cboRoute.SelectedIndex == 0)
+            {
+                MessageBox.Show("Please select the route.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                cboRoute.Focus();
+                return;
+            }
+        }
+
+        private void dtpfdate_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+                cboRoute.Focus();
+        }
+
+        private void cboRoute_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Return)
+            {
+                LoadReport();
+            }
         }
     }
 }

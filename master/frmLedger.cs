@@ -252,8 +252,8 @@ namespace standard.master
 			cboType.SelectedIndex = 0;
 			cboratetype.SelectedIndex = 0;
 			InventoryDataContext inventoryDataContext = new InventoryDataContext();
-            routeBindingSource.DataSource = inventoryDataContext.usp_routeSelect(null,null);
-			uspledgermasterSelectResultBindingSource.DataSource = inventoryDataContext.usp_ledgermasterSelect(null, null, null, null, null, null);
+            routeBindingSource.DataSource = inventoryDataContext.routes.Select((route rt) => rt);
+            uspledgermasterSelectResultBindingSource.DataSource = inventoryDataContext.usp_ledgermasterSelect(null, null, null, null, null, null);
 			ledgermasterBindingSource.DataSource = inventoryDataContext.ledgermasters.Where((ledgermaster li) => li.led_accounttype == "Agent" || li.led_id == 0);
 			FillGridReference();
 		}
@@ -565,11 +565,11 @@ namespace standard.master
 		private void InitializeComponent()
 		{
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle11 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle12 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle13 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle14 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle15 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
             this.a1Paneltitle = new mylib.a1panel();
             this.lbltitle = new System.Windows.Forms.Label();
             this.tblMain = new System.Windows.Forms.TableLayoutPanel();
@@ -632,7 +632,6 @@ namespace standard.master
             this.lblref = new System.Windows.Forms.Label();
             this.cboReference = new System.Windows.Forms.ComboBox();
             this.ledgermasterBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.lbltamil = new System.Windows.Forms.Label();
             this.label19 = new System.Windows.Forms.Label();
             this.txtTamilAdd3 = new System.Windows.Forms.TextBox();
             this.label18 = new System.Windows.Forms.Label();
@@ -645,9 +644,7 @@ namespace standard.master
             this.label22 = new System.Windows.Forms.Label();
             this.txtManagerName = new System.Windows.Forms.TextBox();
             this.txtManagerPhone = new System.Windows.Forms.TextBox();
-            this.txtCst = new System.Windows.Forms.TextBox();
             this.label21 = new System.Windows.Forms.Label();
-            this.cbIsFreight = new System.Windows.Forms.CheckBox();
             this.label23 = new System.Windows.Forms.Label();
             this.txtDisPer = new mylib.decimalbox(this.components);
             this.label12 = new System.Windows.Forms.Label();
@@ -668,6 +665,9 @@ namespace standard.master
             this.lblState = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
             this.txtState = new System.Windows.Forms.TextBox();
+            this.lbltamil = new System.Windows.Forms.Label();
+            this.cbIsFreight = new System.Windows.Forms.CheckBox();
+            this.txtCst = new System.Windows.Forms.TextBox();
             this.tblCommand = new System.Windows.Forms.TableLayoutPanel();
             this.cmdclose = new mylib.lightbutton();
             this.btnClear = new mylib.lightbutton();
@@ -907,22 +907,22 @@ namespace standard.master
             this.dgview.AllowUserToAddRows = false;
             this.dgview.AllowUserToDeleteRows = false;
             this.dgview.AllowUserToResizeRows = false;
-            dataGridViewCellStyle11.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
-            this.dgview.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle11;
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
+            this.dgview.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
             this.dgview.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.dgview.AutoGenerateColumns = false;
             this.dgview.BackgroundColor = System.Drawing.Color.White;
             this.dgview.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            dataGridViewCellStyle12.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle12.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle12.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Bold);
-            dataGridViewCellStyle12.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            dataGridViewCellStyle12.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle12.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle12.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dgview.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle12;
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Bold);
+            dataGridViewCellStyle2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
+            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dgview.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle2;
             this.dgview.ColumnHeadersHeight = 28;
             this.dgview.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
             this.dgview.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
@@ -958,14 +958,14 @@ namespace standard.master
             this.ledudateDataGridViewTextBoxColumn});
             this.dgview.Cursor = System.Windows.Forms.Cursors.Default;
             this.dgview.DataSource = this.uspledgermasterSelectResultBindingSource;
-            dataGridViewCellStyle13.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle13.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle13.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Bold);
-            dataGridViewCellStyle13.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            dataGridViewCellStyle13.SelectionBackColor = System.Drawing.Color.Orange;
-            dataGridViewCellStyle13.SelectionForeColor = System.Drawing.Color.White;
-            dataGridViewCellStyle13.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dgview.DefaultCellStyle = dataGridViewCellStyle13;
+            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle3.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Bold);
+            dataGridViewCellStyle3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
+            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.Color.Orange;
+            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.Color.White;
+            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dgview.DefaultCellStyle = dataGridViewCellStyle3;
             this.dgview.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Bold);
             this.dgview.ImeMode = System.Windows.Forms.ImeMode.NoControl;
             this.dgview.Location = new System.Drawing.Point(5, 517);
@@ -974,17 +974,17 @@ namespace standard.master
             this.dgview.Name = "dgview";
             this.dgview.ReadOnly = true;
             this.dgview.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            dataGridViewCellStyle14.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle14.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle14.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
-            dataGridViewCellStyle14.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle14.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle14.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle14.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dgview.RowHeadersDefaultCellStyle = dataGridViewCellStyle14;
+            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle4.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle4.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
+            dataGridViewCellStyle4.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle4.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle4.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dgview.RowHeadersDefaultCellStyle = dataGridViewCellStyle4;
             this.dgview.RowHeadersVisible = false;
-            dataGridViewCellStyle15.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
-            this.dgview.RowsDefaultCellStyle = dataGridViewCellStyle15;
+            dataGridViewCellStyle5.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
+            this.dgview.RowsDefaultCellStyle = dataGridViewCellStyle5;
             this.dgview.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dgview.Size = new System.Drawing.Size(1836, 481);
             this.dgview.TabIndex = 1;
@@ -1524,20 +1524,6 @@ namespace standard.master
             // 
             this.ledgermasterBindingSource.DataSource = typeof(standard.classes.ledgermaster);
             // 
-            // lbltamil
-            // 
-            this.lbltamil.BackColor = System.Drawing.Color.White;
-            this.lbltamil.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.tblEntry.SetColumnSpan(this.lbltamil, 3);
-            this.lbltamil.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
-            this.lbltamil.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.lbltamil.Location = new System.Drawing.Point(1054, 276);
-            this.lbltamil.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.lbltamil.Name = "lbltamil";
-            this.tblEntry.SetRowSpan(this.lbltamil, 2);
-            this.lbltamil.Size = new System.Drawing.Size(520, 87);
-            this.lbltamil.TabIndex = 22;
-            // 
             // label19
             // 
             this.label19.Anchor = System.Windows.Forms.AnchorStyles.Left;
@@ -1722,20 +1708,6 @@ namespace standard.master
             this.txtManagerPhone.Visible = false;
             this.txtManagerPhone.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtPartyName_KeyDown);
             // 
-            // txtCst
-            // 
-            this.txtCst.BackColor = System.Drawing.Color.White;
-            this.txtCst.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.txtCst.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
-            this.txtCst.Location = new System.Drawing.Point(1579, 235);
-            this.txtCst.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.txtCst.MaxLength = 50;
-            this.txtCst.Name = "txtCst";
-            this.txtCst.Size = new System.Drawing.Size(253, 35);
-            this.txtCst.TabIndex = 23;
-            this.txtCst.Visible = false;
-            this.txtCst.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtPartyName_KeyDown);
-            // 
             // label21
             // 
             this.label21.Anchor = System.Windows.Forms.AnchorStyles.Left;
@@ -1751,20 +1723,6 @@ namespace standard.master
             this.label21.Text = "Cst";
             this.label21.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.label21.Visible = false;
-            // 
-            // cbIsFreight
-            // 
-            this.cbIsFreight.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.cbIsFreight.AutoSize = true;
-            this.cbIsFreight.BackColor = System.Drawing.Color.Transparent;
-            this.cbIsFreight.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
-            this.cbIsFreight.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.cbIsFreight.Location = new System.Drawing.Point(1278, 237);
-            this.cbIsFreight.Name = "cbIsFreight";
-            this.cbIsFreight.Size = new System.Drawing.Size(151, 32);
-            this.cbIsFreight.TabIndex = 31;
-            this.cbIsFreight.Text = "Is Freight";
-            this.cbIsFreight.UseVisualStyleBackColor = false;
             // 
             // label23
             // 
@@ -2051,6 +2009,49 @@ namespace standard.master
             this.txtState.TabIndex = 8;
             this.txtState.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtPartyName_KeyDown);
             // 
+            // lbltamil
+            // 
+            this.lbltamil.BackColor = System.Drawing.Color.White;
+            this.lbltamil.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.tblEntry.SetColumnSpan(this.lbltamil, 3);
+            this.lbltamil.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
+            this.lbltamil.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
+            this.lbltamil.Location = new System.Drawing.Point(1054, 276);
+            this.lbltamil.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lbltamil.Name = "lbltamil";
+            this.tblEntry.SetRowSpan(this.lbltamil, 2);
+            this.lbltamil.Size = new System.Drawing.Size(520, 87);
+            this.lbltamil.TabIndex = 22;
+            // 
+            // cbIsFreight
+            // 
+            this.cbIsFreight.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.cbIsFreight.AutoSize = true;
+            this.cbIsFreight.BackColor = System.Drawing.Color.Transparent;
+            this.cbIsFreight.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
+            this.cbIsFreight.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
+            this.cbIsFreight.Location = new System.Drawing.Point(1278, 237);
+            this.cbIsFreight.Name = "cbIsFreight";
+            this.cbIsFreight.Size = new System.Drawing.Size(151, 32);
+            this.cbIsFreight.TabIndex = 31;
+            this.cbIsFreight.Text = "Is Freight";
+            this.cbIsFreight.UseVisualStyleBackColor = false;
+            this.cbIsFreight.KeyDown += new System.Windows.Forms.KeyEventHandler(this.cbIsFreight_KeyDown);
+            // 
+            // txtCst
+            // 
+            this.txtCst.BackColor = System.Drawing.Color.White;
+            this.txtCst.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.txtCst.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
+            this.txtCst.Location = new System.Drawing.Point(1579, 235);
+            this.txtCst.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.txtCst.MaxLength = 50;
+            this.txtCst.Name = "txtCst";
+            this.txtCst.Size = new System.Drawing.Size(253, 35);
+            this.txtCst.TabIndex = 23;
+            this.txtCst.Visible = false;
+            this.txtCst.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtPartyName_KeyDown);
+            // 
             // tblCommand
             // 
             this.tblCommand.ColumnCount = 5;
@@ -2184,6 +2185,14 @@ namespace standard.master
                 num = null;
             }
             dgview.DataSource = inventoryDataContext.usp_ledgermasterSelect(null, null, txtSearch.Text, txtSearchbyCity.Text, txtSearchByAreaCode.Text, num);
+        }
+
+        private void cbIsFreight_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyData == Keys.Return)
+            {
+                btnSave.Focus();
+            }
         }
     }
 }

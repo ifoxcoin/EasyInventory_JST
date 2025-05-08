@@ -237,6 +237,7 @@ namespace standard.master
             this.txtSearch = new System.Windows.Forms.TextBox();
             this.lblSearch = new System.Windows.Forms.Label();
             this.dgview = new System.Windows.Forms.DataGridView();
+            this.uspRouteSelectResultBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.tblEntry = new System.Windows.Forms.TableLayoutPanel();
             this.label1 = new System.Windows.Forms.Label();
             this.txtRoute = new System.Windows.Forms.TextBox();
@@ -247,7 +248,6 @@ namespace standard.master
             this.btnClear = new mylib.lightbutton();
             this.btnDelete = new mylib.lightbutton();
             this.btnSave = new mylib.lightbutton();
-            this.uspRouteSelectResultBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.cat_udate = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.users_uid = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ccat_id = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -259,9 +259,9 @@ namespace standard.master
             this.tblMain.SuspendLayout();
             this.tblSearch.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgview)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.uspRouteSelectResultBindingSource)).BeginInit();
             this.tblEntry.SuspendLayout();
             this.tblCommand.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.uspRouteSelectResultBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
             // a1Paneltitle
@@ -426,6 +426,10 @@ namespace standard.master
             this.dgview.TabIndex = 4;
             this.dgview.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgview_CellDoubleClick);
             // 
+            // uspRouteSelectResultBindingSource
+            // 
+            this.uspRouteSelectResultBindingSource.DataSource = typeof(standard.classes.usp_routeSelectResult);
+            // 
             // tblEntry
             // 
             this.tblEntry.ColumnCount = 4;
@@ -583,10 +587,6 @@ namespace standard.master
             this.btnSave.UseVisualStyleBackColor = false;
             this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
             // 
-            // uspRouteSelectResultBindingSource
-            // 
-            this.uspRouteSelectResultBindingSource.DataSource = typeof(standard.classes.usp_routeSelectResult);
-            // 
             // cat_udate
             // 
             this.cat_udate.DataPropertyName = "cat_udate";
@@ -627,6 +627,7 @@ namespace standard.master
             this.rtRoute.DataPropertyName = "rt_name";
             this.rtRoute.HeaderText = "Name";
             this.rtRoute.Name = "rtRoute";
+            this.rtRoute.ReadOnly = true;
             this.rtRoute.Width = 200;
             // 
             // rtVehicleNo
@@ -634,6 +635,7 @@ namespace standard.master
             this.rtVehicleNo.DataPropertyName = "rt_vehicleno";
             this.rtVehicleNo.HeaderText = "Vehicle No";
             this.rtVehicleNo.Name = "rtVehicleNo";
+            this.rtVehicleNo.ReadOnly = true;
             this.rtVehicleNo.Width = 200;
             // 
             // frmRoute
@@ -654,11 +656,11 @@ namespace standard.master
             this.tblSearch.ResumeLayout(false);
             this.tblSearch.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgview)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.uspRouteSelectResultBindingSource)).EndInit();
             this.tblEntry.ResumeLayout(false);
             this.tblEntry.PerformLayout();
             this.tblCommand.ResumeLayout(false);
             this.tblCommand.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.uspRouteSelectResultBindingSource)).EndInit();
             this.ResumeLayout(false);
 
 		}

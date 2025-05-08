@@ -118,18 +118,15 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <metadata name="ledgermasterCityBindingSource.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>599, 17</value>
+    <value>696, 17</value>
   </metadata>
   <metadata name="ledgermasterBindingSource.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>311, 17</value>
-  </metadata>
-  <metadata name="companyBindingSource.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>375, 65</value>
-  </metadata>
-  <metadata name="cPerUnitRate.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>True</value>
+    <value>408, 17</value>
   </metadata>
   <metadata name="cItemUnitType.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <metadata name="cCompany.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
   </metadata>
   <metadata name="cTaxPercentage.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
@@ -142,9 +139,6 @@
     <value>True</value>
   </metadata>
   <metadata name="cUnit.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>True</value>
-  </metadata>
-  <metadata name="cFrieghtCharge.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
   </metadata>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
@@ -194,17 +188,39 @@
         16M1RrNMxhkYTB5nYPDH/wHV+egGuV5DCgAAAABJRU5ErkJggg==
 </value>
   </data>
-  <metadata name="uspsalesmasterSelectResultBindingSource.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>918, 17</value>
+  <data name="cConvert.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAAIGNIUk0AAHomAACAhAAA+gAAAIDoAAB1
+        MAAA6mAAADqYAAAXcJy6UTwAAAAHdElNRQfpBQUKMRo0CeS2AAAEaUlEQVRIS61XW2yURRTmRX1UX0AZ
+        ablEYzTGWwABfcAnE5980GhiRPHFGO8PqEhUNDE8KInEGwbaabsohbbWSKIkarRtAAVKsdsWFZrO3rDd
+        S3f/7rLd6zHf/Pv/zMw/a0E9yZfd/XfO+eacOefM+RctsgjjwkQL42IT4yLEuBhjXGQZF9UGcoyLccbF
+        PsbFU4yLVlN/QTEVGBcrGBdvMS7CjIsS44IWANZgY+8wLlaZ9qxiLLqy4SE8MY1fKs4wLjYzLq5qSm6Q
+        Xs242Mm4KFqMXS7mGRe7GBfXWskN0r0WAxLXtwta0uZ+3sBdqM/M9Qo6VHKT9ArGxfsWJd/oht44vTiY
+        ot1hh/rO5SU+H3PopcEU3dsX9zfi6S3r0Ox82DhCl1whftwWXhi6pydOn4ZzFJ2rUL1OAcGjWL5Cu8cc
+        WtfrbuDloRQ98M15uu7iRhB2ZL1GjBJA5gZIH/5umsLpksnVVEbTJdoz7pBTrtGrR9K0pG1KtYmEW6kS
+        v9GMFJ6oUq3DuyqNJEs0kipRolClmiUKkL3jDi0Nnv3bHjFjXIyYpGsOxuXuVQHRK0MpGc6b90UlcO5b
+        jqStURlMFGlVV8QkRmRbQPyY7Ww/+i2nGTk0VaDVB2MydNjYUu4CZ4jfO0ey8qxVEU5F6hgZjyazCcRa
+        +XjJBCVPhmdKdPeBmJooPlo7BW37JUOFiklL8tlD3/5l0wuB+JT6EDX5zE9J/9zw8dxAykwSCXh82/4o
+        fTKao1+n5+XZF5EEilgSDAiDOKkZa3fr9bWjaWqfcOjA2Tzd1R0IVwA3hiK0ridOjxyepm3HMhT6fY5O
+        zMzTjpOztgTLgjhwvgjN4rYpqdDaGUgOK+A9Ngddz8ObQhG69ctoYC3jomIlvn1/TCqg87iGXKMwbq41
+        geaxvDMi12IDlvP1ibVQg+C9k7M0lilT/2SBdgzP0uYfZmhjf4Ju+SJKLXob1ABdZPFXk3niE3O09Via
+        7uuL2zYsQz2sPsQu0Y9VqdTqlCxWZa12nJmjO7tjtnOTuujbniDNnpeJGVgrk0srJ4TmwUPnySnVNHJI
+        vlyn14+mrV5DDyV3KnmxkaDrIVEtiSnLSWsg8OSO7hj9mS1rpKiSd4/P+g3DW4/v8BRR+HqyoOngFsOZ
+        G6R+Awm0TCTH99ELmhGEbShRpKd/nJEbW9kVkUCpoe5Rx6qMZ8qytVq89VsmsFX9E4s/HtVbpielap3+
+        yJZpIFGUvfhsrkxl45ZI5Kv06OFpGyngXxIApshR708vwTLzNXkPn04FL4BmAk//gXTCvBYBDAIXPI/v
+        70/Qsz8npcLanrhsi5GFBoGwOwg0IbUOAoA2+iApvPrzDK3vjdMLAyn6LJyj3nN5CZAhOrbRx4A++liG
+        vT0WJX8D/2HYu0YjNYg98g9srfRfAOGFp/bx1kKOsD/xPw30fngDpJ4Y5MByxsWbjYy/nFeY7V72Lkiq
+        iqnAuFjWiEBXowHgpa3SeGnDd5Dhpe3JS31p+xv+0Q9wWe/D+QAAAABJRU5ErkJggg==
+</value>
+  </data>
+  <metadata name="uspsalesorderSelectResultBindingSource.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>17, 17</value>
   </metadata>
   <metadata name="ledgermasterViewBindingSource.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>1321, 17</value>
+    <value>1015, 17</value>
   </metadata>
   <metadata name="ledgermasteCityViewrBindingSource.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>17, 65</value>
-  </metadata>
-  <metadata name="companyViewBindingSource.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>17, 17</value>
+    <value>1342, 17</value>
   </metadata>
   <data name="$this.Icon" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>

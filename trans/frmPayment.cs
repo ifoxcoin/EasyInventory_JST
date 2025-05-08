@@ -207,7 +207,7 @@ namespace standard.trans
                 usppaymentSelectResultBindingSource.DataSource = inventoryDataContext.usp_paymentSelect(null, null, null, null);
                 cboSupplier.SelectedIndex = -1;
                 long? no = 0L;
-                inventoryDataContext.usp_getYearNo("pay_no", global.sysdate, ref no);
+                inventoryDataContext.usp_getYearNo("pay_no", global.sysdate, ref no,null);
                 txtrecno.Text = Convert.ToString(no);
             }
         }
@@ -278,7 +278,7 @@ namespace standard.trans
                             payment.pay_date = dtprecdate.Value;
                             payment.com_id = 1L;
                             long? no = 0L;
-                            inventoryDataContext.usp_setYearNo("pay_no", global.sysdate, ref no);
+                            inventoryDataContext.usp_setYearNo("pay_no", global.sysdate, ref no,null);
                             foreach (DataGridViewRow item in (IEnumerable)dgvpayment.Rows)
                             {
                                 if (Convert.ToDecimal(item.Cells["cpaid"].Value) > 0m)

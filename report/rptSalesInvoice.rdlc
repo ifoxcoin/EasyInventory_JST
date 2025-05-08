@@ -65,6 +65,13 @@
       </ConnectionProperties>
       <rd:DataSourceID>fcfaf3e9-82b9-4490-bd10-8d4cc5f092d3</rd:DataSourceID>
     </DataSource>
+    <DataSource Name="standardclasses8">
+      <ConnectionProperties>
+        <DataProvider>System.Data.DataSet</DataProvider>
+        <ConnectString>/* Local Connection */</ConnectString>
+      </ConnectionProperties>
+      <rd:DataSourceID>7eb6ed88-b8d6-4c19-b23f-030be8fd4ef7</rd:DataSourceID>
+    </DataSource>
   </DataSources>
   <DataSets>
     <DataSet Name="usp_ledgermasterSelect">
@@ -214,123 +221,6 @@
         <rd:DataSetName>standard.classes</rd:DataSetName>
         <rd:TableName>usp_ledgermasterSelectResult</rd:TableName>
         <rd:ObjectDataSourceType>standard.classes.usp_ledgermasterSelectResult, classes.Inventory.designer.cs.dll, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null</rd:ObjectDataSourceType>
-      </rd:DataSetInfo>
-    </DataSet>
-    <DataSet Name="usp_companySelect">
-      <Query>
-        <DataSourceName>standardclasses4</DataSourceName>
-        <CommandText>/* Local Query */</CommandText>
-      </Query>
-      <Fields>
-        <Field Name="com_accountnumber">
-          <DataField>com_accountnumber</DataField>
-          <rd:TypeName>System.String</rd:TypeName>
-        </Field>
-        <Field Name="com_add1">
-          <DataField>com_add1</DataField>
-          <rd:TypeName>System.String</rd:TypeName>
-        </Field>
-        <Field Name="com_add2">
-          <DataField>com_add2</DataField>
-          <rd:TypeName>System.String</rd:TypeName>
-        </Field>
-        <Field Name="com_add3">
-          <DataField>com_add3</DataField>
-          <rd:TypeName>System.String</rd:TypeName>
-        </Field>
-        <Field Name="com_bankname">
-          <DataField>com_bankname</DataField>
-          <rd:TypeName>System.String</rd:TypeName>
-        </Field>
-        <Field Name="com_branch">
-          <DataField>com_branch</DataField>
-          <rd:TypeName>System.String</rd:TypeName>
-        </Field>
-        <Field Name="com_city">
-          <DataField>com_city</DataField>
-          <rd:TypeName>System.String</rd:TypeName>
-        </Field>
-        <Field Name="com_code">
-          <DataField>com_code</DataField>
-          <rd:TypeName>System.Nullable`1[[System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]</rd:TypeName>
-        </Field>
-        <Field Name="com_country">
-          <DataField>com_country</DataField>
-          <rd:TypeName>System.String</rd:TypeName>
-        </Field>
-        <Field Name="com_cst">
-          <DataField>com_cst</DataField>
-          <rd:TypeName>System.String</rd:TypeName>
-        </Field>
-        <Field Name="com_cstdate">
-          <DataField>com_cstdate</DataField>
-          <rd:TypeName>System.Nullable`1[[System.DateTime, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]</rd:TypeName>
-        </Field>
-        <Field Name="com_default">
-          <DataField>com_default</DataField>
-          <rd:TypeName>System.Nullable`1[[System.Char, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]</rd:TypeName>
-        </Field>
-        <Field Name="com_email">
-          <DataField>com_email</DataField>
-          <rd:TypeName>System.String</rd:TypeName>
-        </Field>
-        <Field Name="com_fax">
-          <DataField>com_fax</DataField>
-          <rd:TypeName>System.String</rd:TypeName>
-        </Field>
-        <Field Name="com_fssai">
-          <DataField>com_fssai</DataField>
-          <rd:TypeName>System.String</rd:TypeName>
-        </Field>
-        <Field Name="com_gstin">
-          <DataField>com_gstin</DataField>
-          <rd:TypeName>System.String</rd:TypeName>
-        </Field>
-        <Field Name="com_id">
-          <DataField>com_id</DataField>
-          <rd:TypeName>System.Int64</rd:TypeName>
-        </Field>
-        <Field Name="com_mobile1">
-          <DataField>com_mobile1</DataField>
-          <rd:TypeName>System.String</rd:TypeName>
-        </Field>
-        <Field Name="com_mobile2">
-          <DataField>com_mobile2</DataField>
-          <rd:TypeName>System.String</rd:TypeName>
-        </Field>
-        <Field Name="com_name">
-          <DataField>com_name</DataField>
-          <rd:TypeName>System.String</rd:TypeName>
-        </Field>
-        <Field Name="com_pan">
-          <DataField>com_pan</DataField>
-          <rd:TypeName>System.String</rd:TypeName>
-        </Field>
-        <Field Name="com_phone">
-          <DataField>com_phone</DataField>
-          <rd:TypeName>System.String</rd:TypeName>
-        </Field>
-        <Field Name="com_pin">
-          <DataField>com_pin</DataField>
-          <rd:TypeName>System.String</rd:TypeName>
-        </Field>
-        <Field Name="com_state">
-          <DataField>com_state</DataField>
-          <rd:TypeName>System.String</rd:TypeName>
-        </Field>
-        <Field Name="com_tin">
-          <DataField>com_tin</DataField>
-          <rd:TypeName>System.String</rd:TypeName>
-        </Field>
-        <Field Name="com_web">
-          <DataField>com_web</DataField>
-          <rd:TypeName>System.String</rd:TypeName>
-        </Field>
-      </Fields>
-      <rd:DataSetInfo>
-        <rd:DataSetName>standard.classes</rd:DataSetName>
-        <rd:TableName>company</rd:TableName>
-        <rd:ObjectDataSourceType>standard.classes.company, classes.Inventory.designer.cs.dll, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null</rd:ObjectDataSourceType>
       </rd:DataSetInfo>
     </DataSet>
     <DataSet Name="usp_minvoiceSelect">
@@ -643,6 +533,123 @@
         <rd:ObjectDataSourceType>standard.classes.usp_salesdetailsSelectResult, classes.Inventory.designer.cs.dll, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null</rd:ObjectDataSourceType>
       </rd:DataSetInfo>
     </DataSet>
+    <DataSet Name="usp_companySelect">
+      <Query>
+        <DataSourceName>standardclasses8</DataSourceName>
+        <CommandText>/* Local Query */</CommandText>
+      </Query>
+      <Fields>
+        <Field Name="com_accountnumber">
+          <DataField>com_accountnumber</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="com_add1">
+          <DataField>com_add1</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="com_add2">
+          <DataField>com_add2</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="com_add3">
+          <DataField>com_add3</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="com_bankname">
+          <DataField>com_bankname</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="com_branch">
+          <DataField>com_branch</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="com_city">
+          <DataField>com_city</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="com_code">
+          <DataField>com_code</DataField>
+          <rd:TypeName>System.Nullable`1[[System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]</rd:TypeName>
+        </Field>
+        <Field Name="com_country">
+          <DataField>com_country</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="com_cst">
+          <DataField>com_cst</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="com_cstdate">
+          <DataField>com_cstdate</DataField>
+          <rd:TypeName>System.Nullable`1[[System.DateTime, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]</rd:TypeName>
+        </Field>
+        <Field Name="com_default">
+          <DataField>com_default</DataField>
+          <rd:TypeName>System.Nullable`1[[System.Char, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]</rd:TypeName>
+        </Field>
+        <Field Name="com_email">
+          <DataField>com_email</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="com_fax">
+          <DataField>com_fax</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="com_fssai">
+          <DataField>com_fssai</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="com_gstin">
+          <DataField>com_gstin</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="com_id">
+          <DataField>com_id</DataField>
+          <rd:TypeName>System.Int64</rd:TypeName>
+        </Field>
+        <Field Name="com_mobile1">
+          <DataField>com_mobile1</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="com_mobile2">
+          <DataField>com_mobile2</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="com_name">
+          <DataField>com_name</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="com_pan">
+          <DataField>com_pan</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="com_phone">
+          <DataField>com_phone</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="com_pin">
+          <DataField>com_pin</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="com_state">
+          <DataField>com_state</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="com_tin">
+          <DataField>com_tin</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="com_web">
+          <DataField>com_web</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+      </Fields>
+      <rd:DataSetInfo>
+        <rd:DataSetName>standard.classes</rd:DataSetName>
+        <rd:TableName>company</rd:TableName>
+        <rd:ObjectDataSourceType>standard.classes.company, classes.Inventory.designer.cs.dll, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null</rd:ObjectDataSourceType>
+      </rd:DataSetInfo>
+    </DataSet>
   </DataSets>
   <ReportSections>
     <ReportSection>
@@ -654,30 +661,30 @@
                 <TablixBody>
                   <TablixColumns>
                     <TablixColumn>
-                      <Width>0.76483in</Width>
+                      <Width>0.71126in</Width>
                     </TablixColumn>
                     <TablixColumn>
-                      <Width>2.54066in</Width>
+                      <Width>2.48709in</Width>
                     </TablixColumn>
                     <TablixColumn>
-                      <Width>0.82955in</Width>
+                      <Width>0.77598in</Width>
                     </TablixColumn>
                     <TablixColumn>
-                      <Width>1in</Width>
+                      <Width>0.94643in</Width>
                     </TablixColumn>
                     <TablixColumn>
-                      <Width>0.74802in</Width>
+                      <Width>0.69445in</Width>
                     </TablixColumn>
                     <TablixColumn>
-                      <Width>0.91468in</Width>
+                      <Width>0.86111in</Width>
                     </TablixColumn>
                     <TablixColumn>
-                      <Width>1.30859in</Width>
+                      <Width>1.25502in</Width>
                     </TablixColumn>
                   </TablixColumns>
                   <TablixRows>
                     <TablixRow>
-                      <Height>0.20369in</Height>
+                      <Height>0.19935in</Height>
                       <TablixCells>
                         <TablixCell>
                           <CellContents>
@@ -968,7 +975,7 @@
                       </TablixCells>
                     </TablixRow>
                     <TablixRow>
-                      <Height>0.29868in</Height>
+                      <Height>0.29434in</Height>
                       <TablixCells>
                         <TablixCell>
                           <CellContents>
@@ -998,6 +1005,12 @@
                                   <Color>LightGrey</Color>
                                   <Style>Solid</Style>
                                 </Border>
+                                <TopBorder>
+                                  <Style>None</Style>
+                                </TopBorder>
+                                <BottomBorder>
+                                  <Style>None</Style>
+                                </BottomBorder>
                                 <PaddingLeft>2pt</PaddingLeft>
                                 <PaddingRight>2pt</PaddingRight>
                                 <PaddingTop>2pt</PaddingTop>
@@ -1015,7 +1028,7 @@
                                 <Paragraph>
                                   <TextRuns>
                                     <TextRun>
-                                      <Value>=Fields!item_name.Value</Value>
+                                      <Value>=Fields!item_name.Value &amp; " " &amp; Fields!item_quantity.Value  &amp; " " &amp; Fields!item_unit.Value</Value>
                                       <Style>
                                         <FontFamily>Tahoma</FontFamily>
                                         <FontSize>9pt</FontSize>
@@ -1032,6 +1045,12 @@
                                   <Color>LightGrey</Color>
                                   <Style>Solid</Style>
                                 </Border>
+                                <TopBorder>
+                                  <Style>None</Style>
+                                </TopBorder>
+                                <BottomBorder>
+                                  <Style>None</Style>
+                                </BottomBorder>
                                 <PaddingLeft>2pt</PaddingLeft>
                                 <PaddingRight>2pt</PaddingRight>
                                 <PaddingTop>2pt</PaddingTop>
@@ -1067,6 +1086,12 @@
                                   <Color>LightGrey</Color>
                                   <Style>Solid</Style>
                                 </Border>
+                                <TopBorder>
+                                  <Style>None</Style>
+                                </TopBorder>
+                                <BottomBorder>
+                                  <Style>None</Style>
+                                </BottomBorder>
                                 <PaddingLeft>2pt</PaddingLeft>
                                 <PaddingRight>2pt</PaddingRight>
                                 <PaddingTop>2pt</PaddingTop>
@@ -1103,6 +1128,12 @@
                                   <Color>LightGrey</Color>
                                   <Style>Solid</Style>
                                 </Border>
+                                <TopBorder>
+                                  <Style>None</Style>
+                                </TopBorder>
+                                <BottomBorder>
+                                  <Style>None</Style>
+                                </BottomBorder>
                                 <PaddingLeft>2pt</PaddingLeft>
                                 <PaddingRight>2pt</PaddingRight>
                                 <PaddingTop>2pt</PaddingTop>
@@ -1138,6 +1169,12 @@
                                   <Color>LightGrey</Color>
                                   <Style>Solid</Style>
                                 </Border>
+                                <TopBorder>
+                                  <Style>None</Style>
+                                </TopBorder>
+                                <BottomBorder>
+                                  <Style>None</Style>
+                                </BottomBorder>
                                 <PaddingLeft>2pt</PaddingLeft>
                                 <PaddingRight>2pt</PaddingRight>
                                 <PaddingTop>2pt</PaddingTop>
@@ -1173,6 +1210,12 @@
                                   <Color>LightGrey</Color>
                                   <Style>Solid</Style>
                                 </Border>
+                                <TopBorder>
+                                  <Style>None</Style>
+                                </TopBorder>
+                                <BottomBorder>
+                                  <Style>None</Style>
+                                </BottomBorder>
                                 <PaddingLeft>2pt</PaddingLeft>
                                 <PaddingRight>2pt</PaddingRight>
                                 <PaddingTop>2pt</PaddingTop>
@@ -1190,7 +1233,7 @@
                                 <Paragraph>
                                   <TextRuns>
                                     <TextRun>
-                                      <Value>=FormatNumber( Fields!sd_totamount.Value,2)</Value>
+                                      <Value>=FormatNumber(Fields!sd_rate.Value * Fields!sd_qty.Value,2)</Value>
                                       <Style>
                                         <FontFamily>Tahoma</FontFamily>
                                         <FontSize>9pt</FontSize>
@@ -1207,6 +1250,12 @@
                                   <Color>LightGrey</Color>
                                   <Style>Solid</Style>
                                 </Border>
+                                <TopBorder>
+                                  <Style>None</Style>
+                                </TopBorder>
+                                <BottomBorder>
+                                  <Style>None</Style>
+                                </BottomBorder>
                                 <PaddingLeft>2pt</PaddingLeft>
                                 <PaddingRight>2pt</PaddingRight>
                                 <PaddingTop>2pt</PaddingTop>
@@ -1218,7 +1267,7 @@
                       </TablixCells>
                     </TablixRow>
                     <TablixRow>
-                      <Height>0.27312in</Height>
+                      <Height>0.26878in</Height>
                       <TablixCells>
                         <TablixCell>
                           <CellContents>
@@ -1245,7 +1294,8 @@
                               <rd:DefaultName>Textbox34</rd:DefaultName>
                               <Style>
                                 <Border>
-                                  <Style>None</Style>
+                                  <Color>LightGrey</Color>
+                                  <Style>Solid</Style>
                                 </Border>
                                 <PaddingLeft>2pt</PaddingLeft>
                                 <PaddingRight>2pt</PaddingRight>
@@ -1278,7 +1328,8 @@
                               <rd:DefaultName>Textbox35</rd:DefaultName>
                               <Style>
                                 <Border>
-                                  <Style>None</Style>
+                                  <Color>LightGrey</Color>
+                                  <Style>Solid</Style>
                                 </Border>
                                 <PaddingLeft>2pt</PaddingLeft>
                                 <PaddingRight>2pt</PaddingRight>
@@ -1313,7 +1364,8 @@
                               <rd:DefaultName>sd_qty</rd:DefaultName>
                               <Style>
                                 <Border>
-                                  <Style>None</Style>
+                                  <Color>LightGrey</Color>
+                                  <Style>Solid</Style>
                                 </Border>
                                 <PaddingLeft>2pt</PaddingLeft>
                                 <PaddingRight>2pt</PaddingRight>
@@ -1348,7 +1400,8 @@
                               <rd:DefaultName>Textbox37</rd:DefaultName>
                               <Style>
                                 <Border>
-                                  <Style>None</Style>
+                                  <Color>LightGrey</Color>
+                                  <Style>Solid</Style>
                                 </Border>
                                 <PaddingLeft>2pt</PaddingLeft>
                                 <PaddingRight>2pt</PaddingRight>
@@ -1383,7 +1436,8 @@
                               <rd:DefaultName>Textbox108</rd:DefaultName>
                               <Style>
                                 <Border>
-                                  <Style>None</Style>
+                                  <Color>LightGrey</Color>
+                                  <Style>Solid</Style>
                                 </Border>
                                 <PaddingLeft>2pt</PaddingLeft>
                                 <PaddingRight>2pt</PaddingRight>
@@ -1402,7 +1456,7 @@
                                 <Paragraph>
                                   <TextRuns>
                                     <TextRun>
-                                      <Value>=FormatNumber(Sum(Fields!sd_taxamount.Value),0)</Value>
+                                      <Value>=Format(Sum(Fields!sd_taxamount.Value),"N2")</Value>
                                       <Style>
                                         <FontFamily>Tahoma</FontFamily>
                                         <FontSize>9pt</FontSize>
@@ -1418,7 +1472,8 @@
                               <rd:DefaultName>Textbox116</rd:DefaultName>
                               <Style>
                                 <Border>
-                                  <Style>None</Style>
+                                  <Color>LightGrey</Color>
+                                  <Style>Solid</Style>
                                 </Border>
                                 <PaddingLeft>2pt</PaddingLeft>
                                 <PaddingRight>2pt</PaddingRight>
@@ -1437,7 +1492,7 @@
                                 <Paragraph>
                                   <TextRuns>
                                     <TextRun>
-                                      <Value>=FormatNumber(sum( Fields!sd_totamount.Value),2)</Value>
+                                      <Value>=Format(sum(Fields!sd_rate.Value * Fields!sd_qty.Value),"N2")</Value>
                                       <Style>
                                         <FontFamily>Tahoma</FontFamily>
                                         <FontSize>9pt</FontSize>
@@ -1453,7 +1508,8 @@
                               <rd:DefaultName>Textbox38</rd:DefaultName>
                               <Style>
                                 <Border>
-                                  <Style>None</Style>
+                                  <Color>LightGrey</Color>
+                                  <Style>Solid</Style>
                                 </Border>
                                 <PaddingLeft>2pt</PaddingLeft>
                                 <PaddingRight>2pt</PaddingRight>
@@ -1466,7 +1522,7 @@
                       </TablixCells>
                     </TablixRow>
                     <TablixRow>
-                      <Height>0.27312in</Height>
+                      <Height>0.26878in</Height>
                       <TablixCells>
                         <TablixCell>
                           <CellContents>
@@ -1566,12 +1622,6 @@
                                   <Color>LightGrey</Color>
                                   <Style>None</Style>
                                 </Border>
-                                <TopBorder>
-                                  <Style>Solid</Style>
-                                </TopBorder>
-                                <BottomBorder>
-                                  <Style>Solid</Style>
-                                </BottomBorder>
                                 <PaddingLeft>2pt</PaddingLeft>
                                 <PaddingRight>2pt</PaddingRight>
                                 <PaddingTop>2pt</PaddingTop>
@@ -1608,12 +1658,6 @@
                                   <Color>LightGrey</Color>
                                   <Style>None</Style>
                                 </Border>
-                                <TopBorder>
-                                  <Style>Solid</Style>
-                                </TopBorder>
-                                <BottomBorder>
-                                  <Style>Solid</Style>
-                                </BottomBorder>
                                 <PaddingLeft>2pt</PaddingLeft>
                                 <PaddingRight>2pt</PaddingRight>
                                 <PaddingTop>2pt</PaddingTop>
@@ -1650,12 +1694,6 @@
                                   <Color>LightGrey</Color>
                                   <Style>None</Style>
                                 </Border>
-                                <TopBorder>
-                                  <Style>Solid</Style>
-                                </TopBorder>
-                                <BottomBorder>
-                                  <Style>Solid</Style>
-                                </BottomBorder>
                                 <PaddingLeft>2pt</PaddingLeft>
                                 <PaddingRight>2pt</PaddingRight>
                                 <PaddingTop>2pt</PaddingTop>
@@ -1690,14 +1728,8 @@
                               <Style>
                                 <Border>
                                   <Color>LightGrey</Color>
-                                  <Style>None</Style>
+                                  <Style>Solid</Style>
                                 </Border>
-                                <TopBorder>
-                                  <Style>Solid</Style>
-                                </TopBorder>
-                                <BottomBorder>
-                                  <Style>Solid</Style>
-                                </BottomBorder>
                                 <PaddingLeft>2pt</PaddingLeft>
                                 <PaddingRight>2pt</PaddingRight>
                                 <PaddingTop>2pt</PaddingTop>
@@ -1732,14 +1764,8 @@
                               <Style>
                                 <Border>
                                   <Color>LightGrey</Color>
-                                  <Style>None</Style>
+                                  <Style>Solid</Style>
                                 </Border>
-                                <TopBorder>
-                                  <Style>Solid</Style>
-                                </TopBorder>
-                                <BottomBorder>
-                                  <Style>Solid</Style>
-                                </BottomBorder>
                                 <PaddingLeft>2pt</PaddingLeft>
                                 <PaddingRight>2pt</PaddingRight>
                                 <PaddingTop>2pt</PaddingTop>
@@ -1751,7 +1777,7 @@
                       </TablixCells>
                     </TablixRow>
                     <TablixRow>
-                      <Height>0.27312in</Height>
+                      <Height>0.26878in</Height>
                       <TablixCells>
                         <TablixCell>
                           <CellContents>
@@ -1851,12 +1877,6 @@
                                   <Color>LightGrey</Color>
                                   <Style>None</Style>
                                 </Border>
-                                <TopBorder>
-                                  <Style>Solid</Style>
-                                </TopBorder>
-                                <BottomBorder>
-                                  <Style>Solid</Style>
-                                </BottomBorder>
                                 <PaddingLeft>2pt</PaddingLeft>
                                 <PaddingRight>2pt</PaddingRight>
                                 <PaddingTop>2pt</PaddingTop>
@@ -1893,12 +1913,6 @@
                                   <Color>LightGrey</Color>
                                   <Style>None</Style>
                                 </Border>
-                                <TopBorder>
-                                  <Style>Solid</Style>
-                                </TopBorder>
-                                <BottomBorder>
-                                  <Style>Solid</Style>
-                                </BottomBorder>
                                 <PaddingLeft>2pt</PaddingLeft>
                                 <PaddingRight>2pt</PaddingRight>
                                 <PaddingTop>2pt</PaddingTop>
@@ -1935,12 +1949,6 @@
                                   <Color>LightGrey</Color>
                                   <Style>None</Style>
                                 </Border>
-                                <TopBorder>
-                                  <Style>Solid</Style>
-                                </TopBorder>
-                                <BottomBorder>
-                                  <Style>Solid</Style>
-                                </BottomBorder>
                                 <PaddingLeft>2pt</PaddingLeft>
                                 <PaddingRight>2pt</PaddingRight>
                                 <PaddingTop>2pt</PaddingTop>
@@ -1975,14 +1983,8 @@
                               <Style>
                                 <Border>
                                   <Color>LightGrey</Color>
-                                  <Style>None</Style>
+                                  <Style>Solid</Style>
                                 </Border>
-                                <TopBorder>
-                                  <Style>Solid</Style>
-                                </TopBorder>
-                                <BottomBorder>
-                                  <Style>Solid</Style>
-                                </BottomBorder>
                                 <PaddingLeft>2pt</PaddingLeft>
                                 <PaddingRight>2pt</PaddingRight>
                                 <PaddingTop>2pt</PaddingTop>
@@ -2017,14 +2019,8 @@
                               <Style>
                                 <Border>
                                   <Color>LightGrey</Color>
-                                  <Style>None</Style>
+                                  <Style>Solid</Style>
                                 </Border>
-                                <TopBorder>
-                                  <Style>Solid</Style>
-                                </TopBorder>
-                                <BottomBorder>
-                                  <Style>Solid</Style>
-                                </BottomBorder>
                                 <PaddingLeft>2pt</PaddingLeft>
                                 <PaddingRight>2pt</PaddingRight>
                                 <PaddingTop>2pt</PaddingTop>
@@ -2036,7 +2032,7 @@
                       </TablixCells>
                     </TablixRow>
                     <TablixRow>
-                      <Height>0.27312in</Height>
+                      <Height>0.26878in</Height>
                       <TablixCells>
                         <TablixCell>
                           <CellContents>
@@ -2171,12 +2167,6 @@
                                   <Color>LightGrey</Color>
                                   <Style>None</Style>
                                 </Border>
-                                <TopBorder>
-                                  <Style>Solid</Style>
-                                </TopBorder>
-                                <BottomBorder>
-                                  <Style>Solid</Style>
-                                </BottomBorder>
                                 <PaddingLeft>2pt</PaddingLeft>
                                 <PaddingRight>2pt</PaddingRight>
                                 <PaddingTop>2pt</PaddingTop>
@@ -2213,12 +2203,6 @@
                                   <Color>LightGrey</Color>
                                   <Style>None</Style>
                                 </Border>
-                                <TopBorder>
-                                  <Style>Solid</Style>
-                                </TopBorder>
-                                <BottomBorder>
-                                  <Style>Solid</Style>
-                                </BottomBorder>
                                 <PaddingLeft>2pt</PaddingLeft>
                                 <PaddingRight>2pt</PaddingRight>
                                 <PaddingTop>2pt</PaddingTop>
@@ -2253,14 +2237,8 @@
                               <Style>
                                 <Border>
                                   <Color>LightGrey</Color>
-                                  <Style>None</Style>
+                                  <Style>Solid</Style>
                                 </Border>
-                                <TopBorder>
-                                  <Style>Solid</Style>
-                                </TopBorder>
-                                <BottomBorder>
-                                  <Style>Solid</Style>
-                                </BottomBorder>
                                 <PaddingLeft>2pt</PaddingLeft>
                                 <PaddingRight>2pt</PaddingRight>
                                 <PaddingTop>2pt</PaddingTop>
@@ -2295,14 +2273,8 @@
                               <Style>
                                 <Border>
                                   <Color>LightGrey</Color>
-                                  <Style>None</Style>
+                                  <Style>Solid</Style>
                                 </Border>
-                                <TopBorder>
-                                  <Style>Solid</Style>
-                                </TopBorder>
-                                <BottomBorder>
-                                  <Style>Solid</Style>
-                                </BottomBorder>
                                 <PaddingLeft>2pt</PaddingLeft>
                                 <PaddingRight>2pt</PaddingRight>
                                 <PaddingTop>2pt</PaddingTop>
@@ -2314,7 +2286,7 @@
                       </TablixCells>
                     </TablixRow>
                     <TablixRow>
-                      <Height>0.27312in</Height>
+                      <Height>0.26878in</Height>
                       <TablixCells>
                         <TablixCell>
                           <CellContents>
@@ -2449,12 +2421,6 @@
                                   <Color>LightGrey</Color>
                                   <Style>None</Style>
                                 </Border>
-                                <TopBorder>
-                                  <Style>Solid</Style>
-                                </TopBorder>
-                                <BottomBorder>
-                                  <Style>Solid</Style>
-                                </BottomBorder>
                                 <PaddingLeft>2pt</PaddingLeft>
                                 <PaddingRight>2pt</PaddingRight>
                                 <PaddingTop>2pt</PaddingTop>
@@ -2491,12 +2457,6 @@
                                   <Color>LightGrey</Color>
                                   <Style>None</Style>
                                 </Border>
-                                <TopBorder>
-                                  <Style>Solid</Style>
-                                </TopBorder>
-                                <BottomBorder>
-                                  <Style>Solid</Style>
-                                </BottomBorder>
                                 <PaddingLeft>2pt</PaddingLeft>
                                 <PaddingRight>2pt</PaddingRight>
                                 <PaddingTop>2pt</PaddingTop>
@@ -2531,14 +2491,8 @@
                               <Style>
                                 <Border>
                                   <Color>LightGrey</Color>
-                                  <Style>None</Style>
+                                  <Style>Solid</Style>
                                 </Border>
-                                <TopBorder>
-                                  <Style>Solid</Style>
-                                </TopBorder>
-                                <BottomBorder>
-                                  <Style>Solid</Style>
-                                </BottomBorder>
                                 <PaddingLeft>2pt</PaddingLeft>
                                 <PaddingRight>2pt</PaddingRight>
                                 <PaddingTop>2pt</PaddingTop>
@@ -2573,14 +2527,8 @@
                               <Style>
                                 <Border>
                                   <Color>LightGrey</Color>
-                                  <Style>None</Style>
+                                  <Style>Solid</Style>
                                 </Border>
-                                <TopBorder>
-                                  <Style>Solid</Style>
-                                </TopBorder>
-                                <BottomBorder>
-                                  <Style>Solid</Style>
-                                </BottomBorder>
                                 <PaddingLeft>2pt</PaddingLeft>
                                 <PaddingRight>2pt</PaddingRight>
                                 <PaddingTop>2pt</PaddingTop>
@@ -2592,7 +2540,7 @@
                       </TablixCells>
                     </TablixRow>
                     <TablixRow>
-                      <Height>0.27312in</Height>
+                      <Height>0.26878in</Height>
                       <TablixCells>
                         <TablixCell>
                           <CellContents>
@@ -2736,13 +2684,6 @@
                                   <Color>LightGrey</Color>
                                   <Style>None</Style>
                                 </Border>
-                                <TopBorder>
-                                  <Style>Solid</Style>
-                                </TopBorder>
-                                <BottomBorder>
-                                  <Color>Gray</Color>
-                                  <Style>Solid</Style>
-                                </BottomBorder>
                                 <PaddingLeft>2pt</PaddingLeft>
                                 <PaddingRight>2pt</PaddingRight>
                                 <PaddingTop>2pt</PaddingTop>
@@ -2779,13 +2720,6 @@
                                   <Color>LightGrey</Color>
                                   <Style>None</Style>
                                 </Border>
-                                <TopBorder>
-                                  <Style>Solid</Style>
-                                </TopBorder>
-                                <BottomBorder>
-                                  <Color>Gray</Color>
-                                  <Style>Solid</Style>
-                                </BottomBorder>
                                 <PaddingLeft>2pt</PaddingLeft>
                                 <PaddingRight>2pt</PaddingRight>
                                 <PaddingTop>2pt</PaddingTop>
@@ -2820,15 +2754,8 @@
                               <Style>
                                 <Border>
                                   <Color>LightGrey</Color>
-                                  <Style>None</Style>
+                                  <Style>Solid</Style>
                                 </Border>
-                                <TopBorder>
-                                  <Style>Solid</Style>
-                                </TopBorder>
-                                <BottomBorder>
-                                  <Color>Gray</Color>
-                                  <Style>Solid</Style>
-                                </BottomBorder>
                                 <PaddingLeft>2pt</PaddingLeft>
                                 <PaddingRight>2pt</PaddingRight>
                                 <PaddingTop>2pt</PaddingTop>
@@ -2863,14 +2790,10 @@
                               <Style>
                                 <Border>
                                   <Color>LightGrey</Color>
-                                  <Style>None</Style>
-                                </Border>
-                                <TopBorder>
                                   <Style>Solid</Style>
-                                </TopBorder>
+                                </Border>
                                 <BottomBorder>
                                   <Color>Gray</Color>
-                                  <Style>Solid</Style>
                                 </BottomBorder>
                                 <PaddingLeft>2pt</PaddingLeft>
                                 <PaddingRight>2pt</PaddingRight>
@@ -2948,8 +2871,8 @@
                 <DataSetName>ds_usp_dinvoiceSelect</DataSetName>
                 <Top>6.43467cm</Top>
                 <Left>0.00003cm</Left>
-                <Height>2.14109in</Height>
-                <Width>8.10633in</Width>
+                <Height>2.10637in</Height>
+                <Width>7.73134in</Width>
                 <Style>
                   <Border>
                     <Style>Solid</Style>
@@ -3308,11 +3231,6 @@
                           <FontWeight>Normal</FontWeight>
                         </Style>
                       </TextRun>
-                    </TextRuns>
-                    <Style />
-                  </Paragraph>
-                  <Paragraph>
-                    <TextRuns>
                       <TextRun>
                         <Value>=Sum(Fields!sm_refno.Value, "usp_minvoiceSelect")</Value>
                         <Style>
@@ -3320,12 +3238,14 @@
                         </Style>
                       </TextRun>
                     </TextRuns>
-                    <Style />
+                    <Style>
+                      <TextAlign>Left</TextAlign>
+                    </Style>
                   </Paragraph>
                 </Paragraphs>
                 <rd:DefaultName>Textbox41</rd:DefaultName>
                 <Top>0.19167in</Top>
-                <Left>4.42973in</Left>
+                <Left>3.92973in</Left>
                 <Height>0.4in</Height>
                 <Width>1.90081in</Width>
                 <ZIndex>11</ZIndex>
@@ -3346,16 +3266,11 @@
                   <Paragraph>
                     <TextRuns>
                       <TextRun>
-                        <Value>Vehicle No.</Value>
+                        <Value>Vehicle No. : </Value>
                         <Style>
                           <FontWeight>Normal</FontWeight>
                         </Style>
                       </TextRun>
-                    </TextRuns>
-                    <Style />
-                  </Paragraph>
-                  <Paragraph>
-                    <TextRuns>
                       <TextRun>
                         <Value>=First(Fields!rt_vehicleno.Value, "usp_ledgermasterSelect")</Value>
                         <Style>
@@ -3369,12 +3284,14 @@
                         </Style>
                       </TextRun>
                     </TextRuns>
-                    <Style />
+                    <Style>
+                      <TextAlign>Left</TextAlign>
+                    </Style>
                   </Paragraph>
                 </Paragraphs>
                 <rd:DefaultName>Textbox41</rd:DefaultName>
                 <Top>0.59167in</Top>
-                <Left>4.42973in</Left>
+                <Left>3.92973in</Left>
                 <Height>0.4in</Height>
                 <Width>1.90081in</Width>
                 <ZIndex>12</ZIndex>
@@ -3395,16 +3312,11 @@
                   <Paragraph>
                     <TextRuns>
                       <TextRun>
-                        <Value>Dated </Value>
+                        <Value>Dated : </Value>
                         <Style>
                           <FontWeight>Normal</FontWeight>
                         </Style>
                       </TextRun>
-                    </TextRuns>
-                    <Style />
-                  </Paragraph>
-                  <Paragraph>
-                    <TextRuns>
                       <TextRun>
                         <Value>=Format(First(Fields!sm_date.Value, "ds_usp_dinvoiceSelect"), "dd-MM-yy")</Value>
                         <Style>
@@ -3412,12 +3324,14 @@
                         </Style>
                       </TextRun>
                     </TextRuns>
-                    <Style />
+                    <Style>
+                      <TextAlign>Right</TextAlign>
+                    </Style>
                   </Paragraph>
                 </Paragraphs>
                 <rd:DefaultName>Textbox41</rd:DefaultName>
                 <Top>0.19167in</Top>
-                <Left>6.33056in</Left>
+                <Left>5.83056in</Left>
                 <Height>0.4in</Height>
                 <Width>1.90081in</Width>
                 <ZIndex>13</ZIndex>
@@ -3442,12 +3356,14 @@
                         <Style />
                       </TextRun>
                     </TextRuns>
-                    <Style />
+                    <Style>
+                      <TextAlign>Left</TextAlign>
+                    </Style>
                   </Paragraph>
                 </Paragraphs>
                 <rd:DefaultName>Textbox131</rd:DefaultName>
-                <Top>4.81871in</Top>
-                <Left>5.03705in</Left>
+                <Top>4.80519in</Top>
+                <Left>4.66207in</Left>
                 <Height>0.22259in</Height>
                 <Width>3.06929in</Width>
                 <ZIndex>14</ZIndex>
@@ -3484,8 +3400,8 @@
                   </Paragraph>
                 </Paragraphs>
                 <rd:DefaultName>Textbox131</rd:DefaultName>
-                <Top>5.05519in</Top>
-                <Left>5.03706in</Left>
+                <Top>5.04167in</Top>
+                <Left>4.66208in</Left>
                 <Height>0.25in</Height>
                 <Width>3.06928in</Width>
                 <ZIndex>15</ZIndex>
@@ -3522,8 +3438,8 @@
                   </Paragraph>
                 </Paragraphs>
                 <rd:DefaultName>Textbox131</rd:DefaultName>
-                <Top>5.31908in</Top>
-                <Left>5.03706in</Left>
+                <Top>5.30556in</Top>
+                <Left>4.66208in</Left>
                 <Height>0.25in</Height>
                 <Width>3.06928in</Width>
                 <ZIndex>16</ZIndex>
@@ -3566,8 +3482,8 @@
                   </Paragraph>
                 </Paragraphs>
                 <rd:DefaultName>Textbox131</rd:DefaultName>
-                <Top>5.58297in</Top>
-                <Left>5.03704in</Left>
+                <Top>5.56945in</Top>
+                <Left>4.66206in</Left>
                 <Height>0.25in</Height>
                 <Width>3.06928in</Width>
                 <ZIndex>17</ZIndex>
@@ -3601,7 +3517,7 @@
                 <Top>5.05519in</Top>
                 <Left>0.00001in</Left>
                 <Height>0.25in</Height>
-                <Width>4.49934in</Width>
+                <Width>4.09656in</Width>
                 <ZIndex>18</ZIndex>
                 <Style>
                   <Border>
@@ -3631,7 +3547,7 @@
                 <Top>4.80519in</Top>
                 <Left>0.00001cm</Left>
                 <Height>0.25in</Height>
-                <Width>4.49934in</Width>
+                <Width>4.09657in</Width>
                 <ZIndex>19</ZIndex>
                 <Style>
                   <Border>
@@ -3818,8 +3734,8 @@
                   </Paragraph>
                 </Paragraphs>
                 <rd:DefaultName>Textbox8</rd:DefaultName>
-                <Top>5.84686in</Top>
-                <Left>12.79414cm</Left>
+                <Top>5.83334in</Top>
+                <Left>11.84169cm</Left>
                 <Height>0.77084in</Height>
                 <Width>3.06926in</Width>
                 <ZIndex>23</ZIndex>
@@ -3903,7 +3819,7 @@
             <DataElementOutput>ContentsOnly</DataElementOutput>
             <Left>0.08704in</Left>
             <Height>6.6177in</Height>
-            <Width>8.23137in</Width>
+            <Width>7.73137in</Width>
             <Style>
               <Border>
                 <Style>None</Style>
@@ -3914,7 +3830,7 @@
         <Height>8.19409in</Height>
         <Style />
       </Body>
-      <Width>8.31841in</Width>
+      <Width>7.81841in</Width>
       <Page>
         <PageHeader>
           <Height>0.4152in</Height>

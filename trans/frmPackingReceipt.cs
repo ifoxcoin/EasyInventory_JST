@@ -227,7 +227,7 @@ namespace standard.trans
 				uspcommissionreceiptSelectResultBindingSource.DataSource = inventoryDataContext.usp_packingreceiptSelect(null, null, null, null);
 				cbocustomer.SelectedIndex = -1;
 				long? no = 0L;
-				inventoryDataContext.usp_getYearNo("pkrec_no", global.sysdate, ref no);
+				inventoryDataContext.usp_getYearNo("pkrec_no", global.sysdate, ref no,null);
 				txtrecno.Text = Convert.ToString(no);
 			}
 		}
@@ -298,7 +298,7 @@ namespace standard.trans
 							packingreceipt.pr_date = dtprecdate.Value;
 							packingreceipt.com_id = 1L;
 							long? no = 0L;
-							inventoryDataContext.usp_setYearNo("pkrec_no", global.sysdate, ref no);
+							inventoryDataContext.usp_setYearNo("pkrec_no", global.sysdate, ref no,null);
 							foreach (DataGridViewRow item in (IEnumerable)dgvReceipt.Rows)
 							{
 								if (Convert.ToDecimal(item.Cells["cReceived"].Value) > 0m)

@@ -210,6 +210,12 @@
     <Compile Include="report\frmStockRpt.Designer.cs">
       <DependentUpon>frmStockRpt.cs</DependentUpon>
     </Compile>
+    <Compile Include="report\frmNewTransactionRpt.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="report\frmNewTransactionRpt.Designer.cs">
+      <DependentUpon>frmNewTransactionRpt.cs</DependentUpon>
+    </Compile>
     <Compile Include="report\frmTransactionRpt.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -240,6 +246,9 @@
     <Compile Include="trans\frmReceipt.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="trans\frmSalesOrder.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="trans\frmSales.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -251,9 +260,13 @@
     <None Include="bin\x86\Debug\EasyInventory.exe.config" />
     <None Include="classes\Inventory.dbml.layout">
       <DependentUpon>Inventory.dbml</DependentUpon>
+      <SubType>Designer</SubType>
     </None>
     <EmbeddedResource Include="master\frmRoute.resx">
       <DependentUpon>frmRoute.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="report\frmNewTransactionRpt.resx">
+      <DependentUpon>frmNewTransactionRpt.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="report\purinv.rdlc" />
     <EmbeddedResource Include="report\rptAddPrintNoGst.rdlc" />
@@ -270,6 +283,7 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
     <EmbeddedResource Include="report\rptLedgersOutstandingedited.rdlc" />
+    <EmbeddedResource Include="report\rptSalesLoadWay.rdlc" />
     <EmbeddedResource Include="report\rptOutstanding.rdlc" />
     <EmbeddedResource Include="report\frmStockRpt.resx">
       <DependentUpon>frmStockRpt.cs</DependentUpon>
@@ -308,6 +322,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="trans\frmReceipt.resx">
       <DependentUpon>frmReceipt.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="trans\frmSalesOrder.resx">
+      <DependentUpon>frmSalesOrder.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="trans\frmSales.resx">
       <DependentUpon>frmSales.cs</DependentUpon>
@@ -396,6 +413,9 @@
     <None Include="Properties\DataSources\standard.classes.usp_categorySelectResult.datasource" />
     <None Include="Properties\DataSources\standard.classes.usp_commissionreceiptSelectResult.datasource" />
     <None Include="Properties\DataSources\standard.classes.usp_companySelectResult.datasource" />
+    <None Include="Properties\DataSources\standard.classes.usp_companySelectResult1.datasource" />
+    <None Include="Properties\DataSources\standard.classes.usp_getCutomerByRouteResult.datasource" />
+    <None Include="Properties\DataSources\standard.classes.usp_getCutomerByRouteResult1.datasource" />
     <None Include="Properties\DataSources\standard.classes.usp_itemSelectResult1.datasource" />
     <None Include="Properties\DataSources\standard.classes.usp_ledgerItemDetailsReportResult.datasource" />
     <None Include="Properties\DataSources\standard.classes.usp_ledgermasterSelectResult1.datasource" />
@@ -404,6 +424,7 @@
     <None Include="Properties\DataSources\standard.classes.usp_OutstandingReportResult.datasource" />
     <None Include="Properties\DataSources\standard.classes.usp_routeSelectResult.datasource" />
     <None Include="Properties\DataSources\standard.classes.usp_salesdetailsSelectResult.datasource" />
+    <None Include="Properties\DataSources\standard.classes.usp_salesdetailsSelectResult1.datasource" />
     <None Include="Properties\DataSources\standard.classes.usp_salesmasterSelectResult1.datasource" />
     <None Include="Properties\DataSources\standard.classes.usp_SupplierOutstandingRptResult.datasource" />
     <None Include="Properties\Settings.settings">
@@ -467,7 +488,11 @@
     <Content Include="bin\x86\Debug\mymain.dll" />
     <Content Include="bin\x86\Debug\System.Windows.Forms.Ribbon35.dll" />
     <Content Include="Clock.ico" />
+    <None Include="Resources\salesconvert.png" />
+    <None Include="Resources\salesconver.png" />
+    <None Include="Resources\loadreport.png" />
     <None Include="Resources\route.png" />
+    <None Include="Resources\salesorder.png" />
     <None Include="Resources\PaymentRpt.png" />
     <None Include="Resources\56_32x32.png" />
     <None Include="Resources\help.png" />

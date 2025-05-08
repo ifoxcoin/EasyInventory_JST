@@ -164,7 +164,16 @@ namespace standard.master
 				at.cat_name = txtCategory.Text.Trim();
                 at.cat_code = txtCode.Text.Trim();
                 at.cat_tamilname = tamil.toTamil(txtTamilName.Text.Trim());
-                at.com_id = Convert.ToInt64(cboCompany.SelectedValue);
+                if (Convert.ToInt64(cboCompany.SelectedValue) == 0)
+                {
+                    MessageBox.Show("Invalid 'Company'", "Information", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+                    cboCompany.Focus();
+                    return;
+                }
+                else
+                {
+                    at.com_id = Convert.ToInt64(cboCompany.SelectedValue);
+                }
                 if (at.cat_name == string.Empty)
 				{
 					MessageBox.Show("Invalid 'Name'", "Information", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
@@ -178,12 +187,13 @@ namespace standard.master
 						{
 							b.cat_id
 						};
-					if (source.Count() != 0)
-					{
-						MessageBox.Show("'Name' aleady exists", "Information", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
-						txtCategory.Focus();
-					}
-					else if (id == 0)
+                    //if (source.Count() != 0)
+                    //{
+                    //	MessageBox.Show("'Name' aleady exists", "Information", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+                    //	txtCategory.Focus();
+                    //}
+                    //else 
+                    if (id == 0)
 					{
 						if (MessageBox.Show("Are you sure to save?", "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.No)
 						{
@@ -469,6 +479,7 @@ namespace standard.master
             this.cCategory.DataPropertyName = "cat_name";
             this.cCategory.HeaderText = "Category";
             this.cCategory.Name = "cCategory";
+            this.cCategory.ReadOnly = true;
             this.cCategory.Width = 300;
             // 
             // cat_udate
@@ -518,12 +529,14 @@ namespace standard.master
             this.cCode.DataPropertyName = "cat_code";
             this.cCode.HeaderText = "Code";
             this.cCode.Name = "cCode";
+            this.cCode.ReadOnly = true;
             // 
             // cTamilName
             // 
             this.cTamilName.DataPropertyName = "cat_tamilname";
             this.cTamilName.HeaderText = "Category Tamil Name";
             this.cTamilName.Name = "cTamilName";
+            this.cTamilName.ReadOnly = true;
             this.cTamilName.Width = 300;
             // 
             // comidDataGridViewTextBoxColumn
@@ -552,6 +565,7 @@ namespace standard.master
             this.cCompany.DataPropertyName = "com_name";
             this.cCompany.HeaderText = "Company";
             this.cCompany.Name = "cCompany";
+            this.cCompany.ReadOnly = true;
             this.cCompany.Width = 250;
             // 
             // uspcategorySelectResultBindingSource

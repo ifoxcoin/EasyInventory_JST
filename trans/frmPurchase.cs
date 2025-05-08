@@ -345,7 +345,7 @@ namespace standard.trans
 					autoCompleteStringCollection.Add(item.item_name);
 				}
 				long? no = 0L;
-				inventoryDataContext.usp_getYearNo("pur_no", global.sysdate, ref no);
+				inventoryDataContext.usp_getYearNo("pur_no", global.sysdate, ref no,null);
 				txtpurno.Text = Convert.ToString(no);
 			}
 		}
@@ -435,7 +435,7 @@ namespace standard.trans
 							if (id == 0)
 							{
 								long? no = 0L;
-								inventoryDataContext.usp_setYearNo("pur_no", global.sysdate, ref no);
+								inventoryDataContext.usp_setYearNo("pur_no", global.sysdate, ref no,null);
 								purchasemaster.pm_no = Convert.ToInt64(no);
 								inventoryDataContext.usp_purchasemasterInsert(ref id, purchasemaster.pm_no, purchasemaster.pm_date, purchasemaster.led_id, purchasemaster.pm_totqty, purchasemaster.pm_totamount, global.comid, global.ucode, global.sysdate, purchasemaster.pm_desc, false, purchasemaster.pm_paid);
 								foreach (DataGridViewRow item2 in (IEnumerable)dgvPurchase.Rows)

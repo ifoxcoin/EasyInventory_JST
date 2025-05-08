@@ -3,11 +3,26 @@ using System.Windows.Forms;
 using standard.master;
 using standard.trans;
 using standard.report;
+using System.IO;
 
 namespace standard
 {
     public partial class frmMain : Form
     {
+        static void Main()
+        {
+            try
+            {
+                Application.EnableVisualStyles();
+                Application.SetCompatibleTextRenderingDefault(false);
+                Application.Run(new frmMain());
+            }
+            catch (Exception ex)
+            {
+                File.WriteAllText("error.log", ex.ToString());
+            }
+        }
+
         #region "DECLARATION"
         mylib.dbcon cn;
         bus bu;
@@ -406,6 +421,23 @@ namespace standard
             frm.Show();
         }
 
+        private void btnSalesOrder_Click(object sender, EventArgs e)
+        {
+            frmSalesOrder frm = new frmSalesOrder();
+            if (!bu.CheckRights(Convert.ToString(frm.Tag), frm.Text))
+            {
+                frm.Close();
+                MessageBox.Show("Rights failed...");
+                return;
+            }
+            foreach (Form F in this.MdiChildren)
+                if (frm.Name == F.Name)
+                { MessageBox.Show("Already Opened.."); return; }
+            frm.MdiParent = this;
+            frm.WindowState = FormWindowState.Maximized;
+            frm.Show();
+        }
+
         private void btnReceipt_Click(object sender, EventArgs e)
         {
             frmReceipt frm = new frmReceipt();
@@ -561,12 +593,31 @@ namespace standard
             frm.Show();
         }
 
+        private void btnSalesLoadReport_Click(object sender, EventArgs e)
+        {
+            frmNewTransactionRpt frm = new frmNewTransactionRpt();
+            frm._ReportName = "Customer Load Way Report";
+            frm._LedgerType = "CUSTOMER";
+            if (!bu.CheckRights(Convert.ToString(frm.Tag), frm.Text))
+            {
+                frm.Close();
+                MessageBox.Show("Rights failed...");
+                return;
+            }
+            //foreach (Form F in this.MdiChildren)
+            //    if (frm.Name == F.Name)
+            //    { MessageBox.Show("Already Opened.."); return; }
+            frm.MdiParent = this;
+            frm.WindowState = FormWindowState.Maximized;
+            frm.Show();
+        }
+
 
         private void btnLedgerReport_Click(object sender, EventArgs e)
         {
-            frmTransactionRpt frm = new frmTransactionRpt();
-            frm._ReportName = "Agent Outstanding Report";
-            frm._LedgerType = "Agent";
+            frmNewTransactionRpt frm = new frmNewTransactionRpt();
+            frm._ReportName = "Customer Load Way Report";
+            frm._LedgerType = "CUSTOMER";
             if (!bu.CheckRights(Convert.ToString(frm.Tag), frm.Text))
             {
                 frm.Close();
@@ -633,7 +684,7 @@ namespace standard
             {
                 db.usp_openingbalanceDelete(obitem.ob_id);
             }
-            var smdata = db.usp_salesmasterSelect(null, null, null, null, false, null);
+            var smdata = db.usp_salesmasterSelect(null, null, null, null, false, null,null);
             foreach(var smitem in smdata)
             {
                 db.usp_openingbalanceInsert("O", smitem.sm_refno, DateTime.Now.Date, smitem.led_id, smitem.sm_totamount, smitem.sm_profit, smitem.sm_disamount, smitem.sm_packingcharge, smitem.sm_netamount, smitem.sm_received, smitem.sm_isclose, smitem.users_uid, DateTime.Now.Date, smitem.sm_desc, smitem.sm_paidcommission, smitem.sm_paidcommission, smitem.sm_iscommissionclose, smitem.sm_ispackingclose, smitem.sm_taxamount, smitem.sm_taxpercentage, smitem.sm_roundamount);

@@ -182,16 +182,18 @@ namespace standard.trans
 
 		private void LoadData()
 		{
-			dtprecdate.MinDate = global.fdate;
-			dtprecdate.MaxDate = global.sysdate;
-			dtprecdate.Value = DateTime.Now;
-			dtpfdate.MinDate = global.fdate;
-			dtpfdate.MaxDate = global.sysdate;
-			dtptdate.MinDate = global.fdate;
-			dtptdate.MaxDate = global.sysdate;
-			TimeSpan value = new TimeSpan(30, 0, 0, 0, 0);
-			dtpfdate.Value = dtpfdate.Value.Subtract(value);
-			InventoryDataContext inventoryDataContext = new InventoryDataContext();
+            DateTime now = DateTime.Now;
+            if (now < dtprecdate.MinDate)
+                dtprecdate.Value = dtprecdate.MinDate;
+            else if (now > dtprecdate.MaxDate)
+                dtprecdate.Value = dtprecdate.MaxDate;
+            else
+                dtprecdate.Value = now;
+
+            // For dtpfdate
+            DateTime subtracted = dtpfdate.Value.Subtract(new TimeSpan(30, 0, 0, 0, 0));
+            dtpfdate.Value = subtracted < dtpfdate.MinDate ? dtpfdate.MinDate : subtracted;
+            InventoryDataContext inventoryDataContext = new InventoryDataContext();
 			using (inventoryDataContext)
 			{
 				var source = from a in inventoryDataContext.ledgermasters
@@ -207,7 +209,7 @@ namespace standard.trans
 				uspreceiptSelectResultBindingSource.DataSource = inventoryDataContext.usp_receiptSelect(null, null, null, null);
 				cbocustomer.SelectedIndex = -1;
 				long? no = 0L;
-				inventoryDataContext.usp_getYearNo("rec_no", global.sysdate, ref no);
+				inventoryDataContext.usp_getYearNo("pkrec_no", global.sysdate, ref no,null);
 				txtrecno.Text = Convert.ToString(no);
 			}
 		}
@@ -278,7 +280,7 @@ namespace standard.trans
 							receipt.rec_date = dtprecdate.Value;
 							receipt.com_id = 1L;
 							long? no = 0L;
-							inventoryDataContext.usp_setYearNo("rec_no", global.sysdate, ref no);
+							inventoryDataContext.usp_setYearNo("pkrec_no", global.sysdate, ref no,null);
 							foreach (DataGridViewRow item in (IEnumerable)dgvReceipt.Rows)
 							{
 								if (Convert.ToDecimal(item.Cells["cReceived"].Value) > 0m)
