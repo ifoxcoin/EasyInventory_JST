@@ -217,9 +217,9 @@ namespace standard
                 MessageBox.Show("Rights failed...");
                 return;
             }
-            foreach (Form F in this.MdiChildren)
-                if (frm.Name == F.Name)
-                { MessageBox.Show("Already Opened.."); return; }
+            //foreach (Form F in this.MdiChildren)
+            //    if (frm.Name == F.Name)
+            //    { MessageBox.Show("Already Opened.."); return; }
             frm.MdiParent = this;
             frm.WindowState = FormWindowState.Maximized;
             frm.Show();
@@ -234,9 +234,26 @@ namespace standard
                 MessageBox.Show("Rights failed...");
                 return;
             }
-            foreach (Form F in this.MdiChildren)
-                if (frm.Name == F.Name)
-                { MessageBox.Show("Already Opened.."); return; }
+            //foreach (Form F in this.MdiChildren)
+            //    if (frm.Name == F.Name)
+            //    { MessageBox.Show("Already Opened.."); return; }
+            frm.MdiParent = this;
+            frm.WindowState = FormWindowState.Maximized;
+            frm.Show();
+        }
+
+        private void ribbonBtnVehicle_Click(object sender, EventArgs e)
+        {
+            frmVehicle frm = new frmVehicle();
+            if (!bu.CheckRights(Convert.ToString(frm.Tag), frm.Text))
+            {
+                frm.Close();
+                MessageBox.Show("Rights failed...");
+                return;
+            }
+            //foreach (Form F in this.MdiChildren)
+            //    if (frm.Name == F.Name)
+            //    { MessageBox.Show("Already Opened.."); return; }
             frm.MdiParent = this;
             frm.WindowState = FormWindowState.Maximized;
             frm.Show();
@@ -379,9 +396,9 @@ namespace standard
                 MessageBox.Show("Rights failed...");
                 return;
             }
-            foreach (Form F in this.MdiChildren)
-                if (frm.Name == F.Name)
-                { MessageBox.Show("Already Opened.."); return; }
+            //foreach (Form F in this.MdiChildren)
+            //    if (frm.Name == F.Name)
+            //    { MessageBox.Show("Already Opened.."); return; }
             frm.MdiParent = this;
             frm.WindowState = FormWindowState.Maximized;
             frm.Show();
@@ -396,9 +413,9 @@ namespace standard
                 MessageBox.Show("Rights failed...");
                 return;
             }
-            foreach (Form F in this.MdiChildren)
-                if (frm.Name == F.Name)
-                { MessageBox.Show("Already Opened.."); return; }
+            //foreach (Form F in this.MdiChildren)
+            //    if (frm.Name == F.Name)
+            //    { MessageBox.Show("Already Opened.."); return; }
             frm.MdiParent = this;
             frm.WindowState = FormWindowState.Maximized;
             frm.Show();
@@ -413,9 +430,9 @@ namespace standard
                 MessageBox.Show("Rights failed...");
                 return;
             }
-            foreach (Form F in this.MdiChildren)
-                if (frm.Name == F.Name)
-                { MessageBox.Show("Already Opened.."); return; }
+            //foreach (Form F in this.MdiChildren)
+            //    if (frm.Name == F.Name)
+            //    { MessageBox.Show("Already Opened.."); return; }
             frm.MdiParent = this;
             frm.WindowState = FormWindowState.Maximized;
             frm.Show();
@@ -430,9 +447,9 @@ namespace standard
                 MessageBox.Show("Rights failed...");
                 return;
             }
-            foreach (Form F in this.MdiChildren)
-                if (frm.Name == F.Name)
-                { MessageBox.Show("Already Opened.."); return; }
+            //foreach (Form F in this.MdiChildren)
+            //    if (frm.Name == F.Name)
+            //    { MessageBox.Show("Already Opened.."); return; }
             frm.MdiParent = this;
             frm.WindowState = FormWindowState.Maximized;
             frm.Show();
@@ -447,9 +464,9 @@ namespace standard
                 MessageBox.Show("Rights failed...");
                 return;
             }
-            foreach (Form F in this.MdiChildren)
-                if (frm.Name == F.Name)
-                { MessageBox.Show("Already Opened.."); return; }
+            //foreach (Form F in this.MdiChildren)
+            //    if (frm.Name == F.Name)
+            //    { MessageBox.Show("Already Opened.."); return; }
             frm.MdiParent = this;
             frm.WindowState = FormWindowState.Maximized;
             frm.Show();
@@ -612,6 +629,25 @@ namespace standard
             frm.Show();
         }
 
+        private void btnAgentReport_Click(object sender, EventArgs e)
+        {
+            frmTransactionRpt frm = new frmTransactionRpt();
+            frm._ReportName = "Agent Outstanding Report";
+            frm._LedgerType = "Agent";
+            if (!bu.CheckRights(Convert.ToString(frm.Tag), frm.Text))
+            {
+                frm.Close();
+                MessageBox.Show("Rights failed...");
+                return;
+            }
+            //foreach (Form F in this.MdiChildren)
+            //    if (frm.Name == F.Name)
+            //    { MessageBox.Show("Already Opened.."); return; }
+            frm.MdiParent = this;
+            frm.WindowState = FormWindowState.Maximized;
+            frm.Show();
+
+        }
 
         private void btnLedgerReport_Click(object sender, EventArgs e)
         {
@@ -775,6 +811,23 @@ namespace standard
         private void btnPayment_Click(object sender, EventArgs e)
         {
             frmPayment frm = new frmPayment();
+            if (!bu.CheckRights(Convert.ToString(frm.Tag), frm.Text))
+            {
+                frm.Close();
+                MessageBox.Show("Rights failed...");
+                return;
+            }
+            foreach (Form F in this.MdiChildren)
+                if (frm.Name == F.Name)
+                { MessageBox.Show("Already Opened.."); return; }
+            frm.MdiParent = this;
+            frm.WindowState = FormWindowState.Maximized;
+            frm.Show();
+        }
+
+        private void btnOpeningStock_Click(object sender, EventArgs e)
+        {
+            frmOpeningStock frm = new frmOpeningStock();
             if (!bu.CheckRights(Convert.ToString(frm.Tag), frm.Text))
             {
                 frm.Close();

@@ -265,7 +265,12 @@ namespace standard.trans
 					MessageBox.Show("Invalid data to save", "Information", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
 					dgvReceipt.Focus();
 				}
-				else
+                else if (txtPaidamt.Value == 0 || txtPaidamt.Value == null)
+                {
+                    MessageBox.Show("Invalid Paid Amount to save", "Information", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+                    dgvReceipt.Focus();
+                }
+                else
 				{
 					int? num = id;
 					if (num.GetValueOrDefault() != 0 || !num.HasValue)

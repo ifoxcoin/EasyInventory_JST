@@ -6,16 +6,13 @@
         <TablixBody>
           <TablixColumns>
             <TablixColumn>
-              <Width>3.54642cm</Width>
+              <Width>2.80559cm</Width>
             </TablixColumn>
             <TablixColumn>
-              <Width>2.70961cm</Width>
+              <Width>4.49114cm</Width>
             </TablixColumn>
             <TablixColumn>
-              <Width>5.36343cm</Width>
-            </TablixColumn>
-            <TablixColumn>
-              <Width>2.87822cm</Width>
+              <Width>2.11787cm</Width>
             </TablixColumn>
           </TablixColumns>
           <TablixRows>
@@ -126,78 +123,11 @@
                     </Textbox>
                   </CellContents>
                 </TablixCell>
-                <TablixCell>
-                  <CellContents>
-                    <Textbox Name="Textbox110">
-                      <CanGrow>true</CanGrow>
-                      <KeepTogether>true</KeepTogether>
-                      <Paragraphs>
-                        <Paragraph>
-                          <TextRuns>
-                            <TextRun>
-                              <Value />
-                              <Style>
-                                <FontFamily>tahoma</FontFamily>
-                                <FontSize>9pt</FontSize>
-                                <FontWeight>Bold</FontWeight>
-                              </Style>
-                            </TextRun>
-                          </TextRuns>
-                          <Style />
-                        </Paragraph>
-                      </Paragraphs>
-                      <rd:DefaultName>Textbox110</rd:DefaultName>
-                      <Style>
-                        <Border>
-                          <Color>LightGrey</Color>
-                          <Style>Solid</Style>
-                        </Border>
-                        <PaddingLeft>2pt</PaddingLeft>
-                        <PaddingRight>2pt</PaddingRight>
-                        <PaddingTop>2pt</PaddingTop>
-                        <PaddingBottom>2pt</PaddingBottom>
-                      </Style>
-                    </Textbox>
-                  </CellContents>
-                </TablixCell>
               </TablixCells>
             </TablixRow>
             <TablixRow>
               <Height>0.59294cm</Height>
               <TablixCells>
-                <TablixCell>
-                  <CellContents>
-                    <Textbox Name="Textbox4">
-                      <CanGrow>true</CanGrow>
-                      <KeepTogether>true</KeepTogether>
-                      <Paragraphs>
-                        <Paragraph>
-                          <TextRuns>
-                            <TextRun>
-                              <Value />
-                              <Style>
-                                <FontFamily>tahoma</FontFamily>
-                                <FontSize>9pt</FontSize>
-                              </Style>
-                            </TextRun>
-                          </TextRuns>
-                          <Style />
-                        </Paragraph>
-                      </Paragraphs>
-                      <rd:DefaultName>Textbox4</rd:DefaultName>
-                      <Style>
-                        <Border>
-                          <Color>LightGrey</Color>
-                          <Style>Solid</Style>
-                        </Border>
-                        <PaddingLeft>2pt</PaddingLeft>
-                        <PaddingRight>2pt</PaddingRight>
-                        <PaddingTop>2pt</PaddingTop>
-                        <PaddingBottom>2pt</PaddingBottom>
-                      </Style>
-                    </Textbox>
-                  </CellContents>
-                </TablixCell>
                 <TablixCell>
                   <CellContents>
                     <Textbox Name="sm_refno">
@@ -225,6 +155,9 @@
                           <Color>LightGrey</Color>
                           <Style>Solid</Style>
                         </Border>
+                        <BottomBorder>
+                          <Style>None</Style>
+                        </BottomBorder>
                         <PaddingLeft>2pt</PaddingLeft>
                         <PaddingRight>2pt</PaddingRight>
                         <PaddingTop>2pt</PaddingTop>
@@ -259,13 +192,15 @@
                           <Color>LightGrey</Color>
                           <Style>Solid</Style>
                         </Border>
+                        <BottomBorder>
+                          <Style>None</Style>
+                        </BottomBorder>
                         <PaddingLeft>2pt</PaddingLeft>
                         <PaddingRight>2pt</PaddingRight>
                         <PaddingTop>2pt</PaddingTop>
                         <PaddingBottom>2pt</PaddingBottom>
                       </Style>
                     </Textbox>
-                    <rd:Selected>true</rd:Selected>
                   </CellContents>
                 </TablixCell>
                 <TablixCell>
@@ -295,6 +230,9 @@
                           <Color>LightGrey</Color>
                           <Style>Solid</Style>
                         </Border>
+                        <BottomBorder>
+                          <Style>None</Style>
+                        </BottomBorder>
                         <PaddingLeft>2pt</PaddingLeft>
                         <PaddingRight>2pt</PaddingRight>
                         <PaddingTop>2pt</PaddingTop>
@@ -329,42 +267,6 @@
                         </Paragraph>
                       </Paragraphs>
                       <rd:DefaultName>Textbox16</rd:DefaultName>
-                      <Style>
-                        <Border>
-                          <Color>LightGrey</Color>
-                          <Style>Solid</Style>
-                        </Border>
-                        <PaddingLeft>2pt</PaddingLeft>
-                        <PaddingRight>2pt</PaddingRight>
-                        <PaddingTop>2pt</PaddingTop>
-                        <PaddingBottom>2pt</PaddingBottom>
-                      </Style>
-                    </Textbox>
-                  </CellContents>
-                </TablixCell>
-                <TablixCell>
-                  <CellContents>
-                    <Textbox Name="Textbox148">
-                      <CanGrow>true</CanGrow>
-                      <KeepTogether>true</KeepTogether>
-                      <Paragraphs>
-                        <Paragraph>
-                          <TextRuns>
-                            <TextRun>
-                              <Value />
-                              <Style>
-                                <FontFamily>tahoma</FontFamily>
-                                <FontSize>9pt</FontSize>
-                                <FontWeight>Bold</FontWeight>
-                              </Style>
-                            </TextRun>
-                          </TextRuns>
-                          <Style>
-                            <TextAlign>Center</TextAlign>
-                          </Style>
-                        </Paragraph>
-                      </Paragraphs>
-                      <rd:DefaultName>Textbox148</rd:DefaultName>
                       <Style>
                         <Border>
                           <Color>LightGrey</Color>
@@ -457,7 +359,6 @@
             <TablixMember />
             <TablixMember />
             <TablixMember />
-            <TablixMember />
           </TablixMembers>
         </TablixColumnHierarchy>
         <TablixRowHierarchy>
@@ -470,13 +371,13 @@
               </Group>
               <SortExpressions>
                 <SortExpression>
-                  <Value>=Fields!led_id.Value</Value>
+                  <Value>=CInt(Fields!led_deliveryorder.Value)</Value>
                 </SortExpression>
               </SortExpressions>
               <TablixMembers>
                 <TablixMember>
                   <TablixHeader>
-                    <Size>3.64744cm</Size>
+                    <Size>3.88543cm</Size>
                     <CellContents>
                       <Textbox Name="Textbox8">
                         <CanGrow>true</CanGrow>
@@ -524,11 +425,11 @@
                   </Group>
                   <SortExpressions>
                     <SortExpression>
-                      <Value>=Fields!led_name.Value</Value>
+                      <Value>=CInt(Fields!led_deliveryorder.Value)</Value>
                     </SortExpression>
                   </SortExpressions>
                   <TablixHeader>
-                    <Size>3.64744cm</Size>
+                    <Size>3.88543cm</Size>
                     <CellContents>
                       <Textbox Name="led_name1">
                         <CanGrow>true</CanGrow>
@@ -553,6 +454,9 @@
                             <Color>LightGrey</Color>
                             <Style>Solid</Style>
                           </Border>
+                          <BottomBorder>
+                            <Style>None</Style>
+                          </BottomBorder>
                           <PaddingLeft>2pt</PaddingLeft>
                           <PaddingRight>2pt</PaddingRight>
                           <PaddingTop>2pt</PaddingTop>
@@ -564,12 +468,17 @@
                   <TablixMembers>
                     <TablixMember>
                       <Group Name="Details" />
+                      <SortExpressions>
+                        <SortExpression>
+                          <Value>=CInt(Fields!led_deliveryorder.Value)</Value>
+                        </SortExpression>
+                      </SortExpressions>
                     </TablixMember>
                   </TablixMembers>
                 </TablixMember>
                 <TablixMember>
                   <TablixHeader>
-                    <Size>3.64744cm</Size>
+                    <Size>3.88543cm</Size>
                     <CellContents>
                       <Textbox Name="Textbox11">
                         <CanGrow>true</CanGrow>
@@ -614,14 +523,13 @@
         <DataSetName>usp_getCustomerByRoute</DataSetName>
         <SortExpressions>
           <SortExpression>
-            <Value>=Fields!led_name.Value</Value>
-            <Direction>Descending</Direction>
+            <Value>=CInt(Fields!led_deliveryorder.Value)</Value>
           </SortExpression>
         </SortExpressions>
         <Top>1.45203cm</Top>
-        <Left>0.98425cm</Left>
+        <Left>0.48154cm</Left>
         <Height>1.7722cm</Height>
-        <Width>18.14512cm</Width>
+        <Width>13.30003cm</Width>
         <Style>
           <Border>
             <Style>None</Style>
@@ -647,9 +555,10 @@
           </Paragraph>
         </Paragraphs>
         <rd:DefaultName>Textbox13</rd:DefaultName>
-        <Left>13.38474cm</Left>
+        <Top>0.30523cm</Top>
+        <Left>8.54846cm</Left>
         <Height>0.6cm</Height>
-        <Width>5.74464cm</Width>
+        <Width>5.23311cm</Width>
         <ZIndex>1</ZIndex>
         <Style>
           <Border>
@@ -672,7 +581,7 @@
                 <Style />
               </TextRun>
               <TextRun>
-                <Value>=First(Fields!rt_vehicleno.Value, "usp_getCustomerByRoute")</Value>
+                <Value>=First(Fields!vh_number.Value, "usp_getCustomerByRoute")</Value>
                 <Style>
                   <FontFamily>tahoma</FontFamily>
                   <FontSize>9pt</FontSize>
@@ -684,10 +593,10 @@
           </Paragraph>
         </Paragraphs>
         <rd:DefaultName>Textbox5</rd:DefaultName>
-        <Top>0.10639in</Top>
-        <Left>0.3875in</Left>
+        <Top>0.12017in</Top>
+        <Left>0.18958in</Left>
         <Height>0.25in</Height>
-        <Width>2.63426in</Width>
+        <Width>2.53009in</Width>
         <ZIndex>2</ZIndex>
         <Style>
           <Border>
@@ -703,7 +612,7 @@
     <Height>1.75016in</Height>
     <Style />
   </Body>
-  <Width>7.53125in</Width>
+  <Width>5.42929in</Width>
   <Page>
     <PageHeader>
       <Height>0.45139in</Height>
@@ -733,7 +642,7 @@
           <rd:DefaultName>Textbox1</rd:DefaultName>
           <Top>0.38778cm</Top>
           <Height>0.75875cm</Height>
-          <Width>19.12938cm</Width>
+          <Width>13.78157cm</Width>
           <Style>
             <Border>
               <Style>None</Style>
@@ -840,6 +749,14 @@
         <CommandText>/* Local Query */</CommandText>
       </Query>
       <Fields>
+        <Field Name="cat_id">
+          <DataField>cat_id</DataField>
+          <rd:TypeName>System.Nullable`1[[System.Int64, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]</rd:TypeName>
+        </Field>
+        <Field Name="cat_name">
+          <DataField>cat_name</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
         <Field Name="item_fullname">
           <DataField>item_fullname</DataField>
           <rd:TypeName>System.String</rd:TypeName>
@@ -854,6 +771,10 @@
         </Field>
         <Field Name="led_address2">
           <DataField>led_address2</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="led_deliveryorder">
+          <DataField>led_deliveryorder</DataField>
           <rd:TypeName>System.String</rd:TypeName>
         </Field>
         <Field Name="led_id">
@@ -887,6 +808,14 @@
         <Field Name="sm_date">
           <DataField>sm_date</DataField>
           <rd:TypeName>System.Nullable`1[[System.DateTime, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]</rd:TypeName>
+        </Field>
+        <Field Name="vh_id">
+          <DataField>vh_id</DataField>
+          <rd:TypeName>System.Int64</rd:TypeName>
+        </Field>
+        <Field Name="vh_number">
+          <DataField>vh_number</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
         </Field>
       </Fields>
       <rd:DataSetInfo>

@@ -3,6 +3,7 @@ using standard.classes;
 using System;
 using System.Data;
 using System.Diagnostics;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -15,7 +16,7 @@ namespace standard.report
 
         public string _ReportName = "";
         public string _LedgerType = "CUSTOMER";
-        public string _ReportType = "Summary";
+        public string _ReportType = "LOADWAY";
         public string ReportName
         {
             get
@@ -65,6 +66,7 @@ namespace standard.report
                 uspledgermasterCustomerCityBindingSource.DataSource = cus.Select(x => x.led_address2).Distinct();
                 uspledgermasterCustomerSelectResultBindingSource.DataSource = db.usp_ledgermasterSelect(null, "CUSTOMER", null, null, null, null);
                 routeBindingSource.DataSource = db.routes.Select((route rt) => rt);
+                vehicleBindingSource.DataSource = db.vehicles.Select((vehicle vh) => vh);
                 foreach (var li in sup)
                 {
                     partyautocompletelist.Add(li.led_name);
@@ -330,10 +332,22 @@ namespace standard.report
 
                 else if (_ReportName == "Customer Load Way Report")
                 {
-                    var data = db.usp_getCutomerByRoute(Convert.ToInt32(cboRoute.SelectedValue.ToString()), dtpfdate.Value.Date).ToList();
-                    reportViewer1.LocalReport.ReportEmbeddedResource = "standard.report.rptSalesLoadWay.rdlc";
-                    ReportDataSource reportsource = new ReportDataSource("usp_getCustomerByRoute", data.ToList());
-                    reportViewer1.LocalReport.DataSources.Add(reportsource);
+                    int? vehicleId = Convert.ToInt32(cboVehicleNo.SelectedValue) == 0 ? (int?)null : Convert.ToInt32(cboVehicleNo.SelectedValue);
+                    if (_ReportType == "LOADWAY")
+                    {
+                        var data = db.usp_getCutomerByRoute(Convert.ToInt32(cboRoute.SelectedValue.ToString()), vehicleId, dtpfdate.Value.Date).ToList().OrderBy(x => x.led_deliveryorder);
+                        reportViewer1.LocalReport.ReportEmbeddedResource = "standard.report.rptSalesLoadWay.rdlc";
+                        ReportDataSource reportsource = new ReportDataSource("usp_getCustomerByRoute", data.ToList());
+                        reportViewer1.LocalReport.DataSources.Add(reportsource);
+                    }
+                    else
+                    {
+                        var data = db.usp_getCutomerByRoute(Convert.ToInt32(cboRoute.SelectedValue.ToString()), vehicleId, dtpfdate.Value.Date).ToList().OrderBy(x => x.led_deliveryorder);
+                        reportViewer1.LocalReport.ReportEmbeddedResource = "standard.report.rptSalesKachathu.rdlc";
+                        ReportDataSource reportsource = new ReportDataSource("usp_getCustomerByRoute", data.ToList());
+                        reportViewer1.LocalReport.DataSources.Add(reportsource);
+                    }
+
                 }
                 // reportViewer1.SetDisplayMode(DisplayMode.PrintLayout);
                 reportViewer1.ZoomMode = ZoomMode.Percent;
@@ -366,6 +380,12 @@ namespace standard.report
             {
                 MessageBox.Show("Please select the route.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 cboRoute.Focus();
+                return;
+            }
+            else if(cboVehicleNo.SelectedIndex <= 0)
+            {
+                MessageBox.Show("Please select the Vehicle No.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                cboVehicleNo.Focus();
                 return;
             }
             else
@@ -686,6 +706,25 @@ namespace standard.report
             if (e.KeyCode == Keys.Return)
             {
                 LoadReport();
+            }
+        }
+
+        private void chkIsSummary_CheckedChanged(object sender, EventArgs e)
+        {
+            if (chkIsSummary.Checked == false)
+            {
+                _ReportType = "KACHATHU";
+                chkIsSummary.Text = "KACHATHU";
+                chkIsSummary.BackColor = Color.Green;
+                chkIsSummary.ForeColor = Color.White;
+
+            }
+            else
+            {
+                _ReportType = "LOADWAY";
+                chkIsSummary.Text = "LOADWAY";
+                chkIsSummary.BackColor = Color.Red;
+                chkIsSummary.ForeColor = Color.White;
             }
         }
     }

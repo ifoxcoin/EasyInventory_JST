@@ -189,7 +189,7 @@ namespace standard.trans
 			{
 				id = 0;
 				LoadData();
-				cboCity.SelectedIndex = 1;
+				cboCity.SelectedValue = 1;
 				AutoFill();
 				dtprecdate.Select();
 			}

@@ -42,6 +42,7 @@
             this.ribbonButtonaccmaster = new System.Windows.Forms.RibbonButton();
             this.ribbonBtnItem = new System.Windows.Forms.RibbonButton();
             this.ribbonBtnRoute = new System.Windows.Forms.RibbonButton();
+            this.ribbonBtnVehicle = new System.Windows.Forms.RibbonButton();
             this.ribbonPanel5 = new System.Windows.Forms.RibbonPanel();
             this.btnPurchase = new System.Windows.Forms.RibbonButton();
             this.ribbonPanelSalesOrder = new System.Windows.Forms.RibbonPanel();
@@ -50,12 +51,14 @@
             this.btnSales = new System.Windows.Forms.RibbonButton();
             this.ribbonPanel7 = new System.Windows.Forms.RibbonPanel();
             this.btnReceipt = new System.Windows.Forms.RibbonButton();
-            //this.ribbonPanel10 = new System.Windows.Forms.RibbonPanel();
+            this.ribbonPanel10 = new System.Windows.Forms.RibbonPanel();
             this.btnCommission = new System.Windows.Forms.RibbonButton();
             //this.ribbonPanel15 = new System.Windows.Forms.RibbonPanel();
             this.btnPackingReceipt = new System.Windows.Forms.RibbonButton();
             this.pnlPayment = new System.Windows.Forms.RibbonPanel();
+            this.pnlOpeningStock = new System.Windows.Forms.RibbonPanel();
             this.btnPayment = new System.Windows.Forms.RibbonButton();
+            this.btnOpeningStock = new System.Windows.Forms.RibbonButton();
             this.ribbonuser = new System.Windows.Forms.RibbonTab();
             this.ribbonnew = new System.Windows.Forms.RibbonPanel();
             this.ribbonewuser = new System.Windows.Forms.RibbonButton();
@@ -88,7 +91,9 @@
             this.btnSupplierOutstanding = new System.Windows.Forms.RibbonButton();
             this.btnSalesLoadReport = new System.Windows.Forms.RibbonButton();
             this.ribbonPanel11 = new System.Windows.Forms.RibbonPanel();
+            this.ribbonPanelAgentOutstanding = new System.Windows.Forms.RibbonPanel();
             this.btnLedgerReport = new System.Windows.Forms.RibbonButton();
+            this.btnAgentOutstandingReport = new System.Windows.Forms.RibbonButton();
             this.ribbonPanel12 = new System.Windows.Forms.RibbonPanel();
             this.btnLedgerwiseStock = new System.Windows.Forms.RibbonButton();
             this.ribbonPanelMaster = new System.Windows.Forms.RibbonPanel();
@@ -178,9 +183,10 @@
             this.ribboncompany.Panels.Add(this.ribbonPanelSalesOrder);
             this.ribboncompany.Panels.Add(this.ribbonPanel6);
             this.ribboncompany.Panels.Add(this.ribbonPanel7);
-            //this.ribboncompany.Panels.Add(this.ribbonPanel10);
+            this.ribboncompany.Panels.Add(this.ribbonPanel10);
             //this.ribboncompany.Panels.Add(this.ribbonPanel15);
             this.ribboncompany.Panels.Add(this.pnlPayment);
+            this.ribboncompany.Panels.Add(this.pnlOpeningStock);
             this.ribboncompany.Text = "Forms";
             this.ribboncompany.ToolTipIcon = System.Windows.Forms.ToolTipIcon.Info;
             // 
@@ -203,6 +209,7 @@
             this.ribbonPanelaccounts.Items.Add(this.ribbonButtonaccmaster);
             this.ribbonPanelaccounts.Items.Add(this.ribbonBtnItem);
             this.ribbonPanelaccounts.Items.Add(this.ribbonBtnRoute);
+            this.ribbonPanelaccounts.Items.Add(this.ribbonBtnVehicle);
             this.ribbonPanelaccounts.Text = "Master";
             // 
             // ribbonButtonaccgroup
@@ -232,6 +239,13 @@
             this.ribbonBtnItem.SmallImage = global::standard.Properties.Resources.route;
             this.ribbonBtnRoute.Text = "Route";
             this.ribbonBtnRoute.Click += new System.EventHandler(this.ribbonBtnRoute_Click);
+            //
+            // ribbonBtnVehicle
+            // 
+            this.ribbonBtnVehicle.Image = global::standard.Properties.Resources.Vehicle;
+            this.ribbonBtnVehicle.SmallImage = global::standard.Properties.Resources.Vehicle;
+            this.ribbonBtnVehicle.Text = "Vehicle";
+            this.ribbonBtnVehicle.Click += new System.EventHandler(this.ribbonBtnVehicle_Click);
             // 
             // ribbonPanel5
             // 
@@ -283,8 +297,8 @@
             // 
             // ribbonPanel10
             // 
-            //this.ribbonPanel10.Items.Add(this.btnCommission);
-            //this.ribbonPanel10.Text = "CommissionReceipt";
+            this.ribbonPanel10.Items.Add(this.btnCommission);
+            this.ribbonPanel10.Text = "CommissionReceipt";
             // 
             // btnCommission
             // 
@@ -313,6 +327,17 @@
             this.btnPayment.Image = ((System.Drawing.Image)(resources.GetObject("btnPayment.Image")));
             this.btnPayment.SmallImage = ((System.Drawing.Image)(resources.GetObject("btnPayment.SmallImage")));
             this.btnPayment.Click += new System.EventHandler(this.btnPayment_Click);
+            // 
+            // pnlOpeningStock
+            // 
+            this.pnlOpeningStock.Items.Add(this.btnOpeningStock);
+            this.pnlOpeningStock.Text = "Opening Stock";
+            // 
+            // btnOpeningStock
+            // 
+            this.btnOpeningStock.Image = global::standard.Properties.Resources.stock;
+            this.btnOpeningStock.SmallImage = global::standard.Properties.Resources.stock;
+            this.btnOpeningStock.Click += new System.EventHandler(this.btnOpeningStock_Click);
             // 
             // ribbonuser
             // 
@@ -409,6 +434,7 @@
             this.ribbonreport.Panels.Add(this.ribbonPanel9);
             this.ribbonreport.Panels.Add(this.ribbonPanelSupplierOS);
             this.ribbonreport.Panels.Add(this.ribbonPanel11);
+            this.ribbonreport.Panels.Add(this.ribbonPanelAgentOutstanding);
             this.ribbonreport.Panels.Add(this.ribbonPanel12);
             this.ribbonreport.Panels.Add(this.ribbonPanelMaster);
             this.ribbonreport.Text = "Report";
@@ -522,6 +548,17 @@
             this.btnLedgerReport.Image = global::standard.Properties.Resources.loadreport;
             this.btnLedgerReport.SmallImage = global::standard.Properties.Resources.loadreport;
             this.btnLedgerReport.Click += new System.EventHandler(this.btnLedgerReport_Click);
+            // 
+            // ribbonPanelAgentOutstanding
+            // 
+            this.ribbonPanelAgentOutstanding.Items.Add(this.btnAgentOutstandingReport);
+            this.ribbonPanelAgentOutstanding.Text = "Agent Outstanding";
+            // 
+            // btnAgentOutstandingReport
+            // 
+            this.btnAgentOutstandingReport.Image = global::standard.Properties.Resources.AgentOutstanding;
+            this.btnAgentOutstandingReport.SmallImage = global::standard.Properties.Resources.AgentOutstanding;
+            this.btnAgentOutstandingReport.Click += new System.EventHandler(this.btnAgentReport_Click);
             // 
             // ribbonPanel12
             // 
@@ -666,6 +703,7 @@
         private mylib.a1panel a1Panelatt;
         private System.Windows.Forms.RibbonButton ribbonBtnItem;
         private System.Windows.Forms.RibbonButton ribbonBtnRoute;
+        private System.Windows.Forms.RibbonButton ribbonBtnVehicle;
         private System.Windows.Forms.RibbonOrbMenuItem ribbonOrbhelp;
         private System.Windows.Forms.RibbonPanel ribbonPanel1;
         private System.Windows.Forms.RibbonPanel ribbonPanel2;
@@ -688,15 +726,17 @@
         private System.Windows.Forms.RibbonPanel ribbonPanel9;
         private System.Windows.Forms.RibbonPanel ribbonPanelSupplierOS;
         private System.Windows.Forms.RibbonButton btnReceiptRpt;
+        private System.Windows.Forms.RibbonPanel ribbonPanelAgentOutstanding;
         private System.Windows.Forms.RibbonPanel ribbonPanel11;
         private System.Windows.Forms.RibbonButton btnLedgerReport;
+        private System.Windows.Forms.RibbonButton btnAgentOutstandingReport;
         private System.Windows.Forms.RibbonPanel ribbonPanel12;
         private System.Windows.Forms.RibbonButton btnLedgerwiseStock;
         private System.Windows.Forms.RibbonPanel ribbonPanel13;
-        //private System.Windows.Forms.RibbonButton btnAgentCommission;
+        private System.Windows.Forms.RibbonButton btnAgentCommission;
         private System.Windows.Forms.RibbonPanel ribbonPanel14;
         private System.Windows.Forms.RibbonButton btnReset;
-        //private System.Windows.Forms.RibbonPanel ribbonPanel10;
+        private System.Windows.Forms.RibbonPanel ribbonPanel10;
         private System.Windows.Forms.RibbonButton btnCommission;
         //private System.Windows.Forms.RibbonPanel ribbonPanel15;
         private System.Windows.Forms.RibbonButton btnPackingReceipt;
@@ -705,6 +745,8 @@
         private System.Windows.Forms.RibbonButton btnItemRpt;
         private System.Windows.Forms.RibbonPanel pnlPayment;
         private System.Windows.Forms.RibbonButton btnPayment;
+        private System.Windows.Forms.RibbonPanel pnlOpeningStock;
+        private System.Windows.Forms.RibbonButton btnOpeningStock;
         private System.Windows.Forms.RibbonTab ribbonreport1;
         private System.Windows.Forms.RibbonButton btnSupplierOutstanding;        
         private System.Windows.Forms.RibbonPanel ribbonPanelSalesReport;

@@ -52,14 +52,17 @@ namespace standard.master
         private Label lblTamilName;
         private TextBox txtTamilName;
         private Label lblTamil;
+        private Label lblHSNCode;
+        private TextBox txtHSNCode;
+        private DataGridViewTextBoxColumn ccat_id;
         private DataGridViewTextBoxColumn cCategory;
         private DataGridViewTextBoxColumn cat_udate;
         private DataGridViewTextBoxColumn users_uid;
-        private DataGridViewTextBoxColumn ccat_id;
         private DataGridViewTextBoxColumn ccom_id;
         private DataGridViewTextBoxColumn catidDataGridViewTextBoxColumn;
         private DataGridViewTextBoxColumn catnameDataGridViewTextBoxColumn;
         private DataGridViewTextBoxColumn cCode;
+        private DataGridViewTextBoxColumn cHSNCode;
         private DataGridViewTextBoxColumn cTamilName;
         private DataGridViewTextBoxColumn comidDataGridViewTextBoxColumn;
         private DataGridViewTextBoxColumn usersuidDataGridViewTextBoxColumn;
@@ -99,6 +102,7 @@ namespace standard.master
 		{
 			txtCategory.Text = string.Empty;
             txtCode.Text = string.Empty;
+            txtHSNCode.Text = string.Empty;
             cboCompany.SelectedValue = 0;
             txtTamilName.Text = string.Empty;
 			id = 0;
@@ -131,6 +135,7 @@ namespace standard.master
 				txtCategory.Text = Convert.ToString(dgview["cCategory", rowIndex].Value);
                 cboCompany.Text = Convert.ToString(dgview["cCompany", rowIndex].Value);
                 txtCode.Text = Convert.ToString(dgview["cCode", rowIndex].Value);
+                txtHSNCode.Text = Convert.ToString(dgview["cHSNCode", rowIndex].Value);
                 txtTamilName.Text = Convert.ToString(dgview["cTamilName", rowIndex].Value);
                 txtCategory.Focus();
 			}
@@ -163,6 +168,7 @@ namespace standard.master
 				category at = new category();
 				at.cat_name = txtCategory.Text.Trim();
                 at.cat_code = txtCode.Text.Trim();
+                at.cat_hsncode = txtHSNCode.Text.Trim();
                 at.cat_tamilname = tamil.toTamil(txtTamilName.Text.Trim());
                 if (Convert.ToInt64(cboCompany.SelectedValue) == 0)
                 {
@@ -197,14 +203,14 @@ namespace standard.master
 					{
 						if (MessageBox.Show("Are you sure to save?", "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.No)
 						{
-							inventoryDataContext.usp_categoryInsert(at.cat_name,at.cat_code,at.cat_tamilname, at.com_id, global.ucode, global.sysdate);
+							inventoryDataContext.usp_categoryInsert(at.cat_name,at.cat_code,at.cat_tamilname, at.cat_hsncode, at.com_id, global.ucode, global.sysdate);
 							MessageBox.Show("Record saved successfully...", "Information", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
 							goto IL_0315;
 						}
 					}
 					else if (MessageBox.Show("Are you sure to update?", "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.No)
 					{
-						inventoryDataContext.usp_categoryUpdate(id, at.cat_name,at.cat_code,at.cat_tamilname, at.com_id, global.ucode, global.sysdate);
+						inventoryDataContext.usp_categoryUpdate(id, at.cat_name,at.cat_code,at.cat_tamilname, at.cat_hsncode,at.com_id, global.ucode, global.sysdate);
 						MessageBox.Show("Record updated successfully...", "Information", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
 						goto IL_0315;
 					}
@@ -264,21 +270,9 @@ namespace standard.master
             this.txtSearch = new System.Windows.Forms.TextBox();
             this.lblSearch = new System.Windows.Forms.Label();
             this.dgview = new System.Windows.Forms.DataGridView();
-            this.cCategory = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.cat_udate = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.users_uid = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.ccat_id = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.ccom_id = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.catidDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.catnameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.cCode = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.cTamilName = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.comidDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.usersuidDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.catudateDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.cCompany = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.uspcategorySelectResultBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.tblEntry = new System.Windows.Forms.TableLayoutPanel();
+            this.lblHSNCode = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.txtCategory = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
@@ -289,12 +283,27 @@ namespace standard.master
             this.txtTamilName = new System.Windows.Forms.TextBox();
             this.txtCode = new System.Windows.Forms.TextBox();
             this.lblTamil = new System.Windows.Forms.Label();
+            this.txtHSNCode = new System.Windows.Forms.TextBox();
             this.tblCommand = new System.Windows.Forms.TableLayoutPanel();
             this.cmdclose = new mylib.lightbutton();
             this.btnClear = new mylib.lightbutton();
             this.btnDelete = new mylib.lightbutton();
             this.btnSave = new mylib.lightbutton();
             this.uspcompanySelectResultBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.ccat_id = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.cCategory = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.cat_udate = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.users_uid = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.ccom_id = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.catidDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.catnameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.cCode = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.cHSNCode = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.cTamilName = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.comidDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.usersuidDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.catudateDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.cCompany = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.a1Paneltitle.SuspendLayout();
             this.tblMain.SuspendLayout();
             this.tblSearch.SuspendLayout();
@@ -354,9 +363,9 @@ namespace standard.master
             this.tblMain.Name = "tblMain";
             this.tblMain.RowCount = 5;
             this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 54F));
-            this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 28.57143F));
+            this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 39F));
             this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 69F));
-            this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 71.42857F));
+            this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 61F));
             this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 69F));
             this.tblMain.Size = new System.Drawing.Size(1329, 768);
             this.tblMain.TabIndex = 2;
@@ -373,7 +382,7 @@ namespace standard.master
             this.tblSearch.Controls.Add(this.txtSearch, 1, 0);
             this.tblSearch.Controls.Add(this.lblSearch, 0, 0);
             this.tblSearch.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tblSearch.Location = new System.Drawing.Point(5, 224);
+            this.tblSearch.Location = new System.Drawing.Point(5, 284);
             this.tblSearch.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.tblSearch.Name = "tblSearch";
             this.tblSearch.RowCount = 1;
@@ -428,14 +437,15 @@ namespace standard.master
             this.dgview.ColumnHeadersHeight = 25;
             this.dgview.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
             this.dgview.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.ccat_id,
             this.cCategory,
             this.cat_udate,
             this.users_uid,
-            this.ccat_id,
             this.ccom_id,
             this.catidDataGridViewTextBoxColumn,
             this.catnameDataGridViewTextBoxColumn,
             this.cCode,
+            this.cHSNCode,
             this.cTamilName,
             this.comidDataGridViewTextBoxColumn,
             this.usersuidDataGridViewTextBoxColumn,
@@ -454,7 +464,7 @@ namespace standard.master
             this.dgview.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dgview.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Bold);
             this.dgview.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.dgview.Location = new System.Drawing.Point(5, 294);
+            this.dgview.Location = new System.Drawing.Point(5, 354);
             this.dgview.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.dgview.Name = "dgview";
             this.dgview.RightToLeft = System.Windows.Forms.RightToLeft.No;
@@ -470,103 +480,9 @@ namespace standard.master
             dataGridViewCellStyle4.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.dgview.RowsDefaultCellStyle = dataGridViewCellStyle4;
             this.dgview.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgview.Size = new System.Drawing.Size(1319, 397);
+            this.dgview.Size = new System.Drawing.Size(1319, 337);
             this.dgview.TabIndex = 4;
             this.dgview.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgview_CellDoubleClick);
-            // 
-            // cCategory
-            // 
-            this.cCategory.DataPropertyName = "cat_name";
-            this.cCategory.HeaderText = "Category";
-            this.cCategory.Name = "cCategory";
-            this.cCategory.ReadOnly = true;
-            this.cCategory.Width = 300;
-            // 
-            // cat_udate
-            // 
-            this.cat_udate.DataPropertyName = "cat_udate";
-            this.cat_udate.HeaderText = "cat_udate";
-            this.cat_udate.Name = "cat_udate";
-            this.cat_udate.Visible = false;
-            // 
-            // users_uid
-            // 
-            this.users_uid.DataPropertyName = "users_uid";
-            this.users_uid.HeaderText = "uid";
-            this.users_uid.Name = "users_uid";
-            this.users_uid.Visible = false;
-            // 
-            // ccat_id
-            // 
-            this.ccat_id.DataPropertyName = "cat_id";
-            this.ccat_id.HeaderText = "cat_id";
-            this.ccat_id.Name = "ccat_id";
-            this.ccat_id.Visible = false;
-            // 
-            // ccom_id
-            // 
-            this.ccom_id.DataPropertyName = "com_id";
-            this.ccom_id.HeaderText = "com_id";
-            this.ccom_id.Name = "ccom_id";
-            this.ccom_id.Visible = false;
-            // 
-            // catidDataGridViewTextBoxColumn
-            // 
-            this.catidDataGridViewTextBoxColumn.DataPropertyName = "cat_id";
-            this.catidDataGridViewTextBoxColumn.HeaderText = "cat_id";
-            this.catidDataGridViewTextBoxColumn.Name = "catidDataGridViewTextBoxColumn";
-            this.catidDataGridViewTextBoxColumn.Visible = false;
-            // 
-            // catnameDataGridViewTextBoxColumn
-            // 
-            this.catnameDataGridViewTextBoxColumn.DataPropertyName = "cat_name";
-            this.catnameDataGridViewTextBoxColumn.HeaderText = "cat_name";
-            this.catnameDataGridViewTextBoxColumn.Name = "catnameDataGridViewTextBoxColumn";
-            this.catnameDataGridViewTextBoxColumn.Visible = false;
-            // 
-            // cCode
-            // 
-            this.cCode.DataPropertyName = "cat_code";
-            this.cCode.HeaderText = "Code";
-            this.cCode.Name = "cCode";
-            this.cCode.ReadOnly = true;
-            // 
-            // cTamilName
-            // 
-            this.cTamilName.DataPropertyName = "cat_tamilname";
-            this.cTamilName.HeaderText = "Category Tamil Name";
-            this.cTamilName.Name = "cTamilName";
-            this.cTamilName.ReadOnly = true;
-            this.cTamilName.Width = 300;
-            // 
-            // comidDataGridViewTextBoxColumn
-            // 
-            this.comidDataGridViewTextBoxColumn.DataPropertyName = "com_id";
-            this.comidDataGridViewTextBoxColumn.HeaderText = "com_id";
-            this.comidDataGridViewTextBoxColumn.Name = "comidDataGridViewTextBoxColumn";
-            this.comidDataGridViewTextBoxColumn.Visible = false;
-            // 
-            // usersuidDataGridViewTextBoxColumn
-            // 
-            this.usersuidDataGridViewTextBoxColumn.DataPropertyName = "users_uid";
-            this.usersuidDataGridViewTextBoxColumn.HeaderText = "users_uid";
-            this.usersuidDataGridViewTextBoxColumn.Name = "usersuidDataGridViewTextBoxColumn";
-            this.usersuidDataGridViewTextBoxColumn.Visible = false;
-            // 
-            // catudateDataGridViewTextBoxColumn
-            // 
-            this.catudateDataGridViewTextBoxColumn.DataPropertyName = "cat_udate";
-            this.catudateDataGridViewTextBoxColumn.HeaderText = "cat_udate";
-            this.catudateDataGridViewTextBoxColumn.Name = "catudateDataGridViewTextBoxColumn";
-            this.catudateDataGridViewTextBoxColumn.Visible = false;
-            // 
-            // cCompany
-            // 
-            this.cCompany.DataPropertyName = "com_name";
-            this.cCompany.HeaderText = "Company";
-            this.cCompany.Name = "cCompany";
-            this.cCompany.ReadOnly = true;
-            this.cCompany.Width = 250;
             // 
             // uspcategorySelectResultBindingSource
             // 
@@ -588,6 +504,9 @@ namespace standard.master
             this.tblEntry.Controls.Add(this.txtTamilName, 3, 0);
             this.tblEntry.Controls.Add(this.txtCode, 1, 2);
             this.tblEntry.Controls.Add(this.lblTamil, 3, 1);
+            this.tblEntry.Controls.Add(this.lblHSNCode, 2, 1);
+            this.tblEntry.Controls.Add(this.txtHSNCode, 2, 2);
+            this.tblEntry.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tblEntry.Location = new System.Drawing.Point(5, 61);
             this.tblEntry.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.tblEntry.Name = "tblEntry";
@@ -596,8 +515,21 @@ namespace standard.master
             this.tblEntry.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
             this.tblEntry.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
             this.tblEntry.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tblEntry.Size = new System.Drawing.Size(1319, 152);
+            this.tblEntry.Size = new System.Drawing.Size(1319, 212);
             this.tblEntry.TabIndex = 2;
+            // 
+            // lblHSNCode
+            // 
+            this.lblHSNCode.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblHSNCode.AutoSize = true;
+            this.lblHSNCode.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
+            this.lblHSNCode.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
+            this.lblHSNCode.Location = new System.Drawing.Point(673, 91);
+            this.lblHSNCode.Name = "lblHSNCode";
+            this.lblHSNCode.Size = new System.Drawing.Size(127, 28);
+            this.lblHSNCode.TabIndex = 29;
+            this.lblHSNCode.Text = "HSN Code";
+            this.lblHSNCode.Visible = false;
             // 
             // label1
             // 
@@ -606,7 +538,7 @@ namespace standard.master
             this.label1.BackColor = System.Drawing.Color.Transparent;
             this.label1.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.label1.Location = new System.Drawing.Point(4, 61);
+            this.label1.Location = new System.Drawing.Point(4, 91);
             this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(191, 28);
@@ -619,7 +551,7 @@ namespace standard.master
             this.txtCategory.BackColor = System.Drawing.Color.White;
             this.txtCategory.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.txtCategory.Font = new System.Drawing.Font("Tahoma", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtCategory.Location = new System.Drawing.Point(304, 55);
+            this.txtCategory.Location = new System.Drawing.Point(304, 75);
             this.txtCategory.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.txtCategory.MaxLength = 50;
             this.txtCategory.Name = "txtCategory";
@@ -634,7 +566,7 @@ namespace standard.master
             this.label2.BackColor = System.Drawing.Color.Transparent;
             this.label2.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
             this.label2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.label2.Location = new System.Drawing.Point(3, 11);
+            this.label2.Location = new System.Drawing.Point(3, 21);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(119, 28);
             this.label2.TabIndex = 0;
@@ -668,7 +600,7 @@ namespace standard.master
             this.lblCode.AutoSize = true;
             this.lblCode.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
             this.lblCode.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.lblCode.Location = new System.Drawing.Point(3, 112);
+            this.lblCode.Location = new System.Drawing.Point(3, 162);
             this.lblCode.Name = "lblCode";
             this.lblCode.Size = new System.Drawing.Size(69, 28);
             this.lblCode.TabIndex = 3;
@@ -680,7 +612,7 @@ namespace standard.master
             this.lblTamilName.AutoSize = true;
             this.lblTamilName.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
             this.lblTamilName.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.lblTamilName.Location = new System.Drawing.Point(689, 11);
+            this.lblTamilName.Location = new System.Drawing.Point(689, 21);
             this.lblTamilName.Name = "lblTamilName";
             this.lblTamilName.Size = new System.Drawing.Size(262, 28);
             this.lblTamilName.TabIndex = 5;
@@ -701,7 +633,7 @@ namespace standard.master
             // 
             this.txtCode.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.txtCode.Font = new System.Drawing.Font("Tahoma", 11F);
-            this.txtCode.Location = new System.Drawing.Point(304, 109);
+            this.txtCode.Location = new System.Drawing.Point(304, 159);
             this.txtCode.Name = "txtCode";
             this.txtCode.Size = new System.Drawing.Size(361, 34);
             this.txtCode.TabIndex = 4;
@@ -713,12 +645,23 @@ namespace standard.master
             this.lblTamil.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.lblTamil.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
             this.lblTamil.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.lblTamil.Location = new System.Drawing.Point(974, 50);
+            this.lblTamil.Location = new System.Drawing.Point(974, 70);
             this.lblTamil.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblTamil.Name = "lblTamil";
             this.tblEntry.SetRowSpan(this.lblTamil, 2);
             this.lblTamil.Size = new System.Drawing.Size(341, 75);
             this.lblTamil.TabIndex = 28;
+            // 
+            // txtHSNCode
+            // 
+            this.txtHSNCode.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.txtHSNCode.Font = new System.Drawing.Font("Tahoma", 11F);
+            this.txtHSNCode.Location = new System.Drawing.Point(673, 159);
+            this.txtHSNCode.Name = "txtHSNCode";
+            this.txtHSNCode.Size = new System.Drawing.Size(294, 34);
+            this.txtHSNCode.TabIndex = 30;
+            this.txtHSNCode.Visible = false;
+            this.txtHSNCode.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtHSNCode_KeyDown);
             // 
             // tblCommand
             // 
@@ -809,6 +752,108 @@ namespace standard.master
             // 
             this.uspcompanySelectResultBindingSource.DataSource = typeof(standard.classes.usp_companySelectResult);
             // 
+            // ccat_id
+            // 
+            this.ccat_id.DataPropertyName = "cat_id";
+            this.ccat_id.HeaderText = "Cat ID";
+            this.ccat_id.Name = "ccat_id";
+            // 
+            // cCategory
+            // 
+            this.cCategory.DataPropertyName = "cat_name";
+            this.cCategory.HeaderText = "Category";
+            this.cCategory.Name = "cCategory";
+            this.cCategory.ReadOnly = true;
+            this.cCategory.Width = 300;
+            // 
+            // cat_udate
+            // 
+            this.cat_udate.DataPropertyName = "cat_udate";
+            this.cat_udate.HeaderText = "cat_udate";
+            this.cat_udate.Name = "cat_udate";
+            this.cat_udate.Visible = false;
+            // 
+            // users_uid
+            // 
+            this.users_uid.DataPropertyName = "users_uid";
+            this.users_uid.HeaderText = "uid";
+            this.users_uid.Name = "users_uid";
+            this.users_uid.Visible = false;
+            // 
+            // ccom_id
+            // 
+            this.ccom_id.DataPropertyName = "com_id";
+            this.ccom_id.HeaderText = "com_id";
+            this.ccom_id.Name = "ccom_id";
+            this.ccom_id.Visible = false;
+            // 
+            // catidDataGridViewTextBoxColumn
+            // 
+            this.catidDataGridViewTextBoxColumn.DataPropertyName = "cat_id";
+            this.catidDataGridViewTextBoxColumn.HeaderText = "cat_id";
+            this.catidDataGridViewTextBoxColumn.Name = "catidDataGridViewTextBoxColumn";
+            this.catidDataGridViewTextBoxColumn.Visible = false;
+            // 
+            // catnameDataGridViewTextBoxColumn
+            // 
+            this.catnameDataGridViewTextBoxColumn.DataPropertyName = "cat_name";
+            this.catnameDataGridViewTextBoxColumn.HeaderText = "cat_name";
+            this.catnameDataGridViewTextBoxColumn.Name = "catnameDataGridViewTextBoxColumn";
+            this.catnameDataGridViewTextBoxColumn.Visible = false;
+            // 
+            // cCode
+            // 
+            this.cCode.DataPropertyName = "cat_code";
+            this.cCode.HeaderText = "Code";
+            this.cCode.Name = "cCode";
+            this.cCode.ReadOnly = true;
+            // 
+            // cHSNCode
+            // 
+            this.cHSNCode.DataPropertyName = "cat_hsncode";
+            this.cHSNCode.HeaderText = "HSN Code";
+            this.cHSNCode.Name = "cHSNCode";
+            this.cHSNCode.ReadOnly = true;
+            this.cHSNCode.Visible = false;
+            this.cHSNCode.Width = 200;
+            // 
+            // cTamilName
+            // 
+            this.cTamilName.DataPropertyName = "cat_tamilname";
+            this.cTamilName.HeaderText = "Category Tamil Name";
+            this.cTamilName.Name = "cTamilName";
+            this.cTamilName.ReadOnly = true;
+            this.cTamilName.Width = 300;
+            // 
+            // comidDataGridViewTextBoxColumn
+            // 
+            this.comidDataGridViewTextBoxColumn.DataPropertyName = "com_id";
+            this.comidDataGridViewTextBoxColumn.HeaderText = "com_id";
+            this.comidDataGridViewTextBoxColumn.Name = "comidDataGridViewTextBoxColumn";
+            this.comidDataGridViewTextBoxColumn.Visible = false;
+            // 
+            // usersuidDataGridViewTextBoxColumn
+            // 
+            this.usersuidDataGridViewTextBoxColumn.DataPropertyName = "users_uid";
+            this.usersuidDataGridViewTextBoxColumn.HeaderText = "users_uid";
+            this.usersuidDataGridViewTextBoxColumn.Name = "usersuidDataGridViewTextBoxColumn";
+            this.usersuidDataGridViewTextBoxColumn.Visible = false;
+            // 
+            // catudateDataGridViewTextBoxColumn
+            // 
+            this.catudateDataGridViewTextBoxColumn.DataPropertyName = "cat_udate";
+            this.catudateDataGridViewTextBoxColumn.HeaderText = "cat_udate";
+            this.catudateDataGridViewTextBoxColumn.Name = "catudateDataGridViewTextBoxColumn";
+            this.catudateDataGridViewTextBoxColumn.Visible = false;
+            // 
+            // cCompany
+            // 
+            this.cCompany.DataPropertyName = "com_name";
+            this.cCompany.HeaderText = "Company";
+            this.cCompany.Name = "cCompany";
+            this.cCompany.ReadOnly = true;
+            this.cCompany.Width = 250;
+            // 
             // frmCategory
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
@@ -875,6 +920,14 @@ namespace standard.master
             if (e.KeyCode == Keys.Enter) // or Keys.Return
             {
                 btnSave.Focus();
+            }
+        }
+
+        private void txtHSNCode_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                txtTamilName.Focus();
             }
         }
     }

@@ -76,7 +76,7 @@ namespace standard.report
                              where a.led_accounttype.ToUpper() == "AGENT" || a.led_id == 0
                              select new { a.led_id, a.led_name, a.led_address2 });
 
-                ledgermasterBindingSource.DataSource = sup.OrderBy(x => x.led_address2);
+                ledgermasterBindingSource.DataSource = cus.OrderBy(x => x.led_name);
                 uspledgermasterSelectResultBindingSource1.DataSource = db.usp_ledgermasterSelect(null, "Ledger", null, null, null, null);
                 ledgermasterCityBindingSource.DataSource = sup.Select(x => x.led_address2).Distinct();
                 uspledgermasterCustomerCityBindingSource.DataSource = cus.Select(x => x.led_address2).Distinct();
@@ -95,6 +95,30 @@ namespace standard.report
                 {
                     lblLedger.Text = "Agent";
                 }
+
+                //if (_ReportName == "Sales Report")
+                //{
+                //    cboCity.Visible = false;
+                //    lblCity.Visible = false;
+                //    lblLedger.TabIndex = 3;
+                //    cboName.TabIndex = 4;
+                //    //ledgermasterBindingSource.Clear();
+                //    var customer = from a in db.ledgermasters
+                //                  //orderby a.led_name
+                //              where ((a.led_address2 == cboCity.Text.ToString()) && (a.led_accounttype == "Customer"))
+                //              select new { a.led_id, a.led_name };
+                //    cboName.DataSource = sup;
+                //    cboName.DisplayMember = "led_name";
+                //    cboName.ValueMember = "led_id";
+                //    partyautocompletelist.Clear();
+                //    foreach (var li in sup)
+                //    {
+                //        partyautocompletelist.Add(li.led_name);
+                //    }
+
+                //    cboName.AutoCompleteMode = AutoCompleteMode.Suggest;
+                //    cboName.AutoCompleteSource = AutoCompleteSource.CustomSource;
+                //}
 
 
             }
@@ -150,7 +174,7 @@ namespace standard.report
 
                 //cboCity.Visible = false;  //arun
                 //lblCity.Visible = false;  //arun
-                cboCity.SelectedIndex = 1;
+                cboCity.SelectedValue = 1;
                 lblPartyType.Visible = false;
                 cboPartyType.Visible = false;
                 lblReference.Visible = false;
@@ -304,7 +328,7 @@ namespace standard.report
                 else if (_ReportName == "Ledger Outstanding Report")
                 {
 
-                    if (cboCity.Text == "" || cboName.Text == "")
+                    if (cboName.Text == "")
                     {
                         MessageBox.Show("Please Select any PartyName...");
                         return;
@@ -326,7 +350,7 @@ namespace standard.report
                 else if (_ReportName == "Supplier Outstanding Report")
                 {
 
-                    if (cboCity.Text == "" || cboName.Text == "")
+                    if (cboName.Text == "")
                     {
                         MessageBox.Show("Please Select any PartyName...");
                         return;
@@ -435,133 +459,133 @@ namespace standard.report
             this.Close();
         }
 
-        private void cboCity_SelectedValueChanged_1(object sender, EventArgs e)
-        {
-            reportViewer1.Reset();
-            //if (cboPartyType.Text.Trim().ToUpper() != "CUSTOMER")
-            //{
-            lblReference.Visible = false;
-                cboReference.Visible = false;
+        //private void cboCity_SelectedValueChanged_1(object sender, EventArgs e)
+        //{
+        //    reportViewer1.Reset();
+        //    //if (cboPartyType.Text.Trim().ToUpper() != "CUSTOMER")
+        //    //{
+        //    lblReference.Visible = false;
+        //        cboReference.Visible = false;
 
-            //}
-            //else
-            //{
-            //    lblReference.Visible = true;
-            //    cboReference.Visible = true;
-            //}
-            classes.InventoryDataContext db = new classes.InventoryDataContext();
-            if (cboCity.SelectedItem == null)
-                return;
-            using (db)
-            {
+        //    //}
+        //    //else
+        //    //{
+        //    //    lblReference.Visible = true;
+        //    //    cboReference.Visible = true;
+        //    //}
+        //    classes.InventoryDataContext db = new classes.InventoryDataContext();
+        //    if (cboCity.SelectedItem == null)
+        //        return;
+        //    using (db)
+        //    {
 
-                if (_ReportName == "Agent Outstanding Report")
-                {
-                    //ledgermasterBindingSource.Clear();
-                    var sup = from a in db.ledgermasters
-                              where ((a.led_address2 == cboCity.Text.ToString()) && (a.led_accounttype == "Agent"))
-                              //orderby a.led_name
-                              select new { a.led_id, a.led_name };
-                    //var PartyList = (from a in db.ledgermasters
-                    //           where (a.led_accounttype.ToUpper() == "CUSTOMER" 
-                    //                  || a.led_id == 0)
-                    //           select new { a.led_id, a.led_name, a.led_address2 });
-                    cboName.DataSource = sup;
-                    //cboCustomer.DataSource = PartyList;
-                    cboName.DisplayMember = "led_name";
-                    cboName.ValueMember = "led_id";
-                    partyautocompletelist.Clear();
-                    foreach (var li in sup)
-                    {
-                        partyautocompletelist.Add(li.led_name);
-                    }
+        //        if (_ReportName == "Agent Outstanding Report")
+        //        {
+        //            //ledgermasterBindingSource.Clear();
+        //            var sup = from a in db.ledgermasters
+        //                      where ((a.led_address2 == cboCity.Text.ToString()) && (a.led_accounttype == "Agent"))
+        //                      //orderby a.led_name
+        //                      select new { a.led_id, a.led_name };
+        //            //var PartyList = (from a in db.ledgermasters
+        //            //           where (a.led_accounttype.ToUpper() == "CUSTOMER" 
+        //            //                  || a.led_id == 0)
+        //            //           select new { a.led_id, a.led_name, a.led_address2 });
+        //            cboName.DataSource = sup;
+        //            //cboCustomer.DataSource = PartyList;
+        //            cboName.DisplayMember = "led_name";
+        //            cboName.ValueMember = "led_id";
+        //            partyautocompletelist.Clear();
+        //            foreach (var li in sup)
+        //            {
+        //                partyautocompletelist.Add(li.led_name);
+        //            }
 
-                    cboName.AutoCompleteMode = AutoCompleteMode.Suggest;
-                    cboName.AutoCompleteSource = AutoCompleteSource.CustomSource;
-                }
-                else if (_ReportName == "Purchase Report")
-                {
-                    //ledgermasterBindingSource.Clear();
-                    var sup = from a in db.ledgermasters
-                              where ((a.led_address2 == cboCity.Text.ToString()) && (a.led_accounttype == "Supplier"))
-                              //orderby a.led_name
-                              select new { a.led_id, a.led_name };
-                    cboName.DataSource = sup;
-                    cboName.DisplayMember = "led_name";
-                    cboName.ValueMember = "led_id";
-                    partyautocompletelist.Clear();
-                    foreach (var li in sup)
-                    {
-                        partyautocompletelist.Add(li.led_name);
-                    }
+        //            cboName.AutoCompleteMode = AutoCompleteMode.Suggest;
+        //            cboName.AutoCompleteSource = AutoCompleteSource.CustomSource;
+        //        }
+        //        else if (_ReportName == "Purchase Report")
+        //        {
+        //            //ledgermasterBindingSource.Clear();
+        //            var sup = from a in db.ledgermasters
+        //                      where ((a.led_address2 == cboCity.Text.ToString()) && (a.led_accounttype == "Supplier"))
+        //                      //orderby a.led_name
+        //                      select new { a.led_id, a.led_name };
+        //            cboName.DataSource = sup;
+        //            cboName.DisplayMember = "led_name";
+        //            cboName.ValueMember = "led_id";
+        //            partyautocompletelist.Clear();
+        //            foreach (var li in sup)
+        //            {
+        //                partyautocompletelist.Add(li.led_name);
+        //            }
 
-                    cboName.AutoCompleteMode = AutoCompleteMode.Suggest;
-                    cboName.AutoCompleteSource = AutoCompleteSource.CustomSource;
-                }
-                else if (_ReportName == "Sales Report")
-                {
-                    //ledgermasterBindingSource.Clear();
-                    var sup = from a in db.ledgermasters
-                                  //orderby a.led_name
-                              where ((a.led_address2 == cboCity.Text.ToString()) && (a.led_accounttype == "Customer"))
-                              select new { a.led_id, a.led_name };
-                    cboName.DataSource = sup;
-                    cboName.DisplayMember = "led_name";
-                    cboName.ValueMember = "led_id";
-                    partyautocompletelist.Clear();
-                    foreach (var li in sup)
-                    {
-                        partyautocompletelist.Add(li.led_name);
-                    }
+        //            cboName.AutoCompleteMode = AutoCompleteMode.Suggest;
+        //            cboName.AutoCompleteSource = AutoCompleteSource.CustomSource;
+        //        }
+        //        else if (_ReportName == "Sales Report")
+        //        {
+        //            //ledgermasterBindingSource.Clear();
+        //            var sup = from a in db.ledgermasters
+        //                          //orderby a.led_name
+        //                      where ((a.led_address2 == cboCity.Text.ToString()) && (a.led_accounttype == "Customer"))
+        //                      select new { a.led_id, a.led_name };
+        //            cboName.DataSource = sup;
+        //            cboName.DisplayMember = "led_name";
+        //            cboName.ValueMember = "led_id";
+        //            partyautocompletelist.Clear();
+        //            foreach (var li in sup)
+        //            {
+        //                partyautocompletelist.Add(li.led_name);
+        //            }
 
-                    cboName.AutoCompleteMode = AutoCompleteMode.Suggest;
-                    cboName.AutoCompleteSource = AutoCompleteSource.CustomSource;
-                }
+        //            cboName.AutoCompleteMode = AutoCompleteMode.Suggest;
+        //            cboName.AutoCompleteSource = AutoCompleteSource.CustomSource;
+        //        }
 
-                else if (_ReportName == "Supplier Outstanding Report")
-                {
-                    //ledgermasterBindingSource.Clear();
-                    var sup = from a in db.ledgermasters
-                                  //orderby a.led_name
-                              where (a.led_address2 == cboCity.Text.ToString() && (a.led_accounttype == "Supplier"))
-                              select new { a.led_id, a.led_name };
-                    cboName.DataSource = sup;
-                    cboName.DisplayMember = "led_name";
-                    cboName.ValueMember = "led_id";
-                    partyautocompletelist.Clear();
-                    foreach (var li in sup)
-                    {
-                        partyautocompletelist.Add(li.led_name);
-                    }
+        //        else if (_ReportName == "Supplier Outstanding Report")
+        //        {
+        //            //ledgermasterBindingSource.Clear();
+        //            var sup = from a in db.ledgermasters
+        //                          //orderby a.led_name
+        //                      where (a.led_address2 == cboCity.Text.ToString() && (a.led_accounttype == "Supplier"))
+        //                      select new { a.led_id, a.led_name };
+        //            cboName.DataSource = sup;
+        //            cboName.DisplayMember = "led_name";
+        //            cboName.ValueMember = "led_id";
+        //            partyautocompletelist.Clear();
+        //            foreach (var li in sup)
+        //            {
+        //                partyautocompletelist.Add(li.led_name);
+        //            }
 
-                    cboName.AutoCompleteMode = AutoCompleteMode.Suggest;
-                    cboName.AutoCompleteSource = AutoCompleteSource.CustomSource;
-                }
+        //            cboName.AutoCompleteMode = AutoCompleteMode.Suggest;
+        //            cboName.AutoCompleteSource = AutoCompleteSource.CustomSource;
+        //        }
 
-                else
-                {
-                    //ledgermasterBindingSource.Clear();
-                    var sup = from a in db.ledgermasters
-                                  //orderby a.led_name
-                              where (a.led_address2 == cboCity.Text.ToString() && (a.led_accounttype == "Customer"))
-                              select new { a.led_id, a.led_name };
-                    cboName.DataSource = sup;
-                    cboName.DisplayMember = "led_name";
-                    cboName.ValueMember = "led_id";
-                    partyautocompletelist.Clear();
-                    foreach (var li in sup)
-                    {
-                        partyautocompletelist.Add(li.led_name);
-                    }
+        //        else
+        //        {
+        //            //ledgermasterBindingSource.Clear();
+        //            var sup = from a in db.ledgermasters
+        //                          //orderby a.led_name
+        //                      where (a.led_address2 == cboCity.Text.ToString() && (a.led_accounttype == "Customer"))
+        //                      select new { a.led_id, a.led_name };
+        //            cboName.DataSource = sup;
+        //            cboName.DisplayMember = "led_name";
+        //            cboName.ValueMember = "led_id";
+        //            partyautocompletelist.Clear();
+        //            foreach (var li in sup)
+        //            {
+        //                partyautocompletelist.Add(li.led_name);
+        //            }
 
-                    cboName.AutoCompleteMode = AutoCompleteMode.Suggest;
-                    cboName.AutoCompleteSource = AutoCompleteSource.CustomSource;
-                }
+        //            cboName.AutoCompleteMode = AutoCompleteMode.Suggest;
+        //            cboName.AutoCompleteSource = AutoCompleteSource.CustomSource;
+        //        }
 
-                // ledgermasterBindingSource .DataSource = sup;
+        //        // ledgermasterBindingSource .DataSource = sup;
 
-            }
-        }
+        //    }
+        //}
 
         private void cboCity_KeyDown(object sender, KeyEventArgs e)
         {
@@ -600,7 +624,7 @@ namespace standard.report
         private void dtptdate_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Enter)
-                cboCity.Focus();
+                cboName.Focus();
         }
 
         private void cboCustomer_KeyDown(object sender, KeyEventArgs e)

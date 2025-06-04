@@ -63,6 +63,16 @@ namespace standard.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap AgentOutstanding {
+            get {
+                object obj = ResourceManager.GetObject("AgentOutstanding", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap delete {
             get {
                 object obj = ResourceManager.GetObject("delete", resourceCulture);
@@ -166,6 +176,26 @@ namespace standard.Properties {
         internal static System.Drawing.Bitmap salesorder {
             get {
                 object obj = ResourceManager.GetObject("salesorder", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap stock {
+            get {
+                object obj = ResourceManager.GetObject("stock", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Vehicle {
+            get {
+                object obj = ResourceManager.GetObject("Vehicle", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

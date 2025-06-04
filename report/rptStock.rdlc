@@ -404,7 +404,7 @@
                             <TextRun>
                               <Value>=Fields!item_name.Value</Value>
                               <Style>
-                                <FontFamily>tahoma</FontFamily>
+                                <FontFamily>Nirmala UI</FontFamily>
                               </Style>
                             </TextRun>
                           </TextRuns>

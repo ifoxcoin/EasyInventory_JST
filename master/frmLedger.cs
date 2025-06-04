@@ -150,13 +150,19 @@ namespace standard.master
         private TextBox txtDeliveryOrder;
         private TextBox txtSearchByAreaCode;
         private Label lblSearchAreaCode;
+        private DataGridViewTextBoxColumn ledareacodeDataGridViewTextBoxColumn;
+        private Label lblState;
+        private TextBox txtState;
+        private Label lblShippingAdd2;
+        private Label lblShipingAdd1;
+        private TextBox txtShippingAdd1;
+        private TextBox txtShippingAdd2;
         private DataGridViewTextBoxColumn ledidDataGridViewTextBoxColumn;
         private DataGridViewTextBoxColumn ledagidDataGridViewTextBoxColumn;
         private DataGridViewTextBoxColumn lednameDataGridViewTextBoxColumn;
         private DataGridViewTextBoxColumn ledaccountcodeDataGridViewTextBoxColumn;
         private DataGridViewTextBoxColumn ledratetypeDataGridViewTextBoxColumn;
         private DataGridViewTextBoxColumn ledaccounttypeDataGridViewTextBoxColumn;
-        private DataGridViewTextBoxColumn ledareacodeDataGridViewTextBoxColumn;
         private DataGridViewTextBoxColumn leddeliveryorderDataGridViewTextBoxColumn;
         private DataGridViewTextBoxColumn ledaddressDataGridViewTextBoxColumn;
         private DataGridViewTextBoxColumn ledaddress1DataGridViewTextBoxColumn;
@@ -181,8 +187,10 @@ namespace standard.master
         private DataGridViewTextBoxColumn comnameDataGridViewTextBoxColumn;
         private DataGridViewTextBoxColumn comidDataGridViewTextBoxColumn;
         private DataGridViewTextBoxColumn ledudateDataGridViewTextBoxColumn;
-        private Label lblState;
-        private TextBox txtState;
+        private Label label13;
+        private TextBox txtVehicleNo;
+        private ComboBox cboVehicleNo;
+        private BindingSource vehicleBindingSource;
         private TextBox txtCode;
 
 		public frmLedger()
@@ -221,9 +229,12 @@ namespace standard.master
 			txtCode.Text = string.Empty;
 			cboType.SelectedIndex = -1;
 			cboGridReference.SelectedIndex = 0;
-			txtAdd1.Text = string.Empty;
+            cboReference.SelectedIndex = -1;
+            txtAdd1.Text = string.Empty;
 			txtAdd2.Text = string.Empty;
 			txtAdd3.Text = string.Empty;
+            txtShippingAdd1.Text = string.Empty;
+            txtShippingAdd2.Text = string.Empty;
             txtState.Text = string.Empty;
             txtPin.Text = string.Empty;
 			txtTransport.Text = string.Empty;
@@ -232,7 +243,9 @@ namespace standard.master
 			txtManagerName.Text = string.Empty;
 			txtManagerPhone.Text = string.Empty;
             cboAreaCode.SelectedIndex = 0;
+            cboVehicleNo.SelectedIndex = 0;
             txtDeliveryOrder.Text = string.Empty;
+            txtVehicleNo.Text = string.Empty;
 			txtTin.Text = string.Empty;
             cbIsFreight.Checked = false;
 			txtCst.Text = string.Empty;
@@ -251,8 +264,10 @@ namespace standard.master
 			txtPartyName.Select();
 			cboType.SelectedIndex = 0;
 			cboratetype.SelectedIndex = 0;
-			InventoryDataContext inventoryDataContext = new InventoryDataContext();
+            cboReference.SelectedValue = 0;
+            InventoryDataContext inventoryDataContext = new InventoryDataContext();
             routeBindingSource.DataSource = inventoryDataContext.routes.Select((route rt) => rt);
+            vehicleBindingSource.DataSource = inventoryDataContext.vehicles.Select((vehicle vh) => vh);
             uspledgermasterSelectResultBindingSource.DataSource = inventoryDataContext.usp_ledgermasterSelect(null, null, null, null, null, null);
 			ledgermasterBindingSource.DataSource = inventoryDataContext.ledgermasters.Where((ledgermaster li) => li.led_accounttype == "Agent" || li.led_id == 0);
 			FillGridReference();
@@ -293,6 +308,8 @@ namespace standard.master
 					txtAdd1.Text = Convert.ToString(item.led_address);
 					txtAdd2.Text = Convert.ToString(item.led_address1);
 					txtAdd3.Text = Convert.ToString(item.led_address2);
+                    txtShippingAdd1.Text = Convert.ToString(item.led_shippingaddress1);
+                    txtShippingAdd2.Text = Convert.ToString(item.led_shippingaddress2);
                     txtState.Text = Convert.ToString(item.led_state);
                     txtPin.Text = Convert.ToString(item.led_pincode);
 					txtTransport.Text = Convert.ToString(item.led_transport);
@@ -301,8 +318,10 @@ namespace standard.master
 					txtManagerName.Text = Convert.ToString(item.led_managername);
 					txtManagerPhone.Text = Convert.ToString(item.led_managerphone);
                     cboAreaCode.Text = item.rt_name;
+                    cboVehicleNo.Text = item.vh_number;
                     cboratetype.Text = item.led_ratetype;
                     txtDeliveryOrder.Text = Convert.ToString(item.led_deliveryorder);
+                    txtVehicleNo.Text = Convert.ToString(item.led_vehicleno);
                     txtTin.Text = Convert.ToString(item.led_tin);
                     cbIsFreight.Checked = Convert.ToBoolean(item.led_isfreight);
                     txtCst.Text = Convert.ToString(item.led_cst);
@@ -346,7 +365,9 @@ namespace standard.master
 				ledgermaster.led_accounttype = cboType.Text;
 				ledgermaster.led_address = txtAdd1.Text.Trim();
 				ledgermaster.led_address1 = txtAdd2.Text.Trim();
-				ledgermaster.led_address2 = txtAdd3.Text.Trim();
+				ledgermaster.led_shippingaddress1 = txtShippingAdd1.Text.Trim();
+                ledgermaster.led_shippingaddress2 = txtShippingAdd2.Text.Trim();
+                ledgermaster.led_address2 = txtAdd3.Text.Trim();
                 ledgermaster.led_state = txtState.Text.Trim();
                 ledgermaster.led_pincode = txtPin.Text.Trim();
 				ledgermaster.led_transport = txtTransport.Text.Trim();
@@ -355,8 +376,10 @@ namespace standard.master
 				ledgermaster.led_managername = txtManagerName.Text.Trim();
 				ledgermaster.led_managerphone = txtManagerPhone.Text.Trim();
                 ledgermaster.rt_id = Convert.ToInt64(cboAreaCode.SelectedValue);
+                ledgermaster.vh_id = Convert.ToInt64(cboVehicleNo.SelectedValue);
                 ledgermaster.led_deliveryorder = txtDeliveryOrder.Text.Trim();
-				ledgermaster.led_agid = Convert.ToInt32(cboReference.SelectedValue);
+                ledgermaster.led_vehicleno = txtVehicleNo.Text.Trim();
+                ledgermaster.led_agid = Convert.ToInt32(cboReference.SelectedValue);
 				ledgermaster.led_tin = txtTin.Text.Trim();
                 ledgermaster.led_isfreight = cbIsFreight.Checked;
 				ledgermaster.led_cst = txtCst.Text.Trim();
@@ -377,7 +400,7 @@ namespace standard.master
 					MessageBox.Show("Invalid 'PartyType'", "Information", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
 					cboratetype.Focus();
 				}
-				else if (ledgermaster.led_ratetype == string.Empty || ledgermaster.led_ratetype == "---Select---" || cboratetype.SelectedIndex <= 0)
+				else if ((ledgermaster.led_ratetype == string.Empty && cboType.Text == "Customer") || (ledgermaster.led_ratetype == "---Select---" && cboType.Text == "Customer")|| (cboratetype.SelectedIndex <= 0 && cboType.Text == "Customer"))
 				{
 					MessageBox.Show("Invalid 'RateType'", "Information", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
 					cboratetype.Focus();
@@ -391,14 +414,14 @@ namespace standard.master
 				{
 					if (MessageBox.Show("Are you sure to save?", "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.No)
 					{
-						inventoryDataContext.usp_ledgermasterInsert(ledgermaster.led_agid, ledgermaster.led_accountcode, ledgermaster.led_accounttype, ledgermaster.led_name, ledgermaster.led_address, ledgermaster.led_address1, ledgermaster.led_address2, ledgermaster.led_state, ledgermaster.led_tname, ledgermaster.led_taddress, ledgermaster.led_taddress1, ledgermaster.led_taddress2, ledgermaster.led_pincode, ledgermaster.led_transport, ledgermaster.led_ownerphone, ledgermaster.led_ownername, ledgermaster.led_managername, ledgermaster.led_managerphone, ledgermaster.led_deliveryorder, ledgermaster.led_tin, ledgermaster.led_isfreight, ledgermaster.led_cst, ledgermaster.led_refno, global.ucode, global.comid, ledgermaster.rt_id, global.sysdate, ledgermaster.led_ratetype, ledgermaster.led_disper);
+						inventoryDataContext.usp_ledgermasterInsert(ledgermaster.led_agid, ledgermaster.led_accountcode, ledgermaster.led_accounttype, ledgermaster.led_name, ledgermaster.led_address, ledgermaster.led_address1, ledgermaster.led_address2, ledgermaster.led_shippingaddress1, ledgermaster.led_shippingaddress2, ledgermaster.led_state, ledgermaster.led_tname, ledgermaster.led_taddress, ledgermaster.led_taddress1, ledgermaster.led_taddress2, ledgermaster.led_pincode, ledgermaster.led_transport, ledgermaster.led_ownerphone, ledgermaster.led_ownername, ledgermaster.led_managername, ledgermaster.led_managerphone, ledgermaster.led_deliveryorder, ledgermaster.led_vehicleno, ledgermaster.led_tin, ledgermaster.led_isfreight, ledgermaster.led_cst, ledgermaster.led_refno, global.ucode, global.comid, ledgermaster.rt_id, ledgermaster.vh_id, global.sysdate, ledgermaster.led_ratetype, ledgermaster.led_disper);
 						MessageBox.Show("Record saved successfully...", "Information", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
 						goto IL_0521;
 					}
 				}
 				else if (MessageBox.Show("Are you sure to update?", "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.No)
 				{
-					inventoryDataContext.usp_ledgermasterUpdate(id, ledgermaster.led_agid, ledgermaster.led_accountcode, ledgermaster.led_accounttype, ledgermaster.led_name, ledgermaster.led_address, ledgermaster.led_address1, ledgermaster.led_address2, ledgermaster.led_state, ledgermaster.led_tname, ledgermaster.led_taddress, ledgermaster.led_taddress1, ledgermaster.led_taddress2, ledgermaster.led_pincode, ledgermaster.led_transport, ledgermaster.led_ownerphone, ledgermaster.led_ownername, ledgermaster.led_managername, ledgermaster.led_managerphone,ledgermaster.led_deliveryorder,ledgermaster.led_tin,ledgermaster.led_isfreight, ledgermaster.led_cst, ledgermaster.led_refno, global.ucode, global.comid, ledgermaster.rt_id, global.sysdate, ledgermaster.led_ratetype, ledgermaster.led_disper);
+					inventoryDataContext.usp_ledgermasterUpdate(id, ledgermaster.led_agid, ledgermaster.led_accountcode, ledgermaster.led_accounttype, ledgermaster.led_name, ledgermaster.led_address, ledgermaster.led_address1, ledgermaster.led_shippingaddress1, ledgermaster.led_shippingaddress2, ledgermaster.led_address2, ledgermaster.led_state, ledgermaster.led_tname, ledgermaster.led_taddress, ledgermaster.led_taddress1, ledgermaster.led_taddress2, ledgermaster.led_pincode, ledgermaster.led_transport, ledgermaster.led_ownerphone, ledgermaster.led_ownername, ledgermaster.led_managername, ledgermaster.led_managerphone,ledgermaster.led_deliveryorder, ledgermaster.led_vehicleno,ledgermaster.led_tin,ledgermaster.led_isfreight, ledgermaster.led_cst, ledgermaster.led_refno, global.ucode, global.comid, ledgermaster.rt_id, ledgermaster.vh_id, global.sysdate, ledgermaster.led_ratetype, ledgermaster.led_disper);
 					MessageBox.Show("Record updated successfully...", "Information", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
 					goto IL_0521;
 				}
@@ -481,19 +504,38 @@ namespace standard.master
 		private void cboType_TextChanged(object sender, EventArgs e)
 		{
 			InventoryDataContext inventoryDataContext = new InventoryDataContext();
-			if (cboType.Text == "Customer")
+			if (cboType.Text == "Supplier")
 			{
-				cboReference.Enabled = true;
+				cboReference.Enabled = true;                
 				ledgermasterBindingSource.DataSource = inventoryDataContext.ledgermasters.Where((ledgermaster li) => li.led_accounttype == "Agent" || li.led_id == 0);
 				cboReference.SelectedValue = 0;
-			}
+                cboratetype.SelectedIndex = 1;
+            }
 			else
 			{
-				cboReference.Enabled = false;
-				cboReference.SelectedValue = 0;
+				cboReference.Enabled = false;              
+                cboReference.SelectedValue = 0;
+                cboratetype.SelectedIndex = 0;
 				cboReference.Text = "";
 			}
-		}
+            if (cboType.Text == "Customer")
+            {
+                cboAreaCode.Enabled = true;
+                cboVehicleNo.Enabled = true;
+                cboratetype.Enabled = true;
+                txtDeliveryOrder.Enabled = true;
+            }
+            else
+            {
+                cboAreaCode.Enabled = false;
+                cboVehicleNo.Enabled = false;
+                cboratetype.Enabled = false;                
+                txtDeliveryOrder.Enabled = false;
+                cboAreaCode.SelectedValue = 0;
+                cboVehicleNo.SelectedValue = 0;
+                txtDeliveryOrder.Text = "";
+            }
+        }
 
 		private void txtSearch_TextChanged(object sender, EventArgs e)
 		{
@@ -565,11 +607,11 @@ namespace standard.master
 		private void InitializeComponent()
 		{
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle7 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle8 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle9 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle10 = new System.Windows.Forms.DataGridViewCellStyle();
             this.a1Paneltitle = new mylib.a1panel();
             this.lbltitle = new System.Windows.Forms.Label();
             this.tblMain = new System.Windows.Forms.TableLayoutPanel();
@@ -617,21 +659,11 @@ namespace standard.master
             this.ledudateDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.uspledgermasterSelectResultBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.tblEntry = new System.Windows.Forms.TableLayoutPanel();
+            this.cboVehicleNo = new System.Windows.Forms.ComboBox();
+            this.vehicleBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.label13 = new System.Windows.Forms.Label();
             this.txtPartyName = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
-            this.label3 = new System.Windows.Forms.Label();
-            this.txtCode = new System.Windows.Forms.TextBox();
-            this.cboType = new System.Windows.Forms.ComboBox();
-            this.label11 = new System.Windows.Forms.Label();
-            this.label4 = new System.Windows.Forms.Label();
-            this.label17 = new System.Windows.Forms.Label();
-            this.txtAdd3 = new System.Windows.Forms.TextBox();
-            this.txtAdd2 = new System.Windows.Forms.TextBox();
-            this.txtAdd1 = new System.Windows.Forms.TextBox();
-            this.lblref = new System.Windows.Forms.Label();
-            this.cboReference = new System.Windows.Forms.ComboBox();
-            this.ledgermasterBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.label19 = new System.Windows.Forms.Label();
             this.txtTamilAdd3 = new System.Windows.Forms.TextBox();
             this.label18 = new System.Windows.Forms.Label();
@@ -645,29 +677,47 @@ namespace standard.master
             this.txtManagerName = new System.Windows.Forms.TextBox();
             this.txtManagerPhone = new System.Windows.Forms.TextBox();
             this.label21 = new System.Windows.Forms.Label();
-            this.label23 = new System.Windows.Forms.Label();
-            this.txtDisPer = new mylib.decimalbox(this.components);
-            this.label12 = new System.Windows.Forms.Label();
-            this.txtTransport = new System.Windows.Forms.TextBox();
-            this.label9 = new System.Windows.Forms.Label();
-            this.txtTin = new System.Windows.Forms.TextBox();
-            this.txtDeliveryOrder = new System.Windows.Forms.TextBox();
-            this.lblDeliveryOrder = new System.Windows.Forms.Label();
+            this.lbltamil = new System.Windows.Forms.Label();
+            this.cbIsFreight = new System.Windows.Forms.CheckBox();
+            this.txtCst = new System.Windows.Forms.TextBox();
             this.cboAreaCode = new System.Windows.Forms.ComboBox();
             this.routeBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.lblAreaCode = new System.Windows.Forms.Label();
-            this.label8 = new System.Windows.Forms.Label();
             this.txtOwnerPhone = new System.Windows.Forms.TextBox();
+            this.label8 = new System.Windows.Forms.Label();
             this.txtOwnerName = new System.Windows.Forms.TextBox();
             this.label15 = new System.Windows.Forms.Label();
             this.txtPin = new System.Windows.Forms.TextBox();
             this.label16 = new System.Windows.Forms.Label();
+            this.label3 = new System.Windows.Forms.Label();
+            this.cboType = new System.Windows.Forms.ComboBox();
+            this.lblref = new System.Windows.Forms.Label();
+            this.cboReference = new System.Windows.Forms.ComboBox();
+            this.ledgermasterBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.label17 = new System.Windows.Forms.Label();
+            this.txtAdd1 = new System.Windows.Forms.TextBox();
+            this.txtAdd2 = new System.Windows.Forms.TextBox();
+            this.txtShippingAdd1 = new System.Windows.Forms.TextBox();
+            this.txtShippingAdd2 = new System.Windows.Forms.TextBox();
+            this.txtAdd3 = new System.Windows.Forms.TextBox();
+            this.label4 = new System.Windows.Forms.Label();
+            this.lblShipingAdd1 = new System.Windows.Forms.Label();
+            this.lblShippingAdd2 = new System.Windows.Forms.Label();
+            this.label11 = new System.Windows.Forms.Label();
             this.lblState = new System.Windows.Forms.Label();
-            this.label6 = new System.Windows.Forms.Label();
             this.txtState = new System.Windows.Forms.TextBox();
-            this.lbltamil = new System.Windows.Forms.Label();
-            this.cbIsFreight = new System.Windows.Forms.CheckBox();
-            this.txtCst = new System.Windows.Forms.TextBox();
+            this.label2 = new System.Windows.Forms.Label();
+            this.txtCode = new System.Windows.Forms.TextBox();
+            this.txtDisPer = new mylib.decimalbox(this.components);
+            this.label6 = new System.Windows.Forms.Label();
+            this.label23 = new System.Windows.Forms.Label();
+            this.label12 = new System.Windows.Forms.Label();
+            this.txtTransport = new System.Windows.Forms.TextBox();
+            this.txtTin = new System.Windows.Forms.TextBox();
+            this.label9 = new System.Windows.Forms.Label();
+            this.txtDeliveryOrder = new System.Windows.Forms.TextBox();
+            this.lblDeliveryOrder = new System.Windows.Forms.Label();
+            this.txtVehicleNo = new System.Windows.Forms.TextBox();
             this.tblCommand = new System.Windows.Forms.TableLayoutPanel();
             this.cmdclose = new mylib.lightbutton();
             this.btnClear = new mylib.lightbutton();
@@ -680,8 +730,9 @@ namespace standard.master
             ((System.ComponentModel.ISupportInitialize)(this.dgview)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.uspledgermasterSelectResultBindingSource)).BeginInit();
             this.tblEntry.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.ledgermasterBindingSource)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.vehicleBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.routeBindingSource)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ledgermasterBindingSource)).BeginInit();
             this.tblCommand.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -733,7 +784,7 @@ namespace standard.master
             this.tblMain.Name = "tblMain";
             this.tblMain.RowCount = 5;
             this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 54F));
-            this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 385F));
+            this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 420F));
             this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 69F));
             this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 69F));
@@ -762,7 +813,7 @@ namespace standard.master
             this.tblSearch.Controls.Add(this.label24, 6, 0);
             this.tblSearch.Controls.Add(this.lblSearchAreaCode, 4, 0);
             this.tblSearch.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tblSearch.Location = new System.Drawing.Point(5, 447);
+            this.tblSearch.Location = new System.Drawing.Point(5, 482);
             this.tblSearch.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.tblSearch.Name = "tblSearch";
             this.tblSearch.RowCount = 1;
@@ -907,22 +958,22 @@ namespace standard.master
             this.dgview.AllowUserToAddRows = false;
             this.dgview.AllowUserToDeleteRows = false;
             this.dgview.AllowUserToResizeRows = false;
-            dataGridViewCellStyle1.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
-            this.dgview.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle6.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
+            this.dgview.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle6;
             this.dgview.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.dgview.AutoGenerateColumns = false;
             this.dgview.BackgroundColor = System.Drawing.Color.White;
             this.dgview.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle2.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Bold);
-            dataGridViewCellStyle2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dgview.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle7.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle7.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle7.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Bold);
+            dataGridViewCellStyle7.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
+            dataGridViewCellStyle7.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle7.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle7.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dgview.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle7;
             this.dgview.ColumnHeadersHeight = 28;
             this.dgview.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
             this.dgview.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
@@ -958,35 +1009,35 @@ namespace standard.master
             this.ledudateDataGridViewTextBoxColumn});
             this.dgview.Cursor = System.Windows.Forms.Cursors.Default;
             this.dgview.DataSource = this.uspledgermasterSelectResultBindingSource;
-            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle3.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Bold);
-            dataGridViewCellStyle3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.Color.Orange;
-            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.Color.White;
-            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dgview.DefaultCellStyle = dataGridViewCellStyle3;
+            dataGridViewCellStyle8.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle8.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle8.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Bold);
+            dataGridViewCellStyle8.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
+            dataGridViewCellStyle8.SelectionBackColor = System.Drawing.Color.Orange;
+            dataGridViewCellStyle8.SelectionForeColor = System.Drawing.Color.White;
+            dataGridViewCellStyle8.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dgview.DefaultCellStyle = dataGridViewCellStyle8;
             this.dgview.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Bold);
             this.dgview.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.dgview.Location = new System.Drawing.Point(5, 517);
+            this.dgview.Location = new System.Drawing.Point(5, 552);
             this.dgview.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.dgview.MultiSelect = false;
             this.dgview.Name = "dgview";
             this.dgview.ReadOnly = true;
             this.dgview.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle4.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle4.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
-            dataGridViewCellStyle4.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle4.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle4.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dgview.RowHeadersDefaultCellStyle = dataGridViewCellStyle4;
+            dataGridViewCellStyle9.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle9.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle9.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
+            dataGridViewCellStyle9.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle9.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle9.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle9.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dgview.RowHeadersDefaultCellStyle = dataGridViewCellStyle9;
             this.dgview.RowHeadersVisible = false;
-            dataGridViewCellStyle5.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
-            this.dgview.RowsDefaultCellStyle = dataGridViewCellStyle5;
+            dataGridViewCellStyle10.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
+            this.dgview.RowsDefaultCellStyle = dataGridViewCellStyle10;
             this.dgview.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgview.Size = new System.Drawing.Size(1836, 481);
+            this.dgview.Size = new System.Drawing.Size(1836, 446);
             this.dgview.TabIndex = 1;
             this.dgview.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgview_CellDoubleClick);
             // 
@@ -1020,6 +1071,7 @@ namespace standard.master
             this.ledaccountcodeDataGridViewTextBoxColumn.HeaderText = "Account Code";
             this.ledaccountcodeDataGridViewTextBoxColumn.Name = "ledaccountcodeDataGridViewTextBoxColumn";
             this.ledaccountcodeDataGridViewTextBoxColumn.ReadOnly = true;
+            this.ledaccountcodeDataGridViewTextBoxColumn.Visible = false;
             // 
             // ledratetypeDataGridViewTextBoxColumn
             // 
@@ -1236,27 +1288,17 @@ namespace standard.master
             // tblEntry
             // 
             this.tblEntry.ColumnCount = 7;
-            this.tblEntry.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 225F));
-            this.tblEntry.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 300F));
-            this.tblEntry.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 225F));
+            this.tblEntry.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 246F));
+            this.tblEntry.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 289F));
+            this.tblEntry.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 215F));
             this.tblEntry.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 300F));
             this.tblEntry.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 225F));
             this.tblEntry.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 300F));
             this.tblEntry.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tblEntry.Controls.Add(this.cboVehicleNo, 3, 5);
+            this.tblEntry.Controls.Add(this.label13, 2, 5);
             this.tblEntry.Controls.Add(this.txtPartyName, 1, 0);
             this.tblEntry.Controls.Add(this.label1, 0, 0);
-            this.tblEntry.Controls.Add(this.label2, 0, 1);
-            this.tblEntry.Controls.Add(this.label3, 0, 2);
-            this.tblEntry.Controls.Add(this.txtCode, 1, 1);
-            this.tblEntry.Controls.Add(this.cboType, 1, 2);
-            this.tblEntry.Controls.Add(this.label11, 0, 6);
-            this.tblEntry.Controls.Add(this.label4, 0, 5);
-            this.tblEntry.Controls.Add(this.label17, 0, 4);
-            this.tblEntry.Controls.Add(this.txtAdd3, 1, 6);
-            this.tblEntry.Controls.Add(this.txtAdd2, 1, 5);
-            this.tblEntry.Controls.Add(this.txtAdd1, 1, 4);
-            this.tblEntry.Controls.Add(this.lblref, 0, 3);
-            this.tblEntry.Controls.Add(this.cboReference, 1, 3);
             this.tblEntry.Controls.Add(this.label19, 4, 4);
             this.tblEntry.Controls.Add(this.txtTamilAdd3, 5, 4);
             this.tblEntry.Controls.Add(this.label18, 4, 3);
@@ -1270,28 +1312,45 @@ namespace standard.master
             this.tblEntry.Controls.Add(this.txtManagerName, 6, 0);
             this.tblEntry.Controls.Add(this.txtManagerPhone, 6, 1);
             this.tblEntry.Controls.Add(this.label21, 6, 4);
-            this.tblEntry.Controls.Add(this.label23, 2, 7);
-            this.tblEntry.Controls.Add(this.txtDisPer, 3, 7);
-            this.tblEntry.Controls.Add(this.label12, 2, 6);
-            this.tblEntry.Controls.Add(this.txtTransport, 3, 6);
-            this.tblEntry.Controls.Add(this.label9, 2, 5);
-            this.tblEntry.Controls.Add(this.txtTin, 3, 5);
-            this.tblEntry.Controls.Add(this.txtDeliveryOrder, 3, 4);
-            this.tblEntry.Controls.Add(this.lblDeliveryOrder, 2, 4);
-            this.tblEntry.Controls.Add(this.cboAreaCode, 3, 3);
-            this.tblEntry.Controls.Add(this.lblAreaCode, 2, 3);
-            this.tblEntry.Controls.Add(this.label8, 2, 2);
-            this.tblEntry.Controls.Add(this.txtOwnerPhone, 3, 2);
-            this.tblEntry.Controls.Add(this.txtOwnerName, 3, 1);
-            this.tblEntry.Controls.Add(this.label15, 2, 1);
-            this.tblEntry.Controls.Add(this.txtPin, 3, 0);
-            this.tblEntry.Controls.Add(this.label16, 2, 0);
-            this.tblEntry.Controls.Add(this.lblState, 0, 7);
-            this.tblEntry.Controls.Add(this.label6, 5, 7);
-            this.tblEntry.Controls.Add(this.txtState, 1, 7);
             this.tblEntry.Controls.Add(this.lbltamil, 4, 6);
             this.tblEntry.Controls.Add(this.cbIsFreight, 5, 5);
             this.tblEntry.Controls.Add(this.txtCst, 6, 5);
+            this.tblEntry.Controls.Add(this.cboAreaCode, 3, 4);
+            this.tblEntry.Controls.Add(this.lblAreaCode, 2, 4);
+            this.tblEntry.Controls.Add(this.txtOwnerPhone, 3, 3);
+            this.tblEntry.Controls.Add(this.label8, 2, 3);
+            this.tblEntry.Controls.Add(this.txtOwnerName, 3, 2);
+            this.tblEntry.Controls.Add(this.label15, 2, 2);
+            this.tblEntry.Controls.Add(this.txtPin, 3, 1);
+            this.tblEntry.Controls.Add(this.label16, 2, 1);
+            this.tblEntry.Controls.Add(this.label3, 0, 1);
+            this.tblEntry.Controls.Add(this.cboType, 1, 1);
+            this.tblEntry.Controls.Add(this.lblref, 0, 2);
+            this.tblEntry.Controls.Add(this.cboReference, 1, 2);
+            this.tblEntry.Controls.Add(this.label17, 0, 3);
+            this.tblEntry.Controls.Add(this.txtAdd1, 1, 3);
+            this.tblEntry.Controls.Add(this.txtAdd2, 1, 4);
+            this.tblEntry.Controls.Add(this.txtShippingAdd1, 1, 5);
+            this.tblEntry.Controls.Add(this.txtShippingAdd2, 1, 6);
+            this.tblEntry.Controls.Add(this.txtAdd3, 1, 7);
+            this.tblEntry.Controls.Add(this.label4, 0, 4);
+            this.tblEntry.Controls.Add(this.lblShipingAdd1, 0, 5);
+            this.tblEntry.Controls.Add(this.lblShippingAdd2, 0, 6);
+            this.tblEntry.Controls.Add(this.label11, 0, 7);
+            this.tblEntry.Controls.Add(this.lblState, 0, 8);
+            this.tblEntry.Controls.Add(this.txtState, 1, 8);
+            this.tblEntry.Controls.Add(this.label2, 2, 0);
+            this.tblEntry.Controls.Add(this.txtCode, 3, 0);
+            this.tblEntry.Controls.Add(this.txtDisPer, 5, 8);
+            this.tblEntry.Controls.Add(this.label6, 2, 8);
+            this.tblEntry.Controls.Add(this.label23, 4, 8);
+            this.tblEntry.Controls.Add(this.label12, 6, 2);
+            this.tblEntry.Controls.Add(this.txtTransport, 6, 3);
+            this.tblEntry.Controls.Add(this.txtTin, 3, 7);
+            this.tblEntry.Controls.Add(this.label9, 2, 7);
+            this.tblEntry.Controls.Add(this.txtDeliveryOrder, 3, 6);
+            this.tblEntry.Controls.Add(this.lblDeliveryOrder, 2, 6);
+            this.tblEntry.Controls.Add(this.txtVehicleNo, 3, 8);
             this.tblEntry.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tblEntry.Location = new System.Drawing.Point(5, 61);
             this.tblEntry.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
@@ -1307,20 +1366,55 @@ namespace standard.master
             this.tblEntry.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 46F));
             this.tblEntry.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 46F));
             this.tblEntry.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tblEntry.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 31F));
-            this.tblEntry.Size = new System.Drawing.Size(1836, 375);
+            this.tblEntry.Size = new System.Drawing.Size(1836, 410);
             this.tblEntry.TabIndex = 1;
+            // 
+            // cboVehicleNo
+            // 
+            this.cboVehicleNo.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
+            this.cboVehicleNo.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
+            this.cboVehicleNo.DataSource = this.vehicleBindingSource;
+            this.cboVehicleNo.DisplayMember = "vh_number";
+            this.cboVehicleNo.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.cboVehicleNo.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
+            this.cboVehicleNo.FormattingEnabled = true;
+            this.cboVehicleNo.Location = new System.Drawing.Point(754, 235);
+            this.cboVehicleNo.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.cboVehicleNo.Name = "cboVehicleNo";
+            this.cboVehicleNo.Size = new System.Drawing.Size(289, 36);
+            this.cboVehicleNo.TabIndex = 15;
+            this.cboVehicleNo.ValueMember = "vh_id";
+            this.cboVehicleNo.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtPartyName_KeyDown);
+            // 
+            // vehicleBindingSource
+            // 
+            this.vehicleBindingSource.DataSource = typeof(standard.classes.vehicle);
+            // 
+            // label13
+            // 
+            this.label13.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.label13.AutoSize = true;
+            this.label13.BackColor = System.Drawing.Color.Transparent;
+            this.label13.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
+            this.label13.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
+            this.label13.Location = new System.Drawing.Point(539, 239);
+            this.label13.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(143, 28);
+            this.label13.TabIndex = 18;
+            this.label13.Text = "Vehicle No.";
+            this.label13.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // txtPartyName
             // 
             this.txtPartyName.BackColor = System.Drawing.Color.White;
             this.txtPartyName.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.txtPartyName.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
-            this.txtPartyName.Location = new System.Drawing.Point(229, 5);
+            this.txtPartyName.Location = new System.Drawing.Point(250, 5);
             this.txtPartyName.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.txtPartyName.MaxLength = 50;
             this.txtPartyName.Name = "txtPartyName";
-            this.txtPartyName.Size = new System.Drawing.Size(290, 35);
+            this.txtPartyName.Size = new System.Drawing.Size(281, 35);
             this.txtPartyName.TabIndex = 1;
             this.txtPartyName.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtPartyName_KeyDown);
             // 
@@ -1338,191 +1432,6 @@ namespace standard.master
             this.label1.TabIndex = 0;
             this.label1.Text = "Party Name";
             this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // label2
-            // 
-            this.label2.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.label2.AutoSize = true;
-            this.label2.BackColor = System.Drawing.Color.Transparent;
-            this.label2.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
-            this.label2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.label2.Location = new System.Drawing.Point(4, 55);
-            this.label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(69, 28);
-            this.label2.TabIndex = 2;
-            this.label2.Text = "Code";
-            this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // label3
-            // 
-            this.label3.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.label3.AutoSize = true;
-            this.label3.BackColor = System.Drawing.Color.Transparent;
-            this.label3.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
-            this.label3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.label3.Location = new System.Drawing.Point(4, 101);
-            this.label3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(143, 28);
-            this.label3.TabIndex = 4;
-            this.label3.Text = "Party Type ";
-            this.label3.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // txtCode
-            // 
-            this.txtCode.BackColor = System.Drawing.Color.White;
-            this.txtCode.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.txtCode.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
-            this.txtCode.Location = new System.Drawing.Point(229, 51);
-            this.txtCode.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.txtCode.MaxLength = 50;
-            this.txtCode.Name = "txtCode";
-            this.txtCode.Size = new System.Drawing.Size(290, 35);
-            this.txtCode.TabIndex = 2;
-            this.txtCode.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtPartyName_KeyDown);
-            this.txtCode.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtCode_KeyPress);
-            // 
-            // cboType
-            // 
-            this.cboType.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
-            this.cboType.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
-            this.cboType.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.cboType.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
-            this.cboType.FormattingEnabled = true;
-            this.cboType.Items.AddRange(new object[] {
-            "---Select---",
-            "Customer",
-            "Supplier"});
-            this.cboType.Location = new System.Drawing.Point(229, 97);
-            this.cboType.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.cboType.Name = "cboType";
-            this.cboType.Size = new System.Drawing.Size(289, 36);
-            this.cboType.TabIndex = 3;
-            this.cboType.TextChanged += new System.EventHandler(this.cboType_TextChanged);
-            this.cboType.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtPartyName_KeyDown);
-            this.cboType.Leave += new System.EventHandler(this.cboType_Leave);
-            // 
-            // label11
-            // 
-            this.label11.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.label11.AutoSize = true;
-            this.label11.BackColor = System.Drawing.Color.Transparent;
-            this.label11.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
-            this.label11.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.label11.Location = new System.Drawing.Point(4, 285);
-            this.label11.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(57, 28);
-            this.label11.TabIndex = 12;
-            this.label11.Text = "City";
-            this.label11.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // label4
-            // 
-            this.label4.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.label4.AutoSize = true;
-            this.label4.BackColor = System.Drawing.Color.Transparent;
-            this.label4.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
-            this.label4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.label4.Location = new System.Drawing.Point(4, 239);
-            this.label4.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(126, 28);
-            this.label4.TabIndex = 10;
-            this.label4.Text = "Address 2";
-            this.label4.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // label17
-            // 
-            this.label17.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.label17.AutoSize = true;
-            this.label17.BackColor = System.Drawing.Color.Transparent;
-            this.label17.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
-            this.label17.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.label17.Location = new System.Drawing.Point(4, 193);
-            this.label17.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label17.Name = "label17";
-            this.label17.Size = new System.Drawing.Size(126, 28);
-            this.label17.TabIndex = 8;
-            this.label17.Text = "Address 1";
-            this.label17.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // txtAdd3
-            // 
-            this.txtAdd3.BackColor = System.Drawing.Color.White;
-            this.txtAdd3.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.txtAdd3.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
-            this.txtAdd3.Location = new System.Drawing.Point(229, 281);
-            this.txtAdd3.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.txtAdd3.MaxLength = 50;
-            this.txtAdd3.Name = "txtAdd3";
-            this.txtAdd3.Size = new System.Drawing.Size(290, 35);
-            this.txtAdd3.TabIndex = 7;
-            this.txtAdd3.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtPartyName_KeyDown);
-            // 
-            // txtAdd2
-            // 
-            this.txtAdd2.BackColor = System.Drawing.Color.White;
-            this.txtAdd2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.txtAdd2.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
-            this.txtAdd2.Location = new System.Drawing.Point(229, 235);
-            this.txtAdd2.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.txtAdd2.MaxLength = 50;
-            this.txtAdd2.Name = "txtAdd2";
-            this.txtAdd2.Size = new System.Drawing.Size(290, 35);
-            this.txtAdd2.TabIndex = 6;
-            this.txtAdd2.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtPartyName_KeyDown);
-            // 
-            // txtAdd1
-            // 
-            this.txtAdd1.BackColor = System.Drawing.Color.White;
-            this.txtAdd1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.txtAdd1.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
-            this.txtAdd1.Location = new System.Drawing.Point(229, 189);
-            this.txtAdd1.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.txtAdd1.MaxLength = 50;
-            this.txtAdd1.Name = "txtAdd1";
-            this.txtAdd1.Size = new System.Drawing.Size(290, 35);
-            this.txtAdd1.TabIndex = 5;
-            this.txtAdd1.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtPartyName_KeyDown);
-            // 
-            // lblref
-            // 
-            this.lblref.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.lblref.AutoSize = true;
-            this.lblref.BackColor = System.Drawing.Color.Transparent;
-            this.lblref.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
-            this.lblref.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.lblref.Location = new System.Drawing.Point(4, 147);
-            this.lblref.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.lblref.Name = "lblref";
-            this.lblref.Size = new System.Drawing.Size(131, 28);
-            this.lblref.TabIndex = 6;
-            this.lblref.Text = "Reference";
-            this.lblref.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // cboReference
-            // 
-            this.cboReference.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
-            this.cboReference.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
-            this.cboReference.DataSource = this.ledgermasterBindingSource;
-            this.cboReference.DisplayMember = "led_name";
-            this.cboReference.Enabled = false;
-            this.cboReference.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.cboReference.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
-            this.cboReference.FormattingEnabled = true;
-            this.cboReference.Location = new System.Drawing.Point(229, 143);
-            this.cboReference.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.cboReference.Name = "cboReference";
-            this.cboReference.Size = new System.Drawing.Size(289, 36);
-            this.cboReference.TabIndex = 4;
-            this.cboReference.ValueMember = "led_id";
-            this.cboReference.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtPartyName_KeyDown);
-            // 
-            // ledgermasterBindingSource
-            // 
-            this.ledgermasterBindingSource.DataSource = typeof(standard.classes.ledgermaster);
             // 
             // label19
             // 
@@ -1549,7 +1458,7 @@ namespace standard.master
             this.txtTamilAdd3.MaxLength = 50;
             this.txtTamilAdd3.Name = "txtTamilAdd3";
             this.txtTamilAdd3.Size = new System.Drawing.Size(290, 35);
-            this.txtTamilAdd3.TabIndex = 21;
+            this.txtTamilAdd3.TabIndex = 22;
             this.txtTamilAdd3.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtPartyName_KeyDown);
             this.txtTamilAdd3.KeyUp += new System.Windows.Forms.KeyEventHandler(this.txtTamilAdd3_KeyUp);
             this.txtTamilAdd3.Leave += new System.EventHandler(this.txtTamilAdd3_Leave);
@@ -1579,7 +1488,7 @@ namespace standard.master
             this.txtTamilAdd2.MaxLength = 50;
             this.txtTamilAdd2.Name = "txtTamilAdd2";
             this.txtTamilAdd2.Size = new System.Drawing.Size(290, 35);
-            this.txtTamilAdd2.TabIndex = 20;
+            this.txtTamilAdd2.TabIndex = 21;
             this.txtTamilAdd2.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtPartyName_KeyDown);
             this.txtTamilAdd2.KeyUp += new System.Windows.Forms.KeyEventHandler(this.txtTamilAdd2_KeyUp);
             this.txtTamilAdd2.Leave += new System.EventHandler(this.txtTamilAdd2_Leave);
@@ -1609,7 +1518,7 @@ namespace standard.master
             this.txtTamilAdd1.MaxLength = 50;
             this.txtTamilAdd1.Name = "txtTamilAdd1";
             this.txtTamilAdd1.Size = new System.Drawing.Size(290, 35);
-            this.txtTamilAdd1.TabIndex = 19;
+            this.txtTamilAdd1.TabIndex = 20;
             this.txtTamilAdd1.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtPartyName_KeyDown);
             this.txtTamilAdd1.KeyUp += new System.Windows.Forms.KeyEventHandler(this.txtTamilAdd1_KeyUp);
             this.txtTamilAdd1.Leave += new System.EventHandler(this.txtTamilAdd1_Leave);
@@ -1639,7 +1548,7 @@ namespace standard.master
             this.txtTamilPartyName.MaxLength = 50;
             this.txtTamilPartyName.Name = "txtTamilPartyName";
             this.txtTamilPartyName.Size = new System.Drawing.Size(290, 35);
-            this.txtTamilPartyName.TabIndex = 18;
+            this.txtTamilPartyName.TabIndex = 19;
             this.txtTamilPartyName.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtPartyName_KeyDown);
             this.txtTamilPartyName.KeyUp += new System.Windows.Forms.KeyEventHandler(this.txtTamilPartyName_KeyUp);
             this.txtTamilPartyName.Leave += new System.EventHandler(this.txtTamilPartyName_Leave);
@@ -1656,13 +1565,12 @@ namespace standard.master
             "COST RATE",
             "SUPER SPECIAL RATE  (A)",
             "SPECIAL RATE  (B)",
-            "WHOLE SALE RATE  (C)",
-            "MRP  (D)"});
+            "WHOLE SALE RATE  (C)"});
             this.cboratetype.Location = new System.Drawing.Point(1281, 6);
             this.cboratetype.Margin = new System.Windows.Forms.Padding(6);
             this.cboratetype.Name = "cboratetype";
             this.cboratetype.Size = new System.Drawing.Size(286, 36);
-            this.cboratetype.TabIndex = 17;
+            this.cboratetype.TabIndex = 18;
             this.cboratetype.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtPartyName_KeyDown);
             // 
             // label22
@@ -1724,291 +1632,6 @@ namespace standard.master
             this.label21.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.label21.Visible = false;
             // 
-            // label23
-            // 
-            this.label23.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.label23.AutoSize = true;
-            this.label23.BackColor = System.Drawing.Color.Transparent;
-            this.label23.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
-            this.label23.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.label23.Location = new System.Drawing.Point(529, 331);
-            this.label23.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label23.Name = "label23";
-            this.label23.Size = new System.Drawing.Size(149, 28);
-            this.label23.TabIndex = 28;
-            this.label23.Text = "Discount %";
-            this.label23.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // txtDisPer
-            // 
-            this.txtDisPer.AllowFormat = false;
-            this.txtDisPer.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.txtDisPer.BackColor = System.Drawing.Color.White;
-            this.txtDisPer.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.txtDisPer.DecimalPlaces = 2;
-            this.txtDisPer.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
-            this.txtDisPer.Location = new System.Drawing.Point(756, 328);
-            this.txtDisPer.Margin = new System.Windows.Forms.Padding(6);
-            this.txtDisPer.Name = "txtDisPer";
-            this.txtDisPer.RightAlign = true;
-            this.txtDisPer.Size = new System.Drawing.Size(287, 35);
-            this.txtDisPer.TabIndex = 16;
-            this.txtDisPer.TabStop = false;
-            this.txtDisPer.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.txtDisPer.Value = new decimal(new int[] {
-            0,
-            0,
-            0,
-            0});
-            this.txtDisPer.TextChanged += new System.EventHandler(this.txtDiscount_TextChanged);
-            this.txtDisPer.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtPartyName_KeyDown);
-            // 
-            // label12
-            // 
-            this.label12.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.label12.BackColor = System.Drawing.Color.Transparent;
-            this.label12.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
-            this.label12.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.label12.Location = new System.Drawing.Point(529, 286);
-            this.label12.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(123, 25);
-            this.label12.TabIndex = 28;
-            this.label12.Text = "Transport";
-            this.label12.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // txtTransport
-            // 
-            this.txtTransport.BackColor = System.Drawing.Color.White;
-            this.txtTransport.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.txtTransport.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
-            this.txtTransport.Location = new System.Drawing.Point(754, 281);
-            this.txtTransport.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.txtTransport.MaxLength = 50;
-            this.txtTransport.Name = "txtTransport";
-            this.txtTransport.Size = new System.Drawing.Size(290, 35);
-            this.txtTransport.TabIndex = 15;
-            this.txtTransport.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtPartyName_KeyDown);
-            // 
-            // label9
-            // 
-            this.label9.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.label9.AutoSize = true;
-            this.label9.BackColor = System.Drawing.Color.Transparent;
-            this.label9.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
-            this.label9.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.label9.Location = new System.Drawing.Point(529, 239);
-            this.label9.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(87, 28);
-            this.label9.TabIndex = 24;
-            this.label9.Text = "GSTIN";
-            this.label9.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // txtTin
-            // 
-            this.txtTin.BackColor = System.Drawing.Color.White;
-            this.txtTin.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.txtTin.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
-            this.txtTin.Location = new System.Drawing.Point(754, 235);
-            this.txtTin.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.txtTin.MaxLength = 50;
-            this.txtTin.Name = "txtTin";
-            this.txtTin.Size = new System.Drawing.Size(290, 35);
-            this.txtTin.TabIndex = 14;
-            this.txtTin.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtPartyName_KeyDown);
-            // 
-            // txtDeliveryOrder
-            // 
-            this.txtDeliveryOrder.BackColor = System.Drawing.Color.White;
-            this.txtDeliveryOrder.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.txtDeliveryOrder.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtDeliveryOrder.Location = new System.Drawing.Point(754, 189);
-            this.txtDeliveryOrder.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.txtDeliveryOrder.MaxLength = 50;
-            this.txtDeliveryOrder.Name = "txtDeliveryOrder";
-            this.txtDeliveryOrder.Size = new System.Drawing.Size(290, 35);
-            this.txtDeliveryOrder.TabIndex = 13;
-            this.txtDeliveryOrder.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtPartyName_KeyDown);
-            this.txtDeliveryOrder.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtDeliveryOrder_KeyPress);
-            // 
-            // lblDeliveryOrder
-            // 
-            this.lblDeliveryOrder.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.lblDeliveryOrder.AutoSize = true;
-            this.lblDeliveryOrder.BackColor = System.Drawing.Color.Transparent;
-            this.lblDeliveryOrder.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
-            this.lblDeliveryOrder.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.lblDeliveryOrder.Location = new System.Drawing.Point(529, 193);
-            this.lblDeliveryOrder.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.lblDeliveryOrder.Name = "lblDeliveryOrder";
-            this.lblDeliveryOrder.Size = new System.Drawing.Size(180, 28);
-            this.lblDeliveryOrder.TabIndex = 17;
-            this.lblDeliveryOrder.Text = "Delivery Order";
-            this.lblDeliveryOrder.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // cboAreaCode
-            // 
-            this.cboAreaCode.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
-            this.cboAreaCode.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
-            this.cboAreaCode.DataSource = this.routeBindingSource;
-            this.cboAreaCode.DisplayMember = "rt_name";
-            this.cboAreaCode.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.cboAreaCode.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
-            this.cboAreaCode.FormattingEnabled = true;
-            this.cboAreaCode.Location = new System.Drawing.Point(754, 143);
-            this.cboAreaCode.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.cboAreaCode.Name = "cboAreaCode";
-            this.cboAreaCode.Size = new System.Drawing.Size(289, 36);
-            this.cboAreaCode.TabIndex = 12;
-            this.cboAreaCode.ValueMember = "rt_id";
-            this.cboAreaCode.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtPartyName_KeyDown);
-            // 
-            // routeBindingSource
-            // 
-            this.routeBindingSource.DataSource = typeof(standard.classes.route);
-            // 
-            // lblAreaCode
-            // 
-            this.lblAreaCode.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.lblAreaCode.AutoSize = true;
-            this.lblAreaCode.BackColor = System.Drawing.Color.Transparent;
-            this.lblAreaCode.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
-            this.lblAreaCode.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.lblAreaCode.Location = new System.Drawing.Point(529, 147);
-            this.lblAreaCode.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.lblAreaCode.Name = "lblAreaCode";
-            this.lblAreaCode.Size = new System.Drawing.Size(130, 28);
-            this.lblAreaCode.TabIndex = 17;
-            this.lblAreaCode.Text = "Area Code";
-            this.lblAreaCode.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // label8
-            // 
-            this.label8.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.label8.AutoSize = true;
-            this.label8.BackColor = System.Drawing.Color.Transparent;
-            this.label8.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
-            this.label8.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.label8.Location = new System.Drawing.Point(529, 101);
-            this.label8.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(169, 28);
-            this.label8.TabIndex = 18;
-            this.label8.Text = "Owner Phone";
-            this.label8.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // txtOwnerPhone
-            // 
-            this.txtOwnerPhone.BackColor = System.Drawing.Color.White;
-            this.txtOwnerPhone.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.txtOwnerPhone.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
-            this.txtOwnerPhone.Location = new System.Drawing.Point(754, 97);
-            this.txtOwnerPhone.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.txtOwnerPhone.MaxLength = 50;
-            this.txtOwnerPhone.Name = "txtOwnerPhone";
-            this.txtOwnerPhone.Size = new System.Drawing.Size(290, 35);
-            this.txtOwnerPhone.TabIndex = 11;
-            this.txtOwnerPhone.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtPartyName_KeyDown);
-            // 
-            // txtOwnerName
-            // 
-            this.txtOwnerName.BackColor = System.Drawing.Color.White;
-            this.txtOwnerName.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.txtOwnerName.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
-            this.txtOwnerName.Location = new System.Drawing.Point(754, 51);
-            this.txtOwnerName.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.txtOwnerName.MaxLength = 50;
-            this.txtOwnerName.Name = "txtOwnerName";
-            this.txtOwnerName.Size = new System.Drawing.Size(290, 35);
-            this.txtOwnerName.TabIndex = 10;
-            this.txtOwnerName.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtPartyName_KeyDown);
-            // 
-            // label15
-            // 
-            this.label15.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.label15.AutoSize = true;
-            this.label15.BackColor = System.Drawing.Color.Transparent;
-            this.label15.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
-            this.label15.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.label15.Location = new System.Drawing.Point(529, 55);
-            this.label15.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label15.Name = "label15";
-            this.label15.Size = new System.Drawing.Size(164, 28);
-            this.label15.TabIndex = 16;
-            this.label15.Text = "Owner Name";
-            this.label15.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // txtPin
-            // 
-            this.txtPin.BackColor = System.Drawing.Color.White;
-            this.txtPin.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.txtPin.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
-            this.txtPin.Location = new System.Drawing.Point(754, 5);
-            this.txtPin.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.txtPin.MaxLength = 50;
-            this.txtPin.Name = "txtPin";
-            this.txtPin.Size = new System.Drawing.Size(290, 35);
-            this.txtPin.TabIndex = 9;
-            this.txtPin.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtPartyName_KeyDown);
-            // 
-            // label16
-            // 
-            this.label16.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.label16.AutoSize = true;
-            this.label16.BackColor = System.Drawing.Color.Transparent;
-            this.label16.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
-            this.label16.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.label16.Location = new System.Drawing.Point(529, 9);
-            this.label16.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label16.Name = "label16";
-            this.label16.Size = new System.Drawing.Size(103, 28);
-            this.label16.TabIndex = 14;
-            this.label16.Text = "Pincode";
-            this.label16.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // lblState
-            // 
-            this.lblState.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.lblState.AutoSize = true;
-            this.lblState.BackColor = System.Drawing.Color.Transparent;
-            this.lblState.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
-            this.lblState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.lblState.Location = new System.Drawing.Point(4, 331);
-            this.lblState.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.lblState.Name = "lblState";
-            this.lblState.Size = new System.Drawing.Size(75, 28);
-            this.lblState.TabIndex = 13;
-            this.lblState.Text = "State";
-            this.lblState.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // label6
-            // 
-            this.label6.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.label6.AutoSize = true;
-            this.label6.BackColor = System.Drawing.Color.Transparent;
-            this.label6.Font = new System.Drawing.Font("Georgia", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label6.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.label6.Location = new System.Drawing.Point(4, 379);
-            this.label6.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(0, 24);
-            this.label6.TabIndex = 2;
-            this.label6.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // txtState
-            // 
-            this.txtState.BackColor = System.Drawing.Color.White;
-            this.txtState.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.txtState.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
-            this.txtState.Location = new System.Drawing.Point(229, 327);
-            this.txtState.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.txtState.MaxLength = 50;
-            this.txtState.Name = "txtState";
-            this.txtState.Size = new System.Drawing.Size(290, 35);
-            this.txtState.TabIndex = 8;
-            this.txtState.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtPartyName_KeyDown);
-            // 
             // lbltamil
             // 
             this.lbltamil.BackColor = System.Drawing.Color.White;
@@ -2051,6 +1674,553 @@ namespace standard.master
             this.txtCst.TabIndex = 23;
             this.txtCst.Visible = false;
             this.txtCst.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtPartyName_KeyDown);
+            // 
+            // cboAreaCode
+            // 
+            this.cboAreaCode.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
+            this.cboAreaCode.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
+            this.cboAreaCode.DataSource = this.routeBindingSource;
+            this.cboAreaCode.DisplayMember = "rt_name";
+            this.cboAreaCode.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.cboAreaCode.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
+            this.cboAreaCode.FormattingEnabled = true;
+            this.cboAreaCode.Location = new System.Drawing.Point(754, 189);
+            this.cboAreaCode.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.cboAreaCode.Name = "cboAreaCode";
+            this.cboAreaCode.Size = new System.Drawing.Size(289, 36);
+            this.cboAreaCode.TabIndex = 14;
+            this.cboAreaCode.ValueMember = "rt_id";
+            this.cboAreaCode.SelectedValueChanged += new System.EventHandler(this.cboAreaCode_SelectedValueChanged);
+            this.cboAreaCode.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtPartyName_KeyDown);
+            // 
+            // routeBindingSource
+            // 
+            this.routeBindingSource.DataSource = typeof(standard.classes.route);
+            // 
+            // lblAreaCode
+            // 
+            this.lblAreaCode.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblAreaCode.AutoSize = true;
+            this.lblAreaCode.BackColor = System.Drawing.Color.Transparent;
+            this.lblAreaCode.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
+            this.lblAreaCode.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
+            this.lblAreaCode.Location = new System.Drawing.Point(539, 193);
+            this.lblAreaCode.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblAreaCode.Name = "lblAreaCode";
+            this.lblAreaCode.Size = new System.Drawing.Size(130, 28);
+            this.lblAreaCode.TabIndex = 17;
+            this.lblAreaCode.Text = "Area Code";
+            this.lblAreaCode.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // txtOwnerPhone
+            // 
+            this.txtOwnerPhone.BackColor = System.Drawing.Color.White;
+            this.txtOwnerPhone.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.txtOwnerPhone.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
+            this.txtOwnerPhone.Location = new System.Drawing.Point(754, 143);
+            this.txtOwnerPhone.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.txtOwnerPhone.MaxLength = 50;
+            this.txtOwnerPhone.Name = "txtOwnerPhone";
+            this.txtOwnerPhone.Size = new System.Drawing.Size(290, 35);
+            this.txtOwnerPhone.TabIndex = 13;
+            this.txtOwnerPhone.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtPartyName_KeyDown);
+            // 
+            // label8
+            // 
+            this.label8.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.label8.AutoSize = true;
+            this.label8.BackColor = System.Drawing.Color.Transparent;
+            this.label8.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
+            this.label8.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
+            this.label8.Location = new System.Drawing.Point(539, 147);
+            this.label8.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(169, 28);
+            this.label8.TabIndex = 18;
+            this.label8.Text = "Owner Phone";
+            this.label8.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // txtOwnerName
+            // 
+            this.txtOwnerName.BackColor = System.Drawing.Color.White;
+            this.txtOwnerName.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.txtOwnerName.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
+            this.txtOwnerName.Location = new System.Drawing.Point(754, 97);
+            this.txtOwnerName.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.txtOwnerName.MaxLength = 50;
+            this.txtOwnerName.Name = "txtOwnerName";
+            this.txtOwnerName.Size = new System.Drawing.Size(290, 35);
+            this.txtOwnerName.TabIndex = 12;
+            this.txtOwnerName.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtPartyName_KeyDown);
+            // 
+            // label15
+            // 
+            this.label15.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.label15.AutoSize = true;
+            this.label15.BackColor = System.Drawing.Color.Transparent;
+            this.label15.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
+            this.label15.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
+            this.label15.Location = new System.Drawing.Point(539, 101);
+            this.label15.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label15.Name = "label15";
+            this.label15.Size = new System.Drawing.Size(164, 28);
+            this.label15.TabIndex = 16;
+            this.label15.Text = "Owner Name";
+            this.label15.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // txtPin
+            // 
+            this.txtPin.BackColor = System.Drawing.Color.White;
+            this.txtPin.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.txtPin.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
+            this.txtPin.Location = new System.Drawing.Point(754, 51);
+            this.txtPin.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.txtPin.MaxLength = 50;
+            this.txtPin.Name = "txtPin";
+            this.txtPin.Size = new System.Drawing.Size(290, 35);
+            this.txtPin.TabIndex = 11;
+            this.txtPin.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtPartyName_KeyDown);
+            // 
+            // label16
+            // 
+            this.label16.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.label16.AutoSize = true;
+            this.label16.BackColor = System.Drawing.Color.Transparent;
+            this.label16.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
+            this.label16.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
+            this.label16.Location = new System.Drawing.Point(539, 55);
+            this.label16.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label16.Name = "label16";
+            this.label16.Size = new System.Drawing.Size(103, 28);
+            this.label16.TabIndex = 14;
+            this.label16.Text = "Pincode";
+            this.label16.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // label3
+            // 
+            this.label3.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.label3.AutoSize = true;
+            this.label3.BackColor = System.Drawing.Color.Transparent;
+            this.label3.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
+            this.label3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
+            this.label3.Location = new System.Drawing.Point(4, 55);
+            this.label3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(143, 28);
+            this.label3.TabIndex = 4;
+            this.label3.Text = "Party Type ";
+            this.label3.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // cboType
+            // 
+            this.cboType.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
+            this.cboType.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
+            this.cboType.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.cboType.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
+            this.cboType.FormattingEnabled = true;
+            this.cboType.Items.AddRange(new object[] {
+            "---Select---",
+            "Customer",
+            "Supplier",
+            "Agent"});
+            this.cboType.Location = new System.Drawing.Point(250, 51);
+            this.cboType.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.cboType.Name = "cboType";
+            this.cboType.Size = new System.Drawing.Size(281, 36);
+            this.cboType.TabIndex = 2;
+            this.cboType.TextChanged += new System.EventHandler(this.cboType_TextChanged);
+            this.cboType.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtPartyName_KeyDown);
+            this.cboType.Leave += new System.EventHandler(this.cboType_Leave);
+            // 
+            // lblref
+            // 
+            this.lblref.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblref.AutoSize = true;
+            this.lblref.BackColor = System.Drawing.Color.Transparent;
+            this.lblref.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
+            this.lblref.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
+            this.lblref.Location = new System.Drawing.Point(4, 101);
+            this.lblref.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblref.Name = "lblref";
+            this.lblref.Size = new System.Drawing.Size(131, 28);
+            this.lblref.TabIndex = 6;
+            this.lblref.Text = "Reference";
+            this.lblref.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // cboReference
+            // 
+            this.cboReference.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
+            this.cboReference.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
+            this.cboReference.DataSource = this.ledgermasterBindingSource;
+            this.cboReference.DisplayMember = "led_name";
+            this.cboReference.Enabled = false;
+            this.cboReference.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.cboReference.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
+            this.cboReference.FormattingEnabled = true;
+            this.cboReference.Location = new System.Drawing.Point(250, 97);
+            this.cboReference.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.cboReference.Name = "cboReference";
+            this.cboReference.Size = new System.Drawing.Size(281, 36);
+            this.cboReference.TabIndex = 3;
+            this.cboReference.ValueMember = "led_id";
+            this.cboReference.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtPartyName_KeyDown);
+            // 
+            // ledgermasterBindingSource
+            // 
+            this.ledgermasterBindingSource.DataSource = typeof(standard.classes.ledgermaster);
+            // 
+            // label17
+            // 
+            this.label17.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.label17.AutoSize = true;
+            this.label17.BackColor = System.Drawing.Color.Transparent;
+            this.label17.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
+            this.label17.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
+            this.label17.Location = new System.Drawing.Point(4, 147);
+            this.label17.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label17.Name = "label17";
+            this.label17.Size = new System.Drawing.Size(126, 28);
+            this.label17.TabIndex = 8;
+            this.label17.Text = "Address 1";
+            this.label17.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // txtAdd1
+            // 
+            this.txtAdd1.BackColor = System.Drawing.Color.White;
+            this.txtAdd1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.txtAdd1.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
+            this.txtAdd1.Location = new System.Drawing.Point(250, 143);
+            this.txtAdd1.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.txtAdd1.MaxLength = 50;
+            this.txtAdd1.Name = "txtAdd1";
+            this.txtAdd1.Size = new System.Drawing.Size(281, 35);
+            this.txtAdd1.TabIndex = 4;
+            this.txtAdd1.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtPartyName_KeyDown);
+            // 
+            // txtAdd2
+            // 
+            this.txtAdd2.BackColor = System.Drawing.Color.White;
+            this.txtAdd2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.txtAdd2.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
+            this.txtAdd2.Location = new System.Drawing.Point(250, 189);
+            this.txtAdd2.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.txtAdd2.MaxLength = 50;
+            this.txtAdd2.Name = "txtAdd2";
+            this.txtAdd2.Size = new System.Drawing.Size(281, 35);
+            this.txtAdd2.TabIndex = 5;
+            this.txtAdd2.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtPartyName_KeyDown);
+            // 
+            // txtShippingAdd1
+            // 
+            this.txtShippingAdd1.BackColor = System.Drawing.Color.White;
+            this.txtShippingAdd1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.txtShippingAdd1.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
+            this.txtShippingAdd1.Location = new System.Drawing.Point(250, 235);
+            this.txtShippingAdd1.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.txtShippingAdd1.MaxLength = 50;
+            this.txtShippingAdd1.Name = "txtShippingAdd1";
+            this.txtShippingAdd1.Size = new System.Drawing.Size(281, 35);
+            this.txtShippingAdd1.TabIndex = 6;
+            this.txtShippingAdd1.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtPartyName_KeyDown);
+            // 
+            // txtShippingAdd2
+            // 
+            this.txtShippingAdd2.BackColor = System.Drawing.Color.White;
+            this.txtShippingAdd2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.txtShippingAdd2.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
+            this.txtShippingAdd2.Location = new System.Drawing.Point(250, 281);
+            this.txtShippingAdd2.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.txtShippingAdd2.MaxLength = 50;
+            this.txtShippingAdd2.Name = "txtShippingAdd2";
+            this.txtShippingAdd2.Size = new System.Drawing.Size(281, 35);
+            this.txtShippingAdd2.TabIndex = 7;
+            this.txtShippingAdd2.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtPartyName_KeyDown);
+            // 
+            // txtAdd3
+            // 
+            this.txtAdd3.BackColor = System.Drawing.Color.White;
+            this.txtAdd3.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.txtAdd3.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
+            this.txtAdd3.Location = new System.Drawing.Point(250, 327);
+            this.txtAdd3.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.txtAdd3.MaxLength = 50;
+            this.txtAdd3.Name = "txtAdd3";
+            this.txtAdd3.Size = new System.Drawing.Size(281, 35);
+            this.txtAdd3.TabIndex = 8;
+            this.txtAdd3.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtPartyName_KeyDown);
+            // 
+            // label4
+            // 
+            this.label4.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.label4.AutoSize = true;
+            this.label4.BackColor = System.Drawing.Color.Transparent;
+            this.label4.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
+            this.label4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
+            this.label4.Location = new System.Drawing.Point(4, 193);
+            this.label4.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(126, 28);
+            this.label4.TabIndex = 10;
+            this.label4.Text = "Address 2";
+            this.label4.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // lblShipingAdd1
+            // 
+            this.lblShipingAdd1.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblShipingAdd1.AutoSize = true;
+            this.lblShipingAdd1.BackColor = System.Drawing.Color.Transparent;
+            this.lblShipingAdd1.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
+            this.lblShipingAdd1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
+            this.lblShipingAdd1.Location = new System.Drawing.Point(4, 239);
+            this.lblShipingAdd1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblShipingAdd1.Name = "lblShipingAdd1";
+            this.lblShipingAdd1.Size = new System.Drawing.Size(234, 28);
+            this.lblShipingAdd1.TabIndex = 9;
+            this.lblShipingAdd1.Text = "Shipping Address 1";
+            this.lblShipingAdd1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // lblShippingAdd2
+            // 
+            this.lblShippingAdd2.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblShippingAdd2.AutoSize = true;
+            this.lblShippingAdd2.BackColor = System.Drawing.Color.Transparent;
+            this.lblShippingAdd2.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
+            this.lblShippingAdd2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
+            this.lblShippingAdd2.Location = new System.Drawing.Point(4, 285);
+            this.lblShippingAdd2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblShippingAdd2.Name = "lblShippingAdd2";
+            this.lblShippingAdd2.Size = new System.Drawing.Size(234, 28);
+            this.lblShippingAdd2.TabIndex = 10;
+            this.lblShippingAdd2.Text = "Shipping Address 2";
+            this.lblShippingAdd2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // label11
+            // 
+            this.label11.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.label11.AutoSize = true;
+            this.label11.BackColor = System.Drawing.Color.Transparent;
+            this.label11.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
+            this.label11.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
+            this.label11.Location = new System.Drawing.Point(4, 331);
+            this.label11.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(57, 28);
+            this.label11.TabIndex = 12;
+            this.label11.Text = "City";
+            this.label11.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // lblState
+            // 
+            this.lblState.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblState.AutoSize = true;
+            this.lblState.BackColor = System.Drawing.Color.Transparent;
+            this.lblState.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
+            this.lblState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
+            this.lblState.Location = new System.Drawing.Point(4, 377);
+            this.lblState.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblState.Name = "lblState";
+            this.lblState.Size = new System.Drawing.Size(75, 28);
+            this.lblState.TabIndex = 13;
+            this.lblState.Text = "State";
+            this.lblState.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // txtState
+            // 
+            this.txtState.BackColor = System.Drawing.Color.White;
+            this.txtState.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.txtState.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
+            this.txtState.Location = new System.Drawing.Point(250, 373);
+            this.txtState.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.txtState.MaxLength = 50;
+            this.txtState.Name = "txtState";
+            this.txtState.Size = new System.Drawing.Size(281, 35);
+            this.txtState.TabIndex = 9;
+            this.txtState.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtPartyName_KeyDown);
+            // 
+            // label2
+            // 
+            this.label2.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.label2.AutoSize = true;
+            this.label2.BackColor = System.Drawing.Color.Transparent;
+            this.label2.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
+            this.label2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
+            this.label2.Location = new System.Drawing.Point(539, 9);
+            this.label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(139, 28);
+            this.label2.TabIndex = 2;
+            this.label2.Text = "State Code";
+            this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // txtCode
+            // 
+            this.txtCode.BackColor = System.Drawing.Color.White;
+            this.txtCode.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.txtCode.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
+            this.txtCode.Location = new System.Drawing.Point(754, 5);
+            this.txtCode.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.txtCode.MaxLength = 50;
+            this.txtCode.Name = "txtCode";
+            this.txtCode.Size = new System.Drawing.Size(292, 35);
+            this.txtCode.TabIndex = 10;
+            this.txtCode.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtPartyName_KeyDown);
+            this.txtCode.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtCode_KeyPress);
+            // 
+            // txtDisPer
+            // 
+            this.txtDisPer.AllowFormat = false;
+            this.txtDisPer.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.txtDisPer.BackColor = System.Drawing.Color.White;
+            this.txtDisPer.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.txtDisPer.DecimalPlaces = 2;
+            this.txtDisPer.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
+            this.txtDisPer.Location = new System.Drawing.Point(1281, 374);
+            this.txtDisPer.Margin = new System.Windows.Forms.Padding(6);
+            this.txtDisPer.Name = "txtDisPer";
+            this.txtDisPer.RightAlign = true;
+            this.txtDisPer.Size = new System.Drawing.Size(287, 35);
+            this.txtDisPer.TabIndex = 18;
+            this.txtDisPer.TabStop = false;
+            this.txtDisPer.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.txtDisPer.Value = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
+            this.txtDisPer.Visible = false;
+            this.txtDisPer.TextChanged += new System.EventHandler(this.txtDiscount_TextChanged);
+            this.txtDisPer.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtPartyName_KeyDown);
+            // 
+            // label6
+            // 
+            this.label6.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.label6.AutoSize = true;
+            this.label6.BackColor = System.Drawing.Color.Transparent;
+            this.label6.Font = new System.Drawing.Font("Georgia", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label6.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
+            this.label6.Location = new System.Drawing.Point(539, 379);
+            this.label6.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(0, 24);
+            this.label6.TabIndex = 2;
+            this.label6.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // label23
+            // 
+            this.label23.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.label23.AutoSize = true;
+            this.label23.BackColor = System.Drawing.Color.Transparent;
+            this.label23.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
+            this.label23.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
+            this.label23.Location = new System.Drawing.Point(1054, 377);
+            this.label23.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label23.Name = "label23";
+            this.label23.Size = new System.Drawing.Size(149, 28);
+            this.label23.TabIndex = 28;
+            this.label23.Text = "Discount %";
+            this.label23.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.label23.Visible = false;
+            // 
+            // label12
+            // 
+            this.label12.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.label12.BackColor = System.Drawing.Color.Transparent;
+            this.label12.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
+            this.label12.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
+            this.label12.Location = new System.Drawing.Point(1579, 102);
+            this.label12.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(123, 25);
+            this.label12.TabIndex = 28;
+            this.label12.Text = "Transport";
+            this.label12.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.label12.Visible = false;
+            // 
+            // txtTransport
+            // 
+            this.txtTransport.BackColor = System.Drawing.Color.White;
+            this.txtTransport.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.txtTransport.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
+            this.txtTransport.Location = new System.Drawing.Point(1579, 143);
+            this.txtTransport.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.txtTransport.MaxLength = 50;
+            this.txtTransport.Name = "txtTransport";
+            this.txtTransport.Size = new System.Drawing.Size(253, 35);
+            this.txtTransport.TabIndex = 17;
+            this.txtTransport.Visible = false;
+            this.txtTransport.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtPartyName_KeyDown);
+            // 
+            // txtTin
+            // 
+            this.txtTin.BackColor = System.Drawing.Color.White;
+            this.txtTin.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.txtTin.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
+            this.txtTin.Location = new System.Drawing.Point(754, 327);
+            this.txtTin.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.txtTin.MaxLength = 50;
+            this.txtTin.Name = "txtTin";
+            this.txtTin.Size = new System.Drawing.Size(290, 35);
+            this.txtTin.TabIndex = 17;
+            this.txtTin.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtPartyName_KeyDown);
+            // 
+            // label9
+            // 
+            this.label9.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.label9.AutoSize = true;
+            this.label9.BackColor = System.Drawing.Color.Transparent;
+            this.label9.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
+            this.label9.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
+            this.label9.Location = new System.Drawing.Point(539, 331);
+            this.label9.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(87, 28);
+            this.label9.TabIndex = 24;
+            this.label9.Text = "GSTIN";
+            this.label9.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // txtDeliveryOrder
+            // 
+            this.txtDeliveryOrder.BackColor = System.Drawing.Color.White;
+            this.txtDeliveryOrder.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.txtDeliveryOrder.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtDeliveryOrder.Location = new System.Drawing.Point(754, 281);
+            this.txtDeliveryOrder.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.txtDeliveryOrder.MaxLength = 50;
+            this.txtDeliveryOrder.Name = "txtDeliveryOrder";
+            this.txtDeliveryOrder.Size = new System.Drawing.Size(290, 35);
+            this.txtDeliveryOrder.TabIndex = 16;
+            this.txtDeliveryOrder.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtPartyName_KeyDown);
+            this.txtDeliveryOrder.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtDeliveryOrder_KeyPress);
+            // 
+            // lblDeliveryOrder
+            // 
+            this.lblDeliveryOrder.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblDeliveryOrder.AutoSize = true;
+            this.lblDeliveryOrder.BackColor = System.Drawing.Color.Transparent;
+            this.lblDeliveryOrder.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
+            this.lblDeliveryOrder.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
+            this.lblDeliveryOrder.Location = new System.Drawing.Point(539, 285);
+            this.lblDeliveryOrder.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblDeliveryOrder.Name = "lblDeliveryOrder";
+            this.lblDeliveryOrder.Size = new System.Drawing.Size(180, 28);
+            this.lblDeliveryOrder.TabIndex = 17;
+            this.lblDeliveryOrder.Text = "Delivery Order";
+            this.lblDeliveryOrder.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // txtVehicleNo
+            // 
+            this.txtVehicleNo.BackColor = System.Drawing.Color.White;
+            this.txtVehicleNo.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.txtVehicleNo.Enabled = false;
+            this.txtVehicleNo.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
+            this.txtVehicleNo.Location = new System.Drawing.Point(754, 373);
+            this.txtVehicleNo.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.txtVehicleNo.MaxLength = 50;
+            this.txtVehicleNo.Name = "txtVehicleNo";
+            this.txtVehicleNo.ReadOnly = true;
+            this.txtVehicleNo.Size = new System.Drawing.Size(290, 35);
+            this.txtVehicleNo.TabIndex = 25;
+            this.txtVehicleNo.Visible = false;
             // 
             // tblCommand
             // 
@@ -2159,8 +2329,9 @@ namespace standard.master
             ((System.ComponentModel.ISupportInitialize)(this.uspledgermasterSelectResultBindingSource)).EndInit();
             this.tblEntry.ResumeLayout(false);
             this.tblEntry.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.ledgermasterBindingSource)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.vehicleBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.routeBindingSource)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ledgermasterBindingSource)).EndInit();
             this.tblCommand.ResumeLayout(false);
             this.tblCommand.PerformLayout();
             this.ResumeLayout(false);
@@ -2192,6 +2363,29 @@ namespace standard.master
             if (e.KeyData == Keys.Return)
             {
                 btnSave.Focus();
+            }
+        }
+
+        private void cboAreaCode_SelectedValueChanged(object sender, EventArgs e)
+        {
+            if (cboAreaCode.SelectedValue == null)
+                return;
+
+            int areaCode = Convert.ToInt32(cboAreaCode.SelectedValue);
+
+            using (InventoryDataContext inventoryDataContext = new InventoryDataContext())
+            {
+                // Assuming usp_routeSelect returns one or more records with a VehicleNo field
+                var route = inventoryDataContext.usp_routeSelect(areaCode, null).FirstOrDefault();
+
+                if (route != null && route.rt_vehicleno != null)
+                {
+                    txtVehicleNo.Text = route.rt_vehicleno.ToString();
+                }
+                else
+                {
+                    txtVehicleNo.Text = string.Empty;
+                }
             }
         }
     }

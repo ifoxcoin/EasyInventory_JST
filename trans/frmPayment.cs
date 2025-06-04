@@ -263,6 +263,11 @@ namespace standard.trans
                     MessageBox.Show("Invalid data to save", "Information", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
                     dgvpayment.Focus();
                 }
+                else if (txtPaidamt.Value == 0 || txtPaidamt.Value == null)
+                {
+                    MessageBox.Show("Invalid Paid Amount to save", "Information", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+                    dgvpayment.Focus();
+                }
                 else
                 {
                     int? num = id;
@@ -789,7 +794,7 @@ namespace standard.trans
                             TimeSpan timeSpan = DateTime.Now.Subtract(item2.pm_date.Value);
                             dgvpayment.Rows[num].Cells["cDayscount"].Value = timeSpan.Days;
                             dgvpayment.Rows[num].Cells["cBillAmt"].Value = item2.pm_totamount;
-                            num2 += item2.pm_totamount - (item2.pm_paid ?? 0m);
+                            num2 += item2.pm_totamount - (item2.pm_paid);
                             dgvpayment.Rows[num].Cells["cpaid"].Value = 0;
                             dgvpayment.Rows[num].Cells["cExistpaid"].Value = item2.pm_paid;
                             dgvpayment.Rows[num].Cells["cNewBalance"].Value = item2.pm_totamount - item2.pm_paid;
@@ -916,19 +921,19 @@ namespace standard.trans
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle79 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle80 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle86 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle81 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle82 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle83 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle84 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle85 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle87 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle88 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle89 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle90 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle91 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle8 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle7 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle9 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle10 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle11 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle12 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle13 = new System.Windows.Forms.DataGridViewCellStyle();
             this.tablemain = new System.Windows.Forms.TableLayoutPanel();
             this.lbltitle = new System.Windows.Forms.Label();
             this.tableentry = new System.Windows.Forms.TableLayoutPanel();
@@ -1455,17 +1460,17 @@ namespace standard.trans
             // 
             this.dgvpayment.AllowUserToDeleteRows = false;
             this.dgvpayment.AllowUserToResizeRows = false;
-            dataGridViewCellStyle79.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold);
-            this.dgvpayment.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle79;
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold);
+            this.dgvpayment.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
             this.dgvpayment.BackgroundColor = System.Drawing.Color.White;
-            dataGridViewCellStyle80.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle80.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle80.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold);
-            dataGridViewCellStyle80.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle80.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle80.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle80.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dgvpayment.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle80;
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold);
+            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dgvpayment.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle2;
             this.dgvpayment.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvpayment.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.osno,
@@ -1485,8 +1490,8 @@ namespace standard.trans
             this.dgvpayment.ReadOnly = true;
             this.dgvpayment.RowHeadersVisible = false;
             this.dgvpayment.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.AutoSizeToAllHeaders;
-            dataGridViewCellStyle86.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold);
-            this.dgvpayment.RowsDefaultCellStyle = dataGridViewCellStyle86;
+            dataGridViewCellStyle8.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold);
+            this.dgvpayment.RowsDefaultCellStyle = dataGridViewCellStyle8;
             this.dgvpayment.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect;
             this.dgvpayment.ShowCellToolTips = false;
             this.dgvpayment.Size = new System.Drawing.Size(1146, 437);
@@ -1522,9 +1527,9 @@ namespace standard.trans
             // 
             // cBillAmt
             // 
-            dataGridViewCellStyle81.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            dataGridViewCellStyle81.Format = "N2";
-            this.cBillAmt.DefaultCellStyle = dataGridViewCellStyle81;
+            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            dataGridViewCellStyle3.Format = "N2";
+            this.cBillAmt.DefaultCellStyle = dataGridViewCellStyle3;
             this.cBillAmt.HeaderText = "BILL AMOUNT";
             this.cBillAmt.Name = "cBillAmt";
             this.cBillAmt.ReadOnly = true;
@@ -1532,9 +1537,9 @@ namespace standard.trans
             // 
             // cpaid
             // 
-            dataGridViewCellStyle82.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            dataGridViewCellStyle82.Format = "N2";
-            this.cpaid.DefaultCellStyle = dataGridViewCellStyle82;
+            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            dataGridViewCellStyle4.Format = "N2";
+            this.cpaid.DefaultCellStyle = dataGridViewCellStyle4;
             this.cpaid.HeaderText = "PAID";
             this.cpaid.MaxInputLength = 10;
             this.cpaid.Name = "cpaid";
@@ -1545,9 +1550,9 @@ namespace standard.trans
             // 
             // cExistpaid
             // 
-            dataGridViewCellStyle83.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            dataGridViewCellStyle83.Format = "N2";
-            this.cExistpaid.DefaultCellStyle = dataGridViewCellStyle83;
+            dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            dataGridViewCellStyle5.Format = "N2";
+            this.cExistpaid.DefaultCellStyle = dataGridViewCellStyle5;
             this.cExistpaid.HeaderText = "ALREADY PAID";
             this.cExistpaid.Name = "cExistpaid";
             this.cExistpaid.ReadOnly = true;
@@ -1555,9 +1560,9 @@ namespace standard.trans
             // 
             // cNewBalance
             // 
-            dataGridViewCellStyle84.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            dataGridViewCellStyle84.Format = "N2";
-            this.cNewBalance.DefaultCellStyle = dataGridViewCellStyle84;
+            dataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            dataGridViewCellStyle6.Format = "N2";
+            this.cNewBalance.DefaultCellStyle = dataGridViewCellStyle6;
             this.cNewBalance.HeaderText = "NEW BALANCE";
             this.cNewBalance.Name = "cNewBalance";
             this.cNewBalance.ReadOnly = true;
@@ -1567,8 +1572,8 @@ namespace standard.trans
             // 
             // cDayscount
             // 
-            dataGridViewCellStyle85.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            this.cDayscount.DefaultCellStyle = dataGridViewCellStyle85;
+            dataGridViewCellStyle7.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            this.cDayscount.DefaultCellStyle = dataGridViewCellStyle7;
             this.cDayscount.HeaderText = "DAYS COUNT";
             this.cDayscount.Name = "cDayscount";
             this.cDayscount.ReadOnly = true;
@@ -1606,19 +1611,19 @@ namespace standard.trans
             this.dglist.AllowUserToAddRows = false;
             this.dglist.AllowUserToDeleteRows = false;
             this.dglist.AllowUserToResizeRows = false;
-            dataGridViewCellStyle87.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold);
-            this.dglist.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle87;
+            dataGridViewCellStyle9.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold);
+            this.dglist.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle9;
             this.dglist.AutoGenerateColumns = false;
             this.dglist.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.AllCells;
             this.dglist.BackgroundColor = System.Drawing.Color.White;
-            dataGridViewCellStyle88.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle88.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle88.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold);
-            dataGridViewCellStyle88.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle88.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle88.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle88.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dglist.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle88;
+            dataGridViewCellStyle10.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle10.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle10.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold);
+            dataGridViewCellStyle10.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle10.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle10.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle10.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dglist.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle10;
             this.dglist.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dglist.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.ldelete,
@@ -1746,9 +1751,9 @@ namespace standard.trans
             // recbillamtDataGridViewTextBoxColumn
             // 
             this.recbillamtDataGridViewTextBoxColumn.DataPropertyName = "pay_billamt";
-            dataGridViewCellStyle89.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            dataGridViewCellStyle89.Format = "N2";
-            this.recbillamtDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle89;
+            dataGridViewCellStyle11.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            dataGridViewCellStyle11.Format = "N2";
+            this.recbillamtDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle11;
             this.recbillamtDataGridViewTextBoxColumn.HeaderText = "Bill Amount";
             this.recbillamtDataGridViewTextBoxColumn.Name = "recbillamtDataGridViewTextBoxColumn";
             this.recbillamtDataGridViewTextBoxColumn.ReadOnly = true;
@@ -1757,9 +1762,9 @@ namespace standard.trans
             // recpaidamtDataGridViewTextBoxColumn
             // 
             this.recpaidamtDataGridViewTextBoxColumn.DataPropertyName = "pay_paidamt";
-            dataGridViewCellStyle90.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            dataGridViewCellStyle90.Format = "N2";
-            this.recpaidamtDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle90;
+            dataGridViewCellStyle12.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            dataGridViewCellStyle12.Format = "N2";
+            this.recpaidamtDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle12;
             this.recpaidamtDataGridViewTextBoxColumn.HeaderText = "paid Amt";
             this.recpaidamtDataGridViewTextBoxColumn.Name = "recpaidamtDataGridViewTextBoxColumn";
             this.recpaidamtDataGridViewTextBoxColumn.ReadOnly = true;
@@ -1768,9 +1773,9 @@ namespace standard.trans
             // recnewbalanceDataGridViewTextBoxColumn
             // 
             this.recnewbalanceDataGridViewTextBoxColumn.DataPropertyName = "pay_newbalance";
-            dataGridViewCellStyle91.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            dataGridViewCellStyle91.Format = "N2";
-            this.recnewbalanceDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle91;
+            dataGridViewCellStyle13.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            dataGridViewCellStyle13.Format = "N2";
+            this.recnewbalanceDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle13;
             this.recnewbalanceDataGridViewTextBoxColumn.HeaderText = "Balance";
             this.recnewbalanceDataGridViewTextBoxColumn.Name = "recnewbalanceDataGridViewTextBoxColumn";
             this.recnewbalanceDataGridViewTextBoxColumn.ReadOnly = true;
