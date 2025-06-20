@@ -191,6 +191,7 @@ namespace standard.master
         private TextBox txtVehicleNo;
         private ComboBox cboVehicleNo;
         private BindingSource vehicleBindingSource;
+        private CheckBox chkCheck;
         private TextBox txtCode;
 
 		public frmLedger()
@@ -248,7 +249,8 @@ namespace standard.master
             txtVehicleNo.Text = string.Empty;
 			txtTin.Text = string.Empty;
             cbIsFreight.Checked = false;
-			txtCst.Text = string.Empty;
+            chkCheck.Checked = false;
+            txtCst.Text = string.Empty;
 			txtTamilPartyName.Text = string.Empty;
 			txtTamilAdd1.Text = string.Empty;
 			txtTamilAdd2.Text = string.Empty;
@@ -324,6 +326,7 @@ namespace standard.master
                     txtVehicleNo.Text = Convert.ToString(item.led_vehicleno);
                     txtTin.Text = Convert.ToString(item.led_tin);
                     cbIsFreight.Checked = Convert.ToBoolean(item.led_isfreight);
+                    chkCheck.Checked = Convert.ToBoolean(item.led_check);
                     txtCst.Text = Convert.ToString(item.led_cst);
 					txtTamilPartyName.Text = Convert.ToString(item.led_tname);
 					txtTamilAdd1.Text = Convert.ToString(item.led_taddress);
@@ -382,7 +385,8 @@ namespace standard.master
                 ledgermaster.led_agid = Convert.ToInt32(cboReference.SelectedValue);
 				ledgermaster.led_tin = txtTin.Text.Trim();
                 ledgermaster.led_isfreight = cbIsFreight.Checked;
-				ledgermaster.led_cst = txtCst.Text.Trim();
+                ledgermaster.led_check = chkCheck.Checked;
+                ledgermaster.led_cst = txtCst.Text.Trim();
 				ledgermaster.led_ratetype = cboratetype.Text.Trim();
 				ledgermaster.led_tname = txtTamilPartyName.Text.Trim();
 				ledgermaster.led_taddress = txtTamilAdd1.Text.Trim();
@@ -390,7 +394,24 @@ namespace standard.master
 				ledgermaster.led_taddress2 = txtTamilAdd3.Text.Trim();
 				ledgermaster.led_refno = Convert.ToString(global.ucode);
 				ledgermaster.led_disper = txtDisPer.Value;
-				if (ledgermaster.led_name == string.Empty)
+                
+                if (ledgermaster.rt_id != 0)
+                {
+                    if (ledgermaster.vh_id == 0)
+                    {
+                        MessageBox.Show("Please enter Vehicle No.", "Missing Vehicle No.", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        cboVehicleNo.Focus();
+                        return;
+                    }
+
+                    else if (string.IsNullOrWhiteSpace(txtDeliveryOrder.Text))
+                    {
+                        MessageBox.Show("Please enter Delivery Order No.", "Missing Delivery Order", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        txtDeliveryOrder.Focus();
+                        return;
+                    }
+                }
+                if (ledgermaster.led_name == string.Empty)
 				{
 					MessageBox.Show("Invalid 'Name'", "Information", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
 					txtPartyName.Focus();
@@ -410,18 +431,19 @@ namespace standard.master
 					MessageBox.Show("Invalid 'City'", "Information", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
 					cboratetype.Focus();
 				}
-				else if (id == 0)
+                
+                else if (id == 0)
 				{
 					if (MessageBox.Show("Are you sure to save?", "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.No)
 					{
-						inventoryDataContext.usp_ledgermasterInsert(ledgermaster.led_agid, ledgermaster.led_accountcode, ledgermaster.led_accounttype, ledgermaster.led_name, ledgermaster.led_address, ledgermaster.led_address1, ledgermaster.led_address2, ledgermaster.led_shippingaddress1, ledgermaster.led_shippingaddress2, ledgermaster.led_state, ledgermaster.led_tname, ledgermaster.led_taddress, ledgermaster.led_taddress1, ledgermaster.led_taddress2, ledgermaster.led_pincode, ledgermaster.led_transport, ledgermaster.led_ownerphone, ledgermaster.led_ownername, ledgermaster.led_managername, ledgermaster.led_managerphone, ledgermaster.led_deliveryorder, ledgermaster.led_vehicleno, ledgermaster.led_tin, ledgermaster.led_isfreight, ledgermaster.led_cst, ledgermaster.led_refno, global.ucode, global.comid, ledgermaster.rt_id, ledgermaster.vh_id, global.sysdate, ledgermaster.led_ratetype, ledgermaster.led_disper);
+						inventoryDataContext.usp_ledgermasterInsert(ledgermaster.led_agid, ledgermaster.led_accountcode, ledgermaster.led_accounttype, ledgermaster.led_name, ledgermaster.led_address, ledgermaster.led_address1, ledgermaster.led_address2, ledgermaster.led_shippingaddress1, ledgermaster.led_shippingaddress2, ledgermaster.led_state, ledgermaster.led_tname, ledgermaster.led_taddress, ledgermaster.led_taddress1, ledgermaster.led_taddress2, ledgermaster.led_pincode, ledgermaster.led_transport, ledgermaster.led_ownerphone, ledgermaster.led_ownername, ledgermaster.led_managername, ledgermaster.led_managerphone, ledgermaster.led_deliveryorder, ledgermaster.led_vehicleno, ledgermaster.led_tin, ledgermaster.led_isfreight, ledgermaster.led_check, ledgermaster.led_cst, ledgermaster.led_refno, global.ucode, global.comid, ledgermaster.rt_id, ledgermaster.vh_id, global.sysdate, ledgermaster.led_ratetype, ledgermaster.led_disper);
 						MessageBox.Show("Record saved successfully...", "Information", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
 						goto IL_0521;
 					}
 				}
 				else if (MessageBox.Show("Are you sure to update?", "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.No)
 				{
-					inventoryDataContext.usp_ledgermasterUpdate(id, ledgermaster.led_agid, ledgermaster.led_accountcode, ledgermaster.led_accounttype, ledgermaster.led_name, ledgermaster.led_address, ledgermaster.led_address1, ledgermaster.led_shippingaddress1, ledgermaster.led_shippingaddress2, ledgermaster.led_address2, ledgermaster.led_state, ledgermaster.led_tname, ledgermaster.led_taddress, ledgermaster.led_taddress1, ledgermaster.led_taddress2, ledgermaster.led_pincode, ledgermaster.led_transport, ledgermaster.led_ownerphone, ledgermaster.led_ownername, ledgermaster.led_managername, ledgermaster.led_managerphone,ledgermaster.led_deliveryorder, ledgermaster.led_vehicleno,ledgermaster.led_tin,ledgermaster.led_isfreight, ledgermaster.led_cst, ledgermaster.led_refno, global.ucode, global.comid, ledgermaster.rt_id, ledgermaster.vh_id, global.sysdate, ledgermaster.led_ratetype, ledgermaster.led_disper);
+					inventoryDataContext.usp_ledgermasterUpdate(id, ledgermaster.led_agid, ledgermaster.led_accountcode, ledgermaster.led_accounttype, ledgermaster.led_name, ledgermaster.led_address, ledgermaster.led_address1, ledgermaster.led_shippingaddress1, ledgermaster.led_shippingaddress2, ledgermaster.led_address2, ledgermaster.led_state, ledgermaster.led_tname, ledgermaster.led_taddress, ledgermaster.led_taddress1, ledgermaster.led_taddress2, ledgermaster.led_pincode, ledgermaster.led_transport, ledgermaster.led_ownerphone, ledgermaster.led_ownername, ledgermaster.led_managername, ledgermaster.led_managerphone,ledgermaster.led_deliveryorder, ledgermaster.led_vehicleno,ledgermaster.led_tin,ledgermaster.led_isfreight, ledgermaster.led_check, ledgermaster.led_cst, ledgermaster.led_refno, global.ucode, global.comid, ledgermaster.rt_id, ledgermaster.vh_id, global.sysdate, ledgermaster.led_ratetype, ledgermaster.led_disper);
 					MessageBox.Show("Record updated successfully...", "Information", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
 					goto IL_0521;
 				}
@@ -659,6 +681,7 @@ namespace standard.master
             this.ledudateDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.uspledgermasterSelectResultBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.tblEntry = new System.Windows.Forms.TableLayoutPanel();
+            this.chkCheck = new System.Windows.Forms.CheckBox();
             this.cboVehicleNo = new System.Windows.Forms.ComboBox();
             this.vehicleBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.label13 = new System.Windows.Forms.Label();
@@ -709,15 +732,15 @@ namespace standard.master
             this.label2 = new System.Windows.Forms.Label();
             this.txtCode = new System.Windows.Forms.TextBox();
             this.txtDisPer = new mylib.decimalbox(this.components);
-            this.label6 = new System.Windows.Forms.Label();
             this.label23 = new System.Windows.Forms.Label();
             this.label12 = new System.Windows.Forms.Label();
             this.txtTransport = new System.Windows.Forms.TextBox();
-            this.txtTin = new System.Windows.Forms.TextBox();
-            this.label9 = new System.Windows.Forms.Label();
             this.txtDeliveryOrder = new System.Windows.Forms.TextBox();
             this.lblDeliveryOrder = new System.Windows.Forms.Label();
             this.txtVehicleNo = new System.Windows.Forms.TextBox();
+            this.txtTin = new System.Windows.Forms.TextBox();
+            this.label6 = new System.Windows.Forms.Label();
+            this.label9 = new System.Windows.Forms.Label();
             this.tblCommand = new System.Windows.Forms.TableLayoutPanel();
             this.cmdclose = new mylib.lightbutton();
             this.btnClear = new mylib.lightbutton();
@@ -1295,6 +1318,7 @@ namespace standard.master
             this.tblEntry.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 225F));
             this.tblEntry.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 300F));
             this.tblEntry.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tblEntry.Controls.Add(this.chkCheck, 3, 7);
             this.tblEntry.Controls.Add(this.cboVehicleNo, 3, 5);
             this.tblEntry.Controls.Add(this.label13, 2, 5);
             this.tblEntry.Controls.Add(this.txtPartyName, 1, 0);
@@ -1342,15 +1366,15 @@ namespace standard.master
             this.tblEntry.Controls.Add(this.label2, 2, 0);
             this.tblEntry.Controls.Add(this.txtCode, 3, 0);
             this.tblEntry.Controls.Add(this.txtDisPer, 5, 8);
-            this.tblEntry.Controls.Add(this.label6, 2, 8);
             this.tblEntry.Controls.Add(this.label23, 4, 8);
             this.tblEntry.Controls.Add(this.label12, 6, 2);
             this.tblEntry.Controls.Add(this.txtTransport, 6, 3);
-            this.tblEntry.Controls.Add(this.txtTin, 3, 7);
-            this.tblEntry.Controls.Add(this.label9, 2, 7);
             this.tblEntry.Controls.Add(this.txtDeliveryOrder, 3, 6);
             this.tblEntry.Controls.Add(this.lblDeliveryOrder, 2, 6);
-            this.tblEntry.Controls.Add(this.txtVehicleNo, 3, 8);
+            this.tblEntry.Controls.Add(this.txtVehicleNo, 6, 8);
+            this.tblEntry.Controls.Add(this.txtTin, 3, 8);
+            this.tblEntry.Controls.Add(this.label6, 2, 7);
+            this.tblEntry.Controls.Add(this.label9, 2, 8);
             this.tblEntry.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tblEntry.Location = new System.Drawing.Point(5, 61);
             this.tblEntry.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
@@ -1368,6 +1392,21 @@ namespace standard.master
             this.tblEntry.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tblEntry.Size = new System.Drawing.Size(1836, 410);
             this.tblEntry.TabIndex = 1;
+            // 
+            // chkCheck
+            // 
+            this.chkCheck.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.chkCheck.AutoSize = true;
+            this.chkCheck.BackColor = System.Drawing.Color.Transparent;
+            this.chkCheck.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
+            this.chkCheck.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
+            this.chkCheck.Location = new System.Drawing.Point(753, 329);
+            this.chkCheck.Name = "chkCheck";
+            this.chkCheck.Size = new System.Drawing.Size(227, 32);
+            this.chkCheck.TabIndex = 17;
+            this.chkCheck.Text = "Customer Check";
+            this.chkCheck.UseVisualStyleBackColor = false;
+            this.chkCheck.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtPartyName_KeyDown);
             // 
             // cboVehicleNo
             // 
@@ -1458,7 +1497,7 @@ namespace standard.master
             this.txtTamilAdd3.MaxLength = 50;
             this.txtTamilAdd3.Name = "txtTamilAdd3";
             this.txtTamilAdd3.Size = new System.Drawing.Size(290, 35);
-            this.txtTamilAdd3.TabIndex = 22;
+            this.txtTamilAdd3.TabIndex = 23;
             this.txtTamilAdd3.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtPartyName_KeyDown);
             this.txtTamilAdd3.KeyUp += new System.Windows.Forms.KeyEventHandler(this.txtTamilAdd3_KeyUp);
             this.txtTamilAdd3.Leave += new System.EventHandler(this.txtTamilAdd3_Leave);
@@ -1488,7 +1527,7 @@ namespace standard.master
             this.txtTamilAdd2.MaxLength = 50;
             this.txtTamilAdd2.Name = "txtTamilAdd2";
             this.txtTamilAdd2.Size = new System.Drawing.Size(290, 35);
-            this.txtTamilAdd2.TabIndex = 21;
+            this.txtTamilAdd2.TabIndex = 22;
             this.txtTamilAdd2.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtPartyName_KeyDown);
             this.txtTamilAdd2.KeyUp += new System.Windows.Forms.KeyEventHandler(this.txtTamilAdd2_KeyUp);
             this.txtTamilAdd2.Leave += new System.EventHandler(this.txtTamilAdd2_Leave);
@@ -1518,7 +1557,7 @@ namespace standard.master
             this.txtTamilAdd1.MaxLength = 50;
             this.txtTamilAdd1.Name = "txtTamilAdd1";
             this.txtTamilAdd1.Size = new System.Drawing.Size(290, 35);
-            this.txtTamilAdd1.TabIndex = 20;
+            this.txtTamilAdd1.TabIndex = 21;
             this.txtTamilAdd1.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtPartyName_KeyDown);
             this.txtTamilAdd1.KeyUp += new System.Windows.Forms.KeyEventHandler(this.txtTamilAdd1_KeyUp);
             this.txtTamilAdd1.Leave += new System.EventHandler(this.txtTamilAdd1_Leave);
@@ -1548,7 +1587,7 @@ namespace standard.master
             this.txtTamilPartyName.MaxLength = 50;
             this.txtTamilPartyName.Name = "txtTamilPartyName";
             this.txtTamilPartyName.Size = new System.Drawing.Size(290, 35);
-            this.txtTamilPartyName.TabIndex = 19;
+            this.txtTamilPartyName.TabIndex = 20;
             this.txtTamilPartyName.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtPartyName_KeyDown);
             this.txtTamilPartyName.KeyUp += new System.Windows.Forms.KeyEventHandler(this.txtTamilPartyName_KeyUp);
             this.txtTamilPartyName.Leave += new System.EventHandler(this.txtTamilPartyName_Leave);
@@ -1570,7 +1609,7 @@ namespace standard.master
             this.cboratetype.Margin = new System.Windows.Forms.Padding(6);
             this.cboratetype.Name = "cboratetype";
             this.cboratetype.Size = new System.Drawing.Size(286, 36);
-            this.cboratetype.TabIndex = 18;
+            this.cboratetype.TabIndex = 19;
             this.cboratetype.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtPartyName_KeyDown);
             // 
             // label22
@@ -2091,20 +2130,6 @@ namespace standard.master
             this.txtDisPer.TextChanged += new System.EventHandler(this.txtDiscount_TextChanged);
             this.txtDisPer.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtPartyName_KeyDown);
             // 
-            // label6
-            // 
-            this.label6.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.label6.AutoSize = true;
-            this.label6.BackColor = System.Drawing.Color.Transparent;
-            this.label6.Font = new System.Drawing.Font("Georgia", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label6.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.label6.Location = new System.Drawing.Point(539, 379);
-            this.label6.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(0, 24);
-            this.label6.TabIndex = 2;
-            this.label6.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
             // label23
             // 
             this.label23.Anchor = System.Windows.Forms.AnchorStyles.Left;
@@ -2150,34 +2175,6 @@ namespace standard.master
             this.txtTransport.Visible = false;
             this.txtTransport.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtPartyName_KeyDown);
             // 
-            // txtTin
-            // 
-            this.txtTin.BackColor = System.Drawing.Color.White;
-            this.txtTin.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.txtTin.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
-            this.txtTin.Location = new System.Drawing.Point(754, 327);
-            this.txtTin.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.txtTin.MaxLength = 50;
-            this.txtTin.Name = "txtTin";
-            this.txtTin.Size = new System.Drawing.Size(290, 35);
-            this.txtTin.TabIndex = 17;
-            this.txtTin.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtPartyName_KeyDown);
-            // 
-            // label9
-            // 
-            this.label9.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.label9.AutoSize = true;
-            this.label9.BackColor = System.Drawing.Color.Transparent;
-            this.label9.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
-            this.label9.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.label9.Location = new System.Drawing.Point(539, 331);
-            this.label9.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(87, 28);
-            this.label9.TabIndex = 24;
-            this.label9.Text = "GSTIN";
-            this.label9.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
             // txtDeliveryOrder
             // 
             this.txtDeliveryOrder.BackColor = System.Drawing.Color.White;
@@ -2213,14 +2210,56 @@ namespace standard.master
             this.txtVehicleNo.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.txtVehicleNo.Enabled = false;
             this.txtVehicleNo.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
-            this.txtVehicleNo.Location = new System.Drawing.Point(754, 373);
+            this.txtVehicleNo.Location = new System.Drawing.Point(1579, 373);
             this.txtVehicleNo.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.txtVehicleNo.MaxLength = 50;
             this.txtVehicleNo.Name = "txtVehicleNo";
             this.txtVehicleNo.ReadOnly = true;
-            this.txtVehicleNo.Size = new System.Drawing.Size(290, 35);
+            this.txtVehicleNo.Size = new System.Drawing.Size(253, 35);
             this.txtVehicleNo.TabIndex = 25;
             this.txtVehicleNo.Visible = false;
+            // 
+            // txtTin
+            // 
+            this.txtTin.BackColor = System.Drawing.Color.White;
+            this.txtTin.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.txtTin.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
+            this.txtTin.Location = new System.Drawing.Point(754, 373);
+            this.txtTin.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.txtTin.MaxLength = 50;
+            this.txtTin.Name = "txtTin";
+            this.txtTin.Size = new System.Drawing.Size(290, 35);
+            this.txtTin.TabIndex = 18;
+            this.txtTin.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtPartyName_KeyDown);
+            // 
+            // label6
+            // 
+            this.label6.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.label6.AutoSize = true;
+            this.label6.BackColor = System.Drawing.Color.Transparent;
+            this.label6.Font = new System.Drawing.Font("Georgia", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label6.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
+            this.label6.Location = new System.Drawing.Point(539, 333);
+            this.label6.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(0, 24);
+            this.label6.TabIndex = 2;
+            this.label6.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // label9
+            // 
+            this.label9.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.label9.AutoSize = true;
+            this.label9.BackColor = System.Drawing.Color.Transparent;
+            this.label9.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
+            this.label9.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
+            this.label9.Location = new System.Drawing.Point(539, 377);
+            this.label9.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(87, 28);
+            this.label9.TabIndex = 24;
+            this.label9.Text = "GSTIN";
+            this.label9.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // tblCommand
             // 

@@ -249,7 +249,7 @@ namespace standard.trans
                 {
                     var queryable = from li in inventoryDataContext.items
                                     join cat in inventoryDataContext.categories on li.cat_id equals cat.cat_id
-                                    where li.item_name == Convert.ToString(dgvSales["cItemName", r].Value)
+                                    where li.item_id == Convert.ToInt32(dgvSales["cItemID", r].Value)
                                     select new
                                     {
                                         cat,
@@ -321,7 +321,7 @@ namespace standard.trans
                 {
                     var queryable = from li in inventoryDataContext.items
                                     join cat in inventoryDataContext.categories on li.cat_id equals cat.cat_id
-                                    where li.item_name == Convert.ToString(dgvSales["cItemName", r].Value)
+                                    where li.item_id == Convert.ToInt32(dgvSales["cItemID", r].Value)
                                     select new
                                     {
                                         cat,
@@ -1361,7 +1361,7 @@ namespace standard.trans
                             var queryable2 = from li in inventoryDataContext3.items
                                              join cat in inventoryDataContext3.categories on li.cat_id equals cat.cat_id
                                              join com in inventoryDataContext3.companies on li.com_id equals com.com_id
-                                             where li.item_name == Convert.ToString(dgvSales["cItemName", r].Value)
+                                             where li.item_id == Convert.ToInt32(dgvSales["cItemID", r].Value)
                                              select new
                                              {
                                                  cat,
@@ -1416,7 +1416,7 @@ namespace standard.trans
                     {
                         var queryable2 = from li in inventoryDataContext.items
                                          join cat in inventoryDataContext.categories on li.cat_id equals cat.cat_id
-                                         where li.item_name == Convert.ToString(dgvSales["cItemName", r].Value)
+                                         where li.item_id == Convert.ToInt32(dgvSales["cItemID", r].Value)
                                          select new
                                          {
                                              cat,

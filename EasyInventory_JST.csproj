@@ -299,6 +299,7 @@
     <EmbeddedResource Include="report\rptLedgersOutstandingedited.rdlc" />
     <EmbeddedResource Include="report\rptSalesInvoice1.rdlc" />
     <EmbeddedResource Include="report\rptSalesKachathu.rdlc" />
+    <EmbeddedResource Include="report\rptSalesLoadWayByOrder.rdlc" />
     <EmbeddedResource Include="report\rptSalesLoadWay.rdlc" />
     <EmbeddedResource Include="report\rptOutstanding.rdlc" />
     <EmbeddedResource Include="report\frmStockRpt.resx">
@@ -437,6 +438,7 @@
     <None Include="Properties\DataSources\standard.classes.usp_companySelectResult1.datasource" />
     <None Include="Properties\DataSources\standard.classes.usp_getCutomerByRouteResult.datasource" />
     <None Include="Properties\DataSources\standard.classes.usp_getCutomerByRouteResult1.datasource" />
+    <None Include="Properties\DataSources\standard.classes.usp_getLoadwayBySalesOrderResult.datasource" />
     <None Include="Properties\DataSources\standard.classes.usp_itemSelectResult1.datasource" />
     <None Include="Properties\DataSources\standard.classes.usp_ledgerItemDetailsReportResult.datasource" />
     <None Include="Properties\DataSources\standard.classes.usp_ledgermasterSelectResult1.datasource" />
@@ -451,6 +453,7 @@
     <None Include="Properties\DataSources\standard.classes.usp_SupplierOutstandingRptResult.datasource" />
     <None Include="Properties\DataSources\standard.classes.usp_vehicleSelectResult.datasource" />
     <None Include="Properties\DataSources\standard.classes.vehicle.datasource" />
+    <None Include="Properties\DataSources\standard.trans.frmSales+CopyLabelWrapper.datasource" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

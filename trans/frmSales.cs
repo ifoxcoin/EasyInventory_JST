@@ -1,4 +1,4 @@
-using Microsoft.Reporting.WinForms;
+﻿using Microsoft.Reporting.WinForms;
 using mylib;
 using standard.classes;
 using standard.report;
@@ -188,6 +188,8 @@ namespace standard.trans
 
         private DataGridViewTextBoxColumn companyDataGridViewTextBoxColumn;
 
+        private DataGridViewTextBoxColumn isTaxableDataGridViewTextBoxColumn;
+
         private DataGridViewTextBoxColumn smtotqtyDataGridViewTextBoxColumn;
 
         private DataGridViewTextBoxColumn smtotamountDataGridViewTextBoxColumn;
@@ -303,7 +305,7 @@ namespace standard.trans
                 {
                     var queryable = from li in inventoryDataContext.items
                                     join cat in inventoryDataContext.categories on li.cat_id equals cat.cat_id
-                                    where li.item_name == Convert.ToString(dgvSales["cItemName", r].Value)
+                                    where li.item_id == Convert.ToInt32(dgvSales["cItemID", r].Value)
                                     select new
                                     {
                                         cat,
@@ -380,7 +382,7 @@ namespace standard.trans
                 {
                     var queryable = from li in inventoryDataContext.items
                                     join cat in inventoryDataContext.categories on li.cat_id equals cat.cat_id
-                                    where li.item_name == Convert.ToString(dgvSales["cItemName", r].Value)
+                                    where li.item_id == Convert.ToInt32(dgvSales["cItemID", r].Value)
                                     select new
                                     {
                                         cat,
@@ -456,7 +458,7 @@ namespace standard.trans
                              select new
                              {
                                  a.led_id,
-                                 a.led_name,
+                                 led_name = a.led_name + " - " + a.led_address2,
                                  a.led_address2
                              };
                 ledgermasterBindingSource.DataSource = source.OrderBy(x => x.led_address2);
@@ -632,19 +634,28 @@ namespace standard.trans
                                     salesdetail.sd_costrate = Convert.ToDecimal(item2.Cells["cCostRate"].Value);
                                     salesdetail.sd_rate = Convert.ToDecimal(item2.Cells["cRate"].Value);
                                     salesdetail.sd_totamount = Convert.ToDecimal(item2.Cells["cAmount"].Value);
-                                    salesdetail.item_id = Convert.ToInt32(item2.Cells["cCatID"].Value);
+                                    salesdetail.item_id = Convert.ToInt32(item2.Cells["cItemID"].Value);
                                     salesdetail.sd_qty = Convert.ToInt32(item2.Cells["cQty"].Value);
                                     salesdetail.sd_taxpercentage = Convert.ToInt32(item2.Cells["cTaxPercentage"].Value);
                                     salesdetail.sd_taxamount = Convert.ToInt32(item2.Cells["cTaxAmount"].Value);
                                     salesdetail.sd_unit = Convert.ToString(item2.Cells["cUnit"].Value);
-                                    salesdetail.sd_unitvalue = Convert.ToInt32(item2.Cells["cUnitValue"].Value);
+                                    salesdetail.sd_unitvalue = Convert.ToDecimal(item2.Cells["cUnitValue"].Value);
                                     salesdetail.sd_itemunittype = Convert.ToString(item2.Cells["cItemUnitType"].Value);
                                     salesdetail.sd_perunitrate = Convert.ToDecimal(item2.Cells["cPerUnitRate"].Value);
                                     decimal? num = Convert.ToDecimal(item2.Cells["cStock"].Value);
-                                    salesdetail.sd_totfrieght = Convert.ToDecimal(txtFrieght.Text);
+                                    salesdetail.sd_totfrieght = Convert.ToDecimal(item2.Cells["cFrieghtCharge"].Value);
                                     inventoryDataContext.usp_salesdetailsInsert(id, salesdetail.item_id, salesdetail.sd_qty, salesdetail.sd_orderqty, salesdetail.sd_rate, salesdetail.sd_costrate, salesdetail.sd_totamount, salesdetail.sd_taxpercentage, salesdetail.sd_taxamount,
                                         salesdetail.sd_unit, salesdetail.sd_unitvalue, salesdetail.sd_itemunittype, salesdetail.sd_totfrieght, salesdetail.sd_perunitrate, salesdetail.sd_odid);
-                                    inventoryDataContext.usp_stockInsert(id, "SALES", salesdetail.item_id, global.comid, 0m, salesdetail.sd_qty, global.sysdate);
+                                    var catid = inventoryDataContext.items.Where(i => i.item_id == salesdetail.item_id).Select(i => i.cat_id).FirstOrDefault();
+                                    var comid = inventoryDataContext.items.Where(i => i.item_id == salesdetail.item_id).Select(i => i.com_id).FirstOrDefault();
+                                    if (catid == 39)
+                                    {
+                                        inventoryDataContext.usp_stockInsert(id, "SALES", salesdetail.item_id, comid, 0m, salesdetail.sd_unitvalue, global.sysdate);
+                                    }
+                                    else
+                                    {
+                                        inventoryDataContext.usp_stockInsert(id, "SALES", salesdetail.item_id, comid, 0m, salesdetail.sd_qty, global.sysdate);
+                                    }
                                 }
                             }
 
@@ -665,7 +676,7 @@ namespace standard.trans
                             }
                             salesmaster.com_id = Convert.ToUInt32(cboCom.SelectedValue.ToString());
                             inventoryDataContext.usp_salesmasterUpdate(id, salesmaster.sm_bookno, salesmaster.sm_refno, salesmaster.sm_date, salesmaster.led_id, salesmaster.sm_totqty, salesmaster.sm_totamount, salesmaster.sm_itemcount, salesmaster.sm_profit, salesmaster.sm_disamount, salesmaster.sm_taxamount, salesmaster.sm_taxpercentage, salesmaster.sm_packingcharge, salesmaster.sm_netamount, salesmaster.sm_received, salesmaster.sm_paidcommission, salesmaster.sm_paidpacking, salesmaster.sm_roundamount, salesmaster.sm_iscommissionclose, salesmaster.sm_ispackingclose, global.ucode, global.sysdate, salesmaster.sm_desc, salesmaster.sm_isclose, true, salesmaster.so_id, salesmaster.com_id);
-                            //inventoryDataContext.usp_salesdetailsDelete(id);
+                            inventoryDataContext.usp_salesdetailsDelete(id);
                             inventoryDataContext.usp_stockDelete(id, "SALES");
                             foreach (DataGridViewRow item3 in (IEnumerable)dgvSales.Rows)
                             {
@@ -675,7 +686,7 @@ namespace standard.trans
                                     salesdetail.sd_costrate = Convert.ToDecimal(item3.Cells["cCostRate"].Value);
                                     salesdetail.sd_rate = Convert.ToDecimal(item3.Cells["cRate"].Value);
                                     salesdetail.sd_totamount = Convert.ToDecimal(item3.Cells["cAmount"].Value);
-                                    salesdetail.item_id = Convert.ToInt32(item3.Cells["cCatID"].Value);
+                                    salesdetail.item_id = Convert.ToInt32(item3.Cells["cItemID"].Value);
                                     decimal sd_qty = Convert.ToDecimal(item3.Cells["cQty"].Value);
                                     salesdetail.sd_odid = Convert.ToInt32(item3.Cells["cOdID"].Value);
 
@@ -695,7 +706,7 @@ namespace standard.trans
                                     decimal sd_orderqty = Convert.ToDecimal(item3.Cells["cOrderQty"].Value);
                                     salesdetail.sd_qty = Convert.ToInt32(sd_qty);
                                     salesdetail.sd_orderqty = Convert.ToInt32(sd_orderqty);
-                                    salesdetail.sd_unitvalue = Convert.ToInt32(item3.Cells["cUnitValue"].Value);
+                                    salesdetail.sd_unitvalue = Convert.ToDecimal(item3.Cells["cUnitValue"].Value);
                                     salesdetail.sd_taxpercentage = Convert.ToDecimal(item3.Cells["cTaxPercentage"].Value);
                                     salesdetail.sd_taxamount = Convert.ToDecimal(item3.Cells["cTaxAmount"].Value);
                                     salesdetail.sd_unit = Convert.ToString(item3.Cells["cUnit"].Value);
@@ -705,15 +716,23 @@ namespace standard.trans
                                     salesorderdetails.od_qty = Convert.ToDecimal(item3.Cells["cOrderQty"].Value);
                                     salesorderdetails.od_pendingqty = salesorderdetails.od_qty - salesorderdetails.od_soldqty;
                                     decimal? num = Convert.ToDecimal(item3.Cells["cQty"].Value);
-                                    salesdetail.sd_totfrieght = Convert.ToDecimal(txtFrieght.Text);
+                                    salesdetail.sd_totfrieght = Convert.ToDecimal(item3.Cells["cFrieghtCharge"].Value);
 
                                     if (isDraft == false)
                                     {
-                                        inventoryDataContext.usp_salesorderdetailsUpdate(salesorderdetails.od_id, salesorderdetails.so_id, salesorderdetails.item_id, salesorderdetails.od_qty, salesorderdetails.od_soldqty, salesorderdetails.od_pendingqty, salesorderdetails.od_rate);
+                                        inventoryDataContext.usp_salesorderdetailsUpdate(salesorderdetails.od_id, salesorderdetails.so_id, salesorderdetails.item_id, salesorderdetails.od_qty, salesdetail.sd_unitvalue, salesorderdetails.od_soldqty, salesorderdetails.od_pendingqty, salesorderdetails.od_rate);
                                     }
-                                    inventoryDataContext.usp_salesdetailsUpdate(salesdetail.sd_id, id, salesdetail.item_id, salesdetail.sd_qty, salesdetail.sd_orderqty, salesdetail.sd_rate, salesdetail.sd_costrate, salesdetail.sd_totamount, salesdetail.sd_taxpercentage, salesdetail.sd_taxamount, salesdetail.sd_unit, salesdetail.sd_unitvalue, salesdetail.sd_itemunittype, salesdetail.sd_totfrieght, salesdetail.sd_perunitrate, salesdetail.sd_odid);
-
-                                    inventoryDataContext.usp_stockInsert(id, "SALES", salesdetail.item_id, global.comid, 0m, salesdetail.sd_qty, global.sysdate);
+                                    inventoryDataContext.usp_salesdetailsInsert(id, salesdetail.item_id, salesdetail.sd_qty, salesdetail.sd_orderqty, salesdetail.sd_rate, salesdetail.sd_costrate, salesdetail.sd_totamount, salesdetail.sd_taxpercentage, salesdetail.sd_taxamount, salesdetail.sd_unit, salesdetail.sd_unitvalue, salesdetail.sd_itemunittype, salesdetail.sd_totfrieght, salesdetail.sd_perunitrate, salesdetail.sd_odid);
+                                    var catid = inventoryDataContext.items.Where(i => i.item_id == salesdetail.item_id).Select(i => i.cat_id).FirstOrDefault();
+                                    var comid = inventoryDataContext.items.Where(i => i.item_id == salesdetail.item_id).Select(i => i.com_id).FirstOrDefault();
+                                    if (catid == 39)
+                                    {
+                                        inventoryDataContext.usp_stockInsert(id, "SALES", salesdetail.item_id, comid, 0m, salesdetail.sd_unitvalue, global.sysdate);
+                                    }
+                                    else
+                                    {
+                                        inventoryDataContext.usp_stockInsert(id, "SALES", salesdetail.item_id, comid, 0m, salesdetail.sd_qty, global.sysdate);
+                                    }
                                 }
                             }
 
@@ -895,7 +914,7 @@ namespace standard.trans
                     {
                         var queryable = from li in inventoryDataContext.items
                                         join cat in inventoryDataContext.categories on li.cat_id equals cat.cat_id
-                                        where li.item_name == Convert.ToString(dgvSales["cItemName", r].Value)
+                                        where li.item_id == Convert.ToInt32(dgvSales["cItemID", r].Value)
                                         select new
                                         {
                                             cat,
@@ -988,6 +1007,43 @@ namespace standard.trans
                     e.FormattingApplied = true;
                 }
             }
+            if (dglist.Columns[e.ColumnIndex].Name == "taxStatus")
+            {
+                if (!dglist.Columns.Contains("smidDataGridViewTextBoxColumn"))
+                    return;
+                var sm_id = Convert.ToInt32(dglist.Rows[e.RowIndex].Cells["smidDataGridViewTextBoxColumn"].Value); // Ensure "sm_id" is present in grid
+                using (var db = new InventoryDataContext())
+                {
+                    var taxFlags = db.salesdetails
+                                     .Where(sd => sd.sm_id == sm_id)
+                                     .Join(db.items,
+                                           sd => sd.item_id,
+                                           item => item.item_id,
+                                           (sd, item) => item.item_istaxable)
+                                     .ToList();
+
+                    string taxStatus = (taxFlags.Any(x => x) && taxFlags.Any(x => !x)) ? "Mixed" :
+                                       taxFlags.Any(x => x) ? "Taxable" :
+                                       "Non-Taxable";
+
+                    e.Value = taxStatus;
+
+                    switch (taxStatus)
+                    {
+                        case "Taxable":
+                            e.CellStyle.ForeColor = Color.Green;
+                            break;
+                        case "Non-Taxable":
+                            e.CellStyle.ForeColor = Color.Red;
+                            break;
+                        case "Mixed":
+                            e.CellStyle.ForeColor = Color.DarkOrange;
+                            break;
+                    }
+
+                    e.FormattingApplied = true;
+                }
+            }
         }
 
         private void dtpFromDate_ValueChanged(object sender, EventArgs e)
@@ -1038,6 +1094,23 @@ namespace standard.trans
                 if (txtSearchBillNo.Text == string.Empty)
                 {
                     uspsalesmasterSelectResultBindingSource.DataSource = inventoryDataContext.usp_salesmasterSelect(null, Convert.ToInt32(cboCustomerView.SelectedValue), dtpfdate.Value.Date, dtptdate.Value.Date, null, null, Convert.ToInt32(cboCompany.SelectedValue));
+
+                    //var salesMasterList = inventoryDataContext.usp_salesmasterSelect(null, Convert.ToInt32(cboCustomerView.SelectedValue), dtpfdate.Value.Date, dtptdate.Value.Date, null, null, Convert.ToInt32(cboCompany.SelectedValue));
+                    //foreach (var sale in salesMasterList) // your usp_salesmasterSelect result
+                    //{
+                    //    var saleDetails = inventoryDataContext.salesdetails
+                    //                        .Where(sd => sd.sm_id == sale.sm_id)
+                    //                        .Join(inventoryDataContext.items,
+                    //                              sd => sd.item_id,
+                    //                              item => item.item_id,
+                    //                              (sd, item) => new
+                    //                              {
+                    //                                  sale.sm_id,
+                    //                                  sd.item_id,
+                    //                                  item.item_name,
+                    //                                  item_istaxable = item.item_istaxable ? "Taxable" : "Non-Taxable"
+                    //                              }).ToList();
+                    //}
                 }
                 else
                 {
@@ -1086,7 +1159,7 @@ namespace standard.trans
             DateTime? dateTime = null;
             if (dglist.CurrentCell != null)
             {
-                
+
                 if (MessageBox.Show("Are you sure to Print Bill?", "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.No)
                 {
                     InventoryDataContext inventoryDataContext = new InventoryDataContext();
@@ -1097,56 +1170,59 @@ namespace standard.trans
                         List<ReportParameter> list = new List<ReportParameter>();
                         var item = masterList.First();
                         int? num9 = 1;
-                            dateTime = item.sm_date;
-                            num8 = item.sm_refno;
-                            amount = item.sm_netamount;
-                            num = item.sm_roundamount.Value;
-                            num2 = item.sm_packingcharge;
-                            num5 = item.sm_disamount;
-                            num3 = item.sm_totamount;
-                            num6 = item.sm_taxamount;
-                            num7 = item.sm_taxpercentage;
-                            comId = item.com_id;
-                            value = general.MoneyToText(amount);
-                            ledid = item.led_id;
+                        dateTime = item.sm_date;
+                        num8 = item.sm_refno;
+                        amount = item.sm_netamount;
+                        num = item.sm_roundamount.Value;
+                        num2 = item.sm_packingcharge;
+                        num5 = item.sm_disamount;
+                        num3 = item.sm_totamount;
+                        num6 = item.sm_taxamount;
+                        num7 = item.sm_taxpercentage;
+                        comId = item.com_id;
+                        value = general.MoneyToText(amount);
+                        ledid = item.led_id;
 
-                            ISingleResult<usp_companySelectResult> singleResult2 = inventoryDataContext.usp_companySelect(comId);
-                            using (IEnumerator<usp_companySelectResult> enumerator2 = singleResult2.GetEnumerator())
+                        string titleValue = num7 > 0 ? "Tax Invoice" : "Bill of Supply";
+                        
+                        ISingleResult<usp_companySelectResult> singleResult2 = inventoryDataContext.usp_companySelect(comId);
+                        using (IEnumerator<usp_companySelectResult> enumerator2 = singleResult2.GetEnumerator())
+                        {
+                            if (enumerator2.MoveNext())
                             {
-                                if (enumerator2.MoveNext())
-                                {
-                                    usp_companySelectResult current2 = enumerator2.Current;
-                                    list.Add(new ReportParameter("com_name", current2.com_name));
-                                    list.Add(new ReportParameter("com_add1", current2.com_add1));
-                                    list.Add(new ReportParameter("com_add2", current2.com_add2));
-                                    list.Add(new ReportParameter("com_add3", current2.com_add3));
-                                    list.Add(new ReportParameter("com_city", current2.com_city));
-                                    list.Add(new ReportParameter("com_pin", current2.com_pin));
-                                    list.Add(new ReportParameter("com_phone", current2.com_phone));
-                                    list.Add(new ReportParameter("com_mobile1", current2.com_mobile1));
-                                    list.Add(new ReportParameter("com_tin", current2.com_tin));
-                                    list.Add(new ReportParameter("com_cst", current2.com_cst));
-                                    list.Add(new ReportParameter("com_email", current2.com_email));
-                                    list.Add(new ReportParameter("com_pan", current2.com_pan));
-                                    list.Add(new ReportParameter("com_cstdate", Convert.ToDateTime(current2.com_cstdate).ToString("dd-MMM-yyyy")));
-                                }
+                                usp_companySelectResult current2 = enumerator2.Current;
+                                list.Add(new ReportParameter("com_name", current2.com_name));
+                                list.Add(new ReportParameter("com_add1", current2.com_add1));
+                                list.Add(new ReportParameter("com_add2", current2.com_add2));
+                                list.Add(new ReportParameter("com_add3", current2.com_add3));
+                                list.Add(new ReportParameter("com_city", current2.com_city));
+                                list.Add(new ReportParameter("com_pin", current2.com_pin));
+                                list.Add(new ReportParameter("com_phone", current2.com_phone));
+                                list.Add(new ReportParameter("com_mobile1", current2.com_mobile1));
+                                list.Add(new ReportParameter("com_tin", current2.com_tin));
+                                list.Add(new ReportParameter("com_cst", current2.com_cst));
+                                list.Add(new ReportParameter("com_email", current2.com_email));
+                                list.Add(new ReportParameter("com_pan", current2.com_pan));
+                                list.Add(new ReportParameter("com_cstdate", Convert.ToDateTime(current2.com_cstdate).ToString("dd-MMM-yyyy")));
                             }
-                            list.Add(new ReportParameter("ordno", num8.ToString()));
-                            list.Add(new ReportParameter("orddate", $"{dateTime:dd-MMM-yyyy}"));
-                            list.Add(new ReportParameter("rstext", value));
-                            list.Add(new ReportParameter("am_acccode", empty2));
-                            list.Add(new ReportParameter("am_account", empty3));
-                            list.Add(new ReportParameter("am_bank", empty4));
-                            list.Add(new ReportParameter("title", empty5));
-                            list.Add(new ReportParameter("mi_totamt", num3.ToString("0.00")));
-                            list.Add(new ReportParameter("mi_discount", num5.ToString("0.00")));
-                            list.Add(new ReportParameter("mi_discount", num5.ToString("0.00")));
-                            list.Add(new ReportParameter("mi_taxamt", num6.ToString("0.00")));
-                            list.Add(new ReportParameter("mi_taxper", num7.ToString("0.00")));
-                            list.Add(new ReportParameter("mi_packing", num2.ToString("0.00")));
-                            list.Add(new ReportParameter("mi_netamt", amount.ToString("0.00")));
-                            list.Add(new ReportParameter("mi_roundamt", num.ToString("0.00")));
-                            list.Add(new ReportParameter("CopyLabel", label));
+                        }
+                        list.Add(new ReportParameter("ordno", num8.ToString()));
+                        list.Add(new ReportParameter("orddate", $"{dateTime:dd-MMM-yyyy}"));
+                        list.Add(new ReportParameter("rstext", value));
+                        list.Add(new ReportParameter("am_acccode", empty2));
+                        list.Add(new ReportParameter("am_account", empty3));
+                        list.Add(new ReportParameter("am_bank", empty4));
+                        list.Add(new ReportParameter("title", empty5));
+                        list.Add(new ReportParameter("mi_totamt", num3.ToString("0.00")));
+                        list.Add(new ReportParameter("mi_discount", num5.ToString("0.00")));
+                        list.Add(new ReportParameter("mi_discount", num5.ToString("0.00")));
+                        list.Add(new ReportParameter("mi_taxamt", num6.ToString("0.00")));
+                        list.Add(new ReportParameter("mi_taxper", num7.ToString("0.00")));
+                        list.Add(new ReportParameter("mi_packing", num2.ToString("0.00")));
+                        list.Add(new ReportParameter("mi_netamt", amount.ToString("0.00")));
+                        list.Add(new ReportParameter("mi_roundamt", num.ToString("0.00")));
+                        list.Add(new ReportParameter("CopyLabel", label));
+                        list.Add(new ReportParameter("title_header", titleValue));
                         frmRpt frmRpt = new frmRpt();
                         frmRpt.WindowState = FormWindowState.Maximized;
                         ISingleResult<usp_salesmasterSelectResult> dataSourceValue = inventoryDataContext.usp_salesmasterSelect(smid, null, null, null, null, null, null);
@@ -1154,7 +1230,7 @@ namespace standard.trans
                         ISingleResult<usp_companySelectResult> dataSourceValue3 = inventoryDataContext.usp_companySelect(comId);
                         ISingleResult<usp_ledgermasterSelectResult> dataSourceValue4 = inventoryDataContext.usp_ledgermasterSelect(ledid, null, null, null, null, null);
                         frmRpt.reportview.RefreshReport();
-                        frmRpt.reportview.LocalReport.ReportEmbeddedResource = "standard.report.rptSalesInvoice.rdlc";
+                        frmRpt.reportview.LocalReport.ReportEmbeddedResource = "standard.report.rptSalesInvoice1.rdlc";
                         frmRpt.reportview.LocalReport.DataSources.Clear();
                         frmRpt.reportview.LocalReport.DataSources.Add(new ReportDataSource("usp_minvoiceSelect", dataSourceValue));
                         frmRpt.reportview.LocalReport.DataSources.Add(new ReportDataSource("ds_usp_dinvoiceSelect", dataSourceValue2));
@@ -1162,7 +1238,7 @@ namespace standard.trans
                         frmRpt.reportview.LocalReport.DataSources.Add(new ReportDataSource("usp_ledgermasterSelect", dataSourceValue4));
                         frmRpt.reportview.LocalReport.SetParameters(list);
                         frmRpt.reportview.ZoomMode = ZoomMode.Percent;
-                        frmRpt.reportview.ZoomPercent = 120;
+                        frmRpt.reportview.ZoomPercent = 100;
                         frmRpt.reportview.RefreshReport();
                         frmRpt.reportview.LocalReport.Refresh();
                         frmRpt.reportview.RefreshReport();
@@ -1201,6 +1277,7 @@ namespace standard.trans
                 }
             }
         }
+
 
         private void loadEstimateReport(int smid)
         {
@@ -1338,6 +1415,7 @@ namespace standard.trans
                 dgvSales.Rows.Add();
                 dgvSales["cItemName", dgvSales.RowCount - 1].Value = item.item_name;
                 dgvSales["cCatID", dgvSales.RowCount - 1].Value = item.cat_id;
+                dgvSales["cItemID", dgvSales.RowCount - 1].Value = item.item_id;
                 dgvSales["cOdID", dgvSales.RowCount - 1].Value = item.sd_odid;
                 dgvSales["cSdID", dgvSales.RowCount - 1].Value = item.sd_id;
                 dgvSales["cCategory", dgvSales.RowCount - 1].Value = item.cat_name;
@@ -1350,18 +1428,27 @@ namespace standard.trans
                 dgvSales["cTaxPercentage", dgvSales.RowCount - 1].Value = item.sd_taxpercentage;
                 dgvSales["cTaxAmount", dgvSales.RowCount - 1].Value = item.sd_taxamount;
                 dgvSales["cUnit", dgvSales.RowCount - 1].Value = item.sd_unit;
-                dgvSales["cUnitValue", dgvSales.RowCount - 1].Value = item.sd_unitvalue;
+                dgvSales["cUnitValue", dgvSales.RowCount - 1].Value = item.sd_unitvalue.ToString("N2");
                 dgvSales["cItemUnitType", dgvSales.RowCount - 1].Value = item.sd_itemunittype;
                 dgvSales["cPerUnitRate", dgvSales.RowCount - 1].Value = item.sd_perunitrate.ToString("N2");
-                dgvSales["cFrieghtCharge", dgvSales.RowCount - 1].Value = (item.sd_unitvalue * item.sd_qty).ToString("N2");
+                dgvSales["cFrieghtCharge", dgvSales.RowCount - 1].Value = item.sd_totfrieght.ToString("N2");
                 dgvSales["cCostAmount", dgvSales.RowCount - 1].Value = (item.sd_qty * item.sd_costrate).ToString("N2");
                 ISingleResult<usp_stockSelectResult> singleResult3 = inventoryDataContext.usp_stockSelect(item.item_id, null, null, null, null);
                 foreach (usp_stockSelectResult item2 in singleResult3)
                 {
                     DataGridViewCell dataGridViewCell = dgvSales["cStock", dgvSales.RowCount - 1];
-                    decimal sd_qty = item.sd_qty;
-                    decimal? stock = item2.stock;
-                    dataGridViewCell.Value = (decimal?)sd_qty + stock;
+                    if (Convert.ToInt32(dgvSales["cCatID", dgvSales.RowCount - 1].Value) == 39)
+                    {
+                        decimal unitValue = item.sd_unitvalue;
+                        decimal? stock = item2.stock;
+                        dataGridViewCell.Value = (decimal?)unitValue + stock;
+                    }
+                    else
+                    {
+                        decimal sd_qty = item.sd_qty;
+                        decimal? stock = item2.stock;
+                        dataGridViewCell.Value = (decimal?)sd_qty + stock;
+                    }
                 }
                 //txtTaxAmt.Value = item.sd_taxamount;
             }
@@ -1370,7 +1457,7 @@ namespace standard.trans
             {
                 if (row.IsNewRow) continue;
 
-                decimal costRate, qty, stocks, rate, taxPercentage, unitValue, FrieghtCharge;
+                decimal costRate, qty, stocks, rate, taxPercentage, unitValue, FrieghtCharge, perUnitRate;
 
                 if (Convert.ToString(row.Cells["cItemName"].Value) == string.Empty)
                 {
@@ -1397,16 +1484,35 @@ namespace standard.trans
                 decimal.TryParse(Convert.ToString(row.Cells["cCostRate"].Value), out costRate);
                 decimal.TryParse(Convert.ToString(row.Cells["cTaxPercentage"].Value), out taxPercentage);
                 decimal.TryParse(Convert.ToString(row.Cells["cUnitValue"].Value), out unitValue);
+                decimal.TryParse(Convert.ToString(row.Cells["cPerUnitRate"].Value), out perUnitRate);
 
-                if (chkIsFrieght.Checked)
-                    row.Cells["cFrieghtCharge"].Value = ((rate > 0m && qty > 0m) ? ((object)(unitValue * qty)) : null);
+
+                if (Convert.ToInt32(row.Cells["cCatID"].Value) == 39)
+                {
+                    row.Cells["cUnitValue"].ReadOnly = false;
+                    row.Cells["cQty"].ReadOnly = true;
+                    row.Cells["cFrieghtCharge"].Value = 0.ToString("N2");
+                }
                 else
-                    row.Cells["cFrieghtCharge"].Value = null;
+                {
+                    if (chkIsFrieght.Checked)
+                        row.Cells["cFrieghtCharge"].Value = ((rate > 0m && qty > 0m) ? ((object)(unitValue * qty).ToString("N2")) : null);
+                    else
+                        row.Cells["cFrieghtCharge"].Value = null;
+                }
                 decimal.TryParse(Convert.ToString(row.Cells["cFrieghtCharge"].Value), out FrieghtCharge);
 
                 row.Cells["cAmount"].Value = ((rate > 0m && qty > 0m) ? ((object)((rate * qty) + ((rate * qty) * taxPercentage / 100))) : null);
                 row.Cells["cTaxAmount"].Value = ((rate > 0m && qty > 0m) ? ((object)((rate * qty) * taxPercentage / 100)) : null);
                 row.Cells["cCostAmount"].Value = ((costRate > 0m && qty > 0m) ? ((object)(costRate * qty)) : null);
+
+                if (Convert.ToInt32(row.Cells["cCatID"].Value) == 39)
+                {
+                    row.Cells["cRate"].Value = unitValue * perUnitRate;
+                    decimal.TryParse(Convert.ToString(row.Cells["cRate"].Value), out rate);
+                    row.Cells["cTaxAmount"].Value = ((rate > 0m && qty > 0m) ? ((object)((rate * qty) * taxPercentage / 100)) : null);
+                    row.Cells["cAmount"].Value = ((rate > 0m && qty > 0m) ? ((object)((rate * qty) + ((rate * qty) * taxPercentage / 100))) : null);
+                }
             }
 
             // Recalculate SNo column
@@ -1436,12 +1542,13 @@ namespace standard.trans
                     int num = Convert.ToInt32(dglist["smidDataGridViewTextBoxColumn", e.RowIndex].Value);
                     InventoryDataContext inventoryDataContext = new InventoryDataContext();
                     var soid = inventoryDataContext.salesmasters.Where(sm => sm.sm_id == num).Select(sm => sm.so_id).FirstOrDefault();
+                    var odid = inventoryDataContext.salesdetails.Where(sd => sd.sm_id == num).Select(sd => sd.sd_odid).FirstOrDefault();
+
+
                     if (MessageBox.Show("Are you sure to delete?", "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.No)
                     {
                         inventoryDataContext.usp_salesdetailsDelete(num);
                         inventoryDataContext.usp_salesmasterDelete(num);
-                        inventoryDataContext.usp_salesorderdetailsDelete(soid);
-                        inventoryDataContext.usp_salesorderDelete(soid);
                         inventoryDataContext.usp_stockDelete(num, "SALES");
                         cmdprint_Click(this, null);
                         MessageBox.Show("Record deleted successfully...", "Information", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
@@ -1637,6 +1744,7 @@ namespace standard.trans
             decimal rate;
             decimal taxPercentage;
             decimal unitValue;
+            decimal PerUnitRate;
             decimal FrieghtCharge;
             if (columnIndex == cCategory.Index)
             {
@@ -1672,7 +1780,7 @@ namespace standard.trans
                     loadgrid(num);
                     objsv.ShowDialog();
                     long itemid = global.itemid;
-                    string itemname = global.itemname;                   
+                    string itemname = global.itemname;
                     try
                     {
                         dgvSales["cItemName", r].Value = itemname;
@@ -1680,6 +1788,12 @@ namespace standard.trans
                         if (Convert.ToString(dgvSales["cItemName", r].Value) == string.Empty && !dgvSales.CurrentRow.IsNewRow)
                         {
                             dgvSales.Rows.RemoveAt(r);
+                        }
+                        if (Convert.ToInt32(dgvSales["cCatID", r].Value) == 39)
+                        {
+                            dgvSales["cUnitValue", r].ReadOnly = false;
+                            dgvSales["cQty", r].ReadOnly = true;
+                            dgvSales["cQty", r].Value = 1;
                         }
                         using (inventoryDataContext3)
                         {
@@ -1772,7 +1886,7 @@ namespace standard.trans
                     {
                         var queryable2 = from li in inventoryDataContext.items
                                          join cat in inventoryDataContext.categories on li.cat_id equals cat.cat_id
-                                         where li.item_name == Convert.ToString(dgvSales["cItemName", r].Value)
+                                         where li.item_id == Convert.ToInt32(dgvSales["cItemID", r].Value)
                                          select new
                                          {
                                              cat,
@@ -1838,6 +1952,92 @@ namespace standard.trans
                 {
                 }
             }
+
+            else if (columnIndex == cUnitValue.Index)
+            {
+                try
+                {
+                    dgvSales["cUnitValue", r].ReadOnly = true;
+                    decimal.TryParse(Convert.ToString(dgvSales["cStock", r].Value), out stock); // No Math.Abs here
+                    decimal.TryParse(Convert.ToString(dgvSales["cUnitValue", r].Value), out unitValue);
+                    decimal.TryParse(Convert.ToString(dgvSales["cPerUnitRate", r].Value), out PerUnitRate);
+                    decimal.TryParse(Convert.ToString(dgvSales["cQty", r].Value), out qty);
+                    if (dgvSales["cCatID", r].Value != null && Convert.ToInt32(dgvSales["cCatID", r].Value) == 39)
+                    {
+                        dgvSales["cUnitValue", r].ReadOnly = false;
+                        if (unitValue <= stock)
+                        {
+                            dgvSales["cUnitValue", r].Value = unitValue;
+                        }
+                        else
+                        {
+                            MessageBox.Show("You have only " + stock + " Qty", "Info", MessageBoxButtons.OK, MessageBoxIcon.Hand);
+                            dgvSales["cUnitValue", dgvSales.CurrentRow.Index].Value = null;
+                            dgvSales["cRate", dgvSales.CurrentRow.Index].Value = null;
+                            dgvSales["cAmount", dgvSales.CurrentRow.Index].Value = null;
+                            dgvSales["cTaxAmount", dgvSales.CurrentRow.Index].Value = null;
+                            dgvSales.CurrentCell = dgvSales["cUnitValue", dgvSales.CurrentRow.Index];
+                            dgvSales.CurrentCell = dgvSales.Rows[dgvSales.CurrentCellAddress.Y].Cells["cUnitValue"];
+                            dgvSales.Focus();
+                            return;
+                        }
+
+                        dgvSales["cRate", r].Value = unitValue * PerUnitRate;
+                        decimal.TryParse(Convert.ToString(dgvSales["cRate", r].Value), out rate);
+                        decimal.TryParse(Convert.ToString(dgvSales["cCostRate", r].Value), out costRate);
+                        decimal.TryParse(Convert.ToString(dgvSales["cTaxPercentage", r].Value), out taxPercentage);
+                        decimal.TryParse(Convert.ToString(dgvSales["cUnitValue", r].Value), out unitValue);
+                        dgvSales["cFrieghtCharge", r].Value = 0.ToString("N2");
+
+                        decimal.TryParse(Convert.ToString(dgvSales["cFrieghtCharge", r].Value), out FrieghtCharge);
+
+                        dgvSales["cAmount", r].Value = ((rate > 0m && qty > 0m) ? ((object)((rate * qty) + ((rate * qty) * taxPercentage / 100))) : null);
+                        dgvSales["cTaxAmount", r].Value = ((rate > 0m && qty > 0m) ? ((object)((rate * qty) * taxPercentage / 100)) : null);
+                        dgvSales["cCostAmount", r].Value = ((costRate > 0m && qty > 0m) ? ((object)(costRate * qty)) : null);
+                        calacTotal();
+                        dgvSales.CurrentCell = dgvSales.Rows[dgvSales.CurrentCellAddress.Y].Cells["cUnit"];
+                        dgvSales.Focus();
+                    }
+                }
+                catch
+                {
+                }
+            }
+
+            else if (columnIndex == cPerUnitRate.Index)
+            {
+                decimal.TryParse(Convert.ToString(dgvSales["cUnitValue", r].Value), out unitValue);
+                decimal.TryParse(Convert.ToString(dgvSales["cQty", r].Value), out qty);
+                decimal.TryParse(Convert.ToString(dgvSales["cPerUnitRate", r].Value), out PerUnitRate);
+                decimal.TryParse(Convert.ToString(dgvSales["cTaxPercentage", r].Value), out taxPercentage);
+
+                dgvSales["cRate", r].Value = unitValue * PerUnitRate;
+                decimal.TryParse(Convert.ToString(dgvSales["cRate", r].Value), out rate);
+
+                if (Convert.ToInt32(dgvSales["cCatID", r].Value) == 39)
+                {
+                    dgvSales["cUnitValue", r].ReadOnly = false;
+                    dgvSales["cQty", r].ReadOnly = true;
+                    dgvSales["cFrieghtCharge", r].Value = 0.ToString("N2");
+                }
+                else
+                {
+                    if (chkIsFrieght.Checked)
+                        dgvSales["cFrieghtCharge", r].Value = ((rate > 0m && qty > 0m) ? ((object)(unitValue * qty).ToString("N2")) : null);
+                    else
+                        dgvSales["cFrieghtCharge", r].Value = null;
+                }
+
+                decimal.TryParse(Convert.ToString(dgvSales["cFrieghtCharge", r].Value), out FrieghtCharge);
+
+                dgvSales["cAmount", r].Value = ((rate > 0m && qty > 0m) ? ((object)((rate * qty) + ((rate * qty) * taxPercentage / 100))) : null);
+                dgvSales["cTaxAmount", r].Value = ((rate > 0m && qty > 0m) ? ((object)((rate * qty) * taxPercentage / 100)) : null);
+                calacTotal();
+                SetColumnIndex method = Mymethod;
+                dgvSales.BeginInvoke(method, "cCategory");
+
+            }
+
             else if (columnIndex == cQty.Index)
             {
                 if (Convert.ToString(dgvSales["cItemName", r].Value) == string.Empty && !dgvSales.CurrentRow.IsNewRow)
@@ -1847,31 +2047,6 @@ namespace standard.trans
                 decimal.TryParse(Convert.ToString(dgvSales["cQty", r].Value), out qty);
                 decimal sd_orderqty = Convert.ToDecimal(dgvSales["cOrderQty", r].Value);
                 qty = Math.Abs(qty); // Keep this to prevent negative quantity input
-
-                bool isDraft = true;
-                if (dglist.CurrentRow != null && int.TryParse(Convert.ToString(dglist["smidDataGridViewTextBoxColumn", dglist.CurrentRow.Index].Value), out int num))
-                {
-                    using (InventoryDataContext db = new InventoryDataContext())
-                    {
-                        var draftStatus = db.salesmasters
-                                            .Where(s => s.sm_id == num)
-                                            .Select(s => s.sm_isdraft)
-                                            .FirstOrDefault();
-
-                        if (draftStatus.HasValue)
-                            isDraft = draftStatus.Value;
-                    }
-                }
-
-                if (qty > sd_orderqty && isDraft == false)
-                {
-                    MessageBox.Show("Quantity is greater than Order Quantity. Please correct it.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    dgvSales["cQty", dgvSales.CurrentRow.Index].Value = null;
-                    dgvSales.CurrentCell = dgvSales["cQty", dgvSales.CurrentRow.Index];
-                    //dgvSales.BeginEdit(true);
-                    //dgvSales.Focus();
-                    return;
-                }
 
                 decimal.TryParse(Convert.ToString(dgvSales["cStock", r].Value), out stock); // No Math.Abs here
 
@@ -1908,8 +2083,7 @@ namespace standard.trans
                 dgvSales["cCostAmount", r].Value = ((costRate > 0m && qty > 0m) ? ((object)(costRate * qty)) : null);
                 calacTotal();
                 SetColumnIndex method = Mymethod;
-                dgvSales.BeginInvoke(method, "cSNo");
-                dgvSales.BeginEdit(selectAll: true);
+                dgvSales.BeginInvoke(method, "cCategory");
             }
             else if (columnIndex == cRate.Index)
             {
@@ -1917,6 +2091,7 @@ namespace standard.trans
                 qty = Math.Abs(qty);
                 decimal.TryParse(Convert.ToString(dgvSales["cStock", r].Value), out stock);
                 stock = Math.Abs(stock);
+                decimal.TryParse(Convert.ToString(dgvSales["cTaxPercentage", r].Value), out taxPercentage);
                 if (Convert.ToString(dgvSales["cItemName", r].Value) == string.Empty && !dgvSales.CurrentRow.IsNewRow)
                 {
                     dgvSales.Rows.RemoveAt(r);
@@ -1925,9 +2100,33 @@ namespace standard.trans
                 rate = Math.Abs(rate);
                 decimal.TryParse(Convert.ToString(dgvSales["cRate", r].Value), out rate);
                 decimal.TryParse(Convert.ToString(dgvSales["cCostRate", r].Value), out costRate);
-                dgvSales["cAmount", r].Value = ((rate > 0m && qty > 0m) ? ((object)(rate * qty)) : null);
+                dgvSales["cAmount", r].Value = ((rate > 0m && qty > 0m) ? ((object)((rate * qty) + ((rate * qty) * taxPercentage / 100))) : null);
+                dgvSales["cTaxAmount", r].Value = ((rate > 0m && qty > 0m) ? ((object)((rate * qty) * taxPercentage / 100)) : null);
                 dgvSales["cCostAmount", r].Value = ((costRate > 0m && qty > 0m) ? ((object)(costRate * qty)) : null);
                 dgvSales["cRate", r].Value = rate.ToString("N2");
+                calacTotal();
+                SetColumnIndex method = Mymethod;
+                dgvSales.BeginInvoke(method, "cCategory");
+            }
+            else if (columnIndex == cUnitValue.Index)
+            {
+                decimal.TryParse(Convert.ToString(dgvSales["cQty", r].Value), out qty);
+                decimal.TryParse(Convert.ToString(dgvSales["cCostRate", r].Value), out costRate);
+                decimal.TryParse(Convert.ToString(dgvSales["cTaxPercentage", r].Value), out taxPercentage);
+                decimal.TryParse(Convert.ToString(dgvSales["cUnitValue", r].Value), out unitValue);
+                decimal.TryParse(Convert.ToString(dgvSales["cPerUnitRate", r].Value), out PerUnitRate);
+                decimal.TryParse(Convert.ToString(dgvSales["cFrieghtCharge", r].Value), out FrieghtCharge);
+
+                if (dgvSales["cCategory", r].Value == "Chillies")
+                    dgvSales["cFrieghtCharge", r].Value = 0;
+                else
+                    dgvSales["cFrieghtCharge", r].Value = FrieghtCharge;
+
+                dgvSales["cRate", r].Value = unitValue * PerUnitRate;
+                decimal.TryParse(Convert.ToString(dgvSales["cRate", r].Value), out rate);
+                dgvSales["cAmount", r].Value = ((rate > 0m && qty > 0m) ? ((object)((rate * qty) + ((rate * qty) * taxPercentage / 100))) : null);
+                dgvSales["cTaxAmount", r].Value = ((rate > 0m && qty > 0m) ? ((object)((rate * qty) * taxPercentage / 100)) : null);
+                dgvSales["cCostAmount", r].Value = ((costRate > 0m && qty > 0m) ? ((object)(costRate * qty)) : null);
                 calacTotal();
                 SetColumnIndex method = Mymethod;
                 dgvSales.BeginInvoke(method, "cCategory");
@@ -2242,6 +2441,7 @@ namespace standard.trans
             this.smdateDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.lednameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.companyDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.isTaxableDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.smtotqtyDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.smnetamountDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.smdisamountDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -3232,7 +3432,6 @@ namespace standard.trans
             // 
             this.cPerUnitRate.HeaderText = "PER UNIT RATE";
             this.cPerUnitRate.Name = "cPerUnitRate";
-            this.cPerUnitRate.ReadOnly = true;
             // 
             // cItemUnitType
             // 
@@ -3448,6 +3647,7 @@ namespace standard.trans
             this.smdateDataGridViewTextBoxColumn,
             this.lednameDataGridViewTextBoxColumn,
             this.companyDataGridViewTextBoxColumn,
+            this.isTaxableDataGridViewTextBoxColumn,
             this.smtotqtyDataGridViewTextBoxColumn,
             this.smnetamountDataGridViewTextBoxColumn,
             this.smdisamountDataGridViewTextBoxColumn,
@@ -3577,6 +3777,14 @@ namespace standard.trans
             this.companyDataGridViewTextBoxColumn.Name = "companyDataGridViewTextBoxColumn";
             this.companyDataGridViewTextBoxColumn.ReadOnly = true;
             this.companyDataGridViewTextBoxColumn.Width = 200;
+            // 
+            // isTaxableDataGridViewTextBoxColumn
+            // 
+            this.isTaxableDataGridViewTextBoxColumn.DataPropertyName = "item_istaxable";
+            this.isTaxableDataGridViewTextBoxColumn.HeaderText = "Taxable";
+            this.isTaxableDataGridViewTextBoxColumn.Name = "taxStatus";
+            this.isTaxableDataGridViewTextBoxColumn.ReadOnly = true;
+            this.isTaxableDataGridViewTextBoxColumn.Width = 200;
             // 
             // smtotqtyDataGridViewTextBoxColumn
             // 
@@ -4020,11 +4228,14 @@ namespace standard.trans
 
         private void cboCom_SelectedValueChanged(object sender, EventArgs e)
         {
-            InventoryDataContext inventoryDataContext = new InventoryDataContext();
-            int comId = Convert.ToInt32(cboCom.SelectedValue);
-            long? no = 0L;
-            var ref_no = inventoryDataContext.usp_getYearNo("sal_no", global.sysdate, ref no, comId);
-            txtopno.Text = no.ToString();
+            if (id == 0)
+            {
+                InventoryDataContext inventoryDataContext = new InventoryDataContext();
+                int comId = Convert.ToInt32(cboCom.SelectedValue);
+                long? no = 0L;
+                var ref_no = inventoryDataContext.usp_getYearNo("sal_no", global.sysdate, ref no, comId);
+                txtopno.Text = no.ToString();
+            }
         }
     }
 }

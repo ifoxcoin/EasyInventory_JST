@@ -471,12 +471,12 @@
             // 
             this.ribbonPanel3.Items.Add(this.btnSalesReport);
             this.ribbonPanel3.Text = "Sales Report";
-            this.ribbonPanel3.Click += new System.EventHandler(this.ribbonPanel3_Click);
             // 
             // btnSalesReport
             // 
             this.btnSalesReport.Image = ((System.Drawing.Image)(resources.GetObject("btnSalesReport.Image")));
             this.btnSalesReport.SmallImage = ((System.Drawing.Image)(resources.GetObject("btnSalesReport.SmallImage")));
+            this.btnSalesReport.Click += new System.EventHandler(this.btnSalesReport_Click);
             // 
             // ribbonPanel4
             // 
@@ -547,7 +547,7 @@
             // 
             this.btnLedgerReport.Image = global::standard.Properties.Resources.loadreport;
             this.btnLedgerReport.SmallImage = global::standard.Properties.Resources.loadreport;
-            this.btnLedgerReport.Click += new System.EventHandler(this.btnLedgerReport_Click);
+            this.btnLedgerReport.Click += new System.EventHandler(this.btnLoadWayReport_Click);
             // 
             // ribbonPanelAgentOutstanding
             // 
@@ -751,6 +751,7 @@
         private System.Windows.Forms.RibbonButton btnSupplierOutstanding;        
         private System.Windows.Forms.RibbonPanel ribbonPanelSalesReport;
         private System.Windows.Forms.RibbonButton btnSalesLoadReport;
+        private System.Windows.Forms.RibbonButton currentActiveButton = null;
     }
 }
 
