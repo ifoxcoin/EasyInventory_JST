@@ -157,6 +157,12 @@ namespace standard.master
         private Label lblGSTIN;
         private TextBox txtFssai;
         private Label lblFssai;
+        private TextBox txtCode;
+        private Label label1;
+        private Label label2;
+        private TextBox txtGodown;
+        private TextBox txtIFSC;
+        private Label label3;
         private TabControl tabemp;
 
 		public frmCompany()
@@ -189,6 +195,7 @@ namespace standard.master
 			txtcompany.Text = string.Empty;
 			txtadd1.Text = string.Empty;
 			txtadd2.Text = string.Empty;
+            txtGodown.Text = string.Empty;
 			txtcity.Text = string.Empty;
 			txtstate.Text = string.Empty;
 			txtcountry.Text = string.Empty;
@@ -206,8 +213,10 @@ namespace standard.master
             txtGSTIN.Text = string.Empty;
             txtBankName.Text = string.Empty;
             txtBranch.Text = string.Empty;
+            txtIFSC.Text = string.Empty;
             txtFssai.Text = string.Empty;
             txtAccNo.Text = string.Empty;
+            txtCode.Text = string.Empty;
             dtpcstdate.Value = global.sysdate;
 			dtpcstdate.Checked = false;
 			cmddelete.Enabled = false;
@@ -251,6 +260,7 @@ namespace standard.master
 					txtcompany.Text = item.com_name;
 					txtadd1.Text = item.com_add1;
 					txtadd2.Text = item.com_add2;
+                    txtGodown.Text = item.com_godownadd;
 					txtcity.Text = item.com_city;
 					txtstate.Text = item.com_state;
 					txtcountry.Text = item.com_country;
@@ -268,8 +278,10 @@ namespace standard.master
                     txtGSTIN.Text = item.com_gstin;
                     txtBankName.Text = item.com_bankname;
                     txtBranch.Text = item.com_branch;
+                    txtIFSC.Text = item.com_ifsc;
                     txtFssai.Text = item.com_fssai;
-                    txtAccNo.Text = item.com_fssai;
+                    txtAccNo.Text = item.com_accountnumber;
+                    txtCode.Text = item.com_code.ToString();
                     dtpcstdate.Checked = ((!(item.com_cstdate == global.NullDate)) ? true : false);
 					dtpcstdate.Value = (dtpcstdate.Checked ? Convert.ToDateTime(item.com_cstdate) : global.sysdate);
 				}
@@ -285,7 +297,8 @@ namespace standard.master
 				cm.com_name = txtcompany.Text.Trim();
 				cm.com_add1 = txtadd1.Text.Trim();
 				cm.com_add2 = txtadd2.Text.Trim();
-				cm.com_city = txtcity.Text.Trim();
+                cm.com_godownadd = txtGodown.Text.Trim();
+                cm.com_city = txtcity.Text.Trim();
 				cm.com_state = txtstate.Text.Trim();
 				cm.com_country = txtcountry.Text.Trim();
 				cm.com_pin = txtpin.Text.Trim();
@@ -302,9 +315,11 @@ namespace standard.master
                 cm.com_gstin = txtGSTIN.Text.Trim();
                 cm.com_bankname = txtBankName.Text.Trim();
                 cm.com_branch = txtBranch.Text.Trim();
+                cm.com_ifsc = txtIFSC.Text.Trim();
                 cm.com_fssai = txtFssai.Text.Trim();
                 cm.com_accountnumber = txtAccNo.Text.Trim();
-				cm.com_cstdate = (dtpcstdate.Checked ? dtpcstdate.Value.Date : new DateTime(1900, 1, 1));
+                cm.com_code = string.IsNullOrWhiteSpace(txtCode.Text) ? (int?)null : int.Parse(txtCode.Text.Trim());
+                cm.com_cstdate = (dtpcstdate.Checked ? dtpcstdate.Value.Date : new DateTime(1900, 1, 1));
 				InventoryDataContext inventoryDataContext;
 				if (pnlentry.Enabled)
 				{
@@ -316,7 +331,7 @@ namespace standard.master
 					else
 					{
 						inventoryDataContext = new InventoryDataContext();
-						if (cm.com_default == 'Y')
+						if (cm.com_default == 'N')
 						{
 							dbcon dbcon = new dbcon(global.constring);
 							using (dbcon)
@@ -356,14 +371,14 @@ namespace standard.master
 				{
 					if (MessageBox.Show("Are you sure to save?", "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.No)
 					{
-						inventoryDataContext.usp_companyInsert(cm.com_name, cm.com_add1, cm.com_add2, cm.com_add3, cm.com_city, cm.com_state, cm.com_country, cm.com_phone, cm.com_mobile1, cm.com_mobile2, cm.com_fax, cm.com_pin, cm.com_email, cm.com_web, cm.com_default, cm.com_tin, cm.com_cst, cm.com_cstdate, cm.com_pan, cm.com_gstin, cm.com_bankname, cm.com_branch, cm.com_fssai, cm.com_accountnumber);
+						inventoryDataContext.usp_companyInsert(cm.com_name, cm.com_add1, cm.com_add2, cm.com_add3, cm.com_godownadd, cm.com_city, cm.com_state, cm.com_country, cm.com_phone, cm.com_mobile1, cm.com_mobile2, cm.com_fax, cm.com_pin, cm.com_email, cm.com_web, cm.com_default, cm.com_tin, cm.com_cst, cm.com_cstdate, cm.com_pan, cm.com_gstin, cm.com_bankname, cm.com_branch, cm.com_ifsc, cm.com_fssai, cm.com_accountnumber, cm.com_code);
 						MessageBox.Show("Record saved successfully...", "Information", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
 						goto IL_083f;
 					}
 				}
 				else if (MessageBox.Show("Are you sure to update?", "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.No)
 				{
-					inventoryDataContext.usp_companyUpdate(id, cm.com_name, cm.com_add1, cm.com_add2, cm.com_add3, cm.com_city, cm.com_state, cm.com_country, cm.com_phone, cm.com_mobile1, cm.com_mobile2, cm.com_fax, cm.com_pin, cm.com_email, cm.com_web, cm.com_default, cm.com_tin, cm.com_cst, cm.com_cstdate, cm.com_pan, cm.com_gstin, cm.com_bankname, cm.com_branch, cm.com_fssai, cm.com_accountnumber);
+					inventoryDataContext.usp_companyUpdate(id, cm.com_name, cm.com_add1, cm.com_add2, cm.com_add3, cm.com_godownadd, cm.com_city, cm.com_state, cm.com_country, cm.com_phone, cm.com_mobile1, cm.com_mobile2, cm.com_fax, cm.com_pin, cm.com_email, cm.com_web, cm.com_default, cm.com_tin, cm.com_cst, cm.com_cstdate, cm.com_pan, cm.com_gstin, cm.com_bankname, cm.com_branch, cm.com_ifsc, cm.com_fssai, cm.com_accountnumber, cm.com_code);
 					MessageBox.Show("Record updated successfully...", "Information", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
 					goto IL_083f;
 				}
@@ -396,157 +411,46 @@ namespace standard.master
 			}
 		}
 
-		private void toolStripExit_Click(object sender, EventArgs e)
+        private void toolStripExit_Click(object sender, EventArgs e)
 		{
 			Close();
 		}
 
-		private void txtCompany_KeyDown(object sender, KeyEventArgs e)
-		{
-			if (e.KeyCode == Keys.Return && txtcompany.Text.Trim() != string.Empty)
-			{
-				txtadd1.Focus();
-			}
-		}
+        private void com_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Return)
+            {
+                SendKeys.Send("{TAB}");
+            }
+        }
 
-		private void txtadd1_KeyDown(object sender, KeyEventArgs e)
-		{
-			if (e.KeyCode == Keys.Return)
-			{
-				txtadd2.Focus();
-			}
-		}
+        private void txtpin_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Return)
+            {
+                tabemp.SelectedIndex = 1;
+                txtweb.Focus();
+            }
+        }
 
-		private void txtadd2_KeyDown(object sender, KeyEventArgs e)
-		{
-			if (e.KeyCode == Keys.Return)
-			{
-				txtcity.Focus();
-			}
-		}
-
-		private void txtcity_KeyDown(object sender, KeyEventArgs e)
+        private void chkdefault_KeyDown(object sender, KeyEventArgs e)
 		{
 			if (e.KeyCode == Keys.Return)
 			{
-				txtstate.Focus();
+                tabemp.SelectedIndex = 2;
+                txtBankName.Focus();
 			}
 		}
 
-		private void txtstate_KeyDown(object sender, KeyEventArgs e)
-		{
-			if (e.KeyCode == Keys.Return)
-			{
-				txtcountry.Focus();
-			}
-		}
+        private void txtBranch_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Return)
+            {
+                cmdsave.Focus();
+            }
+        }
 
-		private void txtcountry_KeyDown(object sender, KeyEventArgs e)
-		{
-			if (e.KeyCode == Keys.Return)
-			{
-				txtpin.Focus();
-			}
-		}
-
-		private void txtpin_KeyDown(object sender, KeyEventArgs e)
-		{
-			if (e.KeyCode == Keys.Return)
-			{
-				txtfax.Focus();
-			}
-		}
-
-		private void txtfax_KeyDown(object sender, KeyEventArgs e)
-		{
-			if (e.KeyCode == Keys.Return)
-			{
-				tabemp.SelectedIndex = 1;
-				txtweb.Focus();
-			}
-		}
-
-		private void txtweb_KeyDown(object sender, KeyEventArgs e)
-		{
-			if (e.KeyCode == Keys.Return)
-			{
-				txtphone.Focus();
-			}
-		}
-
-		private void txtphone_KeyDown(object sender, KeyEventArgs e)
-		{
-			if (e.KeyCode == Keys.Return)
-			{
-				txtm1.Focus();
-			}
-		}
-
-		private void txtm1_KeyDown(object sender, KeyEventArgs e)
-		{
-			if (e.KeyCode == Keys.Return)
-			{
-				txtm2.Focus();
-			}
-		}
-
-		private void txtm2_KeyDown(object sender, KeyEventArgs e)
-		{
-			if (e.KeyCode == Keys.Return)
-			{
-				txtmail.Focus();
-			}
-		}
-
-		private void txtmail_KeyDown(object sender, KeyEventArgs e)
-		{
-			if (e.KeyCode == Keys.Return)
-			{
-				txttinno.Focus();
-			}
-		}
-
-		private void txttinno_KeyDown(object sender, KeyEventArgs e)
-		{
-			if (e.KeyCode == Keys.Return)
-			{
-				txtcstno.Focus();
-			}
-		}
-
-		private void txtcstno_KeyDown(object sender, KeyEventArgs e)
-		{
-			if (e.KeyCode == Keys.Return)
-			{
-				dtpcstdate.Focus();
-			}
-		}
-
-		private void dtpcstdate_KeyDown(object sender, KeyEventArgs e)
-		{
-			if (e.KeyCode == Keys.Return)
-			{
-				txtpan.Focus();
-			}
-		}
-
-		private void txtpan_KeyDown(object sender, KeyEventArgs e)
-		{
-			if (e.KeyCode == Keys.Return)
-			{
-				chkdefault.Select();
-			}
-		}
-
-		private void chkdefault_KeyDown(object sender, KeyEventArgs e)
-		{
-			if (e.KeyCode == Keys.Return)
-			{
-				cmdsave.Focus();
-			}
-		}
-
-		protected override void Dispose(bool disposing)
+        protected override void Dispose(bool disposing)
 		{
 			if (disposing && components != null)
 			{
@@ -597,6 +501,8 @@ namespace standard.master
             this.cmdsave = new mylib.lightbutton();
             this.tabemp = new System.Windows.Forms.TabControl();
             this.tabdetail = new System.Windows.Forms.TabPage();
+            this.txtCode = new System.Windows.Forms.TextBox();
+            this.label1 = new System.Windows.Forms.Label();
             this.txtFssai = new System.Windows.Forms.TextBox();
             this.lblFssai = new System.Windows.Forms.Label();
             this.txtGSTIN = new System.Windows.Forms.TextBox();
@@ -617,6 +523,8 @@ namespace standard.master
             this.txtcompany = new System.Windows.Forms.TextBox();
             this.lblcompany = new System.Windows.Forms.Label();
             this.tabadd = new System.Windows.Forms.TabPage();
+            this.label2 = new System.Windows.Forms.Label();
+            this.txtGodown = new System.Windows.Forms.TextBox();
             this.dtpcstdate = new System.Windows.Forms.DateTimePicker();
             this.lblpan = new System.Windows.Forms.Label();
             this.txtpan = new System.Windows.Forms.TextBox();
@@ -642,6 +550,8 @@ namespace standard.master
             this.lblAccNo = new System.Windows.Forms.Label();
             this.txtBankName = new System.Windows.Forms.TextBox();
             this.lblBankName = new System.Windows.Forms.Label();
+            this.label3 = new System.Windows.Forms.Label();
+            this.txtIFSC = new System.Windows.Forms.TextBox();
             this.pnlview.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgview)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.companyBindingSource)).BeginInit();
@@ -1048,6 +958,8 @@ namespace standard.master
             // 
             // tabdetail
             // 
+            this.tabdetail.Controls.Add(this.txtCode);
+            this.tabdetail.Controls.Add(this.label1);
             this.tabdetail.Controls.Add(this.txtFssai);
             this.tabdetail.Controls.Add(this.lblFssai);
             this.tabdetail.Controls.Add(this.txtGSTIN);
@@ -1075,6 +987,28 @@ namespace standard.master
             this.tabdetail.Text = "Details";
             this.tabdetail.UseVisualStyleBackColor = true;
             // 
+            // txtCode
+            // 
+            this.txtCode.BackColor = System.Drawing.Color.White;
+            this.txtCode.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold);
+            this.txtCode.Location = new System.Drawing.Point(111, 190);
+            this.txtCode.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.txtCode.MaxLength = 50;
+            this.txtCode.Name = "txtCode";
+            this.txtCode.Size = new System.Drawing.Size(165, 29);
+            this.txtCode.TabIndex = 6;
+            this.txtCode.KeyDown += new System.Windows.Forms.KeyEventHandler(this.com_KeyDown);
+            // 
+            // label1
+            // 
+            this.label1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
+            this.label1.Location = new System.Drawing.Point(6, 194);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(100, 20);
+            this.label1.TabIndex = 72;
+            this.label1.Text = "Code";
+            this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
             // txtFssai
             // 
             this.txtFssai.BackColor = System.Drawing.Color.White;
@@ -1084,8 +1018,8 @@ namespace standard.master
             this.txtFssai.MaxLength = 50;
             this.txtFssai.Name = "txtFssai";
             this.txtFssai.Size = new System.Drawing.Size(165, 29);
-            this.txtFssai.TabIndex = 71;
-            this.txtFssai.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtFssai_KeyPress);
+            this.txtFssai.TabIndex = 9;
+            this.txtFssai.KeyDown += new System.Windows.Forms.KeyEventHandler(this.com_KeyDown);
             // 
             // lblFssai
             // 
@@ -1106,7 +1040,8 @@ namespace standard.master
             this.txtGSTIN.MaxLength = 50;
             this.txtGSTIN.Name = "txtGSTIN";
             this.txtGSTIN.Size = new System.Drawing.Size(165, 29);
-            this.txtGSTIN.TabIndex = 69;
+            this.txtGSTIN.TabIndex = 8;
+            this.txtGSTIN.KeyDown += new System.Windows.Forms.KeyEventHandler(this.com_KeyDown);
             // 
             // lblGSTIN
             // 
@@ -1124,7 +1059,7 @@ namespace standard.master
             this.txtfax.Name = "txtfax";
             this.txtfax.Size = new System.Drawing.Size(165, 29);
             this.txtfax.TabIndex = 7;
-            this.txtfax.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtfax_KeyDown);
+            this.txtfax.KeyDown += new System.Windows.Forms.KeyEventHandler(this.com_KeyDown);
             // 
             // lblfax
             // 
@@ -1138,17 +1073,17 @@ namespace standard.master
             // 
             // txtpin
             // 
-            this.txtpin.Location = new System.Drawing.Point(111, 191);
+            this.txtpin.Location = new System.Drawing.Point(111, 291);
             this.txtpin.Mask = "000-000";
             this.txtpin.Name = "txtpin";
             this.txtpin.Size = new System.Drawing.Size(165, 29);
-            this.txtpin.TabIndex = 6;
+            this.txtpin.TabIndex = 10;
             this.txtpin.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtpin_KeyDown);
             // 
             // lblpin
             // 
             this.lblpin.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.lblpin.Location = new System.Drawing.Point(6, 191);
+            this.lblpin.Location = new System.Drawing.Point(6, 295);
             this.lblpin.Name = "lblpin";
             this.lblpin.Size = new System.Drawing.Size(100, 20);
             this.lblpin.TabIndex = 66;
@@ -1162,7 +1097,7 @@ namespace standard.master
             this.txtcountry.Name = "txtcountry";
             this.txtcountry.Size = new System.Drawing.Size(165, 29);
             this.txtcountry.TabIndex = 5;
-            this.txtcountry.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtcountry_KeyDown);
+            this.txtcountry.KeyDown += new System.Windows.Forms.KeyEventHandler(this.com_KeyDown);
             // 
             // lblcountry
             // 
@@ -1181,7 +1116,7 @@ namespace standard.master
             this.txtstate.Name = "txtstate";
             this.txtstate.Size = new System.Drawing.Size(165, 29);
             this.txtstate.TabIndex = 4;
-            this.txtstate.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtstate_KeyDown);
+            this.txtstate.KeyDown += new System.Windows.Forms.KeyEventHandler(this.com_KeyDown);
             // 
             // lblstate
             // 
@@ -1200,7 +1135,7 @@ namespace standard.master
             this.txtcity.Name = "txtcity";
             this.txtcity.Size = new System.Drawing.Size(165, 29);
             this.txtcity.TabIndex = 3;
-            this.txtcity.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtcity_KeyDown);
+            this.txtcity.KeyDown += new System.Windows.Forms.KeyEventHandler(this.com_KeyDown);
             // 
             // lblcity
             // 
@@ -1219,7 +1154,7 @@ namespace standard.master
             this.txtadd2.Name = "txtadd2";
             this.txtadd2.Size = new System.Drawing.Size(165, 29);
             this.txtadd2.TabIndex = 2;
-            this.txtadd2.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtadd2_KeyDown);
+            this.txtadd2.KeyDown += new System.Windows.Forms.KeyEventHandler(this.com_KeyDown);
             // 
             // txtadd1
             // 
@@ -1228,7 +1163,7 @@ namespace standard.master
             this.txtadd1.Name = "txtadd1";
             this.txtadd1.Size = new System.Drawing.Size(165, 29);
             this.txtadd1.TabIndex = 1;
-            this.txtadd1.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtadd1_KeyDown);
+            this.txtadd1.KeyDown += new System.Windows.Forms.KeyEventHandler(this.com_KeyDown);
             // 
             // lbladdress
             // 
@@ -1247,7 +1182,7 @@ namespace standard.master
             this.txtcompany.Name = "txtcompany";
             this.txtcompany.Size = new System.Drawing.Size(165, 29);
             this.txtcompany.TabIndex = 0;
-            this.txtcompany.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtCompany_KeyDown);
+            this.txtcompany.KeyDown += new System.Windows.Forms.KeyEventHandler(this.com_KeyDown);
             this.txtcompany.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtupper_KeyPress);
             // 
             // lblcompany
@@ -1262,6 +1197,8 @@ namespace standard.master
             // 
             // tabadd
             // 
+            this.tabadd.Controls.Add(this.label2);
+            this.tabadd.Controls.Add(this.txtGodown);
             this.tabadd.Controls.Add(this.dtpcstdate);
             this.tabadd.Controls.Add(this.lblpan);
             this.tabadd.Controls.Add(this.txtpan);
@@ -1288,23 +1225,41 @@ namespace standard.master
             this.tabadd.Text = "Address";
             this.tabadd.UseVisualStyleBackColor = true;
             // 
+            // label2
+            // 
+            this.label2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
+            this.label2.Location = new System.Drawing.Point(6, 29);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(65, 20);
+            this.label2.TabIndex = 76;
+            this.label2.Text = "Godown";
+            this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // txtGodown
+            // 
+            this.txtGodown.Location = new System.Drawing.Point(82, 20);
+            this.txtGodown.MaxLength = 100;
+            this.txtGodown.Name = "txtGodown";
+            this.txtGodown.Size = new System.Drawing.Size(191, 29);
+            this.txtGodown.TabIndex = 75;
+            // 
             // dtpcstdate
             // 
             this.dtpcstdate.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.dtpcstdate.CustomFormat = "dd-MM-yyyy";
             this.dtpcstdate.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.dtpcstdate.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-            this.dtpcstdate.Location = new System.Drawing.Point(82, 191);
+            this.dtpcstdate.Location = new System.Drawing.Point(82, 218);
             this.dtpcstdate.Name = "dtpcstdate";
             this.dtpcstdate.ShowCheckBox = true;
             this.dtpcstdate.Size = new System.Drawing.Size(108, 27);
             this.dtpcstdate.TabIndex = 7;
-            this.dtpcstdate.KeyDown += new System.Windows.Forms.KeyEventHandler(this.dtpcstdate_KeyDown);
+            this.dtpcstdate.KeyDown += new System.Windows.Forms.KeyEventHandler(this.com_KeyDown);
             // 
             // lblpan
             // 
             this.lblpan.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.lblpan.Location = new System.Drawing.Point(8, 216);
+            this.lblpan.Location = new System.Drawing.Point(8, 260);
             this.lblpan.Name = "lblpan";
             this.lblpan.Size = new System.Drawing.Size(65, 20);
             this.lblpan.TabIndex = 74;
@@ -1313,17 +1268,17 @@ namespace standard.master
             // 
             // txtpan
             // 
-            this.txtpan.Location = new System.Drawing.Point(82, 216);
+            this.txtpan.Location = new System.Drawing.Point(82, 251);
             this.txtpan.MaxLength = 50;
             this.txtpan.Name = "txtpan";
             this.txtpan.Size = new System.Drawing.Size(191, 29);
             this.txtpan.TabIndex = 8;
-            this.txtpan.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtpan_KeyDown);
+            this.txtpan.KeyDown += new System.Windows.Forms.KeyEventHandler(this.com_KeyDown);
             // 
             // lblweb
             // 
             this.lblweb.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.lblweb.Location = new System.Drawing.Point(8, 28);
+            this.lblweb.Location = new System.Drawing.Point(8, 55);
             this.lblweb.Name = "lblweb";
             this.lblweb.Size = new System.Drawing.Size(65, 20);
             this.lblweb.TabIndex = 73;
@@ -1333,7 +1288,7 @@ namespace standard.master
             // lbltinno
             // 
             this.lbltinno.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.lbltinno.Location = new System.Drawing.Point(8, 136);
+            this.lbltinno.Location = new System.Drawing.Point(8, 168);
             this.lbltinno.Name = "lbltinno";
             this.lbltinno.Size = new System.Drawing.Size(65, 20);
             this.lbltinno.TabIndex = 72;
@@ -1343,7 +1298,7 @@ namespace standard.master
             // lblcstno
             // 
             this.lblcstno.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.lblcstno.Location = new System.Drawing.Point(8, 163);
+            this.lblcstno.Location = new System.Drawing.Point(8, 196);
             this.lblcstno.Name = "lblcstno";
             this.lblcstno.Size = new System.Drawing.Size(65, 20);
             this.lblcstno.TabIndex = 71;
@@ -1353,7 +1308,7 @@ namespace standard.master
             // lblmail
             // 
             this.lblmail.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.lblmail.Location = new System.Drawing.Point(8, 109);
+            this.lblmail.Location = new System.Drawing.Point(8, 136);
             this.lblmail.Name = "lblmail";
             this.lblmail.Size = new System.Drawing.Size(65, 20);
             this.lblmail.TabIndex = 70;
@@ -1363,7 +1318,7 @@ namespace standard.master
             // lblcstdate
             // 
             this.lblcstdate.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.lblcstdate.Location = new System.Drawing.Point(8, 188);
+            this.lblcstdate.Location = new System.Drawing.Point(6, 286);
             this.lblcstdate.Name = "lblcstdate";
             this.lblcstdate.Size = new System.Drawing.Size(65, 20);
             this.lblcstdate.TabIndex = 68;
@@ -1373,7 +1328,7 @@ namespace standard.master
             // lblm1
             // 
             this.lblm1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.lblm1.Location = new System.Drawing.Point(8, 82);
+            this.lblm1.Location = new System.Drawing.Point(8, 104);
             this.lblm1.Name = "lblm1";
             this.lblm1.Size = new System.Drawing.Size(65, 20);
             this.lblm1.TabIndex = 67;
@@ -1383,7 +1338,7 @@ namespace standard.master
             // lblphone
             // 
             this.lblphone.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.lblphone.Location = new System.Drawing.Point(8, 55);
+            this.lblphone.Location = new System.Drawing.Point(8, 77);
             this.lblphone.Name = "lblphone";
             this.lblphone.Size = new System.Drawing.Size(65, 20);
             this.lblphone.TabIndex = 69;
@@ -1392,18 +1347,18 @@ namespace standard.master
             // 
             // txtweb
             // 
-            this.txtweb.Location = new System.Drawing.Point(82, 28);
+            this.txtweb.Location = new System.Drawing.Point(82, 46);
             this.txtweb.MaxLength = 50;
             this.txtweb.Name = "txtweb";
             this.txtweb.Size = new System.Drawing.Size(191, 29);
             this.txtweb.TabIndex = 0;
-            this.txtweb.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtweb_KeyDown);
+            this.txtweb.KeyDown += new System.Windows.Forms.KeyEventHandler(this.com_KeyDown);
             // 
             // chkdefault
             // 
             this.chkdefault.AutoSize = true;
             this.chkdefault.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.chkdefault.Location = new System.Drawing.Point(82, 244);
+            this.chkdefault.Location = new System.Drawing.Point(82, 286);
             this.chkdefault.Name = "chkdefault";
             this.chkdefault.Size = new System.Drawing.Size(103, 26);
             this.chkdefault.TabIndex = 9;
@@ -1413,60 +1368,62 @@ namespace standard.master
             // 
             // txttinno
             // 
-            this.txttinno.Location = new System.Drawing.Point(82, 136);
+            this.txttinno.Location = new System.Drawing.Point(82, 159);
             this.txttinno.MaxLength = 50;
             this.txttinno.Name = "txttinno";
             this.txttinno.Size = new System.Drawing.Size(191, 29);
             this.txttinno.TabIndex = 5;
-            this.txttinno.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txttinno_KeyDown);
+            this.txttinno.KeyDown += new System.Windows.Forms.KeyEventHandler(this.com_KeyDown);
             // 
             // txtcstno
             // 
-            this.txtcstno.Location = new System.Drawing.Point(82, 163);
+            this.txtcstno.Location = new System.Drawing.Point(82, 188);
             this.txtcstno.MaxLength = 50;
             this.txtcstno.Name = "txtcstno";
             this.txtcstno.Size = new System.Drawing.Size(191, 29);
             this.txtcstno.TabIndex = 6;
-            this.txtcstno.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtcstno_KeyDown);
+            this.txtcstno.KeyDown += new System.Windows.Forms.KeyEventHandler(this.com_KeyDown);
             // 
             // txtmail
             // 
-            this.txtmail.Location = new System.Drawing.Point(82, 109);
+            this.txtmail.Location = new System.Drawing.Point(82, 127);
             this.txtmail.MaxLength = 50;
             this.txtmail.Name = "txtmail";
             this.txtmail.Size = new System.Drawing.Size(191, 29);
             this.txtmail.TabIndex = 4;
-            this.txtmail.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtmail_KeyDown);
+            this.txtmail.KeyDown += new System.Windows.Forms.KeyEventHandler(this.com_KeyDown);
             // 
             // txtm2
             // 
-            this.txtm2.Location = new System.Drawing.Point(181, 82);
+            this.txtm2.Location = new System.Drawing.Point(181, 100);
             this.txtm2.Mask = "0000000000";
             this.txtm2.Name = "txtm2";
             this.txtm2.Size = new System.Drawing.Size(92, 29);
             this.txtm2.TabIndex = 3;
-            this.txtm2.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtm2_KeyDown);
+            this.txtm2.KeyDown += new System.Windows.Forms.KeyEventHandler(this.com_KeyDown);
             // 
             // txtm1
             // 
-            this.txtm1.Location = new System.Drawing.Point(82, 82);
+            this.txtm1.Location = new System.Drawing.Point(82, 100);
             this.txtm1.Mask = "0000000000";
             this.txtm1.Name = "txtm1";
             this.txtm1.Size = new System.Drawing.Size(93, 29);
             this.txtm1.TabIndex = 2;
-            this.txtm1.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtm1_KeyDown);
+            this.txtm1.KeyDown += new System.Windows.Forms.KeyEventHandler(this.com_KeyDown);
             // 
             // txtphone
             // 
-            this.txtphone.Location = new System.Drawing.Point(82, 55);
+            this.txtphone.Location = new System.Drawing.Point(82, 73);
             this.txtphone.Mask = "0000-0000000";
             this.txtphone.Name = "txtphone";
             this.txtphone.Size = new System.Drawing.Size(191, 29);
             this.txtphone.TabIndex = 1;
-            this.txtphone.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtphone_KeyDown);
+            this.txtphone.KeyDown += new System.Windows.Forms.KeyEventHandler(this.com_KeyDown);
             // 
             // tabPage1
             // 
+            this.tabPage1.Controls.Add(this.txtIFSC);
+            this.tabPage1.Controls.Add(this.label3);
             this.tabPage1.Controls.Add(this.txtBranch);
             this.tabPage1.Controls.Add(this.lblBranch);
             this.tabPage1.Controls.Add(this.txtAccNo);
@@ -1487,7 +1444,8 @@ namespace standard.master
             this.txtBranch.MaxLength = 100;
             this.txtBranch.Name = "txtBranch";
             this.txtBranch.Size = new System.Drawing.Size(181, 29);
-            this.txtBranch.TabIndex = 61;
+            this.txtBranch.TabIndex = 2;
+            this.txtBranch.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtBranch_KeyDown);
             // 
             // lblBranch
             // 
@@ -1496,7 +1454,7 @@ namespace standard.master
             this.lblBranch.Name = "lblBranch";
             this.lblBranch.Size = new System.Drawing.Size(80, 49);
             this.lblBranch.TabIndex = 60;
-            this.lblBranch.Text = "Branch & IFSC";
+            this.lblBranch.Text = "Branch";
             this.lblBranch.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // txtAccNo
@@ -1508,8 +1466,8 @@ namespace standard.master
             this.txtAccNo.MaxLength = 50;
             this.txtAccNo.Name = "txtAccNo";
             this.txtAccNo.Size = new System.Drawing.Size(180, 29);
-            this.txtAccNo.TabIndex = 59;
-            this.txtAccNo.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtAccNo_KeyPress);
+            this.txtAccNo.TabIndex = 1;
+            this.txtAccNo.KeyDown += new System.Windows.Forms.KeyEventHandler(this.com_KeyDown);
             // 
             // lblAccNo
             // 
@@ -1527,7 +1485,8 @@ namespace standard.master
             this.txtBankName.MaxLength = 100;
             this.txtBankName.Name = "txtBankName";
             this.txtBankName.Size = new System.Drawing.Size(181, 29);
-            this.txtBankName.TabIndex = 56;
+            this.txtBankName.TabIndex = 0;
+            this.txtBankName.KeyDown += new System.Windows.Forms.KeyEventHandler(this.com_KeyDown);
             // 
             // lblBankName
             // 
@@ -1538,6 +1497,24 @@ namespace standard.master
             this.lblBankName.TabIndex = 55;
             this.lblBankName.Text = "Bank Name";
             this.lblBankName.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // label3
+            // 
+            this.label3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
+            this.label3.Location = new System.Drawing.Point(6, 118);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(80, 49);
+            this.label3.TabIndex = 61;
+            this.label3.Text = "IFSC";
+            this.label3.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // txtIFSC
+            // 
+            this.txtIFSC.Location = new System.Drawing.Point(95, 128);
+            this.txtIFSC.MaxLength = 100;
+            this.txtIFSC.Name = "txtIFSC";
+            this.txtIFSC.Size = new System.Drawing.Size(181, 29);
+            this.txtIFSC.TabIndex = 62;
             // 
             // frmCompany
             // 
@@ -1573,21 +1550,5 @@ namespace standard.master
             this.ResumeLayout(false);
 
 		}
-
-        private void txtAccNo_KeyPress(object sender, KeyPressEventArgs e)
-        {
-            if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar))
-            {
-                e.Handled = true;
-            }
-        }
-
-        private void txtFssai_KeyPress(object sender, KeyPressEventArgs e)
-        {
-            if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar))
-            {
-                e.Handled = true;
-            }
-        }
     }
 }

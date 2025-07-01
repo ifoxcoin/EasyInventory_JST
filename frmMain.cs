@@ -3,19 +3,41 @@ using System.Windows.Forms;
 using standard.master;
 using standard.trans;
 using standard.report;
+using System.IO;
+using System.Drawing;
 
 namespace standard
 {
     public partial class frmMain : Form
     {
-        #region "DECLARATION"
-        mylib.dbcon cn;
-        bus bu;
+
+        static void Main()
+        {
+            try
+            {
+                Application.EnableVisualStyles();
+                Application.SetCompatibleTextRenderingDefault(false);
+                Application.Run(new frmMain());
+            }
+            catch (Exception ex)
+            {
+                File.WriteAllText("error.log", ex.ToString());
+            }
+        }
 
         public frmMain()
         {
             InitializeComponent();
         }
+
+        #region "DECLARATION"
+        mylib.dbcon cn;
+        bus bu;
+
+        //public frmMain()
+        //{
+        //    InitializeComponent();
+        //}
         #endregion
 
         #region "LOAD AND MENU EVENT"
@@ -193,8 +215,59 @@ namespace standard
         }
         #endregion
 
+        private void ResetAllRibbonButtonHighlights()
+        {
+            ribbonButtoncompany.Checked = false;
+            ribbonButtonaccgroup.Checked = false;
+            ribbonButtonaccmaster.Checked = false;
+            ribbonButtonback.Checked = false;
+            ribbonButtonmail.Checked = false;
+            ribbonButtonrestore.Checked = false;
+            ribbonBtnItem.Checked = false;
+            ribbonBtnRoute.Checked = false;
+            ribbonBtnVehicle.Checked = false;
+            btnPurchase.Checked = false;
+            btnSalesOrder.Checked = false;
+            btnSales.Checked = false;
+            btnReceipt.Checked = false;
+            btnAddressPrint.Checked = false;
+            btnStock.Checked = false;
+            btnPurchaseReport.Checked = false;
+            btnSalesReport.Checked = false;
+            btnReceiptReport.Checked = false;
+            btnReceiptRpt.Checked = false;
+            btnLedgerReport.Checked = false;
+            btnAgentOutstandingReport.Checked = false;
+            btnReset.Checked = false;
+            btnCommission.Checked = false;
+            btnPackingReceipt.Checked = false;
+            btnLedger.Checked = false;
+            btnItemRpt.Checked = false;
+            btnPayment.Checked = false;
+            btnOpeningStock.Checked = false;
+            btnSupplierOutstanding.Checked = false;
+            btnSalesLoadReport.Checked = false;
+            // Add all other ribbon buttons here
+        }
+        private void HighlightActiveButton(RibbonButton clickedButton)
+        {
+            // Reset previous
+            ResetAllRibbonButtonHighlights();
+            if (currentActiveButton != null)
+            {
+                currentActiveButton.Checked = false;
+            }
+
+            // Set new active
+            clickedButton.Checked = true;
+            currentActiveButton = clickedButton;
+        }
+
+
         private void ribbonBtnItem_Click(object sender, EventArgs e)
         {
+            HighlightActiveButton((RibbonButton)sender);
+
             frmItems frm = new frmItems();
             if (!bu.CheckRights(Convert.ToString(frm.Tag), frm.Text))
             {
@@ -202,16 +275,21 @@ namespace standard
                 MessageBox.Show("Rights failed...");
                 return;
             }
-            foreach (Form F in this.MdiChildren)
-                if (frm.Name == F.Name)
-                { MessageBox.Show("Already Opened.."); return; }
+            //foreach (Form F in this.MdiChildren)
+            //    if (frm.Name == F.Name)
+            //    { MessageBox.Show("Already Opened.."); return; }
             frm.MdiParent = this;
             frm.WindowState = FormWindowState.Maximized;
+            frm.FormClosed += (s, args) =>
+            {
+                ribbonBtnItem.Checked = false;
+            };
             frm.Show();
         }
 
         private void ribbonBtnRoute_Click(object sender, EventArgs e)
         {
+            HighlightActiveButton((RibbonButton)sender);
             frmRoute frm = new frmRoute();
             if (!bu.CheckRights(Convert.ToString(frm.Tag), frm.Text))
             {
@@ -219,11 +297,37 @@ namespace standard
                 MessageBox.Show("Rights failed...");
                 return;
             }
-            foreach (Form F in this.MdiChildren)
-                if (frm.Name == F.Name)
-                { MessageBox.Show("Already Opened.."); return; }
+            //foreach (Form F in this.MdiChildren)
+            //    if (frm.Name == F.Name)
+            //    { MessageBox.Show("Already Opened.."); return; }
             frm.MdiParent = this;
             frm.WindowState = FormWindowState.Maximized;
+            frm.FormClosed += (s, args) =>
+            {
+                ribbonBtnRoute.Checked = false;
+            };
+            frm.Show();
+        }
+
+        private void ribbonBtnVehicle_Click(object sender, EventArgs e)
+        {
+            HighlightActiveButton((RibbonButton)sender);
+            frmVehicle frm = new frmVehicle();
+            if (!bu.CheckRights(Convert.ToString(frm.Tag), frm.Text))
+            {
+                frm.Close();
+                MessageBox.Show("Rights failed...");
+                return;
+            }
+            //foreach (Form F in this.MdiChildren)
+            //    if (frm.Name == F.Name)
+            //    { MessageBox.Show("Already Opened.."); return; }
+            frm.MdiParent = this;
+            frm.WindowState = FormWindowState.Maximized;
+            frm.FormClosed += (s, args) =>
+            {
+                ribbonBtnVehicle.Checked = false;
+            };
             frm.Show();
         }
 
@@ -246,6 +350,7 @@ namespace standard
 
         private void ribbonButtonaccmaster_Click(object sender, EventArgs e)
         {
+            HighlightActiveButton((RibbonButton)sender);
             frmLedger frm = new frmLedger();
             if (!bu.CheckRights(Convert.ToString(frm.Tag), frm.Text))
             {
@@ -258,6 +363,10 @@ namespace standard
                 { MessageBox.Show("Already Opened.."); return; }
             frm.MdiParent = this;
             frm.WindowState = FormWindowState.Maximized;
+            frm.FormClosed += (s, args) =>
+            {
+                ribbonButtonaccmaster.Checked = false;
+            };
             frm.Show();
         }
 
@@ -314,6 +423,7 @@ namespace standard
 
         private void ribbonBtntax_Click(object sender, EventArgs e)
         {
+            HighlightActiveButton((RibbonButton)sender);
             frmItems frm = new frmItems();
             if (!bu.CheckRights(Convert.ToString(frm.Tag), frm.Text))
             {
@@ -326,11 +436,16 @@ namespace standard
                 { MessageBox.Show("Already Opened.."); return; }
             frm.MdiParent = this;
             frm.WindowState = FormWindowState.Maximized;
+            frm.FormClosed += (s, args) =>
+            {
+                ribbonBtnRoute.Checked = false;
+            };
             frm.Show();
         }
 
         private void ribbonOrbhelp_Click(object sender, EventArgs e)
         {
+            HighlightActiveButton((RibbonButton)sender);
             frmHelp frm = new frmHelp();
             foreach (Form F in this.MdiChildren)
                 if (frm.Name == F.Name)
@@ -357,6 +472,7 @@ namespace standard
 
         private void ribbonButtonaccgroup_Click(object sender, EventArgs e)
         {
+            HighlightActiveButton((RibbonButton)sender);
             frmCategory frm = new frmCategory();
             if (!bu.CheckRights(Convert.ToString(frm.Tag), frm.Text))
             {
@@ -364,16 +480,21 @@ namespace standard
                 MessageBox.Show("Rights failed...");
                 return;
             }
-            foreach (Form F in this.MdiChildren)
-                if (frm.Name == F.Name)
-                { MessageBox.Show("Already Opened.."); return; }
+            //foreach (Form F in this.MdiChildren)
+            //    if (frm.Name == F.Name)
+            //    { MessageBox.Show("Already Opened.."); return; }
             frm.MdiParent = this;
             frm.WindowState = FormWindowState.Maximized;
+            frm.FormClosed += (s, args) =>
+            {
+                ribbonButtonaccgroup.Checked = false;
+            };
             frm.Show();
         }
 
         private void btnPurchase_Click(object sender, EventArgs e)
         {
+            HighlightActiveButton((RibbonButton)sender);
             frmPurchase frm = new frmPurchase();
             if (!bu.CheckRights(Convert.ToString(frm.Tag), frm.Text))
             {
@@ -381,16 +502,21 @@ namespace standard
                 MessageBox.Show("Rights failed...");
                 return;
             }
-            foreach (Form F in this.MdiChildren)
-                if (frm.Name == F.Name)
-                { MessageBox.Show("Already Opened.."); return; }
+            //foreach (Form F in this.MdiChildren)
+            //    if (frm.Name == F.Name)
+            //    { MessageBox.Show("Already Opened.."); return; }
             frm.MdiParent = this;
             frm.WindowState = FormWindowState.Maximized;
+            frm.FormClosed += (s, args) =>
+            {
+                btnPurchase.Checked = false;
+            };
             frm.Show();
         }
 
         private void btnSales_Click(object sender, EventArgs e)
         {
+            HighlightActiveButton((RibbonButton)sender);
             frmSales frm = new frmSales();
             if (!bu.CheckRights(Convert.ToString(frm.Tag), frm.Text))
             {
@@ -398,16 +524,43 @@ namespace standard
                 MessageBox.Show("Rights failed...");
                 return;
             }
-            foreach (Form F in this.MdiChildren)
-                if (frm.Name == F.Name)
-                { MessageBox.Show("Already Opened.."); return; }
+            //foreach (Form F in this.MdiChildren)
+            //    if (frm.Name == F.Name)
+            //    { MessageBox.Show("Already Opened.."); return; }
             frm.MdiParent = this;
             frm.WindowState = FormWindowState.Maximized;
+            frm.FormClosed += (s, args) =>
+            {
+                btnSales.Checked = false;
+            };
+            frm.Show();
+        }
+
+        private void btnSalesOrder_Click(object sender, EventArgs e)
+        {
+            HighlightActiveButton((RibbonButton)sender);
+            frmSalesOrder frm = new frmSalesOrder();
+            if (!bu.CheckRights(Convert.ToString(frm.Tag), frm.Text))
+            {
+                frm.Close();
+                MessageBox.Show("Rights failed...");
+                return;
+            }
+            //foreach (Form F in this.MdiChildren)
+            //    if (frm.Name == F.Name)
+            //    { MessageBox.Show("Already Opened.."); return; }
+            frm.MdiParent = this;
+            frm.WindowState = FormWindowState.Maximized;
+            frm.FormClosed += (s, args) =>
+            {
+                btnSalesOrder.Checked = false;
+            };
             frm.Show();
         }
 
         private void btnReceipt_Click(object sender, EventArgs e)
         {
+            HighlightActiveButton((RibbonButton)sender);
             frmReceipt frm = new frmReceipt();
             if (!bu.CheckRights(Convert.ToString(frm.Tag), frm.Text))
             {
@@ -415,11 +568,15 @@ namespace standard
                 MessageBox.Show("Rights failed...");
                 return;
             }
-            foreach (Form F in this.MdiChildren)
-                if (frm.Name == F.Name)
-                { MessageBox.Show("Already Opened.."); return; }
+            //foreach (Form F in this.MdiChildren)
+            //    if (frm.Name == F.Name)
+            //    { MessageBox.Show("Already Opened.."); return; }
             frm.MdiParent = this;
             frm.WindowState = FormWindowState.Maximized;
+            frm.FormClosed += (s, args) =>
+            {
+                btnReceipt.Checked = false;
+            };
             frm.Show();
 
         }
@@ -431,6 +588,7 @@ namespace standard
 
         private void btnAddressPrint_Click(object sender, EventArgs e)
         {
+            HighlightActiveButton((RibbonButton)sender);
             frmAddressPrint frm = new frmAddressPrint();
             if (!bu.CheckRights(Convert.ToString(frm.Tag), frm.Text))
             {
@@ -443,12 +601,17 @@ namespace standard
             //    { MessageBox.Show("Already Opened.."); return; }
             frm.MdiParent = this;
             frm.WindowState = FormWindowState.Maximized;
+            frm.FormClosed += (s, args) =>
+            {
+                btnAddressPrint.Checked = false;
+            };
             frm.Show();
 
         }
 
         private void btnPurchaseReport_Click(object sender, EventArgs e)
         {
+            HighlightActiveButton((RibbonButton)sender);
             frmTransactionRpt frm = new frmTransactionRpt();
             frm._ReportName = "Purchase Report";
             frm._LedgerType = "SUPPLIER";
@@ -463,12 +626,17 @@ namespace standard
             //    { MessageBox.Show("Already Opened.."); return; }
             frm.MdiParent = this;
             frm.WindowState = FormWindowState.Maximized;
+            frm.FormClosed += (s, args) =>
+            {
+                btnPurchaseReport.Checked = false;
+            };
             frm.Show();
 
         }
 
-        private void ribbonPanel3_Click(object sender, EventArgs e)
+        private void btnSalesReport_Click(object sender, EventArgs e)
         {
+            HighlightActiveButton((RibbonButton)sender);
             frmTransactionRpt frm = new frmTransactionRpt();
             frm._ReportName = "Sales Report";
             frm._LedgerType = "CUSTOMER";
@@ -483,11 +651,16 @@ namespace standard
             //    { MessageBox.Show("Already Opened.."); return; }
             frm.MdiParent = this;
             frm.WindowState = FormWindowState.Maximized;
+            frm.FormClosed += (s, args) =>
+            {
+                btnSalesReport.Checked = false;
+            };
             frm.Show();
         }
 
         private void btnReceiptReport_Click(object sender, EventArgs e)
         {
+            HighlightActiveButton((RibbonButton)sender);
             frmTransactionRpt frm = new frmTransactionRpt();
             frm._ReportName = "Receipt Report";
             frm._LedgerType = "CUSTOMER";
@@ -502,12 +675,17 @@ namespace standard
             //    { MessageBox.Show("Already Opened.."); return; }
             frm.MdiParent = this;
             frm.WindowState = FormWindowState.Maximized;
+            frm.FormClosed += (s, args) =>
+            {
+                btnReceiptReport.Checked = false;
+            };
             frm.Show();
 
         }
 
         private void btnStock_Click(object sender, EventArgs e)
         {
+            HighlightActiveButton((RibbonButton)sender);
             frmStockRpt frm = new frmStockRpt();
             if (!bu.CheckRights(Convert.ToString(frm.Tag), frm.Text))
             {
@@ -520,11 +698,16 @@ namespace standard
             //    { MessageBox.Show("Already Opened.."); return; }
             frm.MdiParent = this;
             frm.WindowState = FormWindowState.Maximized;
+            frm.FormClosed += (s, args) =>
+            {
+                btnStock.Checked = false;
+            };
             frm.Show();
         }
 
         private void btnReceiptRpt_Click(object sender, EventArgs e)
         {
+            HighlightActiveButton((RibbonButton)sender);
             frmTransactionRpt frm = new frmTransactionRpt();
             frm._ReportName = "Ledger Outstanding Report";
             frm._LedgerType = "CUSTOMER";
@@ -539,11 +722,16 @@ namespace standard
             //    { MessageBox.Show("Already Opened.."); return; }
             frm.MdiParent = this;
             frm.WindowState = FormWindowState.Maximized;
+            frm.FormClosed += (s, args) =>
+            {
+                btnReceiptRpt.Checked = false;
+            };
             frm.Show();
         }
 
         private void btnSupplierOutstanding_Click(object sender, EventArgs e)
         {
+            HighlightActiveButton((RibbonButton)sender);
             frmTransactionRpt frm = new frmTransactionRpt();
             frm._ReportName = "Supplier Outstanding Report";
             frm._LedgerType = "SUPPLIER";
@@ -558,12 +746,40 @@ namespace standard
             //    { MessageBox.Show("Already Opened.."); return; }
             frm.MdiParent = this;
             frm.WindowState = FormWindowState.Maximized;
+            frm.FormClosed += (s, args) =>
+            {
+                btnSupplierOutstanding.Checked = false;
+            };
             frm.Show();
         }
 
-
-        private void btnLedgerReport_Click(object sender, EventArgs e)
+        private void btnSalesLoadReport_Click(object sender, EventArgs e)
         {
+            HighlightActiveButton((RibbonButton)sender);
+            frmNewTransactionRpt frm = new frmNewTransactionRpt();
+            frm._ReportName = "Customer Load Way Report";
+            frm._LedgerType = "CUSTOMER";
+            if (!bu.CheckRights(Convert.ToString(frm.Tag), frm.Text))
+            {
+                frm.Close();
+                MessageBox.Show("Rights failed...");
+                return;
+            }
+            //foreach (Form F in this.MdiChildren)
+            //    if (frm.Name == F.Name)
+            //    { MessageBox.Show("Already Opened.."); return; }
+            frm.MdiParent = this;
+            frm.WindowState = FormWindowState.Maximized;
+            frm.FormClosed += (s, args) =>
+            {
+                btnSalesLoadReport.Checked = false;
+            };
+            frm.Show();
+        }
+
+        private void btnAgentReport_Click(object sender, EventArgs e)
+        {
+            HighlightActiveButton((RibbonButton)sender);
             frmTransactionRpt frm = new frmTransactionRpt();
             frm._ReportName = "Agent Outstanding Report";
             frm._LedgerType = "Agent";
@@ -578,12 +794,42 @@ namespace standard
             //    { MessageBox.Show("Already Opened.."); return; }
             frm.MdiParent = this;
             frm.WindowState = FormWindowState.Maximized;
+            frm.FormClosed += (s, args) =>
+            {
+                btnAgentOutstandingReport.Checked = false;
+            };
+            frm.Show();
+
+        }
+
+        private void btnLoadWayReport_Click(object sender, EventArgs e)
+        {
+            HighlightActiveButton((RibbonButton)sender);
+            frmNewTransactionRpt frm = new frmNewTransactionRpt();
+            frm._ReportName = "Customer Load Way Report";
+            frm._LedgerType = "CUSTOMER";
+            if (!bu.CheckRights(Convert.ToString(frm.Tag), frm.Text))
+            {
+                frm.Close();
+                MessageBox.Show("Rights failed...");
+                return;
+            }
+            //foreach (Form F in this.MdiChildren)
+            //    if (frm.Name == F.Name)
+            //    { MessageBox.Show("Already Opened.."); return; }
+            frm.MdiParent = this;
+            frm.WindowState = FormWindowState.Maximized;
+            frm.FormClosed += (s, args) =>
+            {
+                btnLedgerReport.Checked = false;
+            };
             frm.Show();
 
         }
 
         private void btnLedgerwiseStock_Click(object sender, EventArgs e)
         {
+            HighlightActiveButton((RibbonButton)sender);
             frmStockRpt frm = new frmStockRpt();
             frm._ReportName = "LedgerwiseItemDetail Report";
 
@@ -598,12 +844,17 @@ namespace standard
             //    { MessageBox.Show("Already Opened.."); return; }
             frm.MdiParent = this;
             frm.WindowState = FormWindowState.Maximized;
+            frm.FormClosed += (s, args) =>
+            {
+                btnLedgerwiseStock.Checked = false;
+            };
             frm.Show();
 
         }
 
         private void btnAgentCommission_Click(object sender, EventArgs e)
         {
+            HighlightActiveButton((RibbonButton)sender);
             frmTransactionRpt frm = new frmTransactionRpt();
             frm._ReportName = "AgentCommission Report";
             frm._LedgerType = "Agent";
@@ -618,6 +869,10 @@ namespace standard
             //    { MessageBox.Show("Already Opened.."); return; }
             frm.MdiParent = this;
             frm.WindowState = FormWindowState.Maximized;
+            frm.FormClosed += (s, args) =>
+            {
+                btnAgentCommission.Checked = false;
+            };
             frm.Show();
 
 
@@ -625,6 +880,7 @@ namespace standard
 
         private void btnReset_Click(object sender, EventArgs e)
         {
+            HighlightActiveButton((RibbonButton)sender);
             if (MessageBox.Show("Are you sure to reset? 'it will delete all data ' ", "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.No)
                 return;
             classes.InventoryDataContext db = new classes.InventoryDataContext();
@@ -633,7 +889,7 @@ namespace standard
             {
                 db.usp_openingbalanceDelete(obitem.ob_id);
             }
-            var smdata = db.usp_salesmasterSelect(null, null, null, null, false, null);
+            var smdata = db.usp_salesmasterSelect(null, null, null, null, false, null,null);
             foreach(var smitem in smdata)
             {
                 db.usp_openingbalanceInsert("O", smitem.sm_refno, DateTime.Now.Date, smitem.led_id, smitem.sm_totamount, smitem.sm_profit, smitem.sm_disamount, smitem.sm_packingcharge, smitem.sm_netamount, smitem.sm_received, smitem.sm_isclose, smitem.users_uid, DateTime.Now.Date, smitem.sm_desc, smitem.sm_paidcommission, smitem.sm_paidcommission, smitem.sm_iscommissionclose, smitem.sm_ispackingclose, smitem.sm_taxamount, smitem.sm_taxpercentage, smitem.sm_roundamount);
@@ -650,6 +906,7 @@ namespace standard
 
         private void btnCommission_Click(object sender, EventArgs e)
         {
+            HighlightActiveButton((RibbonButton)sender);
             frmCommissionReceipt frm = new frmCommissionReceipt();
             if (!bu.CheckRights(Convert.ToString(frm.Tag), frm.Text))
             {
@@ -662,11 +919,16 @@ namespace standard
                 { MessageBox.Show("Already Opened.."); return; }
             frm.MdiParent = this;
             frm.WindowState = FormWindowState.Maximized;
+            frm.FormClosed += (s, args) =>
+            {
+                btnCommission.Checked = false;
+            };
             frm.Show();
         }
 
         private void btnPackingReceipt_Click(object sender, EventArgs e)
         {
+            HighlightActiveButton((RibbonButton)sender);
             frmPackingReceipt frm = new frmPackingReceipt();
             if (!bu.CheckRights(Convert.ToString(frm.Tag), frm.Text))
             {
@@ -679,11 +941,16 @@ namespace standard
                 { MessageBox.Show("Already Opened.."); return; }
             frm.MdiParent = this;
             frm.WindowState = FormWindowState.Maximized;
+            frm.FormClosed += (s, args) =>
+            {
+                btnPackingReceipt.Checked = false;
+            };
             frm.Show();
         }
 
         private void btnLedgerRpt_Click(object sender, EventArgs e)
         {
+            HighlightActiveButton((RibbonButton)sender);
             frmTransactionRpt frm = new frmTransactionRpt();
             frm._ReportName = "Ledger Report";
             frm._LedgerType = "Ledger";
@@ -698,12 +965,17 @@ namespace standard
             //    { MessageBox.Show("Already Opened.."); return; }
             frm.MdiParent = this;
             frm.WindowState = FormWindowState.Maximized;
+            frm.FormClosed += (s, args) =>
+            {
+                btnLedgerReport.Checked = false;
+            };
             frm.Show();
 
         }
 
         private void btnItemRpt_Click(object sender, EventArgs e)
         {
+            HighlightActiveButton((RibbonButton)sender);
             frmStockRpt frm = new frmStockRpt();
             frm._ReportName = "Item Report";
             //frm._LedgerType = "Ledger";
@@ -718,11 +990,16 @@ namespace standard
             //    { MessageBox.Show("Already Opened.."); return; }
             frm.MdiParent = this;
             frm.WindowState = FormWindowState.Maximized;
+            frm.FormClosed += (s, args) =>
+            {
+                btnItemRpt.Checked = false;
+            };
             frm.Show();
         }
 
         private void btnPayment_Click(object sender, EventArgs e)
         {
+            HighlightActiveButton((RibbonButton)sender);
             frmPayment frm = new frmPayment();
             if (!bu.CheckRights(Convert.ToString(frm.Tag), frm.Text))
             {
@@ -735,6 +1012,32 @@ namespace standard
                 { MessageBox.Show("Already Opened.."); return; }
             frm.MdiParent = this;
             frm.WindowState = FormWindowState.Maximized;
+            frm.FormClosed += (s, args) =>
+            {
+                btnPayment.Checked = false;
+            };
+            frm.Show();
+        }
+
+        private void btnOpeningStock_Click(object sender, EventArgs e)
+        {
+            HighlightActiveButton((RibbonButton)sender);
+            frmOpeningStock frm = new frmOpeningStock();
+            if (!bu.CheckRights(Convert.ToString(frm.Tag), frm.Text))
+            {
+                frm.Close();
+                MessageBox.Show("Rights failed...");
+                return;
+            }
+            foreach (Form F in this.MdiChildren)
+                if (frm.Name == F.Name)
+                { MessageBox.Show("Already Opened.."); return; }
+            frm.MdiParent = this;
+            frm.WindowState = FormWindowState.Maximized;
+            frm.FormClosed += (s, args) =>
+            {
+                btnOpeningStock.Checked = false;
+            };
             frm.Show();
         }
     }

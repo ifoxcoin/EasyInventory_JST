@@ -135,7 +135,7 @@
             this.cboCategory.Location = new System.Drawing.Point(122, 4);
             this.cboCategory.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.cboCategory.Name = "cboCategory";
-            this.cboCategory.Size = new System.Drawing.Size(223, 26);
+            this.cboCategory.Size = new System.Drawing.Size(223, 36);
             this.cboCategory.TabIndex = 25;
             this.cboCategory.ValueMember = "cat_id";
             this.cboCategory.SelectedValueChanged += new System.EventHandler(this.cboCategory_SelectedValueChanged);
@@ -151,10 +151,10 @@
             this.lblcat.AutoSize = true;
             this.lblcat.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
             this.lblcat.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.lblcat.Location = new System.Drawing.Point(5, 11);
+            this.lblcat.Location = new System.Drawing.Point(5, 0);
             this.lblcat.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.lblcat.Name = "lblcat";
-            this.lblcat.Size = new System.Drawing.Size(76, 18);
+            this.lblcat.Size = new System.Drawing.Size(103, 40);
             this.lblcat.TabIndex = 24;
             this.lblcat.Text = "Category";
             // 
@@ -164,10 +164,10 @@
             this.label3.AutoSize = true;
             this.label3.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
             this.label3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.label3.Location = new System.Drawing.Point(355, 11);
+            this.label3.Location = new System.Drawing.Point(355, 0);
             this.label3.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(90, 18);
+            this.label3.Size = new System.Drawing.Size(80, 40);
             this.label3.TabIndex = 24;
             this.label3.Text = "Item Name";
             // 
@@ -182,7 +182,7 @@
             this.cboItemName.Location = new System.Drawing.Point(472, 4);
             this.cboItemName.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.cboItemName.Name = "cboItemName";
-            this.cboItemName.Size = new System.Drawing.Size(223, 26);
+            this.cboItemName.Size = new System.Drawing.Size(223, 36);
             this.cboItemName.TabIndex = 26;
             this.cboItemName.ValueMember = "item_id";
             this.cboItemName.KeyDown += new System.Windows.Forms.KeyEventHandler(this.cboItemName_KeyDown);
@@ -234,7 +234,7 @@
             this.lbltitle.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
             this.lbltitle.Location = new System.Drawing.Point(6, 6);
             this.lbltitle.Name = "lbltitle";
-            this.lbltitle.Size = new System.Drawing.Size(137, 19);
+            this.lbltitle.Size = new System.Drawing.Size(199, 29);
             this.lbltitle.TabIndex = 1;
             this.lbltitle.Text = "STOCK REPORT";
             this.lbltitle.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -248,12 +248,13 @@
             this.reportViewer1.LocalReport.ReportEmbeddedResource = "standard.report.rptAddPrint.rdlc";
             this.reportViewer1.Location = new System.Drawing.Point(3, 94);
             this.reportViewer1.Name = "reportViewer1";
+            this.reportViewer1.ServerReport.BearerToken = null;
             this.reportViewer1.Size = new System.Drawing.Size(1225, 379);
             this.reportViewer1.TabIndex = 3;
             // 
             // frmStockRpt
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 14F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(11F, 22F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(191)))), ((int)(((byte)(219)))), ((int)(((byte)(254)))));
             this.ClientSize = new System.Drawing.Size(1231, 476);

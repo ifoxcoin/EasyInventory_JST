@@ -210,7 +210,7 @@ namespace standard.master
 			if (e.KeyData == Keys.Return)
 			{
                 //SendKeys.Send("{TAB}");
-                txtCode.Focus();
+                btnSave.Focus();
 			}
 		}
 
@@ -237,17 +237,17 @@ namespace standard.master
             this.txtSearch = new System.Windows.Forms.TextBox();
             this.lblSearch = new System.Windows.Forms.Label();
             this.dgview = new System.Windows.Forms.DataGridView();
+            this.uspRouteSelectResultBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.tblEntry = new System.Windows.Forms.TableLayoutPanel();
-            this.label1 = new System.Windows.Forms.Label();
-            this.txtRoute = new System.Windows.Forms.TextBox();
-            this.lblCode = new System.Windows.Forms.Label();
             this.txtCode = new System.Windows.Forms.TextBox();
+            this.lblCode = new System.Windows.Forms.Label();
+            this.txtRoute = new System.Windows.Forms.TextBox();
+            this.label1 = new System.Windows.Forms.Label();
             this.tblCommand = new System.Windows.Forms.TableLayoutPanel();
             this.cmdclose = new mylib.lightbutton();
             this.btnClear = new mylib.lightbutton();
             this.btnDelete = new mylib.lightbutton();
             this.btnSave = new mylib.lightbutton();
-            this.uspRouteSelectResultBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.cat_udate = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.users_uid = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ccat_id = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -259,9 +259,9 @@ namespace standard.master
             this.tblMain.SuspendLayout();
             this.tblSearch.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgview)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.uspRouteSelectResultBindingSource)).BeginInit();
             this.tblEntry.SuspendLayout();
             this.tblCommand.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.uspRouteSelectResultBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
             // a1Paneltitle
@@ -312,9 +312,9 @@ namespace standard.master
             this.tblMain.Name = "tblMain";
             this.tblMain.RowCount = 5;
             this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 54F));
-            this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 28.57143F));
+            this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 17.35537F));
             this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 69F));
-            this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 71.42857F));
+            this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 82.64463F));
             this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 69F));
             this.tblMain.Size = new System.Drawing.Size(1329, 768);
             this.tblMain.TabIndex = 2;
@@ -331,7 +331,7 @@ namespace standard.master
             this.tblSearch.Controls.Add(this.txtSearch, 1, 0);
             this.tblSearch.Controls.Add(this.lblSearch, 0, 0);
             this.tblSearch.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tblSearch.Location = new System.Drawing.Point(5, 224);
+            this.tblSearch.Location = new System.Drawing.Point(5, 160);
             this.tblSearch.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.tblSearch.Name = "tblSearch";
             this.tblSearch.RowCount = 1;
@@ -406,7 +406,7 @@ namespace standard.master
             this.dgview.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dgview.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Bold);
             this.dgview.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.dgview.Location = new System.Drawing.Point(5, 294);
+            this.dgview.Location = new System.Drawing.Point(5, 230);
             this.dgview.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.dgview.Name = "dgview";
             this.dgview.RightToLeft = System.Windows.Forms.RightToLeft.No;
@@ -422,9 +422,13 @@ namespace standard.master
             dataGridViewCellStyle4.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.dgview.RowsDefaultCellStyle = dataGridViewCellStyle4;
             this.dgview.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgview.Size = new System.Drawing.Size(1319, 397);
+            this.dgview.Size = new System.Drawing.Size(1319, 461);
             this.dgview.TabIndex = 4;
             this.dgview.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgview_CellDoubleClick);
+            // 
+            // uspRouteSelectResultBindingSource
+            // 
+            this.uspRouteSelectResultBindingSource.DataSource = typeof(standard.classes.usp_routeSelectResult);
             // 
             // tblEntry
             // 
@@ -433,48 +437,30 @@ namespace standard.master
             this.tblEntry.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 370F));
             this.tblEntry.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 300F));
             this.tblEntry.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tblEntry.Controls.Add(this.label1, 0, 1);
-            this.tblEntry.Controls.Add(this.txtRoute, 1, 1);
-            this.tblEntry.Controls.Add(this.lblCode, 0, 2);
-            this.tblEntry.Controls.Add(this.txtCode, 1, 2);
+            this.tblEntry.Controls.Add(this.txtCode, 3, 0);
+            this.tblEntry.Controls.Add(this.lblCode, 2, 0);
+            this.tblEntry.Controls.Add(this.label1, 0, 0);
+            this.tblEntry.Controls.Add(this.txtRoute, 1, 0);
             this.tblEntry.Location = new System.Drawing.Point(5, 61);
             this.tblEntry.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.tblEntry.Name = "tblEntry";
-            this.tblEntry.RowCount = 3;
-            this.tblEntry.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
-            this.tblEntry.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
-            this.tblEntry.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
-            this.tblEntry.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tblEntry.Size = new System.Drawing.Size(1319, 152);
+            this.tblEntry.RowCount = 1;
+            this.tblEntry.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tblEntry.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 88F));
+            this.tblEntry.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 88F));
+            this.tblEntry.Size = new System.Drawing.Size(1319, 88);
             this.tblEntry.TabIndex = 2;
             // 
-            // label1
+            // txtCode
             // 
-            this.label1.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.label1.AutoSize = true;
-            this.label1.BackColor = System.Drawing.Color.Transparent;
-            this.label1.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.label1.Location = new System.Drawing.Point(4, 61);
-            this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(157, 28);
-            this.label1.TabIndex = 0;
-            this.label1.Text = "Route Name";
-            this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // txtRoute
-            // 
-            this.txtRoute.BackColor = System.Drawing.Color.White;
-            this.txtRoute.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.txtRoute.Font = new System.Drawing.Font("Tahoma", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtRoute.Location = new System.Drawing.Point(304, 55);
-            this.txtRoute.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.txtRoute.MaxLength = 50;
-            this.txtRoute.Name = "txtRoute";
-            this.txtRoute.Size = new System.Drawing.Size(360, 34);
-            this.txtRoute.TabIndex = 1;
-            this.txtRoute.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtRoute_KeyDown);
+            this.txtCode.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.txtCode.Font = new System.Drawing.Font("Tahoma", 11F);
+            this.txtCode.Location = new System.Drawing.Point(973, 27);
+            this.txtCode.Name = "txtCode";
+            this.txtCode.Size = new System.Drawing.Size(343, 34);
+            this.txtCode.TabIndex = 4;
+            this.txtCode.Visible = false;
+            this.txtCode.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtCode_KeyDown);
             // 
             // lblCode
             // 
@@ -482,21 +468,41 @@ namespace standard.master
             this.lblCode.AutoSize = true;
             this.lblCode.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
             this.lblCode.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.lblCode.Location = new System.Drawing.Point(3, 112);
+            this.lblCode.Location = new System.Drawing.Point(673, 30);
             this.lblCode.Name = "lblCode";
             this.lblCode.Size = new System.Drawing.Size(143, 28);
             this.lblCode.TabIndex = 3;
             this.lblCode.Text = "Vehicle No.";
+            this.lblCode.Visible = false;
             // 
-            // txtCode
+            // txtRoute
             // 
-            this.txtCode.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.txtCode.Font = new System.Drawing.Font("Tahoma", 11F);
-            this.txtCode.Location = new System.Drawing.Point(304, 109);
-            this.txtCode.Name = "txtCode";
-            this.txtCode.Size = new System.Drawing.Size(361, 34);
-            this.txtCode.TabIndex = 4;
-            this.txtCode.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtCode_KeyDown);
+            this.txtRoute.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.txtRoute.BackColor = System.Drawing.Color.White;
+            this.txtRoute.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.txtRoute.Font = new System.Drawing.Font("Tahoma", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtRoute.Location = new System.Drawing.Point(305, 27);
+            this.txtRoute.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.txtRoute.MaxLength = 50;
+            this.txtRoute.Name = "txtRoute";
+            this.txtRoute.Size = new System.Drawing.Size(360, 34);
+            this.txtRoute.TabIndex = 1;
+            this.txtRoute.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtRoute_KeyDown);
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.BackColor = System.Drawing.Color.Transparent;
+            this.label1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.label1.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
+            this.label1.Location = new System.Drawing.Point(4, 0);
+            this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(292, 88);
+            this.label1.TabIndex = 0;
+            this.label1.Text = "Route Name";
+            this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // tblCommand
             // 
@@ -583,10 +589,6 @@ namespace standard.master
             this.btnSave.UseVisualStyleBackColor = false;
             this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
             // 
-            // uspRouteSelectResultBindingSource
-            // 
-            this.uspRouteSelectResultBindingSource.DataSource = typeof(standard.classes.usp_routeSelectResult);
-            // 
             // cat_udate
             // 
             this.cat_udate.DataPropertyName = "cat_udate";
@@ -627,13 +629,16 @@ namespace standard.master
             this.rtRoute.DataPropertyName = "rt_name";
             this.rtRoute.HeaderText = "Name";
             this.rtRoute.Name = "rtRoute";
-            this.rtRoute.Width = 200;
+            this.rtRoute.ReadOnly = true;
+            this.rtRoute.Width = 300;
             // 
             // rtVehicleNo
             // 
             this.rtVehicleNo.DataPropertyName = "rt_vehicleno";
             this.rtVehicleNo.HeaderText = "Vehicle No";
             this.rtVehicleNo.Name = "rtVehicleNo";
+            this.rtVehicleNo.ReadOnly = true;
+            this.rtVehicleNo.Visible = false;
             this.rtVehicleNo.Width = 200;
             // 
             // frmRoute
@@ -654,11 +659,11 @@ namespace standard.master
             this.tblSearch.ResumeLayout(false);
             this.tblSearch.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgview)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.uspRouteSelectResultBindingSource)).EndInit();
             this.tblEntry.ResumeLayout(false);
             this.tblEntry.PerformLayout();
             this.tblCommand.ResumeLayout(false);
             this.tblCommand.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.uspRouteSelectResultBindingSource)).EndInit();
             this.ResumeLayout(false);
 
 		}
