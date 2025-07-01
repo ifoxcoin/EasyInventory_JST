@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>standard</RootNamespace>
     <AssemblyName>standard</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
@@ -60,6 +60,11 @@
   <ItemGroup>
     <Reference Include="EntityFramework">
       <HintPath>packages\EntityFramework.5.0.0\lib\net40\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Microsoft.Office.Interop.Excel, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
+      <HintPath>packages\Microsoft.Office.Interop.Excel.15.0.4795.1001\lib\net20\Microsoft.Office.Interop.Excel.dll</HintPath>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
     <Reference Include="Microsoft.ReportViewer.Common, Version=14.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
       <HintPath>packages\Microsoft.ReportingServices.ReportViewerControl.WebForms.140.340.80\lib\net40\Microsoft.ReportViewer.Common.dll</HintPath>
@@ -193,6 +198,9 @@
     <Compile Include="master\frmPwd.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="master\frmVehicle.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="master\frmRoute.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -209,6 +217,12 @@
     </Compile>
     <Compile Include="report\frmStockRpt.Designer.cs">
       <DependentUpon>frmStockRpt.cs</DependentUpon>
+    </Compile>
+    <Compile Include="report\frmNewTransactionRpt.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="report\frmNewTransactionRpt.Designer.cs">
+      <DependentUpon>frmNewTransactionRpt.cs</DependentUpon>
     </Compile>
     <Compile Include="report\frmTransactionRpt.cs">
       <SubType>Form</SubType>
@@ -240,6 +254,12 @@
     <Compile Include="trans\frmReceipt.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="trans\frmOpeningStock.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="trans\frmSalesOrder.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="trans\frmSales.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -251,9 +271,16 @@
     <None Include="bin\x86\Debug\EasyInventory.exe.config" />
     <None Include="classes\Inventory.dbml.layout">
       <DependentUpon>Inventory.dbml</DependentUpon>
+      <SubType>Designer</SubType>
     </None>
+    <EmbeddedResource Include="master\frmVehicle.resx">
+      <DependentUpon>frmVehicle.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="master\frmRoute.resx">
       <DependentUpon>frmRoute.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="report\frmNewTransactionRpt.resx">
+      <DependentUpon>frmNewTransactionRpt.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="report\purinv.rdlc" />
     <EmbeddedResource Include="report\rptAddPrintNoGst.rdlc" />
@@ -270,10 +297,16 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
     <EmbeddedResource Include="report\rptLedgersOutstandingedited.rdlc" />
+    <EmbeddedResource Include="report\rptSalesInvoice2.rdlc" />
+    <EmbeddedResource Include="report\rptSalesInvoice1.rdlc" />
+    <EmbeddedResource Include="report\rptSalesKachathu.rdlc" />
+    <EmbeddedResource Include="report\rptSalesLoadWayByOrder.rdlc" />
+    <EmbeddedResource Include="report\rptSalesLoadWay.rdlc" />
     <EmbeddedResource Include="report\rptOutstanding.rdlc" />
     <EmbeddedResource Include="report\frmStockRpt.resx">
       <DependentUpon>frmStockRpt.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="report\rptSalesEstimate.rdlc" />
     <EmbeddedResource Include="report\rptStock.rdlc" />
     <EmbeddedResource Include="report\rptReceipt.rdlc" />
     <EmbeddedResource Include="report\rptSalesDetail.rdlc" />
@@ -307,6 +340,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="trans\frmReceipt.resx">
       <DependentUpon>frmReceipt.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="trans\frmOpeningStock.resx">
+      <DependentUpon>frmOpeningStock.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="trans\frmSalesOrder.resx">
+      <DependentUpon>frmSalesOrder.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="trans\frmSales.resx">
       <DependentUpon>frmSales.cs</DependentUpon>
@@ -388,13 +427,19 @@
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
+    <None Include="Properties\DataSources\standard.classes.category1.datasource" />
     <None Include="Properties\DataSources\standard.classes.company.datasource" />
+    <None Include="Properties\DataSources\standard.classes.item.datasource" />
     <None Include="Properties\DataSources\standard.classes.ledgermaster1.datasource" />
     <None Include="Properties\DataSources\standard.classes.packingreceipt.datasource" />
     <None Include="Properties\DataSources\standard.classes.route.datasource" />
     <None Include="Properties\DataSources\standard.classes.usp_categorySelectResult.datasource" />
     <None Include="Properties\DataSources\standard.classes.usp_commissionreceiptSelectResult.datasource" />
     <None Include="Properties\DataSources\standard.classes.usp_companySelectResult.datasource" />
+    <None Include="Properties\DataSources\standard.classes.usp_companySelectResult1.datasource" />
+    <None Include="Properties\DataSources\standard.classes.usp_getCutomerByRouteResult.datasource" />
+    <None Include="Properties\DataSources\standard.classes.usp_getCutomerByRouteResult1.datasource" />
+    <None Include="Properties\DataSources\standard.classes.usp_getLoadwayBySalesOrderResult.datasource" />
     <None Include="Properties\DataSources\standard.classes.usp_itemSelectResult1.datasource" />
     <None Include="Properties\DataSources\standard.classes.usp_ledgerItemDetailsReportResult.datasource" />
     <None Include="Properties\DataSources\standard.classes.usp_ledgermasterSelectResult1.datasource" />
@@ -402,7 +447,16 @@
     <None Include="Properties\DataSources\standard.classes.usp_LedgerwiseOutstandingReportResult.datasource" />
     <None Include="Properties\DataSources\standard.classes.usp_OutstandingReportResult.datasource" />
     <None Include="Properties\DataSources\standard.classes.usp_routeSelectResult.datasource" />
+    <None Include="Properties\DataSources\standard.classes.usp_salesdetailsSelectResult.datasource" />
+    <None Include="Properties\DataSources\standard.classes.usp_salesdetailsSelectResult1.datasource" />
+    <None Include="Properties\DataSources\standard.classes.usp_salesmasterSelectResult1.datasource" />
+    <None Include="Properties\DataSources\standard.classes.usp_stockSelectResult.datasource" />
     <None Include="Properties\DataSources\standard.classes.usp_SupplierOutstandingRptResult.datasource" />
+    <None Include="Properties\DataSources\standard.classes.usp_vehicleSelectResult.datasource" />
+    <None Include="Properties\DataSources\standard.classes.vehicle.datasource" />
+    <None Include="Properties\DataSources\standard.trans.frmSales+CopyDetailWrapper.datasource" />
+    <None Include="Properties\DataSources\standard.trans.frmSales+CopyLabelWrapper.datasource" />
+    <None Include="Properties\DataSources\standard.trans.frmSales+LogoImageModel.datasource" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -464,7 +518,17 @@
     <Content Include="bin\x86\Debug\mymain.dll" />
     <Content Include="bin\x86\Debug\System.Windows.Forms.Ribbon35.dll" />
     <Content Include="Clock.ico" />
+    <None Include="Resources\stock.png" />
+    <None Include="Resources\Vehicle %282%29.png" />
+    <None Include="Resources\Vehicle %281%29.png" />
+    <None Include="Resources\Vehicle.png" />
+    <None Include="Resources\Vehicle.jpg" />
+    <None Include="Resources\AgentOutstanding.png" />
+    <None Include="Resources\salesconvert.png" />
+    <None Include="Resources\salesconver.png" />
+    <None Include="Resources\loadreport.png" />
     <None Include="Resources\route.png" />
+    <None Include="Resources\salesorder.png" />
     <None Include="Resources\PaymentRpt.png" />
     <None Include="Resources\56_32x32.png" />
     <None Include="Resources\help.png" />

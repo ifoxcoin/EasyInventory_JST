@@ -1,7 +1,6 @@
-using Microsoft.Reporting.WinForms;
+﻿using Microsoft.Reporting.WinForms;
 using mylib;
 using standard.classes;
-using standard.Properties;
 using standard.report;
 using System;
 using System.Collections;
@@ -124,7 +123,11 @@ namespace standard.trans
 
         private BindingSource ledgermasteCityViewrBindingSource;
 
+        private BindingSource companyViewBindingSource;
+
         private BindingSource ledgermasterViewBindingSource;
+
+        private BindingSource ledgermasterViewBindingSource1;
 
         private decimalbox txtDisPer;
 
@@ -150,9 +153,13 @@ namespace standard.trans
 
         private ComboBox cboCityView;
 
+        private ComboBox cboCompany;
+
         private Label label6;
 
         private TableLayoutPanel tableLayoutPanel1;
+
+        private Label lblCompany;
 
         private Label lblBillNo;
 
@@ -163,6 +170,10 @@ namespace standard.trans
         private DataGridViewImageColumn ledit;
 
         private DataGridViewImageColumn lprint;
+
+        private DataGridViewTextBoxColumn isDraft;
+
+        private DataGridViewImageColumn lEstimateprint;
 
         private DataGridViewImageColumn ldc;
 
@@ -175,6 +186,10 @@ namespace standard.trans
         private DataGridViewTextBoxColumn smdateDataGridViewTextBoxColumn;
 
         private DataGridViewTextBoxColumn lednameDataGridViewTextBoxColumn;
+
+        private DataGridViewTextBoxColumn companyDataGridViewTextBoxColumn;
+
+        private DataGridViewTextBoxColumn isTaxableDataGridViewTextBoxColumn;
 
         private DataGridViewTextBoxColumn smtotqtyDataGridViewTextBoxColumn;
 
@@ -217,17 +232,31 @@ namespace standard.trans
         private decimalbox txtFinalnetamount;
 
         private Label txtRoundOff;
+        private Label lblFrieght;
+        private decimalbox txtFrieght;
+        private CheckBox chkIsFrieght;
+        private Label lblCom;
+        private ComboBox cboCom;
+        private BindingSource companyBindingSource;
         private DataGridViewTextBoxColumn cSNo;
         private DataGridViewTextBoxColumn cCategory;
         private DataGridViewTextBoxColumn cItemName;
         private DataGridViewTextBoxColumn cQty;
+        private DataGridViewTextBoxColumn cPerUnitRate;
+        private DataGridViewTextBoxColumn cItemUnitType;
         private DataGridViewTextBoxColumn cStock;
         private DataGridViewTextBoxColumn cRate;
-        private DataGridViewTextBoxColumn cAmount;
         private DataGridViewTextBoxColumn cTaxPercentage;
         private DataGridViewTextBoxColumn cTaxAmount;
+        private DataGridViewTextBoxColumn cUnitValue;
+        private DataGridViewTextBoxColumn cUnit;
+        private DataGridViewTextBoxColumn cFrieghtCharge;
+        private DataGridViewTextBoxColumn cAmount;
+        private DataGridViewTextBoxColumn cOrderQty;
         private DataGridViewTextBoxColumn cCostRate;
         private DataGridViewTextBoxColumn cCatID;
+        private DataGridViewTextBoxColumn cOdID;
+        private DataGridViewTextBoxColumn cSdID;
         private DataGridViewTextBoxColumn cItemID;
         private DataGridViewTextBoxColumn cCostAmount;
         private decimalbox txtothercharges;
@@ -277,7 +306,7 @@ namespace standard.trans
                 {
                     var queryable = from li in inventoryDataContext.items
                                     join cat in inventoryDataContext.categories on li.cat_id equals cat.cat_id
-                                    where li.item_name == Convert.ToString(dgvSales["cItemName", r].Value)
+                                    where li.item_id == Convert.ToInt32(dgvSales["cItemID", r].Value)
                                     select new
                                     {
                                         cat,
@@ -290,23 +319,30 @@ namespace standard.trans
                         dgvSales["cCategory", r].Value = item.cat.cat_name;
                         dgvSales["cCatId", r].Value = item.cat.cat_id;
                         dgvSales["cTaxPercentage", r].Value = item.li.item_taxpercentage;
+                        dgvSales["cUnit", r].Value = item.li.item_unit;
+                        dgvSales["cUnitValue", r].Value = item.li.item_quantity;
+                        dgvSales["cItemUnitType", r].Value = item.li.item_unittype;
                         if (lblRateType.Text.ToUpper() == "MRP  (D)")
                         {
                             dgvSales["cRate", r].Value = item.li.item_mrp;
+                            dgvSales["cPerUnitRate", r].Value = item.li.item_perunitrate > 0 ? (item.li.item_mrp / item.li.item_quantity).ToString("N2") : item.li.item_mrp.ToString("N2");
                         }
                         else if (lblRateType.Text.ToUpper() == "WHOLE SALE RATE  (C)")
                         {
                             dgvSales["cRate", r].Value = item.li.item_wholesalerate;
+                            dgvSales["cPerUnitRate", r].Value = item.li.item_perunitrate > 0 ? (item.li.item_wholesalerate / item.li.item_quantity).ToString("N2") : item.li.item_wholesalerate.ToString("N2");
                         }
                         else if (lblRateType.Text.ToUpper() == "SPECIAL RATE  (B)")
                         {
                             dgvSales["cRate", r].Value = item.li.item_specialrate;
+                            dgvSales["cPerUnitRate", r].Value = item.li.item_perunitrate > 0 ? (item.li.item_specialrate / item.li.item_quantity).ToString("N2") : item.li.item_specialrate.ToString("N2");
                         }
                         else if (lblRateType.Text.ToUpper() == "SUPER SPECIAL RATE  (A)")
                         {
                             dgvSales["cRate", r].Value = item.li.item_supersepecialrate;
+                            dgvSales["cPerUnitRate", r].Value = item.li.item_perunitrate > 0 ? (item.li.item_supersepecialrate / item.li.item_quantity).ToString("N2") : item.li.item_supersepecialrate.ToString("N2");
                         }
-                        ISingleResult<usp_stockSelectResult> singleResult = inventoryDataContext.usp_stockSelect(item.li.item_id, null, null);
+                        ISingleResult<usp_stockSelectResult> singleResult = inventoryDataContext.usp_stockSelect(item.li.item_id, null, null, null, null);
                         dgvSales["cStock", r].Value = "0";
                         foreach (usp_stockSelectResult item2 in singleResult)
                         {
@@ -347,7 +383,7 @@ namespace standard.trans
                 {
                     var queryable = from li in inventoryDataContext.items
                                     join cat in inventoryDataContext.categories on li.cat_id equals cat.cat_id
-                                    where li.item_name == Convert.ToString(dgvSales["cItemName", r].Value)
+                                    where li.item_id == Convert.ToInt32(dgvSales["cItemID", r].Value)
                                     select new
                                     {
                                         cat,
@@ -360,24 +396,30 @@ namespace standard.trans
                         dgvSales["cCategory", r].Value = item.cat.cat_name;
                         dgvSales["cCatId", r].Value = item.cat.cat_id;
                         dgvSales["cTaxPercentage", r].Value = item.li.item_taxpercentage;
-                        dgvSales["cTaxPercentage", r].Value = item.li.item_taxpercentage;
-                        if (lblRateType.Text.ToUpper() == "MRP (D)")
+                        dgvSales["cUnit", r].Value = item.li.item_unit;
+                        dgvSales["cUnitValue", r].Value = item.li.item_quantity;
+                        dgvSales["cItemUnitType", r].Value = item.li.item_unittype;
+                        if (lblRateType.Text.ToUpper() == "MRP  (D)")
                         {
                             dgvSales["cRate", r].Value = item.li.item_mrp;
+                            dgvSales["cPerUnitRate", r].Value = item.li.item_perunitrate > 0 ? (item.li.item_mrp / item.li.item_quantity).ToString("N2") : item.li.item_mrp.ToString("N2");
                         }
-                        else if (lblRateType.Text.ToUpper() == "WHOLE SALE RATE (C)")
+                        else if (lblRateType.Text.ToUpper() == "WHOLE SALE RATE  (C)")
                         {
                             dgvSales["cRate", r].Value = item.li.item_wholesalerate;
+                            dgvSales["cPerUnitRate", r].Value = item.li.item_perunitrate > 0 ? (item.li.item_wholesalerate / item.li.item_quantity).ToString("N2") : item.li.item_wholesalerate.ToString("N2");
                         }
-                        else if (lblRateType.Text.ToUpper() == "SPECIAL RATE (B)")
+                        else if (lblRateType.Text.ToUpper() == "SPECIAL RATE  (B)")
                         {
                             dgvSales["cRate", r].Value = item.li.item_specialrate;
+                            dgvSales["cPerUnitRate", r].Value = item.li.item_perunitrate > 0 ? (item.li.item_specialrate / item.li.item_quantity).ToString("N2") : item.li.item_specialrate.ToString("N2");
                         }
                         else if (lblRateType.Text.ToUpper() == "SUPER SPECIAL RATE  (A)")
                         {
                             dgvSales["cRate", r].Value = item.li.item_supersepecialrate;
+                            dgvSales["cPerUnitRate", r].Value = item.li.item_perunitrate > 0 ? (item.li.item_supersepecialrate / item.li.item_quantity).ToString("N2") : item.li.item_supersepecialrate.ToString("N2");
                         }
-                        ISingleResult<usp_stockSelectResult> singleResult = inventoryDataContext.usp_stockSelect(item.li.item_id, null, null);
+                        ISingleResult<usp_stockSelectResult> singleResult = inventoryDataContext.usp_stockSelect(item.li.item_id, null, null, null, null);
                         foreach (usp_stockSelectResult item2 in singleResult)
                         {
                             dgvSales["cStock", r].Value = item2.stock;
@@ -417,17 +459,22 @@ namespace standard.trans
                              select new
                              {
                                  a.led_id,
-                                 a.led_name,
+                                 led_name = a.led_name + " - " + a.led_address2,
                                  a.led_address2
                              };
                 ledgermasterBindingSource.DataSource = source.OrderBy(x => x.led_address2);
+                ledgermasterViewBindingSource1.DataSource = source.OrderBy(x => x.led_address2);
                 ledgermasterCityBindingSource.DataSource = source.Select(x => x.led_address2).Distinct();
                 ledgermasteCityViewrBindingSource.DataSource = source.Select(x => x.led_address2).Distinct();
-                uspsalesmasterSelectResultBindingSource.DataSource = inventoryDataContext.usp_salesmasterSelect(null, null, null, null, null, null);
+                companyViewBindingSource.DataSource = inventoryDataContext.companies.Select((company li) => li);
+                companyBindingSource.DataSource = inventoryDataContext.usp_companySelect(null);
+                uspsalesmasterSelectResultBindingSource.DataSource = inventoryDataContext.usp_salesmasterSelect(null, null, null, null, null, null, null);
                 long? no = 0L;
-                inventoryDataContext.usp_getYearNo("sal_no", global.sysdate, ref no);
+                int comId = Convert.ToInt32(cboCom.SelectedValue);
+                inventoryDataContext.usp_getYearNo("sal_no", global.sysdate, ref no, comId);
                 txtopno.Value = no.Value;
-                uspsalesmasterSelectResultBindingSource.DataSource = inventoryDataContext.usp_salesmasterSelect(null, Convert.ToInt32(cboCustomerView.SelectedValue), dtpfdate.Value.Date, dtptdate.Value.Date, null, null);
+                uspsalesmasterSelectResultBindingSource.DataSource = inventoryDataContext.usp_salesmasterSelect(null, Convert.ToInt32(cboCustomerView.SelectedValue), dtpfdate.Value.Date, dtptdate.Value.Date, null, null, null);
+                ledgermasterViewBindingSource.DataSource = source.Select(x => x.led_name).ToList();
                 LoadStock();
             }
         }
@@ -468,7 +515,8 @@ namespace standard.trans
         private void ClearData()
         {
             cboissueto.Text = string.Empty;
-            cboissueto.SelectedIndex = -1;
+            cboissueto.SelectedIndex = 0;
+            cboCom.SelectedIndex = 0;
             dgvSales.Rows.Clear();
             txttotqty.Value = 0m;
             txttotamt.Value = 0m;
@@ -481,9 +529,10 @@ namespace standard.trans
             txtTaxPer.Value = 0m;
             txtothercharges.Value = 0m;
             txtSearchBillNo.Text = string.Empty;
+            chkIsFrieght.Checked = false;
             id = 0L;
             ReceivedAmt = 0m;
-            cboCity.Select();
+            //cboCity.Select();
         }
 
         private void cmdsave_Click(object sender, EventArgs e)
@@ -495,20 +544,32 @@ namespace standard.trans
                 InventoryDataContext inventoryDataContext = new InventoryDataContext();
                 salesmaster salesmaster = new salesmaster();
                 salesdetail salesdetail = new salesdetail();
+                salesorderdetail salesorderdetails = new salesorderdetail();
+                salesorder salesorder = new salesorder();
                 salesmaster.led_id = Convert.ToInt32(cboissueto.SelectedValue);
-                bool IsCommReceived = false;
-                if (id > 0)
-                    IsCommReceived = (bool)inventoryDataContext.usp_getiscommissionceceived(id).SingleOrDefault().isreceived;
-                if (IsCommReceived == true)
+                //bool IsCommReceived = false;
+                //if (id > 0)
+                //    IsCommReceived = (bool)inventoryDataContext.usp_getiscommissionceceived(id).SingleOrDefault().isreceived;
+                //if (IsCommReceived == true)
+                //{
+                //    MessageBox.Show("Can't edit commission received bill...", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                //    return;
+                //}
+                if (Convert.ToInt64(cboCom.SelectedValue) == 0)
                 {
-                    MessageBox.Show("Can't edit commission received bill...", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                    MessageBox.Show("Invalid 'Company'", "Information", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+                    cboCom.Focus();
                     return;
                 }
-
+                else
+                {
+                    salesmaster.com_id = Convert.ToInt64(cboCom.SelectedValue);
+                }
                 if (salesmaster.led_id == 0)
                 {
                     MessageBox.Show("Invalid 'Customer'", "Information", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
                     cboissueto.Focus();
+                    return;
                 }
                 else
                 {
@@ -517,7 +578,7 @@ namespace standard.trans
                     {
                         if (!dr.IsNewRow)
                         {
-                            item = source.FirstOrDefault((item match) => match.item_name.ToUpper().Trim() == dr.Cells["cItemName"].Value.ToString().ToUpper().Trim());
+                            item = source.FirstOrDefault(match => match.item_id == Convert.ToInt32(dr.Cells["cItemID"].Value));
                             dr.Cells["cCatID"].Value = (item?.item_id ?? 0);
                             if (Convert.ToInt32(dr.Cells["cCatID"].Value) == 0 || Convert.ToDecimal(dr.Cells["cAmount"].Value) == 0m || Convert.ToDecimal(dr.Cells["cQty"].Value) == 0m)
                             {
@@ -537,7 +598,7 @@ namespace standard.trans
                         MessageBox.Show("Can't edit payment received bill...", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                         return;
                     }
-                     if (MessageBox.Show("Are you sure to save?", "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.No)
+                    if (MessageBox.Show("Are you sure to save?", "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.No)
                     {
                         salesmaster.sm_totamount = txttotamt.Value;
                         salesmaster.sm_packingcharge = txtothercharges.Value;
@@ -546,18 +607,26 @@ namespace standard.trans
                         salesmaster.sm_roundamount = Convert.ToDecimal(txtRoundOff.Text);
                         salesmaster.sm_disamount = txtDiscount.Value;
                         salesmaster.sm_taxamount = txtTaxAmt.Value;
-                        salesmaster.sm_taxpercentage = txtTaxPer.Value;
+                        foreach (DataGridViewRow dr in dgvSales.Rows)
+                        {
+                            if (!dr.IsNewRow)
+                            {
+                                salesmaster.sm_taxpercentage = Convert.ToDecimal(dr.Cells["cTaxPercentage"].Value); // or the actual column name for tax %
+                                break;
+                            }
+                        }
                         salesmaster.sm_bookno = "S";
                         salesmaster.sm_date = dtpsaldate.Value;
                         salesmaster.sm_itemcount = dgvSales.Rows.Count - 1;
                         salesmaster.sm_profit = txtProfit.Value;
                         salesmaster.sm_received = ReceivedAmt;
+                        salesmaster.com_id = Convert.ToUInt32(cboCom.SelectedValue.ToString());
                         if (id == 0)
                         {
                             long? no = 0L;
-                            inventoryDataContext.usp_setYearNo("sal_no", global.sysdate, ref no);
+                            inventoryDataContext.usp_setYearNo("sal_no", global.sysdate, ref no, salesmaster.com_id);
                             salesmaster.sm_refno = Convert.ToInt64(no);
-                            inventoryDataContext.usp_salesmasterInsert(ref id, salesmaster.sm_bookno, salesmaster.sm_refno, salesmaster.sm_date, salesmaster.led_id, salesmaster.sm_totqty, salesmaster.sm_totamount, salesmaster.sm_itemcount, salesmaster.sm_profit, salesmaster.sm_disamount, salesmaster.sm_taxamount, salesmaster.sm_taxpercentage, salesmaster.sm_packingcharge, salesmaster.sm_netamount, salesmaster.sm_received, salesmaster.sm_paidcommission, salesmaster.sm_paidpacking, salesmaster.sm_roundamount, false, false, global.ucode, global.sysdate, salesmaster.sm_desc, false);
+                            inventoryDataContext.usp_salesmasterInsert(ref id, salesmaster.sm_bookno, salesmaster.sm_refno, salesmaster.sm_date, salesmaster.led_id, salesmaster.sm_totqty, salesmaster.sm_totamount, salesmaster.sm_itemcount, salesmaster.sm_profit, salesmaster.sm_disamount, salesmaster.sm_taxamount, salesmaster.sm_taxpercentage, salesmaster.sm_packingcharge, salesmaster.sm_netamount, salesmaster.sm_received, salesmaster.sm_paidcommission, salesmaster.sm_paidpacking, salesmaster.sm_roundamount, false, false, global.ucode, global.sysdate, salesmaster.sm_desc, false, true, salesmaster.so_id, salesmaster.com_id);
                             salesdetail.sm_id = id;
                             foreach (DataGridViewRow item2 in (IEnumerable)dgvSales.Rows)
                             {
@@ -566,14 +635,31 @@ namespace standard.trans
                                     salesdetail.sd_costrate = Convert.ToDecimal(item2.Cells["cCostRate"].Value);
                                     salesdetail.sd_rate = Convert.ToDecimal(item2.Cells["cRate"].Value);
                                     salesdetail.sd_totamount = Convert.ToDecimal(item2.Cells["cAmount"].Value);
-                                    salesdetail.item_id = Convert.ToInt32(item2.Cells["cCatID"].Value);
+                                    salesdetail.item_id = Convert.ToInt32(item2.Cells["cItemID"].Value);
                                     salesdetail.sd_qty = Convert.ToInt32(item2.Cells["cQty"].Value);
+                                    salesdetail.sd_taxpercentage = Convert.ToInt32(item2.Cells["cTaxPercentage"].Value);
+                                    salesdetail.sd_taxamount = Convert.ToInt32(item2.Cells["cTaxAmount"].Value);
+                                    salesdetail.sd_unit = Convert.ToString(item2.Cells["cUnit"].Value);
+                                    salesdetail.sd_unitvalue = Convert.ToDecimal(item2.Cells["cUnitValue"].Value);
+                                    salesdetail.sd_itemunittype = Convert.ToString(item2.Cells["cItemUnitType"].Value);
+                                    salesdetail.sd_perunitrate = Convert.ToDecimal(item2.Cells["cPerUnitRate"].Value);
                                     decimal? num = Convert.ToDecimal(item2.Cells["cStock"].Value);
-                                    inventoryDataContext.usp_salesdetailsInsert(id, salesdetail.item_id, salesdetail.sd_qty, salesdetail.sd_rate, salesdetail.sd_costrate, salesdetail.sd_totamount);
-                                    inventoryDataContext.usp_stockInsert(id, "SALES", salesdetail.item_id, global.comid, 0m, salesdetail.sd_qty, global.sysdate);
+                                    salesdetail.sd_totfrieght = Convert.ToDecimal(item2.Cells["cFrieghtCharge"].Value);
+                                    inventoryDataContext.usp_salesdetailsInsert(id, salesdetail.item_id, salesdetail.sd_qty, salesdetail.sd_orderqty, salesdetail.sd_rate, salesdetail.sd_costrate, salesdetail.sd_totamount, salesdetail.sd_taxpercentage, salesdetail.sd_taxamount,
+                                        salesdetail.sd_unit, salesdetail.sd_unitvalue, salesdetail.sd_itemunittype, salesdetail.sd_totfrieght, salesdetail.sd_perunitrate, salesdetail.sd_odid);
+                                    var catid = inventoryDataContext.items.Where(i => i.item_id == salesdetail.item_id).Select(i => i.cat_id).FirstOrDefault();
+                                    var comid = inventoryDataContext.items.Where(i => i.item_id == salesdetail.item_id).Select(i => i.com_id).FirstOrDefault();
+                                    if (catid == 39)
+                                    {
+                                        inventoryDataContext.usp_stockInsert(id, "SALES", salesdetail.item_id, comid, 0m, salesdetail.sd_unitvalue, global.sysdate);
+                                    }
+                                    else
+                                    {
+                                        inventoryDataContext.usp_stockInsert(id, "SALES", salesdetail.item_id, comid, 0m, salesdetail.sd_qty, global.sysdate);
+                                    }
                                 }
                             }
-                           
+
                         }
                         else
                         {
@@ -582,34 +668,118 @@ namespace standard.trans
                             salesmaster.sm_ispackingclose = false;
                             salesmaster.sm_desc = "";
                             salesmaster.sm_isclose = false;
-                            inventoryDataContext.usp_salesmasterUpdate(id, salesmaster.sm_bookno, salesmaster.sm_refno, salesmaster.sm_date, salesmaster.led_id, salesmaster.sm_totqty, salesmaster.sm_totamount, salesmaster.sm_itemcount, salesmaster.sm_profit, salesmaster.sm_disamount, salesmaster.sm_taxamount, salesmaster.sm_taxpercentage, salesmaster.sm_packingcharge, salesmaster.sm_netamount, salesmaster.sm_received, salesmaster.sm_paidcommission, salesmaster.sm_paidpacking, salesmaster.sm_roundamount, salesmaster.sm_iscommissionclose, salesmaster.sm_ispackingclose, global.ucode, global.sysdate, salesmaster.sm_desc, salesmaster.sm_isclose);
+                            bool? isDraft = null;
+                            var smRecord = inventoryDataContext.salesmasters.Where(s => s.sm_id == id).Select(s => new { s.sm_isdraft, s.so_id }).FirstOrDefault();
+                            if (smRecord != null)
+                            {
+                                isDraft = smRecord.sm_isdraft;
+                                salesmaster.so_id = smRecord.so_id ?? 0;
+                            }
+                            salesmaster.com_id = Convert.ToUInt32(cboCom.SelectedValue.ToString());
+                            inventoryDataContext.usp_salesmasterUpdate(id, salesmaster.sm_bookno, salesmaster.sm_refno, salesmaster.sm_date, salesmaster.led_id, salesmaster.sm_totqty, salesmaster.sm_totamount, salesmaster.sm_itemcount, salesmaster.sm_profit, salesmaster.sm_disamount, salesmaster.sm_taxamount, salesmaster.sm_taxpercentage, salesmaster.sm_packingcharge, salesmaster.sm_netamount, salesmaster.sm_received, salesmaster.sm_paidcommission, salesmaster.sm_paidpacking, salesmaster.sm_roundamount, salesmaster.sm_iscommissionclose, salesmaster.sm_ispackingclose, global.ucode, global.sysdate, salesmaster.sm_desc, salesmaster.sm_isclose, true, salesmaster.so_id, salesmaster.com_id);
                             inventoryDataContext.usp_salesdetailsDelete(id);
                             inventoryDataContext.usp_stockDelete(id, "SALES");
                             foreach (DataGridViewRow item3 in (IEnumerable)dgvSales.Rows)
                             {
                                 if (!item3.IsNewRow)
                                 {
+                                    salesdetail.sd_id = Convert.ToInt32(item3.Cells["cSdID"].Value);
                                     salesdetail.sd_costrate = Convert.ToDecimal(item3.Cells["cCostRate"].Value);
                                     salesdetail.sd_rate = Convert.ToDecimal(item3.Cells["cRate"].Value);
                                     salesdetail.sd_totamount = Convert.ToDecimal(item3.Cells["cAmount"].Value);
-                                    salesdetail.item_id = Convert.ToInt32(item3.Cells["cCatID"].Value);
-                                    salesdetail.sd_qty = Convert.ToInt32(item3.Cells["cQty"].Value);
+                                    salesdetail.item_id = Convert.ToInt32(item3.Cells["cItemID"].Value);
+                                    decimal sd_qty = Convert.ToDecimal(item3.Cells["cQty"].Value);
+                                    salesdetail.sd_odid = Convert.ToInt32(item3.Cells["cOdID"].Value);
+
+                                    var existingOrderDetail = inventoryDataContext.salesorderdetails.Where(od => od.item_id == salesdetail.item_id && od.so_id == salesmaster.so_id && od.od_id == salesdetail.sd_odid).FirstOrDefault();
+                                    if (existingOrderDetail != null)
+                                    {
+                                        salesorderdetails.so_id = existingOrderDetail.so_id;
+                                        salesorderdetails.od_id = existingOrderDetail.od_id;
+                                        salesorderdetails.od_rate = existingOrderDetail.od_rate;
+                                        salesorderdetails.item_id = existingOrderDetail.item_id;
+                                    }
+                                    else
+                                    {
+                                        salesorderdetails.od_id = 0; // or handle accordingly
+                                    }
+
+                                    decimal sd_orderqty = Convert.ToDecimal(item3.Cells["cOrderQty"].Value);
+                                    salesdetail.sd_qty = Convert.ToInt32(sd_qty);
+                                    salesdetail.sd_orderqty = Convert.ToInt32(sd_orderqty);
+                                    salesdetail.sd_unitvalue = Convert.ToDecimal(item3.Cells["cUnitValue"].Value);
+                                    salesdetail.sd_taxpercentage = Convert.ToDecimal(item3.Cells["cTaxPercentage"].Value);
+                                    salesdetail.sd_taxamount = Convert.ToDecimal(item3.Cells["cTaxAmount"].Value);
+                                    salesdetail.sd_unit = Convert.ToString(item3.Cells["cUnit"].Value);
+                                    salesdetail.sd_itemunittype = Convert.ToString(item3.Cells["cItemUnitType"].Value);
+                                    salesdetail.sd_perunitrate = Convert.ToDecimal(item3.Cells["cPerUnitRate"].Value);
+                                    salesorderdetails.od_soldqty = Convert.ToDecimal(salesdetail.sd_qty);
+                                    salesorderdetails.od_qty = Convert.ToDecimal(item3.Cells["cOrderQty"].Value);
+                                    salesorderdetails.od_pendingqty = salesorderdetails.od_qty - salesorderdetails.od_soldqty;
                                     decimal? num = Convert.ToDecimal(item3.Cells["cQty"].Value);
-                                    inventoryDataContext.usp_salesdetailsInsert(id, salesdetail.item_id, salesdetail.sd_qty, salesdetail.sd_rate, salesdetail.sd_costrate, salesdetail.sd_totamount);
-                                    inventoryDataContext.usp_stockInsert(id, "SALES", salesdetail.item_id, global.comid, 0m, salesdetail.sd_qty, global.sysdate);
+                                    salesdetail.sd_totfrieght = Convert.ToDecimal(item3.Cells["cFrieghtCharge"].Value);
+
+                                    if (isDraft == false)
+                                    {
+                                        inventoryDataContext.usp_salesorderdetailsUpdate(salesorderdetails.od_id, salesorderdetails.so_id, salesorderdetails.item_id, salesorderdetails.od_qty, salesdetail.sd_unitvalue, salesorderdetails.od_soldqty, salesorderdetails.od_pendingqty, salesorderdetails.od_rate);
+                                    }
+                                    inventoryDataContext.usp_salesdetailsInsert(id, salesdetail.item_id, salesdetail.sd_qty, salesdetail.sd_orderqty, salesdetail.sd_rate, salesdetail.sd_costrate, salesdetail.sd_totamount, salesdetail.sd_taxpercentage, salesdetail.sd_taxamount, salesdetail.sd_unit, salesdetail.sd_unitvalue, salesdetail.sd_itemunittype, salesdetail.sd_totfrieght, salesdetail.sd_perunitrate, salesdetail.sd_odid);
+                                    var catid = inventoryDataContext.items.Where(i => i.item_id == salesdetail.item_id).Select(i => i.cat_id).FirstOrDefault();
+                                    var comid = inventoryDataContext.items.Where(i => i.item_id == salesdetail.item_id).Select(i => i.com_id).FirstOrDefault();
+                                    if (catid == 39)
+                                    {
+                                        inventoryDataContext.usp_stockInsert(id, "SALES", salesdetail.item_id, comid, 0m, salesdetail.sd_unitvalue, global.sysdate);
+                                    }
+                                    else
+                                    {
+                                        inventoryDataContext.usp_stockInsert(id, "SALES", salesdetail.item_id, comid, 0m, salesdetail.sd_qty, global.sysdate);
+                                    }
                                 }
                             }
+
+                            bool orderHasPendingItems = false;
+
+                            using (var freshContext = new InventoryDataContext())
+                            {
+                                var orderDetailsList = freshContext.salesorderdetails
+                                                            .Where(od => od.so_id == salesmaster.so_id)
+                                                            .ToList();
+
+                                foreach (var od in orderDetailsList)
+                                {
+                                    if (od.od_pendingqty > 0 || (od.od_soldqty == 0 && od.od_pendingqty == 0))
+                                    {
+                                        orderHasPendingItems = true;
+                                        break;
+                                    }
+                                }
+                            }
+
+
+                            if (isDraft == false)
+                            {
+                                var salesOrder = inventoryDataContext.salesorders.Where(so => so.so_id == salesmaster.so_id).FirstOrDefault();
+                                if (salesOrder != null)
+                                {
+                                    salesorder.so_totqty = salesOrder.so_totqty;
+                                    salesorder.so_refno = salesOrder.so_refno;
+                                }
+                                else
+                                {
+                                    salesorderdetails.od_id = 0; // or handle accordingly
+                                }
+                                salesorder.so_status = orderHasPendingItems ? "Partially Converted" : "Fully Converted";
+                                inventoryDataContext.usp_salesorderUpdate(salesmaster.so_id, salesorder.so_refno, salesmaster.sm_date, salesmaster.led_id, salesorder.so_totqty, salesorder.so_status, global.ucode, global.sysdate, true);
+                            }
                         }
-
-
                     }
-                }               
+                }
                 loadReport(Convert.ToInt32(id));
                 //LoadAddressPrint(Convert.ToInt32(cboissueto.SelectedValue));
                 ClearData();
                 LoadData();
                 cboissueto.Focus();
-              
+
             }
             catch (Exception ex)
             {
@@ -671,9 +841,14 @@ namespace standard.trans
             list.Add("cAmount");
             list.Add("cCostAmount");
             list.Add("cTaxAmount");
+            list.Add("cUnit");
+            list.Add("cUnitValue");
+            list.Add("cItemUnitType");
+            list.Add("cFrieghtCharge");
             List<decimal> totalSNo = bus.getTotalSNo(dgvSales, "cSNo", list);
             txttotqty.Value = Convert.ToDecimal(totalSNo[0].ToString("N0"));
             txttotamt.Text = totalSNo[1].ToString("0.00");
+            txtFrieght.Text = totalSNo[7].ToString("0.00");
             string d5 = totalSNo[3].ToString("0.00");
             decimal d = totalSNo[2];
             List<decimal> list2 = new List<decimal>();
@@ -684,13 +859,13 @@ namespace standard.trans
             decimal d3 = (txttotamt.Value + d2) * value / 100m;
             txtDiscount.Text = string.Format("{0:0.00}", d3.ToString("N2"));
             txtProfit.Text = $"{txttotamt.Value + d2 - (d + d3):0.00}";
+            txtTaxAmt.Text = d5.ToString();
             txtnetamt.Text = $"{txttotamt.Value + d2 + txtothercharges.Value - d3:0.00}";
             decimal value2 = txtTaxPer.Value;
             decimal d4 = (txtnetamt.Value - txtothercharges.Value) * value2 / 100m;
-            txtnetamt.Text = $"{d4 + txtnetamt.Value:0.00}";
-            txtTaxAmt.Text = d5.ToString();
+            //txtnetamt.Text = $"{d4 + txtnetamt.Value:0.00}";
             txtTaxAmt.Text = string.Format("{0:0.00}", txtTaxAmt.Value.ToString("N2"));
-            txtFinalnetamount.Text = Math.Round(txtnetamt.Value + txtTaxAmt.Value).ToString();
+            txtFinalnetamount.Text = Math.Round(txtnetamt.Value).ToString();
             txtFinalnetamount.Text = string.Format("{0:0.00}", txtFinalnetamount.Value.ToString("N2"));
             txtothercharges.Text = string.Format("{0:0.00}", txtothercharges.Value.ToString("N2"));
             txtRoundOff.Text = $"{txtFinalnetamount.Value - txtnetamt.Value:0.00}";
@@ -740,7 +915,7 @@ namespace standard.trans
                     {
                         var queryable = from li in inventoryDataContext.items
                                         join cat in inventoryDataContext.categories on li.cat_id equals cat.cat_id
-                                        where li.item_name == Convert.ToString(dgvSales["cItemName", r].Value)
+                                        where li.item_id == Convert.ToInt32(dgvSales["cItemID", r].Value)
                                         select new
                                         {
                                             cat,
@@ -753,23 +928,30 @@ namespace standard.trans
                             dgvSales["cCategory", r].Value = item.cat.cat_name;
                             dgvSales["cCatId", r].Value = item.cat.cat_id;
                             dgvSales["cTaxPercentage", r].Value = item.li.item_taxpercentage;
+                            dgvSales["cUnit", r].Value = item.li.item_unit;
+                            dgvSales["cUnitValue", r].Value = item.li.item_quantity;
+                            dgvSales["cItemUnitType", r].Value = item.li.item_unittype;
                             if (lblRateType.Text.ToUpper() == "MRP  (D)")
                             {
                                 dgvSales["cRate", r].Value = item.li.item_mrp;
+                                dgvSales["cPerUnitRate", r].Value = item.li.item_perunitrate > 0 ? (item.li.item_mrp / item.li.item_quantity).ToString("N2") : item.li.item_mrp.ToString("N2");
                             }
                             else if (lblRateType.Text.ToUpper() == "WHOLE SALE RATE  (C)")
                             {
                                 dgvSales["cRate", r].Value = item.li.item_wholesalerate;
+                                dgvSales["cPerUnitRate", r].Value = item.li.item_perunitrate > 0 ? (item.li.item_wholesalerate / item.li.item_quantity).ToString("N2") : item.li.item_wholesalerate.ToString("N2");
                             }
                             else if (lblRateType.Text.ToUpper() == "SPECIAL RATE  (B)")
                             {
                                 dgvSales["cRate", r].Value = item.li.item_specialrate;
+                                dgvSales["cPerUnitRate", r].Value = item.li.item_perunitrate > 0 ? (item.li.item_specialrate / item.li.item_quantity).ToString("N2") : item.li.item_specialrate.ToString("N2");
                             }
                             else if (lblRateType.Text.ToUpper() == "SUPER SPECIAL RATE  (A)")
                             {
                                 dgvSales["cRate", r].Value = item.li.item_supersepecialrate;
+                                dgvSales["cPerUnitRate", r].Value = item.li.item_perunitrate > 0 ? (item.li.item_supersepecialrate / item.li.item_quantity).ToString("N2") : item.li.item_supersepecialrate.ToString("N2");
                             }
-                            ISingleResult<usp_stockSelectResult> singleResult = inventoryDataContext.usp_stockSelect(item.li.item_id, null, null);
+                            ISingleResult<usp_stockSelectResult> singleResult = inventoryDataContext.usp_stockSelect(item.li.item_id, null, null, null, null);
                             foreach (usp_stockSelectResult item2 in singleResult)
                             {
                                 dgvSales["cStock", r].Value = item2.stock;
@@ -812,6 +994,57 @@ namespace standard.trans
             pnlview.Select();
             cmdprint_Click(this, null);
             dtpfdate.Focus();
+        }
+
+
+        private void dglist_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
+        {
+            if (dglist.Columns[e.ColumnIndex].Name == "isDraft")
+            {
+                if (e.Value is bool isDraft)
+                {
+                    e.Value = isDraft ? "Invoice" : "Under Preview";
+                    e.CellStyle.ForeColor = isDraft ? Color.Green : Color.Red;
+                    e.FormattingApplied = true;
+                }
+            }
+            if (dglist.Columns[e.ColumnIndex].Name == "taxStatus")
+            {
+                if (!dglist.Columns.Contains("smidDataGridViewTextBoxColumn"))
+                    return;
+                var sm_id = Convert.ToInt32(dglist.Rows[e.RowIndex].Cells["smidDataGridViewTextBoxColumn"].Value); // Ensure "sm_id" is present in grid
+                using (var db = new InventoryDataContext())
+                {
+                    var taxFlags = db.salesdetails
+                                     .Where(sd => sd.sm_id == sm_id)
+                                     .Join(db.items,
+                                           sd => sd.item_id,
+                                           item => item.item_id,
+                                           (sd, item) => item.item_istaxable)
+                                     .ToList();
+
+                    string taxStatus = (taxFlags.Any(x => x) && taxFlags.Any(x => !x)) ? "Mixed" :
+                                       taxFlags.Any(x => x) ? "Taxable" :
+                                       "Non-Taxable";
+
+                    e.Value = taxStatus;
+
+                    switch (taxStatus)
+                    {
+                        case "Taxable":
+                            e.CellStyle.ForeColor = Color.Green;
+                            break;
+                        case "Non-Taxable":
+                            e.CellStyle.ForeColor = Color.Red;
+                            break;
+                        case "Mixed":
+                            e.CellStyle.ForeColor = Color.DarkOrange;
+                            break;
+                    }
+
+                    e.FormattingApplied = true;
+                }
+            }
         }
 
         private void dtpFromDate_ValueChanged(object sender, EventArgs e)
@@ -861,11 +1094,28 @@ namespace standard.trans
                 InventoryDataContext inventoryDataContext = new InventoryDataContext();
                 if (txtSearchBillNo.Text == string.Empty)
                 {
-                    uspsalesmasterSelectResultBindingSource.DataSource = inventoryDataContext.usp_salesmasterSelect(null, Convert.ToInt32(cboCustomerView.SelectedValue), dtpfdate.Value.Date, dtptdate.Value.Date, null, null);
+                    uspsalesmasterSelectResultBindingSource.DataSource = inventoryDataContext.usp_salesmasterSelect(null, Convert.ToInt32(cboCustomerView.SelectedValue), dtpfdate.Value.Date, dtptdate.Value.Date, null, null, Convert.ToInt32(cboCompany.SelectedValue));
+
+                    //var salesMasterList = inventoryDataContext.usp_salesmasterSelect(null, Convert.ToInt32(cboCustomerView.SelectedValue), dtpfdate.Value.Date, dtptdate.Value.Date, null, null, Convert.ToInt32(cboCompany.SelectedValue));
+                    //foreach (var sale in salesMasterList) // your usp_salesmasterSelect result
+                    //{
+                    //    var saleDetails = inventoryDataContext.salesdetails
+                    //                        .Where(sd => sd.sm_id == sale.sm_id)
+                    //                        .Join(inventoryDataContext.items,
+                    //                              sd => sd.item_id,
+                    //                              item => item.item_id,
+                    //                              (sd, item) => new
+                    //                              {
+                    //                                  sale.sm_id,
+                    //                                  sd.item_id,
+                    //                                  item.item_name,
+                    //                                  item_istaxable = item.item_istaxable ? "Taxable" : "Non-Taxable"
+                    //                              }).ToList();
+                    //}
                 }
                 else
                 {
-                    uspsalesmasterSelectResultBindingSource.DataSource = inventoryDataContext.usp_salesmasterSelect(null, null, null, null, null, Convert.ToInt64(txtSearchBillNo.Text));
+                    uspsalesmasterSelectResultBindingSource.DataSource = inventoryDataContext.usp_salesmasterSelect(null, null, null, null, null, Convert.ToInt64(txtSearchBillNo.Text), null);
                 }
             }
             catch (Exception ex)
@@ -888,6 +1138,11 @@ namespace standard.trans
         {
         }
 
+        public class LogoImageModel
+        {
+            public byte[] LogoImage { get; set; }
+        }
+
         private void loadReport(int smid)
         {
             decimal amount = 0m;
@@ -898,6 +1153,8 @@ namespace standard.trans
             decimal num5 = 0m;
             decimal num6 = 0m;
             decimal num7 = 0m;
+            long? ledid = 0;
+            long? comId = 0;
             string empty = string.Empty;
             long num8 = 0L;
             string empty2 = string.Empty;
@@ -908,13 +1165,18 @@ namespace standard.trans
             DateTime? dateTime = null;
             if (dglist.CurrentCell != null)
             {
-                List<ReportParameter> list = new List<ReportParameter>();
+
                 if (MessageBox.Show("Are you sure to Print Bill?", "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.No)
                 {
                     InventoryDataContext inventoryDataContext = new InventoryDataContext();
-                    ISingleResult<usp_salesmasterSelectResult> singleResult = inventoryDataContext.usp_salesmasterSelect(smid, null, null, null, null, null);
-                    foreach (usp_salesmasterSelectResult item in singleResult)
+                    var masterList = inventoryDataContext.usp_salesmasterSelect(smid, null, null, null, null, null, null).ToList();
+                    var copyLabels = new[] { "ORIGINAL FOR RECIPIENT", "DUPLICATE FOR TRANSPORTER", "TRIPLICATE FOR SUPPLIER" };
+
+                    foreach (var label in copyLabels)
                     {
+                        List<ReportParameter> list = new List<ReportParameter>();
+                        var item = masterList.First();
+
                         int? num9 = 1;
                         dateTime = item.sm_date;
                         num8 = item.sm_refno;
@@ -925,53 +1187,144 @@ namespace standard.trans
                         num3 = item.sm_totamount;
                         num6 = item.sm_taxamount;
                         num7 = item.sm_taxpercentage;
+                        comId = item.com_id;
                         value = general.MoneyToText(amount);
-                    }
-                    ISingleResult<usp_companySelectResult> singleResult2 = inventoryDataContext.usp_companySelect(1L);
-                    using (IEnumerator<usp_companySelectResult> enumerator2 = singleResult2.GetEnumerator())
-                    {
-                        if (enumerator2.MoveNext())
+                        ledid = item.led_id;
+
+                        string titleValue = num7 > 0 ? "Tax Invoice" : "Bill of Supply";
+
+                        byte[] logoBytes = File.ReadAllBytes(Path.Combine(Application.StartupPath, comId == 1 ? "SaamySign.png" : "JeyakkodiSign.png"));
+                        List<LogoImageModel> logoList = new List<LogoImageModel>
                         {
-                            usp_companySelectResult current2 = enumerator2.Current;
-                            list.Add(new ReportParameter("com_name", current2.com_name));
-                            list.Add(new ReportParameter("com_add1", current2.com_add1));
-                            list.Add(new ReportParameter("com_add2", current2.com_add2));
-                            list.Add(new ReportParameter("com_add3", current2.com_add3));
-                            list.Add(new ReportParameter("com_city", current2.com_city));
-                            list.Add(new ReportParameter("com_pin", current2.com_pin));
-                            list.Add(new ReportParameter("com_phone", current2.com_phone));
-                            list.Add(new ReportParameter("com_mobile1", current2.com_mobile1));
-                            list.Add(new ReportParameter("com_tin", current2.com_tin));
-                            list.Add(new ReportParameter("com_cst", current2.com_cst));
-                            list.Add(new ReportParameter("com_email", current2.com_email));
-                            list.Add(new ReportParameter("com_pan", current2.com_pan));
-                            list.Add(new ReportParameter("com_cstdate", Convert.ToDateTime(current2.com_cstdate).ToString("dd-MMM-yyyy")));
+                            new LogoImageModel { LogoImage = logoBytes }
+                        };
+
+                        ISingleResult<usp_companySelectResult> singleResult2 = inventoryDataContext.usp_companySelect(comId);
+                        using (IEnumerator<usp_companySelectResult> enumerator2 = singleResult2.GetEnumerator())
+                        {
+                            if (enumerator2.MoveNext())
+                            {
+                                usp_companySelectResult current2 = enumerator2.Current;
+                                list.Add(new ReportParameter("com_name", current2.com_name));
+                                list.Add(new ReportParameter("com_add1", current2.com_add1));
+                                list.Add(new ReportParameter("com_add2", current2.com_add2));
+                                list.Add(new ReportParameter("com_add3", current2.com_add3));
+                                list.Add(new ReportParameter("com_city", current2.com_city));
+                                list.Add(new ReportParameter("com_pin", current2.com_pin));
+                                list.Add(new ReportParameter("com_phone", current2.com_phone));
+                                list.Add(new ReportParameter("com_mobile1", current2.com_mobile1));
+                                list.Add(new ReportParameter("com_tin", current2.com_tin));
+                                list.Add(new ReportParameter("com_cst", current2.com_cst));
+                                list.Add(new ReportParameter("com_email", current2.com_email));
+                                list.Add(new ReportParameter("com_pan", current2.com_pan));
+                                list.Add(new ReportParameter("com_cstdate", Convert.ToDateTime(current2.com_cstdate).ToString("dd-MMM-yyyy")));
+                            }
                         }
+
+                        // 📌 Invoice parameters
+                        list.Add(new ReportParameter("ordno", num8.ToString()));
+                        list.Add(new ReportParameter("orddate", $"{dateTime:dd-MMM-yyyy}"));
+                        list.Add(new ReportParameter("rstext", value));
+                        list.Add(new ReportParameter("am_acccode", empty2));
+                        list.Add(new ReportParameter("am_account", empty3));
+                        list.Add(new ReportParameter("am_bank", empty4));
+                        list.Add(new ReportParameter("title", empty5));
+                        list.Add(new ReportParameter("mi_totamt", num3.ToString("0.00")));
+                        list.Add(new ReportParameter("mi_discount", num5.ToString("0.00")));
+                        list.Add(new ReportParameter("mi_taxamt", num6.ToString("0.00")));
+                        list.Add(new ReportParameter("mi_taxper", num7.ToString("0.00")));
+                        list.Add(new ReportParameter("mi_packing", num2.ToString("0.00")));
+                        list.Add(new ReportParameter("mi_netamt", amount.ToString("0.00")));
+                        list.Add(new ReportParameter("mi_roundamt", num.ToString("0.00")));
+                        list.Add(new ReportParameter("CopyLabel", label));
+                        list.Add(new ReportParameter("title_header", titleValue));
+
+                        // 🔽 Load form & report
+                        frmRpt frmRpt = new frmRpt();
+                        frmRpt.WindowState = FormWindowState.Maximized;
+
+                        ISingleResult<usp_salesmasterSelectResult> dataSourceValue = inventoryDataContext.usp_salesmasterSelect(smid, null, null, null, null, null, null);
+                        ISingleResult<usp_salesdetailsSelectResult> dataSourceValue2 = inventoryDataContext.usp_salesdetailsSelect(smid, null, null, null, null, null, null);
+                        ISingleResult<usp_companySelectResult> dataSourceValue3 = inventoryDataContext.usp_companySelect(comId);
+                        ISingleResult<usp_ledgermasterSelectResult> dataSourceValue4 = inventoryDataContext.usp_ledgermasterSelect(ledid, null, null, null, null, null);
+
+                        // 🧾 Assign report viewer
+                        frmRpt.reportview.LocalReport.ReportEmbeddedResource = "standard.report.rptSalesInvoice1.rdlc";
+                        frmRpt.reportview.LocalReport.DataSources.Clear();
+
+                        // ✅ Add all DataSources
+                        frmRpt.reportview.LocalReport.DataSources.Add(new ReportDataSource("usp_minvoiceSelect", dataSourceValue));
+                        frmRpt.reportview.LocalReport.DataSources.Add(new ReportDataSource("ds_usp_dinvoiceSelect", dataSourceValue2));
+                        frmRpt.reportview.LocalReport.DataSources.Add(new ReportDataSource("usp_companySelect", dataSourceValue3));
+                        frmRpt.reportview.LocalReport.DataSources.Add(new ReportDataSource("usp_ledgermasterSelect", dataSourceValue4));
+                        frmRpt.reportview.LocalReport.DataSources.Add(new ReportDataSource("LogoDataSet", logoList));
+
+                        frmRpt.reportview.LocalReport.SetParameters(list);
+                        frmRpt.reportview.ZoomMode = ZoomMode.Percent;
+                        frmRpt.reportview.ZoomPercent = 100;
+                        frmRpt.reportview.RefreshReport();
+                        frmRpt.reportview.LocalReport.Refresh();
+                        frmRpt.reportview.RefreshReport();
+                        frmRpt.ShowDialog();
+
                     }
-                    list.Add(new ReportParameter("ordno", num8.ToString()));
-                    list.Add(new ReportParameter("orddate", $"{dateTime:dd-MMM-yyyy}"));
-                    list.Add(new ReportParameter("rstext", value));
-                    list.Add(new ReportParameter("am_acccode", empty2));
-                    list.Add(new ReportParameter("am_account", empty3));
-                    list.Add(new ReportParameter("am_bank", empty4));
-                    list.Add(new ReportParameter("title", empty5));
-                    list.Add(new ReportParameter("mi_totamt", num3.ToString("0.00")));
-                    list.Add(new ReportParameter("mi_discount", num5.ToString("0.00")));
-                    list.Add(new ReportParameter("mi_discount", num5.ToString("0.00")));
-                    list.Add(new ReportParameter("mi_taxamt", num6.ToString("0.00")));
-                    list.Add(new ReportParameter("mi_taxper", num7.ToString("0.00")));
-                    list.Add(new ReportParameter("mi_packing", num2.ToString("0.00")));
-                    list.Add(new ReportParameter("mi_netamt", amount.ToString("0.00")));
-                    list.Add(new ReportParameter("mi_roundamt", num.ToString("0.00")));
+
+
+                    //byte[] reportBytes = frmRpt.reportview.LocalReport.Render("PDF");
+
+                    //string downloadsPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Downloads");
+                    //string todayDate = DateTime.Now.ToString("dd-MM-yyyy_HH-mm-ss");
+                    //string Name = cboissueto.Text.Trim();
+                    //string baseFileName = cboCity.Text + "_" + Name + "_" + todayDate + "_" + "receipt";
+                    //string pdfFilePath = Path.Combine(downloadsPath, baseFileName + ".pdf");
+
+                    //File.WriteAllBytes(pdfFilePath, reportBytes);
+
+                    //frmRpt.ShowDialog();
+
+                    // Ask to send via WhatsApp
+                    //DialogResult result = MessageBox.Show("Do you want to send this bill via WhatsApp?", "Send to WhatsApp", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                    //if (result == DialogResult.Yes)
+                    //{
+                    //    int ledgerId = Convert.ToInt32(cboissueto.SelectedValue);
+                    //    string customerPhone = GetCustomerPhoneNumber(ledgerId);
+
+                    //    if (!string.IsNullOrEmpty(customerPhone))
+                    //    {
+                    //        SendViaWhatsApp(customerPhone, pdfFilePath);
+                    //    }
+                    //    else
+                    //    {
+                    //        MessageBox.Show("Customer phone number not found!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    //    }
+                    //}
+                }
+            }
+        }
+
+
+        private void loadEstimateReport(int smid)
+        {
+            if (dglist.CurrentCell != null)
+            {
+                List<ReportParameter> list = new List<ReportParameter>();
+                if (MessageBox.Show("Are you sure to Print Estimate Bill?", "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.No)
+                {
+                    InventoryDataContext inventoryDataContext = new InventoryDataContext();
+                    ISingleResult<usp_salesmasterSelectResult> singleResult = inventoryDataContext.usp_salesmasterSelect(smid, null, null, null, null, null, null);
+                    var salesMasterData = singleResult.FirstOrDefault();
+                    int? comId = Convert.ToInt32(salesMasterData.com_id);
                     frmRpt frmRpt = new frmRpt();
                     frmRpt.WindowState = FormWindowState.Maximized;
-                    ISingleResult<usp_salesmasterSelectResult> dataSourceValue = inventoryDataContext.usp_salesmasterSelect(smid, null, null, null, null, null);
-                    ISingleResult<usp_salesdetailsSelectResult> dataSourceValue2 = inventoryDataContext.usp_salesdetailsSelect(smid, null, null, null, null, null);
+                    ISingleResult<usp_salesmasterSelectResult> dataSourceValue = inventoryDataContext.usp_salesmasterSelect(smid, null, null, null, null, null, null);
+                    ISingleResult<usp_salesdetailsSelectResult> dataSourceValue2 = inventoryDataContext.usp_salesdetailsSelect(smid, null, null, null, null, null, null);
+                    ISingleResult<usp_companySelectResult> dataSourceValue3 = inventoryDataContext.usp_companySelect(comId);
                     frmRpt.reportview.RefreshReport();
-                    frmRpt.reportview.LocalReport.ReportEmbeddedResource = "standard.report.salinv.rdlc";
+                    frmRpt.reportview.LocalReport.ReportEmbeddedResource = "standard.report.rptSalesEstimate.rdlc";
                     frmRpt.reportview.LocalReport.DataSources.Clear();
-                    frmRpt.reportview.LocalReport.DataSources.Add(new ReportDataSource("usp_minvoiceSelect", dataSourceValue));
-                    frmRpt.reportview.LocalReport.DataSources.Add(new ReportDataSource("ds_usp_dinvoiceSelect", dataSourceValue2));
+                    frmRpt.reportview.LocalReport.DataSources.Add(new ReportDataSource("usp_salesMasterSelect", dataSourceValue));
+                    frmRpt.reportview.LocalReport.DataSources.Add(new ReportDataSource("usp_salesDetailSelect", dataSourceValue2));
+                    frmRpt.reportview.LocalReport.DataSources.Add(new ReportDataSource("usp_companySelect", dataSourceValue3));
                     frmRpt.reportview.LocalReport.SetParameters(list);
                     frmRpt.reportview.ZoomMode = ZoomMode.Percent;
                     frmRpt.reportview.ZoomPercent = 120;
@@ -980,34 +1333,34 @@ namespace standard.trans
                     frmRpt.reportview.RefreshReport();
                     frmRpt.ShowDialog();
 
-                    byte[] reportBytes = frmRpt.reportview.LocalReport.Render("PDF");
+                    //byte[] reportBytes = frmRpt.reportview.LocalReport.Render("PDF");
 
-                    string downloadsPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Downloads");
-                    string todayDate = DateTime.Now.ToString("dd-MM-yyyy_HH-mm-ss");
-                    string Name = cboissueto.Text.Trim();
-                    string baseFileName = cboCity.Text + "_" + Name + "_" + todayDate + "_" + "receipt";
-                    string pdfFilePath = Path.Combine(downloadsPath, baseFileName + ".pdf");
+                    //string downloadsPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Downloads");
+                    //string todayDate = DateTime.Now.ToString("dd-MM-yyyy_HH-mm-ss");
+                    //string Name = cboissueto.Text.Trim();
+                    //string baseFileName = cboCity.Text + "_" + Name + "_" + todayDate + "_" + "receipt";
+                    //string pdfFilePath = Path.Combine(downloadsPath, baseFileName + ".pdf");
 
-                    File.WriteAllBytes(pdfFilePath, reportBytes);
+                    //File.WriteAllBytes(pdfFilePath, reportBytes);
 
                     //frmRpt.ShowDialog();
 
                     // Ask to send via WhatsApp
-                    DialogResult result = MessageBox.Show("Do you want to send this bill via WhatsApp?", "Send to WhatsApp", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-                    if (result == DialogResult.Yes)
-                    {
-                        int ledgerId = Convert.ToInt32(cboissueto.SelectedValue);
-                        string customerPhone = GetCustomerPhoneNumber(ledgerId);
+                    //DialogResult result = MessageBox.Show("Do you want to send this bill via WhatsApp?", "Send to WhatsApp", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                    //if (result == DialogResult.Yes)
+                    //{
+                    //    int ledgerId = Convert.ToInt32(cboissueto.SelectedValue);
+                    //    string customerPhone = GetCustomerPhoneNumber(ledgerId);
 
-                        if (!string.IsNullOrEmpty(customerPhone))
-                        {
-                            SendViaWhatsApp(customerPhone, pdfFilePath);
-                        }
-                        else
-                        {
-                            MessageBox.Show("Customer phone number not found!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        }
-                    }
+                    //    if (!string.IsNullOrEmpty(customerPhone))
+                    //    {
+                    //        SendViaWhatsApp(customerPhone, pdfFilePath);
+                    //    }
+                    //    else
+                    //    {
+                    //        MessageBox.Show("Customer phone number not found!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    //    }
+                    //}
                 }
             }
         }
@@ -1045,7 +1398,7 @@ namespace standard.trans
             int num = Convert.ToInt32(dglist["smidDataGridViewTextBoxColumn", dglist.CurrentRow.Index].Value);
             id = num;
             InventoryDataContext inventoryDataContext = new InventoryDataContext();
-            ISingleResult<usp_salesmasterSelectResult> singleResult = inventoryDataContext.usp_salesmasterSelect(num, null, null, null, null, null);
+            ISingleResult<usp_salesmasterSelectResult> singleResult = inventoryDataContext.usp_salesmasterSelect(num, null, null, null, null, null, null);
             decimal num2 = 0m;
             decimal value = 0m;
             decimal num3 = 0m;
@@ -1057,6 +1410,7 @@ namespace standard.trans
                     usp_salesmasterSelectResult current = enumerator.Current;
                     txtopno.Text = Convert.ToString(current.sm_refno);
                     dtpsaldate.Value = Convert.ToDateTime(current.sm_date);
+                    cboCom.Text = Convert.ToString(current.com_name);
                     cboCity.Text = current.led_address2;
                     cboissueto.SelectedValue = current.led_id;
                     txtothercharges.Value = current.sm_packingcharge;
@@ -1075,7 +1429,9 @@ namespace standard.trans
                     value = current.sm_profit;
                 }
             }
-            ISingleResult<usp_salesdetailsSelectResult> singleResult2 = inventoryDataContext.usp_salesdetailsSelect(num, null, null, null, null, null);
+
+
+            ISingleResult<usp_salesdetailsSelectResult> singleResult2 = inventoryDataContext.usp_salesdetailsSelect(num, null, null, null, null, null, null);
             dgvSales.Rows.Clear();
             dgvSales.AllowUserToAddRows = false;
             foreach (usp_salesdetailsSelectResult item in singleResult2)
@@ -1083,26 +1439,114 @@ namespace standard.trans
                 dgvSales.Rows.Add();
                 dgvSales["cItemName", dgvSales.RowCount - 1].Value = item.item_name;
                 dgvSales["cCatID", dgvSales.RowCount - 1].Value = item.cat_id;
+                dgvSales["cItemID", dgvSales.RowCount - 1].Value = item.item_id;
+                dgvSales["cOdID", dgvSales.RowCount - 1].Value = item.sd_odid;
+                dgvSales["cSdID", dgvSales.RowCount - 1].Value = item.sd_id;
                 dgvSales["cCategory", dgvSales.RowCount - 1].Value = item.cat_name;
                 dgvSales["cCostRate", dgvSales.RowCount - 1].Value = item.sd_costrate;
                 dgvSales["cRate", dgvSales.RowCount - 1].Value = item.sd_rate;
                 dgvSales["cStock", dgvSales.RowCount - 1].Value = "0";
                 dgvSales["cAmount", dgvSales.RowCount - 1].Value = item.sd_totamount;
                 dgvSales["cQty", dgvSales.RowCount - 1].Value = item.sd_qty;
+                dgvSales["cOrderQty", dgvSales.RowCount - 1].Value = item.sd_orderqty;
+                dgvSales["cTaxPercentage", dgvSales.RowCount - 1].Value = item.sd_taxpercentage;
+                dgvSales["cTaxAmount", dgvSales.RowCount - 1].Value = item.sd_taxamount;
+                dgvSales["cUnit", dgvSales.RowCount - 1].Value = item.sd_unit;
+                dgvSales["cUnitValue", dgvSales.RowCount - 1].Value = item.sd_unitvalue.ToString("N2");
+                dgvSales["cItemUnitType", dgvSales.RowCount - 1].Value = item.sd_itemunittype;
+                dgvSales["cPerUnitRate", dgvSales.RowCount - 1].Value = item.sd_perunitrate.ToString("N2");
+                dgvSales["cFrieghtCharge", dgvSales.RowCount - 1].Value = item.sd_totfrieght.ToString("N2");
                 dgvSales["cCostAmount", dgvSales.RowCount - 1].Value = (item.sd_qty * item.sd_costrate).ToString("N2");
-                ISingleResult<usp_stockSelectResult> singleResult3 = inventoryDataContext.usp_stockSelect(item.item_id, null, null);
+                ISingleResult<usp_stockSelectResult> singleResult3 = inventoryDataContext.usp_stockSelect(item.item_id, null, null, null, null);
                 foreach (usp_stockSelectResult item2 in singleResult3)
                 {
                     DataGridViewCell dataGridViewCell = dgvSales["cStock", dgvSales.RowCount - 1];
-                    decimal sd_qty = item.sd_qty;
-                    decimal? stock = item2.stock;
-                    dataGridViewCell.Value = (decimal?)sd_qty + stock;
+                    if (Convert.ToInt32(dgvSales["cCatID", dgvSales.RowCount - 1].Value) == 39)
+                    {
+                        decimal unitValue = item.sd_unitvalue;
+                        decimal? stock = item2.stock;
+                        dataGridViewCell.Value = (decimal?)unitValue + stock;
+                    }
+                    else
+                    {
+                        decimal sd_qty = item.sd_qty;
+                        decimal? stock = item2.stock;
+                        dataGridViewCell.Value = (decimal?)sd_qty + stock;
+                    }
+                }
+                //txtTaxAmt.Value = item.sd_taxamount;
+            }
+
+            foreach (DataGridViewRow row in dgvSales.Rows)
+            {
+                if (row.IsNewRow) continue;
+
+                decimal costRate, qty, stocks, rate, taxPercentage, unitValue, FrieghtCharge, perUnitRate;
+
+                if (Convert.ToString(row.Cells["cItemName"].Value) == string.Empty)
+                {
+                    dgvSales.Rows.RemoveAt(row.Index);
+                    continue;
+                }
+
+                decimal.TryParse(Convert.ToString(row.Cells["cQty"].Value), out qty);
+                qty = Math.Abs(qty);
+
+                decimal.TryParse(Convert.ToString(row.Cells["cStock"].Value), out stocks);
+                row.Cells["cQty"].Value = (qty > 0m) ? (object)qty : null;
+
+                if (qty > stocks)
+                {
+                    MessageBox.Show("You have only " + stocks + " Qty", "Info", MessageBoxButtons.OK, MessageBoxIcon.Hand);
+                    dgvSales.CurrentCell = row.Cells["cQty"];
+                    dgvSales.BeginEdit(selectAll: true);
+                    dgvSales.Focus();
+                    break; // Stop processing further until user fixes
+                }
+
+                decimal.TryParse(Convert.ToString(row.Cells["cRate"].Value), out rate);
+                decimal.TryParse(Convert.ToString(row.Cells["cCostRate"].Value), out costRate);
+                decimal.TryParse(Convert.ToString(row.Cells["cTaxPercentage"].Value), out taxPercentage);
+                decimal.TryParse(Convert.ToString(row.Cells["cUnitValue"].Value), out unitValue);
+                decimal.TryParse(Convert.ToString(row.Cells["cPerUnitRate"].Value), out perUnitRate);
+
+
+                if (Convert.ToInt32(row.Cells["cCatID"].Value) == 39)
+                {
+                    row.Cells["cUnitValue"].ReadOnly = false;
+                    row.Cells["cQty"].ReadOnly = true;
+                    row.Cells["cFrieghtCharge"].Value = 0.ToString("N2");
+                }
+                else
+                {
+                    if (chkIsFrieght.Checked)
+                        row.Cells["cFrieghtCharge"].Value = ((rate > 0m && qty > 0m) ? ((object)(unitValue * qty).ToString("N2")) : null);
+                    else
+                        row.Cells["cFrieghtCharge"].Value = null;
+                }
+                decimal.TryParse(Convert.ToString(row.Cells["cFrieghtCharge"].Value), out FrieghtCharge);
+
+                row.Cells["cAmount"].Value = ((rate > 0m && qty > 0m) ? ((object)((rate * qty) + ((rate * qty) * taxPercentage / 100))) : null);
+                row.Cells["cTaxAmount"].Value = ((rate > 0m && qty > 0m) ? ((object)((rate * qty) * taxPercentage / 100)) : null);
+                row.Cells["cCostAmount"].Value = ((costRate > 0m && qty > 0m) ? ((object)(costRate * qty)) : null);
+
+                if (Convert.ToInt32(row.Cells["cCatID"].Value) == 39)
+                {
+                    row.Cells["cRate"].Value = unitValue * perUnitRate;
+                    decimal.TryParse(Convert.ToString(row.Cells["cRate"].Value), out rate);
+                    row.Cells["cTaxAmount"].Value = ((rate > 0m && qty > 0m) ? ((object)((rate * qty) * taxPercentage / 100)) : null);
+                    row.Cells["cAmount"].Value = ((rate > 0m && qty > 0m) ? ((object)((rate * qty) + ((rate * qty) * taxPercentage / 100))) : null);
                 }
             }
+
+            // Recalculate SNo column
+            SetColumnIndex method = Mymethod;
+            dgvSales.BeginInvoke(method, "cSNo");
+
             dgvSales.AllowUserToAddRows = true;
             txtProfit.Value = value;
             txtDiscount.Value = Convert.ToDecimal(num2.ToString("N2"));
-            txtTaxAmt.Value = Convert.ToDecimal(num3.ToString("N2"));
+            //txtTaxAmt.Value = Convert.ToDecimal(num3.ToString("N2"));
             txtTaxPer.Value = Convert.ToDecimal(num4.ToString("N2"));
             calacTotal();
             LoadStock();
@@ -1121,11 +1565,15 @@ namespace standard.trans
                 {
                     int num = Convert.ToInt32(dglist["smidDataGridViewTextBoxColumn", e.RowIndex].Value);
                     InventoryDataContext inventoryDataContext = new InventoryDataContext();
+                    var soid = inventoryDataContext.salesmasters.Where(sm => sm.sm_id == num).Select(sm => sm.so_id).FirstOrDefault();
+                    var odid = inventoryDataContext.salesdetails.Where(sd => sd.sm_id == num).Select(sd => sd.sd_odid).FirstOrDefault();
+
+
                     if (MessageBox.Show("Are you sure to delete?", "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.No)
                     {
                         inventoryDataContext.usp_salesdetailsDelete(num);
-                        inventoryDataContext.usp_stockDelete(num, "SALES");
                         inventoryDataContext.usp_salesmasterDelete(num);
+                        inventoryDataContext.usp_stockDelete(num, "SALES");
                         cmdprint_Click(this, null);
                         MessageBox.Show("Record deleted successfully...", "Information", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
                     }
@@ -1139,7 +1587,25 @@ namespace standard.trans
                 }
                 else if (e.ColumnIndex == lprint.Index && e.RowIndex > -1)
                 {
+                    var isDraftValue = dglist.Rows[e.RowIndex].Cells["isDraft"].Value;
+
+                    if (isDraftValue is bool isDraft && !isDraft)
+                    {
+                        MessageBox.Show("This record is not converted to Sales.", "Alert", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        return;
+                    }
                     loadReport(Convert.ToInt32(dglist.CurrentRow.Cells["smidDataGridViewTextBoxColumn"].Value));
+                }
+                else if (e.ColumnIndex == lEstimateprint.Index && e.RowIndex > -1)
+                {
+                    var isDraftValue = dglist.Rows[e.RowIndex].Cells["isDraft"].Value;
+
+                    if (isDraftValue is bool isDraft && !isDraft)
+                    {
+                        MessageBox.Show("This record is not converted to Sales.", "Alert", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        return;
+                    }
+                    loadEstimateReport(Convert.ToInt32(dglist.CurrentRow.Cells["smidDataGridViewTextBoxColumn"].Value));
                 }
             }
             catch (Exception ex)
@@ -1176,25 +1642,25 @@ namespace standard.trans
         {
         }
 
-        private void cboCity_SelectedValueChanged(object sender, EventArgs e)
-        {
-            if (cboCity.SelectedItem != null)
-            {
-                InventoryDataContext inventoryDataContext = new InventoryDataContext();
-                using (inventoryDataContext)
-                {
-                    ledgermasterBindingSource.Clear();
-                    var dataSource = from a in inventoryDataContext.ledgermasters
-                                     where a.led_accounttype == "Customer" && a.led_address2 == cboCity.Text.ToString()
-                                     select new
-                                     {
-                                         a.led_id,
-                                         a.led_name
-                                     };
-                    ledgermasterBindingSource.DataSource = dataSource;
-                }
-            }
-        }
+        //private void cboCity_SelectedValueChanged(object sender, EventArgs e)
+        //{
+        //    if (cboCity.SelectedItem != null)
+        //    {
+        //        InventoryDataContext inventoryDataContext = new InventoryDataContext();
+        //        using (inventoryDataContext)
+        //        {
+        //            ledgermasterBindingSource.Clear();
+        //            var dataSource = from a in inventoryDataContext.ledgermasters
+        //                             where a.led_accounttype == "Customer" && a.led_address2 == cboCity.Text.ToString()
+        //                             select new
+        //                             {
+        //                                 a.led_id,
+        //                                 a.led_name
+        //                             };
+        //            ledgermasterBindingSource.DataSource = dataSource;
+        //        }
+        //    }
+        //}
 
         private void cbopurfrom_SelectedValueChanged(object sender, EventArgs e)
         {
@@ -1204,12 +1670,13 @@ namespace standard.trans
                 using (inventoryDataContext)
                 {
                     IQueryable<ledgermaster> queryable = inventoryDataContext.ledgermasters.Where((ledgermaster li) => li.led_id == (long)Convert.ToInt32(cboissueto.SelectedValue));
-                    foreach (ledgermaster item in queryable)
+                    foreach (ledgermaster lm in queryable)
                     {
-                        lblAddress.Text = item.led_address + "," + item.led_address1 + "," + item.led_address2 + "-" + item.led_pincode;
-                        lblGSTIN.Text = "GSTIN:" + item.led_tin;
-                        lblRateType.Text = item.led_ratetype;
-                        txtDisPer.Value = item.led_disper;
+                        lblAddress.Text = lm.led_address + "," + lm.led_address1 + "," + lm.led_address2 + "-" + lm.led_pincode;
+                        lblGSTIN.Text = "GSTIN:" + lm.led_tin;
+                        lblRateType.Text = lm.led_ratetype;
+                        txtDisPer.Value = lm.led_disper;
+                        chkIsFrieght.Checked = lm.led_isfreight;
                     }
                 }
             }
@@ -1219,7 +1686,7 @@ namespace standard.trans
         {
             if (e.KeyCode == Keys.Return || e.KeyCode == Keys.Tab)
             {
-                cboCity.Focus();
+                cboissueto.Focus();
             }
         }
 
@@ -1232,6 +1699,14 @@ namespace standard.trans
         }
 
         private void cboissueto_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Return || e.KeyCode == Keys.Tab)
+            {
+                cboCom.Focus();
+            }
+        }
+
+        private void cbocompany_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Return || e.KeyCode == Keys.Tab)
             {
@@ -1278,13 +1753,23 @@ namespace standard.trans
             {
                 return;
             }
+            if (cboissueto == null || cboissueto.SelectedIndex == 0)
+            {
+                MessageBox.Show("Invalid 'Customer'", "Information", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+                cboissueto.Focus();
+                return;
+            }
             int r = dgvSales.CurrentCell.RowIndex;
             int columnIndex = dgvSales.CurrentCell.ColumnIndex;
             decimal costRate;
             decimal qty;
+            decimal orderQty;
             decimal stock;
             decimal rate;
             decimal taxPercentage;
+            decimal unitValue;
+            decimal PerUnitRate;
+            decimal FrieghtCharge;
             if (columnIndex == cCategory.Index)
             {
                 if (Convert.ToString(dgvSales["cCategory", r].Value) == string.Empty && !dgvSales.CurrentRow.IsNewRow)
@@ -1318,8 +1803,8 @@ namespace standard.trans
                     }
                     loadgrid(num);
                     objsv.ShowDialog();
-                    string itemname = global.itemname;
                     long itemid = global.itemid;
+                    string itemname = global.itemname;
                     try
                     {
                         dgvSales["cItemName", r].Value = itemname;
@@ -1328,11 +1813,17 @@ namespace standard.trans
                         {
                             dgvSales.Rows.RemoveAt(r);
                         }
-                        using (inventoryDataContext)
+                        if (Convert.ToInt32(dgvSales["cCatID", r].Value) == 39)
                         {
-                            var queryable2 = from li in inventoryDataContext.items
+                            dgvSales["cUnitValue", r].ReadOnly = false;
+                            dgvSales["cQty", r].ReadOnly = true;
+                            dgvSales["cQty", r].Value = 1;
+                        }
+                        using (inventoryDataContext3)
+                        {
+                            var queryable2 = from li in inventoryDataContext3.items
                                              join cat in inventoryDataContext3.categories on li.cat_id equals cat.cat_id
-                                             where li.item_name == Convert.ToString(dgvSales["cItemName", r].Value)
+                                             where li.item_id == Convert.ToInt32(dgvSales["cItemID", r].Value)
                                              select new
                                              {
                                                  cat,
@@ -1345,23 +1836,51 @@ namespace standard.trans
                                 dgvSales["cCategory", r].Value = item2.cat.cat_name;
                                 dgvSales["cCatId", r].Value = item2.cat.cat_id;
                                 dgvSales["cTaxPercentage", r].Value = item2.li.item_taxpercentage;
+                                dgvSales["cUnit", r].Value = item2.li.item_unit;
+                                dgvSales["cUnitValue", r].Value = item2.li.item_quantity;
+                                dgvSales["cItemUnitType", r].Value = item2.li.item_unittype;
+
                                 if (lblRateType.Text.ToUpper() == "MRP  (D)")
                                 {
                                     dgvSales["cRate", r].Value = item2.li.item_mrp;
+                                    dgvSales["cPerUnitRate", r].Value = item2.li.item_perunitrate > 0 ? (item2.li.item_mrp / item2.li.item_quantity).ToString("N2") : item2.li.item_mrp.ToString("N2");
                                 }
                                 else if (lblRateType.Text.ToUpper() == "WHOLE SALE RATE  (C)")
                                 {
                                     dgvSales["cRate", r].Value = item2.li.item_wholesalerate;
+                                    dgvSales["cPerUnitRate", r].Value = item2.li.item_perunitrate > 0 ? (item2.li.item_wholesalerate / item2.li.item_quantity).ToString("N2") : item2.li.item_wholesalerate.ToString("N2");
                                 }
                                 else if (lblRateType.Text.ToUpper() == "SPECIAL RATE  (B)")
                                 {
                                     dgvSales["cRate", r].Value = item2.li.item_specialrate;
+                                    dgvSales["cPerUnitRate", r].Value = item2.li.item_perunitrate > 0 ? (item2.li.item_specialrate / item2.li.item_quantity).ToString("N2") : item2.li.item_specialrate.ToString("N2");
                                 }
                                 else if (lblRateType.Text.ToUpper() == "SUPER SPECIAL RATE  (A)")
                                 {
                                     dgvSales["cRate", r].Value = item2.li.item_supersepecialrate;
+                                    dgvSales["cPerUnitRate", r].Value = item2.li.item_perunitrate > 0 ? (item2.li.item_supersepecialrate / item2.li.item_quantity).ToString("N2") : item2.li.item_supersepecialrate.ToString("N2");
                                 }
-                                ISingleResult<usp_stockSelectResult> singleResult = inventoryDataContext.usp_stockSelect(item2.li.item_id, null, null);
+                                decimal perUnitAmount = Convert.ToDecimal(dgvSales["cPerUnitRate", r].Value);
+                                decimal amount = Convert.ToDecimal(dgvSales["cRate", r].Value);
+                                if (amount <= 0)
+                                {
+                                    MessageBox.Show("Invalid rate! Rate must be greater than zero.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                    dgvSales["cPerUnitRate", r].Value = "0.00";
+                                    return;
+                                }
+                                else
+                                {
+                                    if (chkIsFrieght.Checked)
+                                    {
+                                        dgvSales["cPerUnitRate", r].Value = (perUnitAmount - 1).ToString("N2");
+                                    }
+                                    else
+                                    {
+                                        dgvSales["cPerUnitRate", r].Value = perUnitAmount.ToString("N2");
+                                    }
+                                }
+                                dgvSales["cRate", r].Value = Convert.ToDecimal(dgvSales["cPerUnitRate", r].Value) * item2.li.item_quantity;
+                                ISingleResult<usp_stockSelectResult> singleResult = inventoryDataContext3.usp_stockSelect(item2.li.item_id, null, null, null, null);
                                 foreach (usp_stockSelectResult item3 in singleResult)
                                 {
                                     dgvSales["cStock", r].Value = item3.stock;
@@ -1371,8 +1890,10 @@ namespace standard.trans
                         dgvSales.CurrentCell = dgvSales.Rows[dgvSales.CurrentCellAddress.Y].Cells["cQty"];
                         dgvSales.Focus();
                     }
-                    catch
+                    catch (Exception ex)
                     {
+                        frmException ex2 = new frmException(ex);
+                        ex2.ShowDialog();
                     }
                 }
             }
@@ -1389,7 +1910,7 @@ namespace standard.trans
                     {
                         var queryable2 = from li in inventoryDataContext.items
                                          join cat in inventoryDataContext.categories on li.cat_id equals cat.cat_id
-                                         where li.item_name == Convert.ToString(dgvSales["cItemName", r].Value)
+                                         where li.item_id == Convert.ToInt32(dgvSales["cItemID", r].Value)
                                          select new
                                          {
                                              cat,
@@ -1404,20 +1925,44 @@ namespace standard.trans
                             if (lblRateType.Text.ToUpper() == "MRP  (D)")
                             {
                                 dgvSales["cRate", r].Value = item4.li.item_mrp;
+                                dgvSales["cPerUnitRate", r].Value = item4.li.item_perunitrate > 0 ? (item4.li.item_mrp / item4.li.item_quantity).ToString("N2") : item4.li.item_mrp.ToString("N2");
                             }
                             else if (lblRateType.Text.ToUpper() == "WHOLE SALE RATE  (C)")
                             {
                                 dgvSales["cRate", r].Value = item4.li.item_wholesalerate;
+                                dgvSales["cPerUnitRate", r].Value = item4.li.item_perunitrate > 0 ? (item4.li.item_wholesalerate / item4.li.item_quantity).ToString("N2") : item4.li.item_wholesalerate.ToString("N2");
                             }
                             else if (lblRateType.Text.ToUpper() == "SPECIAL RATE  (B)")
                             {
                                 dgvSales["cRate", r].Value = item4.li.item_specialrate;
+                                dgvSales["cPerUnitRate", r].Value = item4.li.item_perunitrate > 0 ? (item4.li.item_specialrate / item4.li.item_quantity).ToString("N2") : item4.li.item_specialrate.ToString("N2");
                             }
                             else if (lblRateType.Text.ToUpper() == "SUPER SPECIAL RATE  (A)")
                             {
                                 dgvSales["cRate", r].Value = item4.li.item_supersepecialrate;
+                                dgvSales["cPerUnitRate", r].Value = item4.li.item_perunitrate > 0 ? (item4.li.item_supersepecialrate / item4.li.item_quantity).ToString("N2") : item4.li.item_supersepecialrate.ToString("N2");
                             }
-                            ISingleResult<usp_stockSelectResult> singleResult = inventoryDataContext.usp_stockSelect(item4.li.item_id, null, null);
+                            decimal perUnitAmount = Convert.ToDecimal(dgvSales["cPerUnitRate", r].Value);
+                            decimal amount = Convert.ToDecimal(dgvSales["cRate", r].Value);
+                            if (amount <= 0)
+                            {
+                                MessageBox.Show("Invalid rate! Rate must be greater than zero.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                dgvSales["cPerUnitRate", r].Value = "0.00";
+                                return;
+                            }
+                            else
+                            {
+                                if (chkIsFrieght.Checked)
+                                {
+                                    dgvSales["cPerUnitRate", r].Value = (perUnitAmount - 1).ToString("N2");
+                                }
+                                else
+                                {
+                                    dgvSales["cPerUnitRate", r].Value = perUnitAmount.ToString("N2");
+                                }
+                            }
+                            dgvSales["cRate", r].Value = Convert.ToDecimal(dgvSales["cPerUnitRate", r].Value) * item4.li.item_quantity;
+                            ISingleResult<usp_stockSelectResult> singleResult = inventoryDataContext.usp_stockSelect(item4.li.item_id, null, null, null, null);
                             foreach (usp_stockSelectResult item5 in singleResult)
                             {
                                 dgvSales["cStock", r].Value = item5.stock;
@@ -1431,6 +1976,92 @@ namespace standard.trans
                 {
                 }
             }
+
+            else if (columnIndex == cUnitValue.Index)
+            {
+                try
+                {
+                    dgvSales["cUnitValue", r].ReadOnly = true;
+                    decimal.TryParse(Convert.ToString(dgvSales["cStock", r].Value), out stock); // No Math.Abs here
+                    decimal.TryParse(Convert.ToString(dgvSales["cUnitValue", r].Value), out unitValue);
+                    decimal.TryParse(Convert.ToString(dgvSales["cPerUnitRate", r].Value), out PerUnitRate);
+                    decimal.TryParse(Convert.ToString(dgvSales["cQty", r].Value), out qty);
+                    if (dgvSales["cCatID", r].Value != null && Convert.ToInt32(dgvSales["cCatID", r].Value) == 39)
+                    {
+                        dgvSales["cUnitValue", r].ReadOnly = false;
+                        if (unitValue <= stock)
+                        {
+                            dgvSales["cUnitValue", r].Value = unitValue;
+                        }
+                        else
+                        {
+                            MessageBox.Show("You have only " + stock + " Qty", "Info", MessageBoxButtons.OK, MessageBoxIcon.Hand);
+                            dgvSales["cUnitValue", dgvSales.CurrentRow.Index].Value = null;
+                            dgvSales["cRate", dgvSales.CurrentRow.Index].Value = null;
+                            dgvSales["cAmount", dgvSales.CurrentRow.Index].Value = null;
+                            dgvSales["cTaxAmount", dgvSales.CurrentRow.Index].Value = null;
+                            dgvSales.CurrentCell = dgvSales["cUnitValue", dgvSales.CurrentRow.Index];
+                            dgvSales.CurrentCell = dgvSales.Rows[dgvSales.CurrentCellAddress.Y].Cells["cUnitValue"];
+                            dgvSales.Focus();
+                            return;
+                        }
+
+                        dgvSales["cRate", r].Value = unitValue * PerUnitRate;
+                        decimal.TryParse(Convert.ToString(dgvSales["cRate", r].Value), out rate);
+                        decimal.TryParse(Convert.ToString(dgvSales["cCostRate", r].Value), out costRate);
+                        decimal.TryParse(Convert.ToString(dgvSales["cTaxPercentage", r].Value), out taxPercentage);
+                        decimal.TryParse(Convert.ToString(dgvSales["cUnitValue", r].Value), out unitValue);
+                        dgvSales["cFrieghtCharge", r].Value = 0.ToString("N2");
+
+                        decimal.TryParse(Convert.ToString(dgvSales["cFrieghtCharge", r].Value), out FrieghtCharge);
+
+                        dgvSales["cAmount", r].Value = ((rate > 0m && qty > 0m) ? ((object)((rate * qty) + ((rate * qty) * taxPercentage / 100))) : null);
+                        dgvSales["cTaxAmount", r].Value = ((rate > 0m && qty > 0m) ? ((object)((rate * qty) * taxPercentage / 100)) : null);
+                        dgvSales["cCostAmount", r].Value = ((costRate > 0m && qty > 0m) ? ((object)(costRate * qty)) : null);
+                        calacTotal();
+                        dgvSales.CurrentCell = dgvSales.Rows[dgvSales.CurrentCellAddress.Y].Cells["cUnit"];
+                        dgvSales.Focus();
+                    }
+                }
+                catch
+                {
+                }
+            }
+
+            else if (columnIndex == cPerUnitRate.Index)
+            {
+                decimal.TryParse(Convert.ToString(dgvSales["cUnitValue", r].Value), out unitValue);
+                decimal.TryParse(Convert.ToString(dgvSales["cQty", r].Value), out qty);
+                decimal.TryParse(Convert.ToString(dgvSales["cPerUnitRate", r].Value), out PerUnitRate);
+                decimal.TryParse(Convert.ToString(dgvSales["cTaxPercentage", r].Value), out taxPercentage);
+
+                dgvSales["cRate", r].Value = unitValue * PerUnitRate;
+                decimal.TryParse(Convert.ToString(dgvSales["cRate", r].Value), out rate);
+
+                if (Convert.ToInt32(dgvSales["cCatID", r].Value) == 39)
+                {
+                    dgvSales["cUnitValue", r].ReadOnly = false;
+                    dgvSales["cQty", r].ReadOnly = true;
+                    dgvSales["cFrieghtCharge", r].Value = 0.ToString("N2");
+                }
+                else
+                {
+                    if (chkIsFrieght.Checked)
+                        dgvSales["cFrieghtCharge", r].Value = ((rate > 0m && qty > 0m) ? ((object)(unitValue * qty).ToString("N2")) : null);
+                    else
+                        dgvSales["cFrieghtCharge", r].Value = null;
+                }
+
+                decimal.TryParse(Convert.ToString(dgvSales["cFrieghtCharge", r].Value), out FrieghtCharge);
+
+                dgvSales["cAmount", r].Value = ((rate > 0m && qty > 0m) ? ((object)((rate * qty) + ((rate * qty) * taxPercentage / 100))) : null);
+                dgvSales["cTaxAmount", r].Value = ((rate > 0m && qty > 0m) ? ((object)((rate * qty) * taxPercentage / 100)) : null);
+                calacTotal();
+                SetColumnIndex method = Mymethod;
+                dgvSales.BeginInvoke(method, "cCategory");
+
+            }
+
             else if (columnIndex == cQty.Index)
             {
                 if (Convert.ToString(dgvSales["cItemName", r].Value) == string.Empty && !dgvSales.CurrentRow.IsNewRow)
@@ -1438,28 +2069,45 @@ namespace standard.trans
                     dgvSales.Rows.RemoveAt(r);
                 }
                 decimal.TryParse(Convert.ToString(dgvSales["cQty", r].Value), out qty);
-                qty = Math.Abs(qty);
-                decimal.TryParse(Convert.ToString(dgvSales["cStock", r].Value), out stock);
-                stock = Math.Abs(stock);
-                dgvSales["cQty", r].Value = ((qty > 0m) ? ((object)qty) : null);
-                dgvSales["cQty", r].Value = ((qty <= stock) ? ((object)qty) : null);
-                if (qty > stock)
+                decimal sd_orderqty = Convert.ToDecimal(dgvSales["cOrderQty", r].Value);
+                qty = Math.Abs(qty); // Keep this to prevent negative quantity input
+
+                decimal.TryParse(Convert.ToString(dgvSales["cStock", r].Value), out stock); // No Math.Abs here
+
+                dgvSales["cQty", r].Value = (qty > 0m) ? (object)qty : null;
+
+                if (qty <= stock)
+                {
+                    dgvSales["cQty", r].Value = qty;
+                }
+                else
                 {
                     MessageBox.Show("You have only " + stock + " Qty", "Info", MessageBoxButtons.OK, MessageBoxIcon.Hand);
-                    dgvSales.CurrentCell = dgvSales["cQty", dgvSales.CurrentRow.Index];
-                    dgvSales.BeginEdit(selectAll: true);
-                    dgvSales.Focus();
+                    dgvSales["cQty", dgvSales.CurrentRow.Index].Value = null;
+                    int qtyColIndex = dgvSales.Columns["cQty"].Index;
+                    dgvSales.CurrentCell = dgvSales[qtyColIndex - 1, dgvSales.CurrentRow.Index];
+                    //dgvSales.CurrentCell = dgvSales["cQty" - 1, dgvSales.CurrentRow.Index];
+                    //dgvSales.BeginEdit(true);
+                    //dgvSales.Focus();
+                    return;
                 }
                 decimal.TryParse(Convert.ToString(dgvSales["cRate", r].Value), out rate);
                 decimal.TryParse(Convert.ToString(dgvSales["cCostRate", r].Value), out costRate);
                 decimal.TryParse(Convert.ToString(dgvSales["cTaxPercentage", r].Value), out taxPercentage);
-                dgvSales["cAmount", r].Value = ((rate > 0m && qty > 0m) ? ((object)(rate * qty)) : null);
-                dgvSales["cTaxAmount", r].Value = ((rate > 0m && qty > 0m) ? ((object)((rate * qty) * taxPercentage/100)) : null);
+                decimal.TryParse(Convert.ToString(dgvSales["cUnitValue", r].Value), out unitValue);
+                if (chkIsFrieght.Checked == true)
+                    dgvSales["cFrieghtCharge", r].Value = ((rate > 0m && qty > 0m) ? ((object)(unitValue * qty)) : null);
+                else
+                    dgvSales["cFrieghtCharge", r].Value = null;
+
+                decimal.TryParse(Convert.ToString(dgvSales["cFrieghtCharge", r].Value), out FrieghtCharge);
+
+                dgvSales["cAmount", r].Value = ((rate > 0m && qty > 0m) ? ((object)((rate * qty) + ((rate * qty) * taxPercentage / 100))) : null);
+                dgvSales["cTaxAmount", r].Value = ((rate > 0m && qty > 0m) ? ((object)((rate * qty) * taxPercentage / 100)) : null);
                 dgvSales["cCostAmount", r].Value = ((costRate > 0m && qty > 0m) ? ((object)(costRate * qty)) : null);
                 calacTotal();
                 SetColumnIndex method = Mymethod;
-                dgvSales.BeginInvoke(method, "cSNo");
-                dgvSales.BeginEdit(selectAll: true);
+                dgvSales.BeginInvoke(method, "cCategory");
             }
             else if (columnIndex == cRate.Index)
             {
@@ -1467,6 +2115,7 @@ namespace standard.trans
                 qty = Math.Abs(qty);
                 decimal.TryParse(Convert.ToString(dgvSales["cStock", r].Value), out stock);
                 stock = Math.Abs(stock);
+                decimal.TryParse(Convert.ToString(dgvSales["cTaxPercentage", r].Value), out taxPercentage);
                 if (Convert.ToString(dgvSales["cItemName", r].Value) == string.Empty && !dgvSales.CurrentRow.IsNewRow)
                 {
                     dgvSales.Rows.RemoveAt(r);
@@ -1475,9 +2124,33 @@ namespace standard.trans
                 rate = Math.Abs(rate);
                 decimal.TryParse(Convert.ToString(dgvSales["cRate", r].Value), out rate);
                 decimal.TryParse(Convert.ToString(dgvSales["cCostRate", r].Value), out costRate);
-                dgvSales["cAmount", r].Value = ((rate > 0m && qty > 0m) ? ((object)(rate * qty)) : null);
+                dgvSales["cAmount", r].Value = ((rate > 0m && qty > 0m) ? ((object)((rate * qty) + ((rate * qty) * taxPercentage / 100))) : null);
+                dgvSales["cTaxAmount", r].Value = ((rate > 0m && qty > 0m) ? ((object)((rate * qty) * taxPercentage / 100)) : null);
                 dgvSales["cCostAmount", r].Value = ((costRate > 0m && qty > 0m) ? ((object)(costRate * qty)) : null);
                 dgvSales["cRate", r].Value = rate.ToString("N2");
+                calacTotal();
+                SetColumnIndex method = Mymethod;
+                dgvSales.BeginInvoke(method, "cCategory");
+            }
+            else if (columnIndex == cUnitValue.Index)
+            {
+                decimal.TryParse(Convert.ToString(dgvSales["cQty", r].Value), out qty);
+                decimal.TryParse(Convert.ToString(dgvSales["cCostRate", r].Value), out costRate);
+                decimal.TryParse(Convert.ToString(dgvSales["cTaxPercentage", r].Value), out taxPercentage);
+                decimal.TryParse(Convert.ToString(dgvSales["cUnitValue", r].Value), out unitValue);
+                decimal.TryParse(Convert.ToString(dgvSales["cPerUnitRate", r].Value), out PerUnitRate);
+                decimal.TryParse(Convert.ToString(dgvSales["cFrieghtCharge", r].Value), out FrieghtCharge);
+
+                if (dgvSales["cCategory", r].Value == "Chillies")
+                    dgvSales["cFrieghtCharge", r].Value = 0;
+                else
+                    dgvSales["cFrieghtCharge", r].Value = FrieghtCharge;
+
+                dgvSales["cRate", r].Value = unitValue * PerUnitRate;
+                decimal.TryParse(Convert.ToString(dgvSales["cRate", r].Value), out rate);
+                dgvSales["cAmount", r].Value = ((rate > 0m && qty > 0m) ? ((object)((rate * qty) + ((rate * qty) * taxPercentage / 100))) : null);
+                dgvSales["cTaxAmount", r].Value = ((rate > 0m && qty > 0m) ? ((object)((rate * qty) * taxPercentage / 100)) : null);
+                dgvSales["cCostAmount", r].Value = ((costRate > 0m && qty > 0m) ? ((object)(costRate * qty)) : null);
                 calacTotal();
                 SetColumnIndex method = Mymethod;
                 dgvSales.BeginInvoke(method, "cCategory");
@@ -1493,25 +2166,25 @@ namespace standard.trans
             }
         }
 
-        private void cboCityView_SelectedValueChanged(object sender, EventArgs e)
-        {
-            if (cboCityView.SelectedItem != null)
-            {
-                InventoryDataContext inventoryDataContext = new InventoryDataContext();
-                using (inventoryDataContext)
-                {
-                    ledgermasterViewBindingSource.Clear();
-                    var source = from a in inventoryDataContext.ledgermasters
-                                 where a.led_accounttype == "Customer" && a.led_address2 == cboCityView.Text.ToString()
-                                 select new
-                                 {
-                                     a.led_id,
-                                     a.led_name
-                                 };
-                    ledgermasterViewBindingSource.DataSource = source.OrderBy(x => x.led_name);
-                }
-            }
-        }
+        //private void cboCityView_SelectedValueChanged(object sender, EventArgs e)
+        //{
+        //    if (cboCityView.SelectedItem != null)
+        //    {
+        //        InventoryDataContext inventoryDataContext = new InventoryDataContext();
+        //        using (inventoryDataContext)
+        //        {
+        //            ledgermasterViewBindingSource.Clear();
+        //            var source = from a in inventoryDataContext.ledgermasters
+        //                         where a.led_accounttype == "Customer" && a.led_address2 == cboCityView.Text.ToString()
+        //                         select new
+        //                         {
+        //                             a.led_id,
+        //                             a.led_name
+        //                         };
+        //            ledgermasterViewBindingSource.DataSource = source.OrderBy(x => x.led_name);
+        //        }
+        //    }
+        //}
 
         private void txtDisPer_Leave(object sender, EventArgs e)
         {
@@ -1598,20 +2271,20 @@ namespace standard.trans
             }
         }
 
-        private void txtTaxPer_Leave(object sender, EventArgs e)
-        {
-            if (txtTaxPer.Tag == null)
-            {
-                if (txtTaxPer.Value > 100m)
-                {
-                    txtTaxAmt.Text = "0";
-                }
-                else
-                {
-                    calacTotal();
-                }
-            }
-        }
+        //private void txtTaxPer_Leave(object sender, EventArgs e)
+        //{
+        //    if (txtTaxPer.Tag == null)
+        //    {
+        //        if (txtTaxPer.Value > 100m)
+        //        {
+        //            txtTaxAmt.Text = "0";
+        //        }
+        //        else
+        //        {
+        //            calacTotal();
+        //        }
+        //    }
+        //}
 
         private void txtTaxAmt_Leave(object sender, EventArgs e)
         {
@@ -1625,7 +2298,7 @@ namespace standard.trans
                 txtTaxPer.Text = "0";
                 decimal num = txtTaxAmt.Value / (txttotamt.Value - txtDiscount.Value) * 100m;
                 txtTaxPer.Text = $"{num:0.00}";
-                txtnetamt.Text = $"{txttotamt.Value + txtothercharges.Value + txtTaxAmt.Value - txtDiscount.Value:0.00}";
+                txtnetamt.Text = $"{txttotamt.Value + txtothercharges.Value - txtDiscount.Value:0.00}";
                 txtFinalnetamount.Text = Math.Round(txtnetamt.Value).ToString();
                 txtFinalnetamount.Text = string.Format("{0:0.00}", txtFinalnetamount.Value.ToString("N2"));
                 txtothercharges.Text = string.Format("{0:0.00}", txtothercharges.Value.ToString("N2"));
@@ -1686,39 +2359,43 @@ namespace standard.trans
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle10 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle11 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle19 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle28 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle20 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle21 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle22 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle23 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle24 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle25 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle26 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle27 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle29 = new System.Windows.Forms.DataGridViewCellStyle();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmSales));
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle12 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle13 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle14 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle15 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle16 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle17 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle18 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle7 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle8 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle9 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle30 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle31 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle32 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle33 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle34 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle35 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle36 = new System.Windows.Forms.DataGridViewCellStyle();
             this.tablemain = new System.Windows.Forms.TableLayoutPanel();
             this.tableentry = new System.Windows.Forms.TableLayoutPanel();
             this.lblopno = new System.Windows.Forms.Label();
-            this.cboissueto = new System.Windows.Forms.ComboBox();
-            this.ledgermasterBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.lbldate = new System.Windows.Forms.Label();
-            this.dtpsaldate = new System.Windows.Forms.DateTimePicker();
-            this.lblfrom = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
             this.txtopno = new mylib.decimalbox(this.components);
+            this.chkIsFrieght = new System.Windows.Forms.CheckBox();
+            this.lblAddress = new System.Windows.Forms.Label();
             this.lblRateType = new System.Windows.Forms.Label();
             this.cboCity = new System.Windows.Forms.ComboBox();
             this.ledgermasterCityBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.lblAddress = new System.Windows.Forms.Label();
+            this.lblfrom = new System.Windows.Forms.Label();
+            this.cboissueto = new System.Windows.Forms.ComboBox();
+            this.ledgermasterBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.lblCom = new System.Windows.Forms.Label();
+            this.cboCom = new System.Windows.Forms.ComboBox();
+            this.companyBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.label2 = new System.Windows.Forms.Label();
+            this.lbldate = new System.Windows.Forms.Label();
+            this.dtpsaldate = new System.Windows.Forms.DateTimePicker();
             this.lbltitle = new System.Windows.Forms.Label();
             this.tablecmd = new System.Windows.Forms.TableLayoutPanel();
             this.lblGSTIN = new System.Windows.Forms.Label();
@@ -1729,8 +2406,6 @@ namespace standard.trans
             this.tablesum = new System.Windows.Forms.TableLayoutPanel();
             this.lbltotqty = new System.Windows.Forms.Label();
             this.txttotqty = new mylib.decimalbox(this.components);
-            this.label4 = new System.Windows.Forms.Label();
-            this.txtProfit = new mylib.decimalbox(this.components);
             this.lblPacking = new System.Windows.Forms.Label();
             this.txtDisPer = new mylib.decimalbox(this.components);
             this.label3 = new System.Windows.Forms.Label();
@@ -1739,16 +2414,41 @@ namespace standard.trans
             this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
             this.txttotamt = new mylib.decimalbox(this.components);
             this.txtnetamt = new mylib.decimalbox(this.components);
+            this.txtDiscount = new mylib.decimalbox(this.components);
+            this.label7 = new System.Windows.Forms.Label();
+            this.txtothercharges = new mylib.decimalbox(this.components);
+            this.txtRoundOff = new System.Windows.Forms.Label();
+            this.lblTaxPer = new System.Windows.Forms.Label();
+            this.txtTaxPer = new mylib.decimalbox(this.components);
+            this.lblFrieght = new System.Windows.Forms.Label();
+            this.txtFrieght = new mylib.decimalbox(this.components);
             this.lblnetamt = new System.Windows.Forms.Label();
             this.txtFinalnetamount = new mylib.decimalbox(this.components);
-            this.txtRoundOff = new System.Windows.Forms.Label();
-            this.txtDiscount = new mylib.decimalbox(this.components);
-            this.txtTaxPer = new mylib.decimalbox(this.components);
-            this.label7 = new System.Windows.Forms.Label();
-            this.lblTaxPer = new System.Windows.Forms.Label();
-            this.txtothercharges = new mylib.decimalbox(this.components);
+            this.label4 = new System.Windows.Forms.Label();
+            this.txtProfit = new mylib.decimalbox(this.components);
             this.pnlentry = new System.Windows.Forms.Panel();
             this.dgvSales = new mylib.mygrid();
+            this.cSNo = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.cCategory = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.cItemName = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.cQty = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.cPerUnitRate = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.cItemUnitType = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.cStock = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.cRate = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.cTaxPercentage = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.cTaxAmount = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.cUnitValue = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.cUnit = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.cFrieghtCharge = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.cAmount = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.cOrderQty = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.cCostRate = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.cCatID = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.cOdID = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.cSdID = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.cItemID = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.cCostAmount = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.pnlview = new System.Windows.Forms.Panel();
             this.tableview = new System.Windows.Forms.TableLayoutPanel();
             this.lblsubtitle = new System.Windows.Forms.Label();
@@ -1756,18 +2456,20 @@ namespace standard.trans
             this.ldelete = new System.Windows.Forms.DataGridViewImageColumn();
             this.ledit = new System.Windows.Forms.DataGridViewImageColumn();
             this.lprint = new System.Windows.Forms.DataGridViewImageColumn();
+            this.lEstimateprint = new System.Windows.Forms.DataGridViewImageColumn();
+            this.isDraft = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ldc = new System.Windows.Forms.DataGridViewImageColumn();
             this.smidDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.smbooknoDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.smrefnoDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.smdateDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.lednameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.companyDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.isTaxableDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.smtotqtyDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.smtotamountDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.smnetamountDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.smdisamountDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.smpackingchargeDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.smprofitDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.smnetamountDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ledidDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.smitemcountDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.usersuidDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -1778,35 +2480,29 @@ namespace standard.trans
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.dtptdate = new System.Windows.Forms.DateTimePicker();
             this.cboCustomerView = new System.Windows.Forms.ComboBox();
-            this.ledgermasterViewBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.ledgermasterViewBindingSource1 = new System.Windows.Forms.BindingSource(this.components);
             this.lblfdate = new System.Windows.Forms.Label();
             this.dtpfdate = new System.Windows.Forms.DateTimePicker();
             this.lblhyp = new System.Windows.Forms.Label();
-            this.cboCityView = new System.Windows.Forms.ComboBox();
-            this.ledgermasteCityViewrBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.label5 = new System.Windows.Forms.Label();
             this.cmdList = new mylib.lightbutton();
             this.cmdexit = new mylib.lightbutton();
             this.label6 = new System.Windows.Forms.Label();
+            this.lblCompany = new System.Windows.Forms.Label();
+            this.cboCompany = new System.Windows.Forms.ComboBox();
+            this.companyViewBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.lblBillNo = new System.Windows.Forms.Label();
             this.txtSearchBillNo = new System.Windows.Forms.TextBox();
-            this.cSNo = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.cCategory = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.cItemName = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.cQty = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.cStock = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.cRate = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.cAmount = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.cTaxPercentage = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.cTaxAmount = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.cCostRate = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.cCatID = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.cItemID = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.cCostAmount = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.ledgermasterViewBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.cboCityView = new System.Windows.Forms.ComboBox();
+            this.ledgermasteCityViewrBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.label5 = new System.Windows.Forms.Label();
+            this.smtotamountDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.smprofitDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.tablemain.SuspendLayout();
             this.tableentry.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.ledgermasterBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ledgermasterCityBindingSource)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ledgermasterBindingSource)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.companyBindingSource)).BeginInit();
             this.tablecmd.SuspendLayout();
             this.tablesum.SuspendLayout();
             this.tableLayoutPanel2.SuspendLayout();
@@ -1817,6 +2513,8 @@ namespace standard.trans
             ((System.ComponentModel.ISupportInitialize)(this.dglist)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.uspsalesmasterSelectResultBindingSource)).BeginInit();
             this.tableLayoutPanel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.ledgermasterViewBindingSource1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.companyViewBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ledgermasterViewBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ledgermasteCityViewrBindingSource)).BeginInit();
             this.SuspendLayout();
@@ -1837,11 +2535,11 @@ namespace standard.trans
             this.tablemain.Name = "tablemain";
             this.tablemain.RowCount = 5;
             this.tablemain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 33F));
-            this.tablemain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 100F));
+            this.tablemain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 150F));
             this.tablemain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tablemain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 100F));
             this.tablemain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 60F));
-            this.tablemain.Size = new System.Drawing.Size(1370, 749);
+            this.tablemain.Size = new System.Drawing.Size(1658, 749);
             this.tablemain.TabIndex = 0;
             // 
             // tableentry
@@ -1849,31 +2547,35 @@ namespace standard.trans
             this.tableentry.ColumnCount = 9;
             this.tableentry.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 127F));
             this.tableentry.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 203F));
-            this.tableentry.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 60F));
-            this.tableentry.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 150F));
+            this.tableentry.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 164F));
+            this.tableentry.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 46F));
             this.tableentry.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 200F));
-            this.tableentry.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 117F));
-            this.tableentry.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 703F));
-            this.tableentry.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 199F));
+            this.tableentry.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 162F));
+            this.tableentry.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 650F));
+            this.tableentry.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 207F));
             this.tableentry.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableentry.Controls.Add(this.lblopno, 0, 0);
-            this.tableentry.Controls.Add(this.cboissueto, 6, 0);
+            this.tableentry.Controls.Add(this.txtopno, 1, 0);
+            this.tableentry.Controls.Add(this.chkIsFrieght, 6, 1);
+            this.tableentry.Controls.Add(this.lblAddress, 0, 2);
+            this.tableentry.Controls.Add(this.lblRateType, 2, 2);
+            this.tableentry.Controls.Add(this.cboCity, 5, 2);
+            this.tableentry.Controls.Add(this.lblfrom, 2, 0);
+            this.tableentry.Controls.Add(this.cboissueto, 4, 0);
+            this.tableentry.Controls.Add(this.lblCom, 5, 0);
+            this.tableentry.Controls.Add(this.cboCom, 6, 0);
+            this.tableentry.Controls.Add(this.label2, 4, 2);
             this.tableentry.Controls.Add(this.lbldate, 0, 1);
             this.tableentry.Controls.Add(this.dtpsaldate, 1, 1);
-            this.tableentry.Controls.Add(this.lblfrom, 5, 0);
-            this.tableentry.Controls.Add(this.label2, 2, 0);
-            this.tableentry.Controls.Add(this.txtopno, 1, 0);
-            this.tableentry.Controls.Add(this.lblRateType, 2, 1);
-            this.tableentry.Controls.Add(this.cboCity, 3, 0);
-            this.tableentry.Controls.Add(this.lblAddress, 4, 1);
             this.tableentry.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableentry.Location = new System.Drawing.Point(7, 44);
             this.tableentry.Margin = new System.Windows.Forms.Padding(5, 7, 5, 7);
             this.tableentry.Name = "tableentry";
-            this.tableentry.RowCount = 2;
-            this.tableentry.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableentry.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableentry.Size = new System.Drawing.Size(1356, 86);
+            this.tableentry.RowCount = 3;
+            this.tableentry.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
+            this.tableentry.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
+            this.tableentry.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
+            this.tableentry.Size = new System.Drawing.Size(1644, 136);
             this.tableentry.TabIndex = 4;
             // 
             // lblopno
@@ -1882,86 +2584,12 @@ namespace standard.trans
             this.lblopno.AutoSize = true;
             this.lblopno.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblopno.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.lblopno.Location = new System.Drawing.Point(5, 4);
+            this.lblopno.Location = new System.Drawing.Point(5, 5);
             this.lblopno.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.lblopno.Name = "lblopno";
             this.lblopno.Size = new System.Drawing.Size(111, 35);
             this.lblopno.TabIndex = 1;
             this.lblopno.Text = "Bill No";
-            // 
-            // cboissueto
-            // 
-            this.cboissueto.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.cboissueto.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
-            this.cboissueto.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
-            this.cboissueto.DataSource = this.ledgermasterBindingSource;
-            this.cboissueto.DisplayMember = "led_name";
-            this.cboissueto.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cboissueto.FormattingEnabled = true;
-            this.cboissueto.Location = new System.Drawing.Point(862, 7);
-            this.cboissueto.Margin = new System.Windows.Forms.Padding(5, 7, 5, 7);
-            this.cboissueto.Name = "cboissueto";
-            this.cboissueto.Size = new System.Drawing.Size(314, 43);
-            this.cboissueto.TabIndex = 3;
-            this.cboissueto.ValueMember = "led_id";
-            this.cboissueto.SelectedValueChanged += new System.EventHandler(this.cbopurfrom_SelectedValueChanged);
-            this.cboissueto.KeyDown += new System.Windows.Forms.KeyEventHandler(this.cboissueto_KeyDown);
-            // 
-            // ledgermasterBindingSource
-            // 
-            this.ledgermasterBindingSource.DataSource = typeof(standard.classes.ledgermaster);
-            // 
-            // lbldate
-            // 
-            this.lbldate.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.lbldate.AutoSize = true;
-            this.lbldate.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lbldate.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.lbldate.Location = new System.Drawing.Point(5, 43);
-            this.lbldate.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
-            this.lbldate.Name = "lbldate";
-            this.lbldate.Size = new System.Drawing.Size(83, 43);
-            this.lbldate.TabIndex = 2;
-            this.lbldate.Text = "Bill Date";
-            // 
-            // dtpsaldate
-            // 
-            this.dtpsaldate.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.dtpsaldate.CustomFormat = "dd-MM-yyyy";
-            this.dtpsaldate.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.dtpsaldate.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-            this.dtpsaldate.Location = new System.Drawing.Point(132, 50);
-            this.dtpsaldate.Margin = new System.Windows.Forms.Padding(5, 7, 5, 7);
-            this.dtpsaldate.Name = "dtpsaldate";
-            this.dtpsaldate.Size = new System.Drawing.Size(193, 42);
-            this.dtpsaldate.TabIndex = 1;
-            this.dtpsaldate.KeyDown += new System.Windows.Forms.KeyEventHandler(this.dtpsaldate_KeyDown);
-            // 
-            // lblfrom
-            // 
-            this.lblfrom.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.lblfrom.AutoSize = true;
-            this.lblfrom.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblfrom.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.lblfrom.Location = new System.Drawing.Point(745, 0);
-            this.lblfrom.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
-            this.lblfrom.Name = "lblfrom";
-            this.lblfrom.Size = new System.Drawing.Size(98, 43);
-            this.lblfrom.TabIndex = 10;
-            this.lblfrom.Text = "Customer";
-            // 
-            // label2
-            // 
-            this.label2.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.label2.AutoSize = true;
-            this.label2.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold);
-            this.label2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.label2.Location = new System.Drawing.Point(335, 0);
-            this.label2.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(44, 43);
-            this.label2.TabIndex = 10;
-            this.label2.Text = "City";
             // 
             // txtopno
             // 
@@ -1969,7 +2597,7 @@ namespace standard.trans
             this.txtopno.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.txtopno.BackColor = System.Drawing.Color.White;
             this.txtopno.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.txtopno.DecimalPlaces = 2;
+            this.txtopno.DecimalPlaces = 0;
             this.txtopno.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtopno.Location = new System.Drawing.Point(132, 7);
             this.txtopno.Margin = new System.Windows.Forms.Padding(5, 7, 5, 7);
@@ -1987,6 +2615,34 @@ namespace standard.trans
             0});
             this.txtopno.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtopno_KeyDown);
             // 
+            // chkIsFrieght
+            // 
+            this.chkIsFrieght.AutoSize = true;
+            this.chkIsFrieght.Enabled = false;
+            this.chkIsFrieght.ForeColor = System.Drawing.Color.Red;
+            this.chkIsFrieght.Location = new System.Drawing.Point(905, 48);
+            this.chkIsFrieght.Name = "chkIsFrieght";
+            this.chkIsFrieght.Size = new System.Drawing.Size(456, 39);
+            this.chkIsFrieght.TabIndex = 11;
+            this.chkIsFrieght.Text = "Frieght Charge Applicable";
+            this.chkIsFrieght.UseVisualStyleBackColor = true;
+            this.chkIsFrieght.CheckedChanged += new System.EventHandler(this.chkIsFrieght_CheckedChanged);
+            // 
+            // lblAddress
+            // 
+            this.lblAddress.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblAddress.AutoSize = true;
+            this.tableentry.SetColumnSpan(this.lblAddress, 2);
+            this.lblAddress.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold);
+            this.lblAddress.ForeColor = System.Drawing.Color.Red;
+            this.lblAddress.Location = new System.Drawing.Point(5, 95);
+            this.lblAddress.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
+            this.lblAddress.Name = "lblAddress";
+            this.lblAddress.Size = new System.Drawing.Size(24, 35);
+            this.lblAddress.TabIndex = 10;
+            this.lblAddress.Text = ".";
+            this.lblAddress.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
             // lblRateType
             // 
             this.lblRateType.Anchor = System.Windows.Forms.AnchorStyles.Left;
@@ -1994,7 +2650,7 @@ namespace standard.trans
             this.tableentry.SetColumnSpan(this.lblRateType, 2);
             this.lblRateType.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold);
             this.lblRateType.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(192)))), ((int)(((byte)(0)))));
-            this.lblRateType.Location = new System.Drawing.Point(335, 47);
+            this.lblRateType.Location = new System.Drawing.Point(335, 95);
             this.lblRateType.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.lblRateType.Name = "lblRateType";
             this.lblRateType.Size = new System.Drawing.Size(24, 35);
@@ -2012,33 +2668,129 @@ namespace standard.trans
             this.cboCity.DisplayMember = "led_address2";
             this.cboCity.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cboCity.FormattingEnabled = true;
-            this.cboCity.Location = new System.Drawing.Point(395, 7);
+            this.cboCity.Location = new System.Drawing.Point(745, 97);
             this.cboCity.Margin = new System.Windows.Forms.Padding(5, 7, 5, 7);
             this.cboCity.Name = "cboCity";
-            this.cboCity.Size = new System.Drawing.Size(340, 43);
+            this.cboCity.Size = new System.Drawing.Size(236, 43);
             this.cboCity.TabIndex = 2;
             this.cboCity.ValueMember = "led_id";
-            this.cboCity.SelectedValueChanged += new System.EventHandler(this.cboCity_SelectedValueChanged);
+            this.cboCity.Visible = false;
             this.cboCity.KeyDown += new System.Windows.Forms.KeyEventHandler(this.cboCity_KeyDown);
             // 
             // ledgermasterCityBindingSource
             // 
             this.ledgermasterCityBindingSource.DataSource = typeof(standard.classes.ledgermaster);
             // 
-            // lblAddress
+            // lblfrom
             // 
-            this.lblAddress.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.lblAddress.AutoSize = true;
-            this.tableentry.SetColumnSpan(this.lblAddress, 3);
-            this.lblAddress.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold);
-            this.lblAddress.ForeColor = System.Drawing.Color.Red;
-            this.lblAddress.Location = new System.Drawing.Point(545, 47);
-            this.lblAddress.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
-            this.lblAddress.Name = "lblAddress";
-            this.lblAddress.Size = new System.Drawing.Size(24, 35);
-            this.lblAddress.TabIndex = 10;
-            this.lblAddress.Text = ".";
-            this.lblAddress.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.lblfrom.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblfrom.AutoSize = true;
+            this.lblfrom.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblfrom.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
+            this.lblfrom.Location = new System.Drawing.Point(335, 0);
+            this.lblfrom.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
+            this.lblfrom.Name = "lblfrom";
+            this.lblfrom.Size = new System.Drawing.Size(143, 45);
+            this.lblfrom.TabIndex = 10;
+            this.lblfrom.Text = "Customer";
+            // 
+            // cboissueto
+            // 
+            this.cboissueto.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.cboissueto.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
+            this.cboissueto.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
+            this.cboissueto.DataSource = this.ledgermasterBindingSource;
+            this.cboissueto.DisplayMember = "led_name";
+            this.cboissueto.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cboissueto.FormattingEnabled = true;
+            this.cboissueto.Location = new System.Drawing.Point(545, 7);
+            this.cboissueto.Margin = new System.Windows.Forms.Padding(5, 7, 5, 7);
+            this.cboissueto.Name = "cboissueto";
+            this.cboissueto.Size = new System.Drawing.Size(190, 43);
+            this.cboissueto.TabIndex = 3;
+            this.cboissueto.ValueMember = "led_id";
+            this.cboissueto.SelectedValueChanged += new System.EventHandler(this.cbopurfrom_SelectedValueChanged);
+            this.cboissueto.KeyDown += new System.Windows.Forms.KeyEventHandler(this.cboissueto_KeyDown);
+            // 
+            // ledgermasterBindingSource
+            // 
+            this.ledgermasterBindingSource.DataSource = typeof(standard.classes.ledgermaster);
+            // 
+            // lblCom
+            // 
+            this.lblCom.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblCom.AutoSize = true;
+            this.lblCom.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblCom.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
+            this.lblCom.Location = new System.Drawing.Point(745, 5);
+            this.lblCom.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
+            this.lblCom.Name = "lblCom";
+            this.lblCom.Size = new System.Drawing.Size(151, 35);
+            this.lblCom.TabIndex = 12;
+            this.lblCom.Text = "Company";
+            // 
+            // cboCom
+            // 
+            this.cboCom.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.cboCom.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
+            this.cboCom.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
+            this.tableentry.SetColumnSpan(this.cboCom, 2);
+            this.cboCom.DataSource = this.companyBindingSource;
+            this.cboCom.DisplayMember = "com_name";
+            this.cboCom.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cboCom.FormattingEnabled = true;
+            this.cboCom.Location = new System.Drawing.Point(907, 7);
+            this.cboCom.Margin = new System.Windows.Forms.Padding(5, 7, 5, 7);
+            this.cboCom.Name = "cboCom";
+            this.cboCom.Size = new System.Drawing.Size(236, 43);
+            this.cboCom.TabIndex = 13;
+            this.cboCom.ValueMember = "com_id";
+            this.cboCom.SelectedValueChanged += new System.EventHandler(this.cboCom_SelectedValueChanged);
+            this.cboCom.KeyDown += new System.Windows.Forms.KeyEventHandler(this.cbocompany_KeyDown);
+            // 
+            // companyBindingSource
+            // 
+            this.companyBindingSource.DataSource = typeof(standard.classes.company);
+            // 
+            // label2
+            // 
+            this.label2.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.label2.AutoSize = true;
+            this.label2.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold);
+            this.label2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
+            this.label2.Location = new System.Drawing.Point(545, 95);
+            this.label2.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(72, 35);
+            this.label2.TabIndex = 10;
+            this.label2.Text = "City";
+            this.label2.Visible = false;
+            // 
+            // lbldate
+            // 
+            this.lbldate.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lbldate.AutoSize = true;
+            this.lbldate.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lbldate.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
+            this.lbldate.Location = new System.Drawing.Point(5, 45);
+            this.lbldate.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
+            this.lbldate.Name = "lbldate";
+            this.lbldate.Size = new System.Drawing.Size(83, 45);
+            this.lbldate.TabIndex = 2;
+            this.lbldate.Text = "Bill Date";
+            // 
+            // dtpsaldate
+            // 
+            this.dtpsaldate.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.dtpsaldate.CustomFormat = "dd-MM-yyyy";
+            this.dtpsaldate.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.dtpsaldate.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
+            this.dtpsaldate.Location = new System.Drawing.Point(132, 52);
+            this.dtpsaldate.Margin = new System.Windows.Forms.Padding(5, 7, 5, 7);
+            this.dtpsaldate.Name = "dtpsaldate";
+            this.dtpsaldate.Size = new System.Drawing.Size(190, 42);
+            this.dtpsaldate.TabIndex = 1;
+            this.dtpsaldate.KeyDown += new System.Windows.Forms.KeyEventHandler(this.dtpsaldate_KeyDown);
             // 
             // lbltitle
             // 
@@ -2046,7 +2798,7 @@ namespace standard.trans
             this.lbltitle.AutoSize = true;
             this.lbltitle.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lbltitle.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.lbltitle.Location = new System.Drawing.Point(632, 2);
+            this.lbltitle.Location = new System.Drawing.Point(776, 2);
             this.lbltitle.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.lbltitle.Name = "lbltitle";
             this.lbltitle.Size = new System.Drawing.Size(106, 33);
@@ -2073,7 +2825,7 @@ namespace standard.trans
             this.tablecmd.RowCount = 1;
             this.tablecmd.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tablecmd.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 46F));
-            this.tablecmd.Size = new System.Drawing.Size(1356, 46);
+            this.tablecmd.Size = new System.Drawing.Size(1644, 46);
             this.tablecmd.TabIndex = 3;
             // 
             // lblGSTIN
@@ -2094,7 +2846,7 @@ namespace standard.trans
             this.cmdsave.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.cmdsave.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold);
             this.cmdsave.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(41)))), ((int)(((byte)(66)))), ((int)(((byte)(122)))));
-            this.cmdsave.Location = new System.Drawing.Point(841, 7);
+            this.cmdsave.Location = new System.Drawing.Point(1129, 7);
             this.cmdsave.Margin = new System.Windows.Forms.Padding(5, 7, 5, 7);
             this.cmdsave.Name = "cmdsave";
             this.cmdsave.Size = new System.Drawing.Size(120, 32);
@@ -2108,7 +2860,7 @@ namespace standard.trans
             this.cmdrefresh.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.cmdrefresh.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold);
             this.cmdrefresh.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(41)))), ((int)(((byte)(66)))), ((int)(((byte)(122)))));
-            this.cmdrefresh.Location = new System.Drawing.Point(971, 7);
+            this.cmdrefresh.Location = new System.Drawing.Point(1259, 7);
             this.cmdrefresh.Margin = new System.Windows.Forms.Padding(5, 7, 5, 7);
             this.cmdrefresh.Name = "cmdrefresh";
             this.cmdrefresh.Size = new System.Drawing.Size(120, 32);
@@ -2122,7 +2874,7 @@ namespace standard.trans
             this.cmdclose.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.cmdclose.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold);
             this.cmdclose.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(41)))), ((int)(((byte)(66)))), ((int)(((byte)(122)))));
-            this.cmdclose.Location = new System.Drawing.Point(1231, 7);
+            this.cmdclose.Location = new System.Drawing.Point(1519, 7);
             this.cmdclose.Margin = new System.Windows.Forms.Padding(5, 7, 5, 7);
             this.cmdclose.Name = "cmdclose";
             this.cmdclose.Size = new System.Drawing.Size(120, 32);
@@ -2136,7 +2888,7 @@ namespace standard.trans
             this.cmdview.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.cmdview.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold);
             this.cmdview.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(41)))), ((int)(((byte)(66)))), ((int)(((byte)(122)))));
-            this.cmdview.Location = new System.Drawing.Point(1101, 7);
+            this.cmdview.Location = new System.Drawing.Point(1389, 7);
             this.cmdview.Margin = new System.Windows.Forms.Padding(5, 7, 5, 7);
             this.cmdview.Name = "cmdview";
             this.cmdview.Size = new System.Drawing.Size(120, 32);
@@ -2160,25 +2912,27 @@ namespace standard.trans
             this.tablesum.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 135F));
             this.tablesum.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 150F));
             this.tablesum.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 150F));
-            this.tablesum.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 29F));
+            this.tablesum.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 294F));
             this.tablesum.Controls.Add(this.lbltotqty, 0, 0);
             this.tablesum.Controls.Add(this.txttotqty, 1, 0);
-            this.tablesum.Controls.Add(this.label4, 9, 0);
-            this.tablesum.Controls.Add(this.txtProfit, 10, 0);
             this.tablesum.Controls.Add(this.lblPacking, 3, 0);
             this.tablesum.Controls.Add(this.txtDisPer, 4, 0);
             this.tablesum.Controls.Add(this.label3, 0, 1);
             this.tablesum.Controls.Add(this.lblTaxAmt, 6, 1);
             this.tablesum.Controls.Add(this.txtTaxAmt, 7, 1);
             this.tablesum.Controls.Add(this.tableLayoutPanel2, 11, 0);
-            this.tablesum.Controls.Add(this.lblnetamt, 9, 1);
-            this.tablesum.Controls.Add(this.txtFinalnetamount, 10, 1);
-            this.tablesum.Controls.Add(this.txtRoundOff, 11, 1);
             this.tablesum.Controls.Add(this.txtDiscount, 4, 1);
-            this.tablesum.Controls.Add(this.txtTaxPer, 7, 0);
             this.tablesum.Controls.Add(this.label7, 3, 1);
-            this.tablesum.Controls.Add(this.lblTaxPer, 6, 0);
             this.tablesum.Controls.Add(this.txtothercharges, 1, 1);
+            this.tablesum.Controls.Add(this.txtRoundOff, 11, 1);
+            this.tablesum.Controls.Add(this.lblTaxPer, 8, 0);
+            this.tablesum.Controls.Add(this.txtTaxPer, 8, 1);
+            this.tablesum.Controls.Add(this.lblFrieght, 6, 0);
+            this.tablesum.Controls.Add(this.txtFrieght, 7, 0);
+            this.tablesum.Controls.Add(this.lblnetamt, 9, 0);
+            this.tablesum.Controls.Add(this.txtFinalnetamount, 10, 0);
+            this.tablesum.Controls.Add(this.label4, 9, 1);
+            this.tablesum.Controls.Add(this.txtProfit, 10, 1);
             this.tablesum.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tablesum.Location = new System.Drawing.Point(7, 592);
             this.tablesum.Margin = new System.Windows.Forms.Padding(5, 7, 5, 7);
@@ -2186,7 +2940,7 @@ namespace standard.trans
             this.tablesum.RowCount = 2;
             this.tablesum.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tablesum.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tablesum.Size = new System.Drawing.Size(1356, 86);
+            this.tablesum.Size = new System.Drawing.Size(1644, 86);
             this.tablesum.TabIndex = 2;
             // 
             // lbltotqty
@@ -2225,41 +2979,6 @@ namespace standard.trans
             0,
             0});
             // 
-            // label4
-            // 
-            this.label4.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.label4.AutoSize = true;
-            this.label4.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.label4.Location = new System.Drawing.Point(920, 4);
-            this.label4.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(97, 35);
-            this.label4.TabIndex = 10;
-            this.label4.Text = "Profit";
-            // 
-            // txtProfit
-            // 
-            this.txtProfit.AllowFormat = false;
-            this.txtProfit.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.txtProfit.BackColor = System.Drawing.Color.White;
-            this.txtProfit.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.txtProfit.DecimalPlaces = 2;
-            this.txtProfit.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtProfit.Location = new System.Drawing.Point(1055, 7);
-            this.txtProfit.Margin = new System.Windows.Forms.Padding(5, 7, 5, 7);
-            this.txtProfit.Name = "txtProfit";
-            this.txtProfit.RightAlign = true;
-            this.txtProfit.Size = new System.Drawing.Size(140, 42);
-            this.txtProfit.TabIndex = 6;
-            this.txtProfit.TabStop = false;
-            this.txtProfit.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.txtProfit.Value = new decimal(new int[] {
-            0,
-            0,
-            0,
-            0});
-            // 
             // lblPacking
             // 
             this.lblPacking.Anchor = System.Windows.Forms.AnchorStyles.Left;
@@ -2284,6 +3003,7 @@ namespace standard.trans
             this.txtDisPer.Location = new System.Drawing.Point(420, 7);
             this.txtDisPer.Margin = new System.Windows.Forms.Padding(5, 7, 5, 7);
             this.txtDisPer.Name = "txtDisPer";
+            this.txtDisPer.ReadOnly = true;
             this.txtDisPer.RightAlign = true;
             this.txtDisPer.Size = new System.Drawing.Size(100, 42);
             this.txtDisPer.TabIndex = 1;
@@ -2334,6 +3054,7 @@ namespace standard.trans
             this.txtTaxAmt.Location = new System.Drawing.Point(700, 50);
             this.txtTaxAmt.Margin = new System.Windows.Forms.Padding(5, 7, 5, 7);
             this.txtTaxAmt.Name = "txtTaxAmt";
+            this.txtTaxAmt.ReadOnly = true;
             this.txtTaxAmt.RightAlign = true;
             this.txtTaxAmt.Size = new System.Drawing.Size(140, 42);
             this.txtTaxAmt.TabIndex = 2;
@@ -2408,55 +3129,6 @@ namespace standard.trans
             0});
             this.txtnetamt.Visible = false;
             // 
-            // lblnetamt
-            // 
-            this.lblnetamt.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.lblnetamt.AutoSize = true;
-            this.lblnetamt.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold);
-            this.lblnetamt.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.lblnetamt.Location = new System.Drawing.Point(920, 43);
-            this.lblnetamt.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
-            this.lblnetamt.Name = "lblnetamt";
-            this.lblnetamt.Size = new System.Drawing.Size(119, 43);
-            this.lblnetamt.TabIndex = 8;
-            this.lblnetamt.Text = "Net Amount";
-            // 
-            // txtFinalnetamount
-            // 
-            this.txtFinalnetamount.AllowFormat = false;
-            this.txtFinalnetamount.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.txtFinalnetamount.BackColor = System.Drawing.Color.White;
-            this.txtFinalnetamount.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.txtFinalnetamount.DecimalPlaces = 2;
-            this.txtFinalnetamount.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold);
-            this.txtFinalnetamount.Location = new System.Drawing.Point(1055, 50);
-            this.txtFinalnetamount.Margin = new System.Windows.Forms.Padding(5, 7, 5, 7);
-            this.txtFinalnetamount.Name = "txtFinalnetamount";
-            this.txtFinalnetamount.RightAlign = true;
-            this.txtFinalnetamount.Size = new System.Drawing.Size(140, 42);
-            this.txtFinalnetamount.TabIndex = 6;
-            this.txtFinalnetamount.TabStop = false;
-            this.txtFinalnetamount.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.txtFinalnetamount.Value = new decimal(new int[] {
-            0,
-            0,
-            0,
-            0});
-            // 
-            // txtRoundOff
-            // 
-            this.txtRoundOff.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.txtRoundOff.AutoSize = true;
-            this.txtRoundOff.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold);
-            this.txtRoundOff.ForeColor = System.Drawing.Color.Red;
-            this.txtRoundOff.Location = new System.Drawing.Point(1205, 47);
-            this.txtRoundOff.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
-            this.txtRoundOff.Name = "txtRoundOff";
-            this.txtRoundOff.Size = new System.Drawing.Size(24, 35);
-            this.txtRoundOff.TabIndex = 12;
-            this.txtRoundOff.Text = ".";
-            this.txtRoundOff.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
             // txtDiscount
             // 
             this.txtDiscount.AllowFormat = false;
@@ -2481,30 +3153,6 @@ namespace standard.trans
             this.txtDiscount.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtDiscount_KeyDown);
             this.txtDiscount.Leave += new System.EventHandler(this.txtDiscount_Leave);
             // 
-            // txtTaxPer
-            // 
-            this.txtTaxPer.AllowFormat = false;
-            this.txtTaxPer.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.txtTaxPer.BackColor = System.Drawing.Color.White;
-            this.txtTaxPer.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.txtTaxPer.DecimalPlaces = 2;
-            this.txtTaxPer.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtTaxPer.Location = new System.Drawing.Point(700, 7);
-            this.txtTaxPer.Margin = new System.Windows.Forms.Padding(5, 7, 5, 7);
-            this.txtTaxPer.Name = "txtTaxPer";
-            this.txtTaxPer.RightAlign = true;
-            this.txtTaxPer.Size = new System.Drawing.Size(140, 42);
-            this.txtTaxPer.TabIndex = 1;
-            this.txtTaxPer.TabStop = false;
-            this.txtTaxPer.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.txtTaxPer.Value = new decimal(new int[] {
-            0,
-            0,
-            0,
-            0});
-            this.txtTaxPer.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtTaxPer_KeyDown);
-            this.txtTaxPer.Leave += new System.EventHandler(this.txtTaxPer_Leave);
-            // 
             // label7
             // 
             this.label7.Anchor = System.Windows.Forms.AnchorStyles.Left;
@@ -2517,19 +3165,6 @@ namespace standard.trans
             this.label7.Size = new System.Drawing.Size(132, 43);
             this.label7.TabIndex = 10;
             this.label7.Text = "Discount Amt";
-            // 
-            // lblTaxPer
-            // 
-            this.lblTaxPer.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.lblTaxPer.AutoSize = true;
-            this.lblTaxPer.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblTaxPer.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.lblTaxPer.Location = new System.Drawing.Point(600, 0);
-            this.lblTaxPer.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
-            this.lblTaxPer.Name = "lblTaxPer";
-            this.lblTaxPer.Size = new System.Drawing.Size(77, 43);
-            this.lblTaxPer.TabIndex = 10;
-            this.lblTaxPer.Text = "Tax %";
             // 
             // txtothercharges
             // 
@@ -2555,14 +3190,177 @@ namespace standard.trans
             this.txtothercharges.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtothers_KeyDown);
             this.txtothercharges.Leave += new System.EventHandler(this.txtothercharges_Leave);
             // 
+            // txtRoundOff
+            // 
+            this.txtRoundOff.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.txtRoundOff.AutoSize = true;
+            this.txtRoundOff.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold);
+            this.txtRoundOff.ForeColor = System.Drawing.Color.Red;
+            this.txtRoundOff.Location = new System.Drawing.Point(1205, 47);
+            this.txtRoundOff.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
+            this.txtRoundOff.Name = "txtRoundOff";
+            this.txtRoundOff.Size = new System.Drawing.Size(24, 35);
+            this.txtRoundOff.TabIndex = 12;
+            this.txtRoundOff.Text = ".";
+            this.txtRoundOff.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.txtRoundOff.Visible = false;
+            // 
+            // lblTaxPer
+            // 
+            this.lblTaxPer.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblTaxPer.AutoSize = true;
+            this.lblTaxPer.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblTaxPer.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
+            this.lblTaxPer.Location = new System.Drawing.Point(850, 0);
+            this.lblTaxPer.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
+            this.lblTaxPer.Name = "lblTaxPer";
+            this.lblTaxPer.Size = new System.Drawing.Size(50, 43);
+            this.lblTaxPer.TabIndex = 10;
+            this.lblTaxPer.Text = "Tax %";
+            this.lblTaxPer.Visible = false;
+            // 
+            // txtTaxPer
+            // 
+            this.txtTaxPer.AllowFormat = false;
+            this.txtTaxPer.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.txtTaxPer.BackColor = System.Drawing.Color.White;
+            this.txtTaxPer.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.txtTaxPer.DecimalPlaces = 2;
+            this.txtTaxPer.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtTaxPer.Location = new System.Drawing.Point(850, 50);
+            this.txtTaxPer.Margin = new System.Windows.Forms.Padding(5, 7, 5, 7);
+            this.txtTaxPer.Name = "txtTaxPer";
+            this.txtTaxPer.RightAlign = true;
+            this.txtTaxPer.Size = new System.Drawing.Size(60, 42);
+            this.txtTaxPer.TabIndex = 1;
+            this.txtTaxPer.TabStop = false;
+            this.txtTaxPer.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.txtTaxPer.Value = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
+            this.txtTaxPer.Visible = false;
+            this.txtTaxPer.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtTaxPer_KeyDown);
+            // 
+            // lblFrieght
+            // 
+            this.lblFrieght.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblFrieght.AutoSize = true;
+            this.lblFrieght.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblFrieght.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
+            this.lblFrieght.Location = new System.Drawing.Point(600, 0);
+            this.lblFrieght.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
+            this.lblFrieght.Name = "lblFrieght";
+            this.lblFrieght.Size = new System.Drawing.Size(89, 43);
+            this.lblFrieght.TabIndex = 13;
+            this.lblFrieght.Text = "Frieght";
+            // 
+            // txtFrieght
+            // 
+            this.txtFrieght.AllowFormat = false;
+            this.txtFrieght.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.txtFrieght.BackColor = System.Drawing.Color.White;
+            this.txtFrieght.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.txtFrieght.DecimalPlaces = 2;
+            this.txtFrieght.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtFrieght.Location = new System.Drawing.Point(700, 7);
+            this.txtFrieght.Margin = new System.Windows.Forms.Padding(5, 7, 5, 7);
+            this.txtFrieght.Name = "txtFrieght";
+            this.txtFrieght.ReadOnly = true;
+            this.txtFrieght.RightAlign = true;
+            this.txtFrieght.Size = new System.Drawing.Size(140, 42);
+            this.txtFrieght.TabIndex = 14;
+            this.txtFrieght.TabStop = false;
+            this.txtFrieght.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.txtFrieght.Value = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
+            // 
+            // lblnetamt
+            // 
+            this.lblnetamt.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblnetamt.AutoSize = true;
+            this.lblnetamt.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold);
+            this.lblnetamt.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
+            this.lblnetamt.Location = new System.Drawing.Point(920, 0);
+            this.lblnetamt.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
+            this.lblnetamt.Name = "lblnetamt";
+            this.lblnetamt.Size = new System.Drawing.Size(119, 43);
+            this.lblnetamt.TabIndex = 8;
+            this.lblnetamt.Text = "Net Amount";
+            // 
+            // txtFinalnetamount
+            // 
+            this.txtFinalnetamount.AllowFormat = false;
+            this.txtFinalnetamount.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.txtFinalnetamount.BackColor = System.Drawing.Color.White;
+            this.txtFinalnetamount.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.txtFinalnetamount.DecimalPlaces = 2;
+            this.txtFinalnetamount.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold);
+            this.txtFinalnetamount.Location = new System.Drawing.Point(1055, 7);
+            this.txtFinalnetamount.Margin = new System.Windows.Forms.Padding(5, 7, 5, 7);
+            this.txtFinalnetamount.Name = "txtFinalnetamount";
+            this.txtFinalnetamount.ReadOnly = true;
+            this.txtFinalnetamount.RightAlign = true;
+            this.txtFinalnetamount.Size = new System.Drawing.Size(140, 42);
+            this.txtFinalnetamount.TabIndex = 6;
+            this.txtFinalnetamount.TabStop = false;
+            this.txtFinalnetamount.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.txtFinalnetamount.Value = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
+            // 
+            // label4
+            // 
+            this.label4.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.label4.AutoSize = true;
+            this.label4.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
+            this.label4.Location = new System.Drawing.Point(920, 47);
+            this.label4.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(97, 35);
+            this.label4.TabIndex = 10;
+            this.label4.Text = "Profit";
+            this.label4.Visible = false;
+            // 
+            // txtProfit
+            // 
+            this.txtProfit.AllowFormat = false;
+            this.txtProfit.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.txtProfit.BackColor = System.Drawing.Color.White;
+            this.txtProfit.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.txtProfit.DecimalPlaces = 2;
+            this.txtProfit.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtProfit.Location = new System.Drawing.Point(1055, 50);
+            this.txtProfit.Margin = new System.Windows.Forms.Padding(5, 7, 5, 7);
+            this.txtProfit.Name = "txtProfit";
+            this.txtProfit.ReadOnly = true;
+            this.txtProfit.RightAlign = true;
+            this.txtProfit.Size = new System.Drawing.Size(140, 42);
+            this.txtProfit.TabIndex = 6;
+            this.txtProfit.TabStop = false;
+            this.txtProfit.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.txtProfit.Value = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
+            this.txtProfit.Visible = false;
+            // 
             // pnlentry
             // 
             this.pnlentry.Controls.Add(this.dgvSales);
             this.pnlentry.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pnlentry.Location = new System.Drawing.Point(7, 146);
+            this.pnlentry.Location = new System.Drawing.Point(7, 196);
             this.pnlentry.Margin = new System.Windows.Forms.Padding(5, 7, 5, 7);
             this.pnlentry.Name = "pnlentry";
-            this.pnlentry.Size = new System.Drawing.Size(1356, 430);
+            this.pnlentry.Size = new System.Drawing.Size(1644, 380);
             this.pnlentry.TabIndex = 1;
             // 
             // dgvSales
@@ -2570,27 +3368,35 @@ namespace standard.trans
             this.dgvSales.AllowUserToDeleteRows = false;
             this.dgvSales.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.DisplayedCells;
             this.dgvSales.BackgroundColor = System.Drawing.Color.White;
-            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle1.Font = new System.Drawing.Font("Tahoma", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dgvSales.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle19.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle19.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle19.Font = new System.Drawing.Font("Tahoma", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle19.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle19.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle19.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle19.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dgvSales.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle19;
             this.dgvSales.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvSales.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.cSNo,
             this.cCategory,
             this.cItemName,
             this.cQty,
+            this.cPerUnitRate,
+            this.cItemUnitType,
             this.cStock,
             this.cRate,
-            this.cAmount,
             this.cTaxPercentage,
             this.cTaxAmount,
+            this.cUnitValue,
+            this.cUnit,
+            this.cFrieghtCharge,
+            this.cAmount,
+            this.cOrderQty,
             this.cCostRate,
             this.cCatID,
+            this.cOdID,
+            this.cSdID,
             this.cItemID,
             this.cCostAmount});
             this.dgvSales.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -2600,17 +3406,196 @@ namespace standard.trans
             this.dgvSales.Name = "dgvSales";
             this.dgvSales.RowHeadersVisible = false;
             this.dgvSales.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.AutoSizeToAllHeaders;
-            dataGridViewCellStyle10.Font = new System.Drawing.Font("Tahoma", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.dgvSales.RowsDefaultCellStyle = dataGridViewCellStyle10;
+            dataGridViewCellStyle28.Font = new System.Drawing.Font("Tahoma", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.dgvSales.RowsDefaultCellStyle = dataGridViewCellStyle28;
             this.dgvSales.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect;
             this.dgvSales.ShowCellToolTips = false;
-            this.dgvSales.Size = new System.Drawing.Size(1356, 430);
+            this.dgvSales.Size = new System.Drawing.Size(1644, 380);
             this.dgvSales.TabIndex = 0;
             this.dgvSales.CellEndEdit += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvSales_CellEndEdit);
             this.dgvSales.EditingControlShowing += new System.Windows.Forms.DataGridViewEditingControlShowingEventHandler(this.dgvSales_EditingControlShowing);
             this.dgvSales.RowsAdded += new System.Windows.Forms.DataGridViewRowsAddedEventHandler(this.dgopen_RowsAdded);
             this.dgvSales.RowsRemoved += new System.Windows.Forms.DataGridViewRowsRemovedEventHandler(this.dgopen_RowsRemoved);
             this.dgvSales.KeyDown += new System.Windows.Forms.KeyEventHandler(this.dgopen_KeyDown);
+            // 
+            // cSNo
+            // 
+            this.cSNo.HeaderText = "SNO";
+            this.cSNo.Name = "cSNo";
+            this.cSNo.ReadOnly = true;
+            this.cSNo.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.cSNo.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            this.cSNo.Width = 50;
+            // 
+            // cCategory
+            // 
+            dataGridViewCellStyle20.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            this.cCategory.DefaultCellStyle = dataGridViewCellStyle20;
+            this.cCategory.HeaderText = "CATEGORY";
+            this.cCategory.Name = "cCategory";
+            this.cCategory.Width = 120;
+            // 
+            // cItemName
+            // 
+            this.cItemName.HeaderText = "ITEM NAME";
+            this.cItemName.Name = "cItemName";
+            // 
+            // cQty
+            // 
+            dataGridViewCellStyle21.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle21.Format = "N0";
+            dataGridViewCellStyle21.NullValue = null;
+            this.cQty.DefaultCellStyle = dataGridViewCellStyle21;
+            this.cQty.HeaderText = "QTY";
+            this.cQty.MaxInputLength = 8;
+            this.cQty.Name = "cQty";
+            this.cQty.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.cQty.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            // 
+            // cPerUnitRate
+            // 
+            this.cPerUnitRate.HeaderText = "PER UNIT RATE";
+            this.cPerUnitRate.Name = "cPerUnitRate";
+            // 
+            // cItemUnitType
+            // 
+            this.cItemUnitType.HeaderText = "ITEM UNIT TYPE";
+            this.cItemUnitType.Name = "cItemUnitType";
+            this.cItemUnitType.ReadOnly = true;
+            // 
+            // cStock
+            // 
+            dataGridViewCellStyle22.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle22.BackColor = System.Drawing.Color.Red;
+            dataGridViewCellStyle22.ForeColor = System.Drawing.Color.White;
+            dataGridViewCellStyle22.Format = "N0";
+            dataGridViewCellStyle22.NullValue = "0";
+            dataGridViewCellStyle22.SelectionForeColor = System.Drawing.Color.White;
+            this.cStock.DefaultCellStyle = dataGridViewCellStyle22;
+            this.cStock.HeaderText = "STOCK";
+            this.cStock.Name = "cStock";
+            this.cStock.ReadOnly = true;
+            this.cStock.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.cStock.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            this.cStock.Visible = false;
+            // 
+            // cRate
+            // 
+            dataGridViewCellStyle23.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            dataGridViewCellStyle23.Format = "N2";
+            this.cRate.DefaultCellStyle = dataGridViewCellStyle23;
+            this.cRate.HeaderText = "RATE";
+            this.cRate.MaxInputLength = 10;
+            this.cRate.Name = "cRate";
+            this.cRate.ReadOnly = true;
+            this.cRate.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.cRate.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            this.cRate.Width = 120;
+            // 
+            // cTaxPercentage
+            // 
+            dataGridViewCellStyle24.Format = "N2";
+            dataGridViewCellStyle24.NullValue = null;
+            this.cTaxPercentage.DefaultCellStyle = dataGridViewCellStyle24;
+            this.cTaxPercentage.HeaderText = "TAX %";
+            this.cTaxPercentage.Name = "cTaxPercentage";
+            this.cTaxPercentage.ReadOnly = true;
+            this.cTaxPercentage.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.cTaxPercentage.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            this.cTaxPercentage.Width = 120;
+            // 
+            // cTaxAmount
+            // 
+            dataGridViewCellStyle25.Format = "N2";
+            dataGridViewCellStyle25.NullValue = null;
+            this.cTaxAmount.DefaultCellStyle = dataGridViewCellStyle25;
+            this.cTaxAmount.HeaderText = "TAX AMOUNT";
+            this.cTaxAmount.Name = "cTaxAmount";
+            this.cTaxAmount.ReadOnly = true;
+            this.cTaxAmount.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.cTaxAmount.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            this.cTaxAmount.Width = 130;
+            // 
+            // cUnitValue
+            // 
+            this.cUnitValue.HeaderText = "UNIT VALUE";
+            this.cUnitValue.Name = "cUnitValue";
+            this.cUnitValue.ReadOnly = true;
+            // 
+            // cUnit
+            // 
+            this.cUnit.HeaderText = "UNIT";
+            this.cUnit.Name = "cUnit";
+            this.cUnit.ReadOnly = true;
+            // 
+            // cFrieghtCharge
+            // 
+            this.cFrieghtCharge.HeaderText = "FRIEGHT CHARGE";
+            this.cFrieghtCharge.Name = "cFrieghtCharge";
+            this.cFrieghtCharge.ReadOnly = true;
+            // 
+            // cAmount
+            // 
+            dataGridViewCellStyle26.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            dataGridViewCellStyle26.Format = "N2";
+            this.cAmount.DefaultCellStyle = dataGridViewCellStyle26;
+            this.cAmount.HeaderText = "AMOUNT";
+            this.cAmount.Name = "cAmount";
+            this.cAmount.ReadOnly = true;
+            this.cAmount.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.cAmount.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            this.cAmount.Width = 130;
+            // 
+            // cOrderQty
+            // 
+            this.cOrderQty.HeaderText = "ORDER QTY";
+            this.cOrderQty.Name = "cOrderQty";
+            this.cOrderQty.Visible = false;
+            this.cOrderQty.Width = 50;
+            // 
+            // cCostRate
+            // 
+            dataGridViewCellStyle27.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            dataGridViewCellStyle27.Format = "N2";
+            this.cCostRate.DefaultCellStyle = dataGridViewCellStyle27;
+            this.cCostRate.HeaderText = "COST RATE";
+            this.cCostRate.Name = "cCostRate";
+            this.cCostRate.ReadOnly = true;
+            this.cCostRate.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.cCostRate.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            this.cCostRate.Visible = false;
+            this.cCostRate.Width = 130;
+            // 
+            // cCatID
+            // 
+            this.cCatID.HeaderText = "CatID";
+            this.cCatID.Name = "cCatID";
+            this.cCatID.Visible = false;
+            // 
+            // cOdID
+            // 
+            this.cOdID.HeaderText = "OdID";
+            this.cOdID.Name = "cOdID";
+            this.cOdID.Visible = false;
+            // 
+            // cSdID
+            // 
+            this.cSdID.HeaderText = "SdID";
+            this.cSdID.Name = "cSdID";
+            this.cSdID.Visible = false;
+            // 
+            // cItemID
+            // 
+            this.cItemID.HeaderText = "ItemID";
+            this.cItemID.Name = "cItemID";
+            this.cItemID.Visible = false;
+            // 
+            // cCostAmount
+            // 
+            this.cCostAmount.HeaderText = "CostAmount";
+            this.cCostAmount.Name = "cCostAmount";
+            this.cCostAmount.Visible = false;
+            this.cCostAmount.Width = 130;
             // 
             // pnlview
             // 
@@ -2620,7 +3605,7 @@ namespace standard.trans
             this.pnlview.Location = new System.Drawing.Point(0, 0);
             this.pnlview.Margin = new System.Windows.Forms.Padding(5, 7, 5, 7);
             this.pnlview.Name = "pnlview";
-            this.pnlview.Size = new System.Drawing.Size(1370, 749);
+            this.pnlview.Size = new System.Drawing.Size(1658, 749);
             this.pnlview.TabIndex = 12;
             // 
             // tableview
@@ -2640,7 +3625,7 @@ namespace standard.trans
             this.tableview.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 110F));
             this.tableview.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableview.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 10F));
-            this.tableview.Size = new System.Drawing.Size(1370, 749);
+            this.tableview.Size = new System.Drawing.Size(1658, 749);
             this.tableview.TabIndex = 0;
             // 
             // lblsubtitle
@@ -2649,7 +3634,7 @@ namespace standard.trans
             this.lblsubtitle.AutoSize = true;
             this.lblsubtitle.Font = new System.Drawing.Font("Tahoma", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblsubtitle.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.lblsubtitle.Location = new System.Drawing.Point(585, 2);
+            this.lblsubtitle.Location = new System.Drawing.Point(729, 2);
             this.lblsubtitle.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.lblsubtitle.Name = "lblsubtitle";
             this.lblsubtitle.Size = new System.Drawing.Size(199, 36);
@@ -2664,31 +3649,33 @@ namespace standard.trans
             this.dglist.AutoGenerateColumns = false;
             this.dglist.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.DisplayedCells;
             this.dglist.BackgroundColor = System.Drawing.Color.White;
-            dataGridViewCellStyle11.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle11.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle11.Font = new System.Drawing.Font("Tahoma", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle11.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle11.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle11.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle11.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dglist.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle11;
+            dataGridViewCellStyle29.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle29.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle29.Font = new System.Drawing.Font("Tahoma", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle29.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle29.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle29.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle29.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dglist.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle29;
             this.dglist.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dglist.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.ldelete,
             this.ledit,
             this.lprint,
+            this.lEstimateprint,
+            this.isDraft,
             this.ldc,
             this.smidDataGridViewTextBoxColumn,
             this.smbooknoDataGridViewTextBoxColumn,
             this.smrefnoDataGridViewTextBoxColumn,
             this.smdateDataGridViewTextBoxColumn,
             this.lednameDataGridViewTextBoxColumn,
+            this.companyDataGridViewTextBoxColumn,
+            this.isTaxableDataGridViewTextBoxColumn,
             this.smtotqtyDataGridViewTextBoxColumn,
-            this.smtotamountDataGridViewTextBoxColumn,
+            this.smnetamountDataGridViewTextBoxColumn,
             this.smdisamountDataGridViewTextBoxColumn,
             this.smpackingchargeDataGridViewTextBoxColumn,
-            this.smprofitDataGridViewTextBoxColumn,
-            this.smnetamountDataGridViewTextBoxColumn,
             this.ledidDataGridViewTextBoxColumn,
             this.smitemcountDataGridViewTextBoxColumn,
             this.usersuidDataGridViewTextBoxColumn,
@@ -2705,10 +3692,11 @@ namespace standard.trans
             this.dglist.RowHeadersVisible = false;
             this.dglist.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect;
             this.dglist.ShowCellToolTips = false;
-            this.dglist.Size = new System.Drawing.Size(1356, 569);
+            this.dglist.Size = new System.Drawing.Size(1644, 569);
             this.dglist.TabIndex = 1;
             this.dglist.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dglist_CellContentClick);
             this.dglist.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dglist_CellDoubleClick);
+            this.dglist.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.dglist_CellFormatting);
             this.dglist.KeyDown += new System.Windows.Forms.KeyEventHandler(this.dglist_KeyDown);
             // 
             // ldelete
@@ -2737,6 +3725,23 @@ namespace standard.trans
             this.lprint.ReadOnly = true;
             this.lprint.Resizable = System.Windows.Forms.DataGridViewTriState.False;
             this.lprint.Width = 75;
+            // 
+            // lEstimateprint
+            // 
+            this.lEstimateprint.HeaderText = "ESTIMATE PRINT";
+            this.lEstimateprint.Image = global::standard.Properties.Resources.print;
+            this.lEstimateprint.Name = "lEstimateprint";
+            this.lEstimateprint.ReadOnly = true;
+            this.lEstimateprint.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.lEstimateprint.Width = 150;
+            // 
+            // isDraft
+            // 
+            this.isDraft.DataPropertyName = "sm_isdraft";
+            this.isDraft.HeaderText = "IS DRAFT";
+            this.isDraft.Name = "isDraft";
+            this.isDraft.ReadOnly = true;
+            this.isDraft.Width = 120;
             // 
             // ldc
             // 
@@ -2773,9 +3778,9 @@ namespace standard.trans
             // smdateDataGridViewTextBoxColumn
             // 
             this.smdateDataGridViewTextBoxColumn.DataPropertyName = "sm_date";
-            dataGridViewCellStyle12.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle12.Format = "dd-MM-yyyy";
-            this.smdateDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle12;
+            dataGridViewCellStyle30.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle30.Format = "dd-MM-yyyy";
+            this.smdateDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle30;
             this.smdateDataGridViewTextBoxColumn.HeaderText = "Bill Date";
             this.smdateDataGridViewTextBoxColumn.Name = "smdateDataGridViewTextBoxColumn";
             this.smdateDataGridViewTextBoxColumn.ReadOnly = true;
@@ -2789,34 +3794,50 @@ namespace standard.trans
             this.lednameDataGridViewTextBoxColumn.ReadOnly = true;
             this.lednameDataGridViewTextBoxColumn.Width = 200;
             // 
+            // companyDataGridViewTextBoxColumn
+            // 
+            this.companyDataGridViewTextBoxColumn.DataPropertyName = "com_name";
+            this.companyDataGridViewTextBoxColumn.HeaderText = "Company";
+            this.companyDataGridViewTextBoxColumn.Name = "companyDataGridViewTextBoxColumn";
+            this.companyDataGridViewTextBoxColumn.ReadOnly = true;
+            this.companyDataGridViewTextBoxColumn.Width = 200;
+            // 
+            // isTaxableDataGridViewTextBoxColumn
+            // 
+            this.isTaxableDataGridViewTextBoxColumn.DataPropertyName = "item_istaxable";
+            this.isTaxableDataGridViewTextBoxColumn.HeaderText = "Taxable";
+            this.isTaxableDataGridViewTextBoxColumn.Name = "taxStatus";
+            this.isTaxableDataGridViewTextBoxColumn.ReadOnly = true;
+            this.isTaxableDataGridViewTextBoxColumn.Width = 200;
+            // 
             // smtotqtyDataGridViewTextBoxColumn
             // 
             this.smtotqtyDataGridViewTextBoxColumn.DataPropertyName = "sm_totqty";
-            dataGridViewCellStyle13.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle13.Format = "N0";
-            this.smtotqtyDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle13;
+            dataGridViewCellStyle31.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle31.Format = "N0";
+            this.smtotqtyDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle31;
             this.smtotqtyDataGridViewTextBoxColumn.HeaderText = "Total Qty";
             this.smtotqtyDataGridViewTextBoxColumn.Name = "smtotqtyDataGridViewTextBoxColumn";
             this.smtotqtyDataGridViewTextBoxColumn.ReadOnly = true;
             this.smtotqtyDataGridViewTextBoxColumn.Width = 80;
             // 
-            // smtotamountDataGridViewTextBoxColumn
+            // smnetamountDataGridViewTextBoxColumn
             // 
-            this.smtotamountDataGridViewTextBoxColumn.DataPropertyName = "sm_totamount";
-            dataGridViewCellStyle14.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            dataGridViewCellStyle14.Format = "N2";
-            this.smtotamountDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle14;
-            this.smtotamountDataGridViewTextBoxColumn.HeaderText = "Total Amount";
-            this.smtotamountDataGridViewTextBoxColumn.Name = "smtotamountDataGridViewTextBoxColumn";
-            this.smtotamountDataGridViewTextBoxColumn.ReadOnly = true;
-            this.smtotamountDataGridViewTextBoxColumn.Width = 130;
+            this.smnetamountDataGridViewTextBoxColumn.DataPropertyName = "sm_netamount";
+            dataGridViewCellStyle32.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            dataGridViewCellStyle32.Format = "N2";
+            this.smnetamountDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle32;
+            this.smnetamountDataGridViewTextBoxColumn.HeaderText = "Net Amt";
+            this.smnetamountDataGridViewTextBoxColumn.Name = "smnetamountDataGridViewTextBoxColumn";
+            this.smnetamountDataGridViewTextBoxColumn.ReadOnly = true;
+            this.smnetamountDataGridViewTextBoxColumn.Width = 130;
             // 
             // smdisamountDataGridViewTextBoxColumn
             // 
             this.smdisamountDataGridViewTextBoxColumn.DataPropertyName = "sm_disamount";
-            dataGridViewCellStyle15.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            dataGridViewCellStyle15.Format = "N2";
-            this.smdisamountDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle15;
+            dataGridViewCellStyle33.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            dataGridViewCellStyle33.Format = "N2";
+            this.smdisamountDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle33;
             this.smdisamountDataGridViewTextBoxColumn.HeaderText = "Discount";
             this.smdisamountDataGridViewTextBoxColumn.Name = "smdisamountDataGridViewTextBoxColumn";
             this.smdisamountDataGridViewTextBoxColumn.ReadOnly = true;
@@ -2824,34 +3845,12 @@ namespace standard.trans
             // smpackingchargeDataGridViewTextBoxColumn
             // 
             this.smpackingchargeDataGridViewTextBoxColumn.DataPropertyName = "sm_packingcharge";
-            dataGridViewCellStyle16.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            dataGridViewCellStyle16.Format = "N2";
-            this.smpackingchargeDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle16;
+            dataGridViewCellStyle34.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            dataGridViewCellStyle34.Format = "N2";
+            this.smpackingchargeDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle34;
             this.smpackingchargeDataGridViewTextBoxColumn.HeaderText = "Other Charges";
             this.smpackingchargeDataGridViewTextBoxColumn.Name = "smpackingchargeDataGridViewTextBoxColumn";
             this.smpackingchargeDataGridViewTextBoxColumn.ReadOnly = true;
-            // 
-            // smprofitDataGridViewTextBoxColumn
-            // 
-            this.smprofitDataGridViewTextBoxColumn.DataPropertyName = "sm_profit";
-            dataGridViewCellStyle17.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            dataGridViewCellStyle17.Format = "N2";
-            this.smprofitDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle17;
-            this.smprofitDataGridViewTextBoxColumn.HeaderText = "Profit";
-            this.smprofitDataGridViewTextBoxColumn.Name = "smprofitDataGridViewTextBoxColumn";
-            this.smprofitDataGridViewTextBoxColumn.ReadOnly = true;
-            this.smprofitDataGridViewTextBoxColumn.Width = 130;
-            // 
-            // smnetamountDataGridViewTextBoxColumn
-            // 
-            this.smnetamountDataGridViewTextBoxColumn.DataPropertyName = "sm_netamount";
-            dataGridViewCellStyle18.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            dataGridViewCellStyle18.Format = "N2";
-            this.smnetamountDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle18;
-            this.smnetamountDataGridViewTextBoxColumn.HeaderText = "Net Amt";
-            this.smnetamountDataGridViewTextBoxColumn.Name = "smnetamountDataGridViewTextBoxColumn";
-            this.smnetamountDataGridViewTextBoxColumn.ReadOnly = true;
-            this.smnetamountDataGridViewTextBoxColumn.Width = 130;
             // 
             // ledidDataGridViewTextBoxColumn
             // 
@@ -2908,36 +3907,36 @@ namespace standard.trans
             // tableLayoutPanel1
             // 
             this.tableLayoutPanel1.ColumnCount = 11;
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 74F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 90F));
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 176F));
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 167F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 63F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 238F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 140F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 100F));
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 129F));
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 153F));
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 120F));
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 120F));
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanel1.Controls.Add(this.dtptdate, 3, 0);
-            this.tableLayoutPanel1.Controls.Add(this.cboCustomerView, 7, 0);
+            this.tableLayoutPanel1.Controls.Add(this.cboCustomerView, 5, 0);
             this.tableLayoutPanel1.Controls.Add(this.lblfdate, 0, 0);
             this.tableLayoutPanel1.Controls.Add(this.dtpfdate, 1, 0);
             this.tableLayoutPanel1.Controls.Add(this.lblhyp, 2, 0);
-            this.tableLayoutPanel1.Controls.Add(this.cboCityView, 5, 0);
-            this.tableLayoutPanel1.Controls.Add(this.label5, 4, 0);
             this.tableLayoutPanel1.Controls.Add(this.cmdList, 7, 1);
             this.tableLayoutPanel1.Controls.Add(this.cmdexit, 8, 1);
-            this.tableLayoutPanel1.Controls.Add(this.label6, 6, 0);
-            this.tableLayoutPanel1.Controls.Add(this.lblBillNo, 5, 1);
-            this.tableLayoutPanel1.Controls.Add(this.txtSearchBillNo, 6, 1);
+            this.tableLayoutPanel1.Controls.Add(this.label6, 4, 0);
+            this.tableLayoutPanel1.Controls.Add(this.lblCompany, 6, 0);
+            this.tableLayoutPanel1.Controls.Add(this.cboCompany, 7, 0);
+            this.tableLayoutPanel1.Controls.Add(this.lblBillNo, 4, 1);
+            this.tableLayoutPanel1.Controls.Add(this.txtSearchBillNo, 5, 1);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel1.Location = new System.Drawing.Point(5, 43);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 2;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(1360, 104);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(1648, 104);
             this.tableLayoutPanel1.TabIndex = 0;
             // 
             // dtptdate
@@ -2946,7 +3945,7 @@ namespace standard.trans
             this.dtptdate.CustomFormat = "dd-MM-yyyy";
             this.dtptdate.Font = new System.Drawing.Font("Tahoma", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.dtptdate.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-            this.dtptdate.Location = new System.Drawing.Point(274, 5);
+            this.dtptdate.Location = new System.Drawing.Point(290, 5);
             this.dtptdate.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.dtptdate.Name = "dtptdate";
             this.dtptdate.Size = new System.Drawing.Size(159, 46);
@@ -2959,21 +3958,21 @@ namespace standard.trans
             this.cboCustomerView.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
             this.cboCustomerView.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
             this.tableLayoutPanel1.SetColumnSpan(this.cboCustomerView, 2);
-            this.cboCustomerView.DataSource = this.ledgermasterViewBindingSource;
+            this.cboCustomerView.DataSource = this.ledgermasterViewBindingSource1;
             this.cboCustomerView.DisplayMember = "led_name";
             this.cboCustomerView.Font = new System.Drawing.Font("Tahoma", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cboCustomerView.FormattingEnabled = true;
-            this.cboCustomerView.Location = new System.Drawing.Point(871, 5);
+            this.cboCustomerView.Location = new System.Drawing.Point(597, 5);
             this.cboCustomerView.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.cboCustomerView.Name = "cboCustomerView";
-            this.cboCustomerView.Size = new System.Drawing.Size(265, 47);
+            this.cboCustomerView.Size = new System.Drawing.Size(221, 47);
             this.cboCustomerView.TabIndex = 5;
             this.cboCustomerView.ValueMember = "led_id";
             this.cboCustomerView.KeyDown += new System.Windows.Forms.KeyEventHandler(this.cboCustomerView_KeyDown);
             // 
-            // ledgermasterViewBindingSource
+            // ledgermasterViewBindingSource1
             // 
-            this.ledgermasterViewBindingSource.DataSource = typeof(standard.classes.ledgermaster);
+            this.ledgermasterViewBindingSource1.DataSource = typeof(standard.classes.ledgermaster);
             // 
             // lblfdate
             // 
@@ -2984,7 +3983,7 @@ namespace standard.trans
             this.lblfdate.Location = new System.Drawing.Point(4, 0);
             this.lblfdate.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblfdate.Name = "lblfdate";
-            this.lblfdate.Size = new System.Drawing.Size(60, 52);
+            this.lblfdate.Size = new System.Drawing.Size(73, 52);
             this.lblfdate.TabIndex = 0;
             this.lblfdate.Text = "Date";
             // 
@@ -2995,7 +3994,7 @@ namespace standard.trans
             this.dtpfdate.CustomFormat = "dd-MM-yyyy";
             this.dtpfdate.Font = new System.Drawing.Font("Tahoma", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.dtpfdate.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-            this.dtpfdate.Location = new System.Drawing.Point(78, 5);
+            this.dtpfdate.Location = new System.Drawing.Point(94, 5);
             this.dtpfdate.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.dtpfdate.Name = "dtpfdate";
             this.dtpfdate.Size = new System.Drawing.Size(168, 46);
@@ -3008,47 +4007,12 @@ namespace standard.trans
             this.lblhyp.AutoSize = true;
             this.lblhyp.Font = new System.Drawing.Font("Tahoma", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblhyp.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.lblhyp.Location = new System.Drawing.Point(254, 6);
+            this.lblhyp.Location = new System.Drawing.Point(270, 6);
             this.lblhyp.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblhyp.Name = "lblhyp";
             this.lblhyp.Size = new System.Drawing.Size(12, 39);
             this.lblhyp.TabIndex = 4;
             this.lblhyp.Text = "-";
-            // 
-            // cboCityView
-            // 
-            this.cboCityView.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.cboCityView.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
-            this.cboCityView.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
-            this.cboCityView.DataSource = this.ledgermasteCityViewrBindingSource;
-            this.cboCityView.DisplayMember = "led_address2";
-            this.cboCityView.Font = new System.Drawing.Font("Tahoma", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cboCityView.FormattingEnabled = true;
-            this.cboCityView.Location = new System.Drawing.Point(504, 5);
-            this.cboCityView.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.cboCityView.Name = "cboCityView";
-            this.cboCityView.Size = new System.Drawing.Size(230, 47);
-            this.cboCityView.TabIndex = 3;
-            this.cboCityView.ValueMember = "led_id";
-            this.cboCityView.SelectedValueChanged += new System.EventHandler(this.cboCityView_SelectedValueChanged);
-            this.cboCityView.KeyDown += new System.Windows.Forms.KeyEventHandler(this.cboCityView_KeyDown);
-            // 
-            // ledgermasteCityViewrBindingSource
-            // 
-            this.ledgermasteCityViewrBindingSource.DataSource = typeof(standard.classes.ledgermaster);
-            // 
-            // label5
-            // 
-            this.label5.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.label5.AutoSize = true;
-            this.label5.Font = new System.Drawing.Font("Tahoma", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label5.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.label5.Location = new System.Drawing.Point(441, 0);
-            this.label5.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(48, 52);
-            this.label5.TabIndex = 2;
-            this.label5.Text = "City";
             // 
             // cmdList
             // 
@@ -3056,7 +4020,7 @@ namespace standard.trans
             this.cmdList.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(191)))), ((int)(((byte)(219)))), ((int)(((byte)(254)))));
             this.cmdList.Font = new System.Drawing.Font("Tahoma", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cmdList.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(41)))), ((int)(((byte)(66)))), ((int)(((byte)(122)))));
-            this.cmdList.Location = new System.Drawing.Point(884, 54);
+            this.cmdList.Location = new System.Drawing.Point(839, 54);
             this.cmdList.Margin = new System.Windows.Forms.Padding(1);
             this.cmdList.Name = "cmdList";
             this.cmdList.Size = new System.Drawing.Size(118, 49);
@@ -3072,7 +4036,7 @@ namespace standard.trans
             this.cmdexit.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.cmdexit.Font = new System.Drawing.Font("Tahoma", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cmdexit.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(41)))), ((int)(((byte)(66)))), ((int)(((byte)(122)))));
-            this.cmdexit.Location = new System.Drawing.Point(1021, 54);
+            this.cmdexit.Location = new System.Drawing.Point(976, 54);
             this.cmdexit.Margin = new System.Windows.Forms.Padding(1);
             this.cmdexit.Name = "cmdexit";
             this.cmdexit.Size = new System.Drawing.Size(118, 49);
@@ -3087,21 +4051,55 @@ namespace standard.trans
             this.label6.AutoSize = true;
             this.label6.Font = new System.Drawing.Font("Tahoma", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label6.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.label6.Location = new System.Drawing.Point(742, 0);
+            this.label6.Location = new System.Drawing.Point(457, 0);
             this.label6.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(107, 52);
             this.label6.TabIndex = 4;
             this.label6.Text = "Customer";
             // 
+            // lblCompany
+            // 
+            this.lblCompany.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblCompany.AutoSize = true;
+            this.lblCompany.Font = new System.Drawing.Font("Tahoma", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblCompany.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
+            this.lblCompany.Location = new System.Drawing.Point(826, 0);
+            this.lblCompany.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblCompany.Name = "lblCompany";
+            this.lblCompany.Size = new System.Drawing.Size(128, 52);
+            this.lblCompany.TabIndex = 30;
+            this.lblCompany.Text = "Company";
+            // 
+            // cboCompany
+            // 
+            this.cboCompany.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.cboCompany.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
+            this.cboCompany.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
+            this.tableLayoutPanel1.SetColumnSpan(this.cboCompany, 2);
+            this.cboCompany.DataSource = this.companyViewBindingSource;
+            this.cboCompany.DisplayMember = "com_name";
+            this.cboCompany.Font = new System.Drawing.Font("Tahoma", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cboCompany.FormattingEnabled = true;
+            this.cboCompany.Location = new System.Drawing.Point(979, 5);
+            this.cboCompany.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.cboCompany.Name = "cboCompany";
+            this.cboCompany.Size = new System.Drawing.Size(230, 47);
+            this.cboCompany.TabIndex = 3;
+            this.cboCompany.ValueMember = "com_id";
+            // 
+            // companyViewBindingSource
+            // 
+            this.companyViewBindingSource.DataSource = typeof(standard.classes.company);
+            // 
             // lblBillNo
             // 
-            this.lblBillNo.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblBillNo.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblBillNo.AutoSize = true;
             this.lblBillNo.Font = new System.Drawing.Font("Tahoma", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblBillNo.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.lblBillNo.Location = new System.Drawing.Point(620, 58);
-            this.lblBillNo.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblBillNo.Location = new System.Drawing.Point(457, 58);
+            this.lblBillNo.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.lblBillNo.Name = "lblBillNo";
             this.lblBillNo.Size = new System.Drawing.Size(114, 39);
             this.lblBillNo.TabIndex = 31;
@@ -3110,148 +4108,74 @@ namespace standard.trans
             // txtSearchBillNo
             // 
             this.txtSearchBillNo.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.txtSearchBillNo.Location = new System.Drawing.Point(741, 55);
+            this.txtSearchBillNo.Location = new System.Drawing.Point(596, 55);
             this.txtSearchBillNo.Name = "txtSearchBillNo";
-            this.txtSearchBillNo.Size = new System.Drawing.Size(123, 46);
+            this.txtSearchBillNo.Size = new System.Drawing.Size(94, 46);
             this.txtSearchBillNo.TabIndex = 7;
             this.txtSearchBillNo.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtSearchBillNo_KeyDown_1);
             // 
-            // cSNo
+            // cboCityView
             // 
-            this.cSNo.HeaderText = "SNO";
-            this.cSNo.Name = "cSNo";
-            this.cSNo.ReadOnly = true;
-            this.cSNo.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-            this.cSNo.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
-            this.cSNo.Width = 50;
+            this.cboCityView.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.cboCityView.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
+            this.cboCityView.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
+            this.cboCityView.DataSource = this.ledgermasteCityViewrBindingSource;
+            this.cboCityView.DisplayMember = "led_address2";
+            this.cboCityView.Font = new System.Drawing.Font("Tahoma", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cboCityView.FormattingEnabled = true;
+            this.cboCityView.Location = new System.Drawing.Point(520, 5);
+            this.cboCityView.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.cboCityView.Name = "cboCityView";
+            this.cboCityView.Size = new System.Drawing.Size(230, 47);
+            this.cboCityView.TabIndex = 3;
+            this.cboCityView.ValueMember = "led_id";
+            this.cboCityView.Visible = false;
             // 
-            // cCategory
+            // ledgermasteCityViewrBindingSource
             // 
-            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            this.cCategory.DefaultCellStyle = dataGridViewCellStyle2;
-            this.cCategory.HeaderText = "CATEGORY";
-            this.cCategory.Name = "cCategory";
-            this.cCategory.Width = 120;
+            this.ledgermasteCityViewrBindingSource.DataSource = typeof(standard.classes.ledgermaster);
             // 
-            // cItemName
+            // label5
             // 
-            this.cItemName.HeaderText = "ITEM NAME";
-            this.cItemName.Name = "cItemName";
-            this.cItemName.Width = 250;
+            this.label5.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.label5.AutoSize = true;
+            this.label5.Font = new System.Drawing.Font("Tahoma", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label5.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
+            this.label5.Location = new System.Drawing.Point(457, 0);
+            this.label5.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(48, 52);
+            this.label5.TabIndex = 2;
+            this.label5.Text = "City";
+            this.label5.Visible = false;
             // 
-            // cQty
+            // smtotamountDataGridViewTextBoxColumn
             // 
-            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle3.Format = "N0";
-            dataGridViewCellStyle3.NullValue = null;
-            this.cQty.DefaultCellStyle = dataGridViewCellStyle3;
-            this.cQty.HeaderText = "QTY";
-            this.cQty.MaxInputLength = 8;
-            this.cQty.Name = "cQty";
-            this.cQty.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-            this.cQty.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            this.smtotamountDataGridViewTextBoxColumn.DataPropertyName = "sm_totamount";
+            dataGridViewCellStyle35.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            dataGridViewCellStyle35.Format = "N2";
+            this.smtotamountDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle35;
+            this.smtotamountDataGridViewTextBoxColumn.HeaderText = "Total Amount";
+            this.smtotamountDataGridViewTextBoxColumn.Name = "smtotamountDataGridViewTextBoxColumn";
+            this.smtotamountDataGridViewTextBoxColumn.ReadOnly = true;
+            this.smtotamountDataGridViewTextBoxColumn.Width = 130;
             // 
-            // cStock
+            // smprofitDataGridViewTextBoxColumn
             // 
-            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle4.BackColor = System.Drawing.Color.Red;
-            dataGridViewCellStyle4.ForeColor = System.Drawing.Color.White;
-            dataGridViewCellStyle4.Format = "N0";
-            dataGridViewCellStyle4.NullValue = "0";
-            dataGridViewCellStyle4.SelectionForeColor = System.Drawing.Color.White;
-            this.cStock.DefaultCellStyle = dataGridViewCellStyle4;
-            this.cStock.HeaderText = "STOCK";
-            this.cStock.Name = "cStock";
-            this.cStock.ReadOnly = true;
-            this.cStock.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-            this.cStock.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
-            // 
-            // cRate
-            // 
-            dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            dataGridViewCellStyle5.Format = "N2";
-            this.cRate.DefaultCellStyle = dataGridViewCellStyle5;
-            this.cRate.HeaderText = "RATE";
-            this.cRate.MaxInputLength = 10;
-            this.cRate.Name = "cRate";
-            this.cRate.ReadOnly = true;
-            this.cRate.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-            this.cRate.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
-            this.cRate.Width = 120;
-            // 
-            // cAmount
-            // 
-            dataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            dataGridViewCellStyle6.Format = "N2";
-            this.cAmount.DefaultCellStyle = dataGridViewCellStyle6;
-            this.cAmount.HeaderText = "AMOUNT";
-            this.cAmount.Name = "cAmount";
-            this.cAmount.ReadOnly = true;
-            this.cAmount.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-            this.cAmount.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
-            this.cAmount.Width = 130;
-            // 
-            // cTaxPercentage
-            // 
-            dataGridViewCellStyle7.Format = "N2";
-            dataGridViewCellStyle7.NullValue = null;
-            this.cTaxPercentage.DefaultCellStyle = dataGridViewCellStyle7;
-            this.cTaxPercentage.HeaderText = "TAX %";
-            this.cTaxPercentage.Name = "cTaxPercentage";
-            this.cTaxPercentage.ReadOnly = true;
-            this.cTaxPercentage.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-            this.cTaxPercentage.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
-            this.cTaxPercentage.Width = 120;
-            // 
-            // cTaxAmount
-            // 
-            dataGridViewCellStyle8.Format = "N2";
-            dataGridViewCellStyle8.NullValue = null;
-            this.cTaxAmount.DefaultCellStyle = dataGridViewCellStyle8;
-            this.cTaxAmount.HeaderText = "TAX AMOUNT";
-            this.cTaxAmount.Name = "cTaxAmount";
-            this.cTaxAmount.ReadOnly = true;
-            this.cTaxAmount.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-            this.cTaxAmount.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
-            this.cTaxAmount.Width = 130;
-            // 
-            // cCostRate
-            // 
-            dataGridViewCellStyle9.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            dataGridViewCellStyle9.Format = "N2";
-            this.cCostRate.DefaultCellStyle = dataGridViewCellStyle9;
-            this.cCostRate.HeaderText = "COST RATE";
-            this.cCostRate.Name = "cCostRate";
-            this.cCostRate.ReadOnly = true;
-            this.cCostRate.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-            this.cCostRate.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
-            this.cCostRate.Width = 130;
-            // 
-            // cCatID
-            // 
-            this.cCatID.HeaderText = "CatID";
-            this.cCatID.Name = "cCatID";
-            this.cCatID.Visible = false;
-            // 
-            // cItemID
-            // 
-            this.cItemID.HeaderText = "ItemID";
-            this.cItemID.Name = "cItemID";
-            this.cItemID.Visible = false;
-            // 
-            // cCostAmount
-            // 
-            this.cCostAmount.HeaderText = "CostAmount";
-            this.cCostAmount.Name = "cCostAmount";
-            this.cCostAmount.Visible = false;
-            this.cCostAmount.Width = 130;
+            this.smprofitDataGridViewTextBoxColumn.DataPropertyName = "sm_profit";
+            dataGridViewCellStyle36.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            dataGridViewCellStyle36.Format = "N2";
+            this.smprofitDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle36;
+            this.smprofitDataGridViewTextBoxColumn.HeaderText = "Profit";
+            this.smprofitDataGridViewTextBoxColumn.Name = "smprofitDataGridViewTextBoxColumn";
+            this.smprofitDataGridViewTextBoxColumn.Width = 130;
             // 
             // frmSales
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(20F, 39F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(191)))), ((int)(((byte)(219)))), ((int)(((byte)(254)))));
-            this.ClientSize = new System.Drawing.Size(1370, 749);
+            this.ClientSize = new System.Drawing.Size(1658, 749);
             this.Controls.Add(this.tablemain);
             this.Controls.Add(this.pnlview);
             this.Font = new System.Drawing.Font("Tahoma", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -3266,8 +4190,9 @@ namespace standard.trans
             this.tablemain.PerformLayout();
             this.tableentry.ResumeLayout(false);
             this.tableentry.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.ledgermasterBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ledgermasterCityBindingSource)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ledgermasterBindingSource)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.companyBindingSource)).EndInit();
             this.tablecmd.ResumeLayout(false);
             this.tablecmd.PerformLayout();
             this.tablesum.ResumeLayout(false);
@@ -3283,6 +4208,8 @@ namespace standard.trans
             ((System.ComponentModel.ISupportInitialize)(this.uspsalesmasterSelectResultBindingSource)).EndInit();
             this.tableLayoutPanel1.ResumeLayout(false);
             this.tableLayoutPanel1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.ledgermasterViewBindingSource1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.companyViewBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ledgermasterViewBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ledgermasteCityViewrBindingSource)).EndInit();
             this.ResumeLayout(false);
@@ -3315,6 +4242,24 @@ namespace standard.trans
 
             // Open the file dialog for the user to manually attach the file
             Process.Start("explorer.exe", filePath);
+        }
+
+        private void chkIsFrieght_CheckedChanged(object sender, EventArgs e)
+        {
+            //chkIsFrieght.UseVisualStyleBackColor = false;
+            chkIsFrieght.ForeColor = chkIsFrieght.Checked ? Color.LimeGreen : Color.Red;
+        }
+
+        private void cboCom_SelectedValueChanged(object sender, EventArgs e)
+        {
+            if (id == 0)
+            {
+                InventoryDataContext inventoryDataContext = new InventoryDataContext();
+                int comId = Convert.ToInt32(cboCom.SelectedValue);
+                long? no = 0L;
+                var ref_no = inventoryDataContext.usp_getYearNo("sal_no", global.sysdate, ref no, comId);
+                txtopno.Text = no.ToString();
+            }
         }
     }
 }

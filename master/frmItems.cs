@@ -3,9 +3,10 @@ using standard.classes;
 using System;
 using System.ComponentModel;
 using System.Data.Linq;
-using System.Drawing;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Windows.Forms;
+using Excel = Microsoft.Office.Interop.Excel;
 
 namespace standard.master
 {
@@ -25,13 +26,9 @@ namespace standard.master
 
         private Label label1;
 
-        private Label label2;
-
         private Label label3;
 
         private Label label4;
-
-        private Label label5;
 
         private Label label6;
 
@@ -47,11 +44,7 @@ namespace standard.master
 
         private TextBox txtItemName;
 
-        private TextBox txtItemCode;
-
         private TextBox txtPRate;
-
-        private TextBox txtCostRate;
 
         private TextBox txtWholeSaleRate;
 
@@ -104,8 +97,17 @@ namespace standard.master
         private BindingSource uspitemSelectResultBindingSource2;
         private Label lblItemUnit;
         private ComboBox cboItemUnit;
-        private Label lblItemQuantity;
         private TextBox txtItemQuantity;
+        private Label lbItemUnitType;
+        private ComboBox cboItemUnitType;
+        private TextBox txtUnitPerRate;
+        private Label lblSalesPerRate;
+        private CheckBox chkIsUnitPerRate;
+        private BindingSource companyBindingSource;
+        private TextBox txtCostRate;
+        private Label label2;
+        private TextBox txtItemCode;
+        private TableLayoutPanel tableLayoutPanel1;
         private DataGridViewTextBoxColumn item_serial;
         private DataGridViewTextBoxColumn itemidDataGridViewTextBoxColumn;
         private DataGridViewTextBoxColumn itemcodeDataGridViewTextBoxColumn;
@@ -129,8 +131,20 @@ namespace standard.master
         private DataGridViewTextBoxColumn comidDataGridViewTextBoxColumn;
         private DataGridViewTextBoxColumn comnameDataGridViewTextBoxColumn;
         private DataGridViewTextBoxColumn itemudateDataGridViewTextBoxColumn;
-        private Label lbItemUnitType;
-        private ComboBox cboItemUnitType;
+        private Button btnExport;
+        private Button btnImport;
+        private TableLayoutPanel tableLayoutPanel2;
+        private Label lblPurUnitRate;
+        private TextBox txtPurUnitRate;
+        private Label label15;
+        private Label label14;
+        private TextBox txtSGST;
+        private Label label5;
+        private TextBox txtHSNCode;
+        private TextBox txtCGST;
+        private ProgressBar progressBar1;
+        private Label lblProgress;
+        private CheckBox chkTaxable;
         private BindingSource searchcategoryBindingSource;
 
         public frmItems()
@@ -164,36 +178,48 @@ namespace standard.master
         private void Clear()
         {
             id = 0;
-            txtItemCode.Text = string.Empty;
+            //txtItemCode.Text = string.Empty;
             txtSerial.Text = string.Empty;
             txtItemName.Text = string.Empty;
             txtItemFullName.Text = string.Empty;
             txtItemTamilName.Text = string.Empty;
             txtTaxPercentage.Text = "0";
+            chkIsUnitPerRate.Checked = false;
+            chkTaxable.Checked = false;
+            txtUnitPerRate.Text = "0";
+            txtPurUnitRate.Text = "0";
             txtPRate.Text = "0";
-            txtCostRate.Text = "0";
+            // txtCostRate.Text = "0";
             txtMRP.Text = "0";
             txtWholeSaleRate.Text = "0";
             txtSpecialRate.Text = "0";
             txtSuperSplRate.Text = "0";
             txtSearch.Text = string.Empty;
-            txtItemQuantity.Text = string.Empty;
+            txtHSNCode.Text = string.Empty;
+            txtItemQuantity.Text = "0";
+            txtSGST.Text = "0";
+            txtCGST.Text = "0";
             LoadData();
             cboCategory.SelectedValue = 0;
             cboCompany.SelectedValue = 0;
-            cboItemUnit.Text = "---Select---";
-            cboItemUnitType.Text = "---Select---";
+
             cboSearchCategory.SelectedValue = 0;
+            cboItemUnitType.SelectedIndex = 1;
+            cboItemUnit.SelectedIndex = 1;
         }
 
         private void LoadData()
         {
             txtItemName.Select();
             InventoryDataContext inventoryDataContext = new InventoryDataContext();
-            dgview.DataSource = inventoryDataContext.usp_itemSelect(null, null, null,null);
+            dgview.DataSource = inventoryDataContext.usp_itemSelect(null, null, null, null);
             searchcategoryBindingSource.Clear();
             searchcategoryBindingSource.DataSource = inventoryDataContext.categories.Select((category li) => li);
             categoryBindingSource.DataSource = inventoryDataContext.categories.Select((category li) => li);
+            companyBindingSource.DataSource = inventoryDataContext.companies.Select((company li) => li);
+            cboCompany.SelectedValue = string.Empty;
+            cboItemUnitType.SelectedIndex = 1;
+            cboItemUnit.SelectedIndex = 1;
         }
 
         private void EditData()
@@ -203,7 +229,7 @@ namespace standard.master
             {
                 int rowIndex = dgview.CurrentCell.RowIndex;
                 id = Convert.ToInt32(dgview["itemidDataGridViewTextBoxColumn", rowIndex].Value);
-                ISingleResult<usp_itemSelectResult> singleResult = inventoryDataContext.usp_itemSelect(id, null, null,null);
+                ISingleResult<usp_itemSelectResult> singleResult = inventoryDataContext.usp_itemSelect(id, null, null, null);
                 foreach (usp_itemSelectResult item in singleResult)
                 {
                     txtItemCode.Text = item.item_code;
@@ -212,7 +238,14 @@ namespace standard.master
                     txtItemFullName.Text = item.item_fullname;
                     txtItemTamilName.Text = item.item_tamilname;
                     txtTaxPercentage.Text = item.item_taxpercentage.ToString("N2");
+                    txtCGST.Text = item.item_cgst.ToString("N2");
+                    txtSGST.Text = item.item_sgst.ToString("N2");
+                    txtHSNCode.Text = item.item_hsncode;
                     cboCategory.SelectedValue = item.cat_id;
+                    chkIsUnitPerRate.Checked = item.item_isunitperrate;
+                    chkTaxable.Checked = item.item_istaxable;
+                    txtUnitPerRate.Text = item.item_perunitrate.ToString("N2");
+                    txtPurUnitRate.Text = item.item_purunitrate.ToString("N2");
                     cboItemUnit.Text = item.item_unit;
                     txtItemQuantity.Text = item.item_quantity.ToString();
                     cboItemUnitType.Text = item.item_unittype;
@@ -246,6 +279,13 @@ namespace standard.master
             }
         }
 
+        private int GetNextSerialNumber()
+        {
+            InventoryDataContext db = new InventoryDataContext();
+            int lastSerial = db.items.Any() ? db.items.Max(x => x.item_serial).GetValueOrDefault() : 0;
+            return lastSerial + 1;
+        }
+
         private void btnSave_Click(object sender, EventArgs e)
         {
             InventoryDataContext inventoryDataContext = new InventoryDataContext();
@@ -253,13 +293,32 @@ namespace standard.master
             try
             {
                 it.item_code = txtItemCode.Text.Trim();
-                it.item_serial = Convert.ToInt32(txtSerial.Text.Trim());
+                if (id == 0)
+                {
+                    it.item_serial = GetNextSerialNumber();
+                }
+                else
+                {
+                    it.item_serial = Convert.ToInt32(txtSerial.Text.Trim());
+                }
                 it.item_name = txtItemName.Text.Trim();
                 it.item_fullname = txtItemFullName.Text.Trim();
                 it.item_tamilname = txtItemTamilName.Text.Trim();
                 it.item_taxpercentage = Convert.ToDecimal(txtTaxPercentage.Text.Trim());
+                it.item_cgst = Convert.ToDecimal(txtCGST.Text.Trim());
+                it.item_sgst = Convert.ToDecimal(txtSGST.Text.Trim());
+                it.item_hsncode = txtHSNCode.Text.Trim();
                 it.cat_id = Convert.ToInt32(cboCategory.SelectedValue);
-                if(cboItemUnit.Text == "---Select---")
+                it.item_isunitperrate = chkIsUnitPerRate.Checked;
+                it.item_istaxable = chkTaxable.Checked;
+                decimal perUnitRate = 0, purUnitRate = 0;
+
+                decimal.TryParse(txtUnitPerRate.Text.Trim(), out perUnitRate);
+                decimal.TryParse(txtPurUnitRate.Text.Trim(), out purUnitRate);
+
+                it.item_perunitrate = perUnitRate;
+                it.item_purunitrate = purUnitRate;
+                if (cboItemUnit.Text == "---Select---")
                 {
                     cboItemUnit.Text = "";
                 }
@@ -269,9 +328,17 @@ namespace standard.master
                 {
                     cboItemUnitType.Text = "";
                 }
+                if (cboCompany.SelectedValue != null)
+                {
+                    it.com_id = Convert.ToInt32(cboCompany.SelectedValue);
+                }
+                else
+                {
+                    MessageBox.Show("Please select a company.");
+                }
                 it.item_unittype = cboItemUnitType.Text.Trim();
                 it.item_purchaserate = Convert.ToDecimal(txtPRate.Text.Trim());
-                it.item_costrate = Convert.ToDecimal(txtCostRate.Text.Trim());
+                it.item_costrate = 0;
                 it.item_mrp = Convert.ToDecimal(txtMRP.Text.Trim());
                 it.item_wholesalerate = Convert.ToDecimal(txtWholeSaleRate.Text.Trim());
                 it.item_specialrate = Convert.ToDecimal(txtSpecialRate.Text.Trim());
@@ -291,10 +358,15 @@ namespace standard.master
                     MessageBox.Show("Invalid 'Purchaserate'", "Information", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
                     txtPRate.Focus();
                 }
-                else if (it.item_costrate <= 0m)
+                //else if (it.item_costrate <= 0m)
+                //{
+                //    MessageBox.Show("Invalid 'Costrate'", "Information", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+                //    txtCostRate.Focus();
+                //}
+                else if (it.item_serial <= 0)
                 {
-                    MessageBox.Show("Invalid 'Costrate'", "Information", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
-                    txtCostRate.Focus();
+                    MessageBox.Show("Invalid 'Serial No'", "Information", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+                    txtSerial.Focus();
                 }
                 else
                 {
@@ -304,31 +376,31 @@ namespace standard.master
                                  {
                                      b.cat_id
                                  };
-                    if (source.Count() != 0)
-                    {
-                        MessageBox.Show("'Name' aleady exists", "Information", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
-                        txtItemName.Focus();
-                    }
-                    else if (id == 0)
+                    //if (source.Count() != 0)
+                    //{
+                    //    MessageBox.Show("'Name' aleady exists", "Information", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+                    //    txtItemName.Focus();
+                    //}
+                    if (id == 0)
                     {
                         if (MessageBox.Show("Are you sure to save?", "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.No)
                         {
-                            inventoryDataContext.usp_itemInsert(it.item_code, it.item_serial, it.item_name,it.item_fullname,it.item_tamilname, it.cat_id, it.item_unit, it.item_quantity, it.item_unittype, it.item_purchaserate, it.item_costrate, it.item_mrp, it.item_wholesalerate, it.item_specialrate, it.item_supersepecialrate,it.item_taxpercentage, global.ucode, global.comid, global.sysdate);
+                            inventoryDataContext.usp_itemInsert(it.item_code, it.item_serial, it.item_name, it.item_fullname, it.item_tamilname, it.cat_id, it.item_isunitperrate, it.item_istaxable, it.item_perunitrate, it.item_purunitrate, it.item_unit, it.item_quantity, it.item_unittype, it.item_purchaserate, it.item_costrate, it.item_mrp, it.item_wholesalerate, it.item_specialrate, it.item_supersepecialrate, it.item_taxpercentage, it.item_cgst, it.item_sgst, it.item_hsncode, global.ucode, it.com_id, global.sysdate);
                             MessageBox.Show("Record saved successfully...", "Information", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
                             goto IL_0602;
                         }
                     }
                     else if (MessageBox.Show("Are you sure to update?", "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.No)
                     {
-                        inventoryDataContext.usp_itemUpdate(id, it.item_code, it.item_serial, it.item_name, it.item_fullname, it.item_tamilname, it.cat_id, it.item_unit, it.item_quantity, it.item_unittype, it.item_purchaserate, it.item_costrate, it.item_mrp, it.item_wholesalerate, it.item_specialrate, it.item_supersepecialrate,it.item_taxpercentage, global.ucode, global.comid, global.sysdate);
+                        inventoryDataContext.usp_itemUpdate(id, it.item_code, it.item_serial, it.item_name, it.item_fullname, it.item_tamilname, it.cat_id, it.item_isunitperrate, it.item_istaxable, it.item_perunitrate, it.item_purunitrate, it.item_unit, it.item_quantity, it.item_unittype, it.item_purchaserate, it.item_costrate, it.item_mrp, it.item_wholesalerate, it.item_specialrate, it.item_supersepecialrate, it.item_taxpercentage, it.item_cgst, it.item_sgst, it.item_hsncode, global.ucode, it.com_id, global.sysdate);
                         MessageBox.Show("Record updated successfully...", "Information", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
                         goto IL_0602;
                     }
                 }
                 goto end_IL_0022;
-                IL_0602:
+            IL_0602:
                 Clear();
-                end_IL_0022:;
+            end_IL_0022:;
             }
             catch (Exception ex)
             {
@@ -345,14 +417,14 @@ namespace standard.master
         private void txtSearch_TextChanged(object sender, EventArgs e)
         {
             InventoryDataContext inventoryDataContext = new InventoryDataContext();
-            dgview.DataSource = inventoryDataContext.usp_itemSelect(null, txtSearch.Text, Convert.ToInt32(cboSearchCategory.SelectedValue),txtBatchSearch.Text);
+            dgview.DataSource = inventoryDataContext.usp_itemSelect(null, txtSearch.Text, Convert.ToInt32(cboSearchCategory.SelectedValue), txtBatchSearch.Text);
         }
 
-        private void txtItemName_KeyDown(object sender, KeyEventArgs e)
+        private void inputControl_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyData == Keys.Return)
             {
-                txtItemFullName.Focus();
+                SendKeys.Send("{TAB}");
             }
         }
 
@@ -373,11 +445,11 @@ namespace standard.master
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle7 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle8 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle9 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle10 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
             this.a1Paneltitle = new mylib.a1panel();
             this.lbltitle = new System.Windows.Forms.Label();
             this.tblMain = new System.Windows.Forms.TableLayoutPanel();
@@ -389,51 +461,10 @@ namespace standard.master
             this.label13 = new System.Windows.Forms.Label();
             this.txtSearch = new System.Windows.Forms.TextBox();
             this.txtBatchSearch = new System.Windows.Forms.TextBox();
+            this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
+            this.btnImport = new System.Windows.Forms.Button();
+            this.btnExport = new System.Windows.Forms.Button();
             this.dgview = new System.Windows.Forms.DataGridView();
-            this.uspitemSelectResultBindingSource2 = new System.Windows.Forms.BindingSource(this.components);
-            this.tblEntry = new System.Windows.Forms.TableLayoutPanel();
-            this.txtItemName = new System.Windows.Forms.TextBox();
-            this.label1 = new System.Windows.Forms.Label();
-            this.lblItemFullName = new System.Windows.Forms.Label();
-            this.txtItemFullName = new System.Windows.Forms.TextBox();
-            this.txtItemTamilName = new System.Windows.Forms.TextBox();
-            this.lblItemTamilName = new System.Windows.Forms.Label();
-            this.txtSerial = new System.Windows.Forms.TextBox();
-            this.label12 = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
-            this.txtItemCode = new System.Windows.Forms.TextBox();
-            this.lblTamil = new System.Windows.Forms.Label();
-            this.lblItemUnit = new System.Windows.Forms.Label();
-            this.lblTaxPercentage = new System.Windows.Forms.Label();
-            this.txtTaxPercentage = new System.Windows.Forms.TextBox();
-            this.label4 = new System.Windows.Forms.Label();
-            this.txtPRate = new System.Windows.Forms.TextBox();
-            this.label6 = new System.Windows.Forms.Label();
-            this.txtMRP = new System.Windows.Forms.TextBox();
-            this.label7 = new System.Windows.Forms.Label();
-            this.txtWholeSaleRate = new System.Windows.Forms.TextBox();
-            this.label8 = new System.Windows.Forms.Label();
-            this.txtSpecialRate = new System.Windows.Forms.TextBox();
-            this.label9 = new System.Windows.Forms.Label();
-            this.txtSuperSplRate = new System.Windows.Forms.TextBox();
-            this.txtCostRate = new System.Windows.Forms.TextBox();
-            this.label5 = new System.Windows.Forms.Label();
-            this.cboCompany = new System.Windows.Forms.ComboBox();
-            this.uspcategorySelectResultBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.cboCategory = new System.Windows.Forms.ComboBox();
-            this.categoryBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.lblCompany = new System.Windows.Forms.Label();
-            this.label3 = new System.Windows.Forms.Label();
-            this.cboItemUnit = new System.Windows.Forms.ComboBox();
-            this.lblItemQuantity = new System.Windows.Forms.Label();
-            this.txtItemQuantity = new System.Windows.Forms.TextBox();
-            this.tblCommand = new System.Windows.Forms.TableLayoutPanel();
-            this.cmdclose = new mylib.lightbutton();
-            this.btnClear = new mylib.lightbutton();
-            this.btnDelete = new mylib.lightbutton();
-            this.btnSave = new mylib.lightbutton();
-            this.uspitemSelectResultBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.uspitemSelectResultBindingSource1 = new System.Windows.Forms.BindingSource(this.components);
             this.item_serial = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.itemidDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.itemcodeDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -457,18 +488,79 @@ namespace standard.master
             this.comidDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.comnameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.itemudateDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.lbItemUnitType = new System.Windows.Forms.Label();
+            this.uspitemSelectResultBindingSource2 = new System.Windows.Forms.BindingSource(this.components);
+            this.tblEntry = new System.Windows.Forms.TableLayoutPanel();
+            this.chkTaxable = new System.Windows.Forms.CheckBox();
+            this.lblPurUnitRate = new System.Windows.Forms.Label();
+            this.txtPurUnitRate = new System.Windows.Forms.TextBox();
+            this.txtItemName = new System.Windows.Forms.TextBox();
+            this.label1 = new System.Windows.Forms.Label();
+            this.txtItemTamilName = new System.Windows.Forms.TextBox();
+            this.cboCategory = new System.Windows.Forms.ComboBox();
+            this.categoryBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
+            this.cboItemUnit = new System.Windows.Forms.ComboBox();
+            this.txtItemQuantity = new System.Windows.Forms.TextBox();
+            this.chkIsUnitPerRate = new System.Windows.Forms.CheckBox();
+            this.txtUnitPerRate = new System.Windows.Forms.TextBox();
+            this.lblSalesPerRate = new System.Windows.Forms.Label();
+            this.lblItemTamilName = new System.Windows.Forms.Label();
+            this.label3 = new System.Windows.Forms.Label();
+            this.lblItemUnit = new System.Windows.Forms.Label();
+            this.txtPRate = new System.Windows.Forms.TextBox();
+            this.txtWholeSaleRate = new System.Windows.Forms.TextBox();
+            this.txtSpecialRate = new System.Windows.Forms.TextBox();
+            this.txtSuperSplRate = new System.Windows.Forms.TextBox();
+            this.cboCompany = new System.Windows.Forms.ComboBox();
+            this.companyBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.label4 = new System.Windows.Forms.Label();
+            this.label7 = new System.Windows.Forms.Label();
+            this.label8 = new System.Windows.Forms.Label();
+            this.label9 = new System.Windows.Forms.Label();
+            this.lblCompany = new System.Windows.Forms.Label();
             this.cboItemUnitType = new System.Windows.Forms.ComboBox();
+            this.lbItemUnitType = new System.Windows.Forms.Label();
+            this.label6 = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
+            this.txtItemCode = new System.Windows.Forms.TextBox();
+            this.lblItemFullName = new System.Windows.Forms.Label();
+            this.txtCostRate = new System.Windows.Forms.TextBox();
+            this.txtItemFullName = new System.Windows.Forms.TextBox();
+            this.txtMRP = new System.Windows.Forms.TextBox();
+            this.txtCGST = new System.Windows.Forms.TextBox();
+            this.label15 = new System.Windows.Forms.Label();
+            this.txtSGST = new System.Windows.Forms.TextBox();
+            this.progressBar1 = new System.Windows.Forms.ProgressBar();
+            this.lblProgress = new System.Windows.Forms.Label();
+            this.lblTamil = new System.Windows.Forms.Label();
+            this.label14 = new System.Windows.Forms.Label();
+            this.label12 = new System.Windows.Forms.Label();
+            this.txtSerial = new System.Windows.Forms.TextBox();
+            this.txtHSNCode = new System.Windows.Forms.TextBox();
+            this.label5 = new System.Windows.Forms.Label();
+            this.txtTaxPercentage = new System.Windows.Forms.TextBox();
+            this.lblTaxPercentage = new System.Windows.Forms.Label();
+            this.tblCommand = new System.Windows.Forms.TableLayoutPanel();
+            this.cmdclose = new mylib.lightbutton();
+            this.btnClear = new mylib.lightbutton();
+            this.btnDelete = new mylib.lightbutton();
+            this.btnSave = new mylib.lightbutton();
+            this.uspcategorySelectResultBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.uspitemSelectResultBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.uspitemSelectResultBindingSource1 = new System.Windows.Forms.BindingSource(this.components);
             this.a1Paneltitle.SuspendLayout();
             this.tblMain.SuspendLayout();
             this.tblSearch.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.searchcategoryBindingSource)).BeginInit();
+            this.tableLayoutPanel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgview)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.uspitemSelectResultBindingSource2)).BeginInit();
             this.tblEntry.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.uspcategorySelectResultBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.categoryBindingSource)).BeginInit();
+            this.tableLayoutPanel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.companyBindingSource)).BeginInit();
             this.tblCommand.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.uspcategorySelectResultBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.uspitemSelectResultBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.uspitemSelectResultBindingSource1)).BeginInit();
             this.SuspendLayout();
@@ -530,12 +622,14 @@ namespace standard.master
             // 
             // tblSearch
             // 
-            this.tblSearch.ColumnCount = 6;
+            this.tblSearch.ColumnCount = 8;
             this.tblSearch.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 246F));
             this.tblSearch.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 290F));
             this.tblSearch.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 206F));
             this.tblSearch.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 212F));
             this.tblSearch.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 208F));
+            this.tblSearch.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 290F));
+            this.tblSearch.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 280F));
             this.tblSearch.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tblSearch.Controls.Add(this.lblSearch, 2, 0);
             this.tblSearch.Controls.Add(this.label11, 0, 0);
@@ -543,6 +637,7 @@ namespace standard.master
             this.tblSearch.Controls.Add(this.label13, 4, 0);
             this.tblSearch.Controls.Add(this.txtSearch, 5, 0);
             this.tblSearch.Controls.Add(this.txtBatchSearch, 3, 0);
+            this.tblSearch.Controls.Add(this.tableLayoutPanel2, 6, 0);
             this.tblSearch.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tblSearch.Location = new System.Drawing.Point(5, 347);
             this.tblSearch.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
@@ -598,7 +693,7 @@ namespace standard.master
             this.cboSearchCategory.TabIndex = 0;
             this.cboSearchCategory.ValueMember = "cat_id";
             this.cboSearchCategory.SelectedValueChanged += new System.EventHandler(this.cboSearchCategory_SelectedValueChanged);
-            this.cboSearchCategory.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtItemName_KeyDown);
+            this.cboSearchCategory.KeyDown += new System.Windows.Forms.KeyEventHandler(this.inputControl_KeyDown);
             // 
             // searchcategoryBindingSource
             // 
@@ -628,7 +723,7 @@ namespace standard.master
             this.txtSearch.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.txtSearch.MaxLength = 50;
             this.txtSearch.Name = "txtSearch";
-            this.txtSearch.Size = new System.Drawing.Size(290, 33);
+            this.txtSearch.Size = new System.Drawing.Size(282, 33);
             this.txtSearch.TabIndex = 2;
             this.txtSearch.TextChanged += new System.EventHandler(this.txtSearch_TextChanged);
             // 
@@ -645,24 +740,66 @@ namespace standard.master
             this.txtBatchSearch.TabIndex = 1;
             this.txtBatchSearch.TextChanged += new System.EventHandler(this.txtSearch_TextChanged);
             // 
+            // tableLayoutPanel2
+            // 
+            this.tableLayoutPanel2.ColumnCount = 2;
+            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel2.Controls.Add(this.btnImport, 1, 0);
+            this.tableLayoutPanel2.Controls.Add(this.btnExport, 0, 0);
+            this.tableLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tableLayoutPanel2.Location = new System.Drawing.Point(1455, 3);
+            this.tableLayoutPanel2.Name = "tableLayoutPanel2";
+            this.tableLayoutPanel2.RowCount = 1;
+            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 53F));
+            this.tableLayoutPanel2.Size = new System.Drawing.Size(274, 53);
+            this.tableLayoutPanel2.TabIndex = 3;
+            // 
+            // btnImport
+            // 
+            this.btnImport.Dock = System.Windows.Forms.DockStyle.Right;
+            this.btnImport.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.btnImport.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
+            this.btnImport.Location = new System.Drawing.Point(163, 3);
+            this.btnImport.Name = "btnImport";
+            this.btnImport.Size = new System.Drawing.Size(108, 47);
+            this.btnImport.TabIndex = 45;
+            this.btnImport.Text = "Import";
+            this.btnImport.UseVisualStyleBackColor = true;
+            this.btnImport.Click += new System.EventHandler(this.btnImport_Click);
+            // 
+            // btnExport
+            // 
+            this.btnExport.Dock = System.Windows.Forms.DockStyle.Left;
+            this.btnExport.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.btnExport.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
+            this.btnExport.Location = new System.Drawing.Point(3, 3);
+            this.btnExport.Name = "btnExport";
+            this.btnExport.Size = new System.Drawing.Size(108, 47);
+            this.btnExport.TabIndex = 44;
+            this.btnExport.Text = "Export";
+            this.btnExport.UseVisualStyleBackColor = true;
+            this.btnExport.Click += new System.EventHandler(this.btnExport_Click);
+            // 
             // dgview
             // 
             this.dgview.AllowUserToAddRows = false;
             this.dgview.AllowUserToDeleteRows = false;
             this.dgview.AllowUserToResizeRows = false;
-            dataGridViewCellStyle6.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
-            this.dgview.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle6;
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
+            this.dgview.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
             this.dgview.AutoGenerateColumns = false;
             this.dgview.BackgroundColor = System.Drawing.Color.White;
             this.dgview.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            dataGridViewCellStyle7.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle7.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle7.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Bold);
-            dataGridViewCellStyle7.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            dataGridViewCellStyle7.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle7.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle7.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dgview.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle7;
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Bold);
+            dataGridViewCellStyle2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
+            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dgview.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle2;
             this.dgview.ColumnHeadersHeight = 28;
             this.dgview.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.item_serial,
@@ -690,14 +827,14 @@ namespace standard.master
             this.itemudateDataGridViewTextBoxColumn});
             this.dgview.Cursor = System.Windows.Forms.Cursors.Default;
             this.dgview.DataSource = this.uspitemSelectResultBindingSource2;
-            dataGridViewCellStyle8.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle8.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle8.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Bold);
-            dataGridViewCellStyle8.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            dataGridViewCellStyle8.SelectionBackColor = System.Drawing.Color.Orange;
-            dataGridViewCellStyle8.SelectionForeColor = System.Drawing.Color.White;
-            dataGridViewCellStyle8.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dgview.DefaultCellStyle = dataGridViewCellStyle8;
+            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle3.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Bold);
+            dataGridViewCellStyle3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
+            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.Color.Orange;
+            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.Color.White;
+            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dgview.DefaultCellStyle = dataGridViewCellStyle3;
             this.dgview.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dgview.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Bold);
             this.dgview.ImeMode = System.Windows.Forms.ImeMode.NoControl;
@@ -707,640 +844,21 @@ namespace standard.master
             this.dgview.Name = "dgview";
             this.dgview.ReadOnly = true;
             this.dgview.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            dataGridViewCellStyle9.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle9.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle9.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
-            dataGridViewCellStyle9.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle9.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle9.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle9.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dgview.RowHeadersDefaultCellStyle = dataGridViewCellStyle9;
+            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle4.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle4.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
+            dataGridViewCellStyle4.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle4.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle4.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dgview.RowHeadersDefaultCellStyle = dataGridViewCellStyle4;
             this.dgview.RowHeadersVisible = false;
-            dataGridViewCellStyle10.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
-            this.dgview.RowsDefaultCellStyle = dataGridViewCellStyle10;
+            dataGridViewCellStyle5.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
+            this.dgview.RowsDefaultCellStyle = dataGridViewCellStyle5;
             this.dgview.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dgview.Size = new System.Drawing.Size(1914, 275);
             this.dgview.TabIndex = 0;
             this.dgview.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgview_CellDoubleClick);
-            // 
-            // uspitemSelectResultBindingSource2
-            // 
-            this.uspitemSelectResultBindingSource2.DataSource = typeof(standard.classes.usp_itemSelectResult);
-            // 
-            // tblEntry
-            // 
-            this.tblEntry.ColumnCount = 6;
-            this.tblEntry.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 300F));
-            this.tblEntry.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 300F));
-            this.tblEntry.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 300F));
-            this.tblEntry.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 300F));
-            this.tblEntry.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tblEntry.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 375F));
-            this.tblEntry.Controls.Add(this.txtItemName, 1, 0);
-            this.tblEntry.Controls.Add(this.label1, 0, 0);
-            this.tblEntry.Controls.Add(this.lblItemFullName, 0, 1);
-            this.tblEntry.Controls.Add(this.txtItemFullName, 1, 1);
-            this.tblEntry.Controls.Add(this.txtItemTamilName, 1, 2);
-            this.tblEntry.Controls.Add(this.lblItemTamilName, 0, 2);
-            this.tblEntry.Controls.Add(this.lblItemUnit, 0, 3);
-            this.tblEntry.Controls.Add(this.cboItemUnit, 1, 3);
-            this.tblEntry.Controls.Add(this.lblItemQuantity, 0, 4);
-            this.tblEntry.Controls.Add(this.txtItemQuantity, 1, 4);
-            this.tblEntry.Controls.Add(this.lblTamil, 5, 4);
-            this.tblEntry.Controls.Add(this.label12, 4, 2);
-            this.tblEntry.Controls.Add(this.txtSerial, 5, 2);
-            this.tblEntry.Controls.Add(this.label2, 4, 1);
-            this.tblEntry.Controls.Add(this.txtItemCode, 5, 1);
-            this.tblEntry.Controls.Add(this.txtTaxPercentage, 5, 0);
-            this.tblEntry.Controls.Add(this.lblTaxPercentage, 4, 0);
-            this.tblEntry.Controls.Add(this.label4, 2, 6);
-            this.tblEntry.Controls.Add(this.txtPRate, 3, 6);
-            this.tblEntry.Controls.Add(this.label6, 2, 5);
-            this.tblEntry.Controls.Add(this.txtMRP, 3, 5);
-            this.tblEntry.Controls.Add(this.label7, 2, 4);
-            this.tblEntry.Controls.Add(this.txtWholeSaleRate, 3, 4);
-            this.tblEntry.Controls.Add(this.label8, 2, 3);
-            this.tblEntry.Controls.Add(this.txtSpecialRate, 3, 3);
-            this.tblEntry.Controls.Add(this.label9, 2, 2);
-            this.tblEntry.Controls.Add(this.txtSuperSplRate, 3, 2);
-            this.tblEntry.Controls.Add(this.label5, 2, 1);
-            this.tblEntry.Controls.Add(this.txtCostRate, 3, 1);
-            this.tblEntry.Controls.Add(this.cboCompany, 3, 0);
-            this.tblEntry.Controls.Add(this.lblCompany, 2, 0);
-            this.tblEntry.Controls.Add(this.label3, 0, 6);
-            this.tblEntry.Controls.Add(this.lbItemUnitType, 0, 5);
-            this.tblEntry.Controls.Add(this.cboCategory, 1, 6);
-            this.tblEntry.Controls.Add(this.cboItemUnitType, 1, 5);
-            this.tblEntry.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tblEntry.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tblEntry.Location = new System.Drawing.Point(5, 61);
-            this.tblEntry.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.tblEntry.Name = "tblEntry";
-            this.tblEntry.RowCount = 7;
-            this.tblEntry.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 14.28531F));
-            this.tblEntry.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 14.28531F));
-            this.tblEntry.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 14.28531F));
-            this.tblEntry.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 14.28531F));
-            this.tblEntry.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 14.28531F));
-            this.tblEntry.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 14.28531F));
-            this.tblEntry.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 14.28816F));
-            this.tblEntry.Size = new System.Drawing.Size(1914, 275);
-            this.tblEntry.TabIndex = 2;
-            // 
-            // txtItemName
-            // 
-            this.txtItemName.BackColor = System.Drawing.Color.White;
-            this.txtItemName.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.txtItemName.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtItemName.Location = new System.Drawing.Point(304, 5);
-            this.txtItemName.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.txtItemName.MaxLength = 50;
-            this.txtItemName.Name = "txtItemName";
-            this.txtItemName.Size = new System.Drawing.Size(290, 35);
-            this.txtItemName.TabIndex = 0;
-            this.txtItemName.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtItemName_KeyDown);
-            // 
-            // label1
-            // 
-            this.label1.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.label1.AutoSize = true;
-            this.label1.BackColor = System.Drawing.Color.Transparent;
-            this.label1.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.label1.Location = new System.Drawing.Point(4, 5);
-            this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(144, 28);
-            this.label1.TabIndex = 0;
-            this.label1.Text = "Item Name";
-            this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // lblItemFullName
-            // 
-            this.lblItemFullName.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.lblItemFullName.AutoSize = true;
-            this.lblItemFullName.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.lblItemFullName.Location = new System.Drawing.Point(3, 44);
-            this.lblItemFullName.Name = "lblItemFullName";
-            this.lblItemFullName.Size = new System.Drawing.Size(193, 28);
-            this.lblItemFullName.TabIndex = 18;
-            this.lblItemFullName.Text = "Item Full Name";
-            // 
-            // txtItemFullName
-            // 
-            this.txtItemFullName.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.txtItemFullName.Location = new System.Drawing.Point(303, 42);
-            this.txtItemFullName.Name = "txtItemFullName";
-            this.txtItemFullName.Size = new System.Drawing.Size(291, 35);
-            this.txtItemFullName.TabIndex = 19;
-            this.txtItemFullName.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtItemFullName_KeyDown);
-            // 
-            // txtItemTamilName
-            // 
-            this.txtItemTamilName.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.txtItemTamilName.Location = new System.Drawing.Point(303, 81);
-            this.txtItemTamilName.Name = "txtItemTamilName";
-            this.txtItemTamilName.Size = new System.Drawing.Size(291, 35);
-            this.txtItemTamilName.TabIndex = 21;
-            this.txtItemTamilName.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtItemTamilName_KeyDown);
-            this.txtItemTamilName.KeyUp += new System.Windows.Forms.KeyEventHandler(this.txtItemTamilName_KeyUp);
-            this.txtItemTamilName.Leave += new System.EventHandler(this.txtItemTamilName_Leave);
-            // 
-            // lblItemTamilName
-            // 
-            this.lblItemTamilName.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.lblItemTamilName.AutoSize = true;
-            this.lblItemTamilName.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.lblItemTamilName.Location = new System.Drawing.Point(3, 83);
-            this.lblItemTamilName.Name = "lblItemTamilName";
-            this.lblItemTamilName.Size = new System.Drawing.Size(215, 28);
-            this.lblItemTamilName.TabIndex = 20;
-            this.lblItemTamilName.Text = "Item Tamil Name";
-            // 
-            // txtSerial
-            // 
-            this.txtSerial.BackColor = System.Drawing.Color.White;
-            this.txtSerial.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.txtSerial.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtSerial.Location = new System.Drawing.Point(1543, 83);
-            this.txtSerial.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.txtSerial.MaxLength = 50;
-            this.txtSerial.Name = "txtSerial";
-            this.txtSerial.Size = new System.Drawing.Size(290, 35);
-            this.txtSerial.TabIndex = 2;
-            this.txtSerial.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtSerial_KeyDown);
-            this.txtSerial.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtSerial_KeyPress);
-            // 
-            // label12
-            // 
-            this.label12.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.label12.AutoSize = true;
-            this.label12.BackColor = System.Drawing.Color.Transparent;
-            this.label12.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label12.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.label12.Location = new System.Drawing.Point(1204, 83);
-            this.label12.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(143, 28);
-            this.label12.TabIndex = 17;
-            this.label12.Text = "Serial Code";
-            this.label12.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // label2
-            // 
-            this.label2.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.label2.AutoSize = true;
-            this.label2.BackColor = System.Drawing.Color.Transparent;
-            this.label2.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.label2.Location = new System.Drawing.Point(1204, 44);
-            this.label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(143, 28);
-            this.label2.TabIndex = 2;
-            this.label2.Text = "Batch Code";
-            this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // txtItemCode
-            // 
-            this.txtItemCode.BackColor = System.Drawing.Color.White;
-            this.txtItemCode.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.txtItemCode.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtItemCode.Location = new System.Drawing.Point(1543, 44);
-            this.txtItemCode.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.txtItemCode.MaxLength = 50;
-            this.txtItemCode.Name = "txtItemCode";
-            this.txtItemCode.Size = new System.Drawing.Size(290, 35);
-            this.txtItemCode.TabIndex = 1;
-            this.txtItemCode.TextChanged += new System.EventHandler(this.txtSearch_TextChanged);
-            this.txtItemCode.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtItemCode_KeyDown);
-            this.txtItemCode.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtSerial_KeyPress);
-            // 
-            // lblTamil
-            // 
-            this.lblTamil.BackColor = System.Drawing.Color.White;
-            this.lblTamil.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.lblTamil.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
-            this.lblTamil.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.lblTamil.Location = new System.Drawing.Point(1543, 156);
-            this.lblTamil.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.lblTamil.Name = "lblTamil";
-            this.tblEntry.SetRowSpan(this.lblTamil, 2);
-            this.lblTamil.Size = new System.Drawing.Size(290, 78);
-            this.lblTamil.TabIndex = 27;
-            // 
-            // lblItemUnit
-            // 
-            this.lblItemUnit.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.lblItemUnit.AutoSize = true;
-            this.lblItemUnit.BackColor = System.Drawing.Color.Transparent;
-            this.lblItemUnit.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblItemUnit.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.lblItemUnit.Location = new System.Drawing.Point(4, 122);
-            this.lblItemUnit.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.lblItemUnit.Name = "lblItemUnit";
-            this.lblItemUnit.Size = new System.Drawing.Size(61, 28);
-            this.lblItemUnit.TabIndex = 28;
-            this.lblItemUnit.Text = "Unit";
-            this.lblItemUnit.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // lblTaxPercentage
-            // 
-            this.lblTaxPercentage.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.lblTaxPercentage.AutoSize = true;
-            this.lblTaxPercentage.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.lblTaxPercentage.Location = new System.Drawing.Point(1203, 5);
-            this.lblTaxPercentage.Name = "lblTaxPercentage";
-            this.lblTaxPercentage.Size = new System.Drawing.Size(89, 28);
-            this.lblTaxPercentage.TabIndex = 24;
-            this.lblTaxPercentage.Text = "Tax %";
-            // 
-            // txtTaxPercentage
-            // 
-            this.txtTaxPercentage.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.txtTaxPercentage.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.txtTaxPercentage.Location = new System.Drawing.Point(1542, 3);
-            this.txtTaxPercentage.Name = "txtTaxPercentage";
-            this.txtTaxPercentage.Size = new System.Drawing.Size(291, 35);
-            this.txtTaxPercentage.TabIndex = 25;
-            this.txtTaxPercentage.Text = "0";
-            this.txtTaxPercentage.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtTax_KeyDown);
-            // 
-            // label4
-            // 
-            this.label4.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.label4.AutoSize = true;
-            this.label4.BackColor = System.Drawing.Color.Transparent;
-            this.label4.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.label4.Location = new System.Drawing.Point(604, 240);
-            this.label4.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(181, 28);
-            this.label4.TabIndex = 6;
-            this.label4.Text = "Purchase Rate";
-            this.label4.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // txtPRate
-            // 
-            this.txtPRate.BackColor = System.Drawing.Color.White;
-            this.txtPRate.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.txtPRate.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtPRate.Location = new System.Drawing.Point(904, 239);
-            this.txtPRate.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.txtPRate.MaxLength = 50;
-            this.txtPRate.Name = "txtPRate";
-            this.txtPRate.Size = new System.Drawing.Size(290, 35);
-            this.txtPRate.TabIndex = 4;
-            this.txtPRate.Text = "0";
-            this.txtPRate.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtPRate_KeyDown);
-            // 
-            // label6
-            // 
-            this.label6.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.label6.AutoSize = true;
-            this.label6.BackColor = System.Drawing.Color.Transparent;
-            this.label6.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label6.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.label6.Location = new System.Drawing.Point(604, 200);
-            this.label6.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(109, 28);
-            this.label6.TabIndex = 10;
-            this.label6.Text = "MRP (D)";
-            this.label6.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // txtMRP
-            // 
-            this.txtMRP.BackColor = System.Drawing.Color.White;
-            this.txtMRP.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.txtMRP.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtMRP.Location = new System.Drawing.Point(904, 200);
-            this.txtMRP.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.txtMRP.MaxLength = 50;
-            this.txtMRP.Name = "txtMRP";
-            this.txtMRP.Size = new System.Drawing.Size(290, 35);
-            this.txtMRP.TabIndex = 9;
-            this.txtMRP.Text = "0";
-            this.txtMRP.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtMRP_KeyDown);
-            // 
-            // label7
-            // 
-            this.label7.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.label7.AutoSize = true;
-            this.label7.BackColor = System.Drawing.Color.Transparent;
-            this.label7.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label7.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.label7.Location = new System.Drawing.Point(604, 161);
-            this.label7.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(247, 28);
-            this.label7.TabIndex = 12;
-            this.label7.Text = "Whole Sale Rate (C)";
-            this.label7.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // txtWholeSaleRate
-            // 
-            this.txtWholeSaleRate.BackColor = System.Drawing.Color.White;
-            this.txtWholeSaleRate.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.txtWholeSaleRate.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtWholeSaleRate.Location = new System.Drawing.Point(904, 161);
-            this.txtWholeSaleRate.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.txtWholeSaleRate.MaxLength = 50;
-            this.txtWholeSaleRate.Name = "txtWholeSaleRate";
-            this.txtWholeSaleRate.Size = new System.Drawing.Size(290, 35);
-            this.txtWholeSaleRate.TabIndex = 8;
-            this.txtWholeSaleRate.Text = "0";
-            this.txtWholeSaleRate.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtWholeSaleRate_KeyDown);
-            // 
-            // label8
-            // 
-            this.label8.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.label8.AutoSize = true;
-            this.label8.BackColor = System.Drawing.Color.Transparent;
-            this.label8.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label8.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.label8.Location = new System.Drawing.Point(604, 122);
-            this.label8.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(200, 28);
-            this.label8.TabIndex = 14;
-            this.label8.Text = "Special Rate (B)";
-            this.label8.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // txtSpecialRate
-            // 
-            this.txtSpecialRate.BackColor = System.Drawing.Color.White;
-            this.txtSpecialRate.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.txtSpecialRate.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtSpecialRate.Location = new System.Drawing.Point(904, 122);
-            this.txtSpecialRate.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.txtSpecialRate.MaxLength = 50;
-            this.txtSpecialRate.Name = "txtSpecialRate";
-            this.txtSpecialRate.Size = new System.Drawing.Size(290, 35);
-            this.txtSpecialRate.TabIndex = 7;
-            this.txtSpecialRate.Text = "0";
-            this.txtSpecialRate.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtSpecialRate_KeyDown);
-            // 
-            // label9
-            // 
-            this.label9.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.label9.AutoSize = true;
-            this.label9.BackColor = System.Drawing.Color.Transparent;
-            this.label9.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label9.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.label9.Location = new System.Drawing.Point(604, 83);
-            this.label9.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(275, 28);
-            this.label9.TabIndex = 16;
-            this.label9.Text = "Super Special Rate (A)";
-            this.label9.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // txtSuperSplRate
-            // 
-            this.txtSuperSplRate.BackColor = System.Drawing.Color.White;
-            this.txtSuperSplRate.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.txtSuperSplRate.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtSuperSplRate.Location = new System.Drawing.Point(904, 83);
-            this.txtSuperSplRate.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.txtSuperSplRate.MaxLength = 50;
-            this.txtSuperSplRate.Name = "txtSuperSplRate";
-            this.txtSuperSplRate.Size = new System.Drawing.Size(290, 35);
-            this.txtSuperSplRate.TabIndex = 6;
-            this.txtSuperSplRate.Text = "0";
-            this.txtSuperSplRate.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtSuperSplRate_KeyDown);
-            // 
-            // txtCostRate
-            // 
-            this.txtCostRate.BackColor = System.Drawing.Color.White;
-            this.txtCostRate.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.txtCostRate.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtCostRate.Location = new System.Drawing.Point(904, 44);
-            this.txtCostRate.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.txtCostRate.MaxLength = 50;
-            this.txtCostRate.Name = "txtCostRate";
-            this.txtCostRate.Size = new System.Drawing.Size(290, 35);
-            this.txtCostRate.TabIndex = 5;
-            this.txtCostRate.Text = "0";
-            this.txtCostRate.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtCostRate_KeyDown);
-            // 
-            // label5
-            // 
-            this.label5.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.label5.AutoSize = true;
-            this.label5.BackColor = System.Drawing.Color.Transparent;
-            this.label5.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label5.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.label5.Location = new System.Drawing.Point(604, 44);
-            this.label5.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(125, 28);
-            this.label5.TabIndex = 8;
-            this.label5.Text = "Cost Rate";
-            this.label5.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // cboCompany
-            // 
-            this.cboCompany.DataSource = this.uspcategorySelectResultBindingSource;
-            this.cboCompany.DisplayMember = "com_name";
-            this.cboCompany.Enabled = false;
-            this.cboCompany.FormattingEnabled = true;
-            this.cboCompany.Location = new System.Drawing.Point(903, 3);
-            this.cboCompany.Name = "cboCompany";
-            this.cboCompany.Size = new System.Drawing.Size(291, 36);
-            this.cboCompany.TabIndex = 23;
-            this.cboCompany.ValueMember = "com_id";
-            // 
-            // uspcategorySelectResultBindingSource
-            // 
-            this.uspcategorySelectResultBindingSource.DataSource = typeof(standard.classes.usp_categorySelectResult);
-            // 
-            // cboCategory
-            // 
-            this.cboCategory.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.cboCategory.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
-            this.cboCategory.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
-            this.cboCategory.DataSource = this.categoryBindingSource;
-            this.cboCategory.DisplayMember = "cat_name";
-            this.cboCategory.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.cboCategory.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cboCategory.FormattingEnabled = true;
-            this.cboCategory.Location = new System.Drawing.Point(305, 239);
-            this.cboCategory.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.cboCategory.Name = "cboCategory";
-            this.cboCategory.Size = new System.Drawing.Size(290, 36);
-            this.cboCategory.TabIndex = 3;
-            this.cboCategory.ValueMember = "cat_id";
-            this.cboCategory.SelectedValueChanged += new System.EventHandler(this.cboCategory_SelectedValueChanged);
-            this.cboCategory.KeyDown += new System.Windows.Forms.KeyEventHandler(this.cboCategory_KeyDown);
-            // 
-            // categoryBindingSource
-            // 
-            this.categoryBindingSource.DataSource = typeof(standard.classes.category);
-            // 
-            // lblCompany
-            // 
-            this.lblCompany.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.lblCompany.AutoSize = true;
-            this.lblCompany.BackColor = System.Drawing.Color.Transparent;
-            this.lblCompany.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.lblCompany.Location = new System.Drawing.Point(603, 5);
-            this.lblCompany.Name = "lblCompany";
-            this.lblCompany.Size = new System.Drawing.Size(119, 28);
-            this.lblCompany.TabIndex = 22;
-            this.lblCompany.Text = "Company";
-            // 
-            // label3
-            // 
-            this.label3.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.label3.AutoSize = true;
-            this.label3.BackColor = System.Drawing.Color.Transparent;
-            this.label3.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.label3.Location = new System.Drawing.Point(4, 240);
-            this.label3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(116, 28);
-            this.label3.TabIndex = 4;
-            this.label3.Text = "Category";
-            this.label3.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // cboItemUnit
-            // 
-            this.cboItemUnit.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
-            this.cboItemUnit.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
-            this.cboItemUnit.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.cboItemUnit.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
-            this.cboItemUnit.FormattingEnabled = true;
-            this.cboItemUnit.Items.AddRange(new object[] {
-            "---Select---",
-            "Kg",
-            "G"});
-            this.cboItemUnit.Location = new System.Drawing.Point(304, 122);
-            this.cboItemUnit.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.cboItemUnit.Name = "cboItemUnit";
-            this.cboItemUnit.Size = new System.Drawing.Size(289, 36);
-            this.cboItemUnit.TabIndex = 29;
-            this.cboItemUnit.KeyDown += new System.Windows.Forms.KeyEventHandler(this.cboItemUnit_KeyDown);
-            // 
-            // lblItemQuantity
-            // 
-            this.lblItemQuantity.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.lblItemQuantity.AutoSize = true;
-            this.lblItemQuantity.BackColor = System.Drawing.Color.Transparent;
-            this.lblItemQuantity.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblItemQuantity.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.lblItemQuantity.Location = new System.Drawing.Point(4, 161);
-            this.lblItemQuantity.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.lblItemQuantity.Name = "lblItemQuantity";
-            this.lblItemQuantity.Size = new System.Drawing.Size(134, 28);
-            this.lblItemQuantity.TabIndex = 31;
-            this.lblItemQuantity.Text = "Unit Value";
-            this.lblItemQuantity.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // txtItemQuantity
-            // 
-            this.txtItemQuantity.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.txtItemQuantity.Location = new System.Drawing.Point(303, 159);
-            this.txtItemQuantity.Name = "txtItemQuantity";
-            this.txtItemQuantity.Size = new System.Drawing.Size(291, 35);
-            this.txtItemQuantity.TabIndex = 32;
-            this.txtItemQuantity.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtItemQuantity_KeyDown);
-            this.txtItemQuantity.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtItemQuantity_KeyPress);
-            // 
-            // tblCommand
-            // 
-            this.tblCommand.ColumnCount = 5;
-            this.tblCommand.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tblCommand.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 150F));
-            this.tblCommand.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 150F));
-            this.tblCommand.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 150F));
-            this.tblCommand.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 150F));
-            this.tblCommand.Controls.Add(this.cmdclose, 4, 0);
-            this.tblCommand.Controls.Add(this.btnClear, 3, 0);
-            this.tblCommand.Controls.Add(this.btnDelete, 2, 0);
-            this.tblCommand.Controls.Add(this.btnSave, 1, 0);
-            this.tblCommand.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tblCommand.Location = new System.Drawing.Point(5, 703);
-            this.tblCommand.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.tblCommand.Name = "tblCommand";
-            this.tblCommand.RowCount = 1;
-            this.tblCommand.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tblCommand.Size = new System.Drawing.Size(1914, 59);
-            this.tblCommand.TabIndex = 3;
-            // 
-            // cmdclose
-            // 
-            this.cmdclose.AutoSize = true;
-            this.cmdclose.BackColor = System.Drawing.Color.Transparent;
-            this.cmdclose.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold);
-            this.cmdclose.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(41)))), ((int)(((byte)(66)))), ((int)(((byte)(122)))));
-            this.cmdclose.Location = new System.Drawing.Point(1768, 5);
-            this.cmdclose.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.cmdclose.Name = "cmdclose";
-            this.cmdclose.Size = new System.Drawing.Size(135, 49);
-            this.cmdclose.TabIndex = 3;
-            this.cmdclose.Text = "&Close";
-            this.cmdclose.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            this.cmdclose.UseVisualStyleBackColor = false;
-            this.cmdclose.Click += new System.EventHandler(this.cmdclose_Click);
-            // 
-            // btnClear
-            // 
-            this.btnClear.AutoSize = true;
-            this.btnClear.BackColor = System.Drawing.Color.Transparent;
-            this.btnClear.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold);
-            this.btnClear.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(41)))), ((int)(((byte)(66)))), ((int)(((byte)(122)))));
-            this.btnClear.Location = new System.Drawing.Point(1618, 5);
-            this.btnClear.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.btnClear.Name = "btnClear";
-            this.btnClear.Size = new System.Drawing.Size(135, 49);
-            this.btnClear.TabIndex = 2;
-            this.btnClear.Text = "&Clear";
-            this.btnClear.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            this.btnClear.UseVisualStyleBackColor = false;
-            this.btnClear.Click += new System.EventHandler(this.btnClear_Click);
-            // 
-            // btnDelete
-            // 
-            this.btnDelete.AutoSize = true;
-            this.btnDelete.BackColor = System.Drawing.Color.Transparent;
-            this.btnDelete.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold);
-            this.btnDelete.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(41)))), ((int)(((byte)(66)))), ((int)(((byte)(122)))));
-            this.btnDelete.Location = new System.Drawing.Point(1468, 5);
-            this.btnDelete.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.btnDelete.Name = "btnDelete";
-            this.btnDelete.Size = new System.Drawing.Size(135, 49);
-            this.btnDelete.TabIndex = 1;
-            this.btnDelete.Text = "&Delete";
-            this.btnDelete.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            this.btnDelete.UseVisualStyleBackColor = false;
-            this.btnDelete.Click += new System.EventHandler(this.btnDelete_Click);
-            // 
-            // btnSave
-            // 
-            this.btnSave.AutoSize = true;
-            this.btnSave.BackColor = System.Drawing.Color.Transparent;
-            this.btnSave.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold);
-            this.btnSave.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(41)))), ((int)(((byte)(66)))), ((int)(((byte)(122)))));
-            this.btnSave.Location = new System.Drawing.Point(1318, 5);
-            this.btnSave.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.btnSave.Name = "btnSave";
-            this.btnSave.Size = new System.Drawing.Size(135, 49);
-            this.btnSave.TabIndex = 0;
-            this.btnSave.Text = "&Save";
-            this.btnSave.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            this.btnSave.UseVisualStyleBackColor = false;
-            this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
-            // 
-            // uspitemSelectResultBindingSource
-            // 
-            this.uspitemSelectResultBindingSource.DataSource = typeof(standard.classes.usp_itemSelectResult);
-            // 
-            // uspitemSelectResultBindingSource1
-            // 
-            this.uspitemSelectResultBindingSource1.DataSource = typeof(standard.classes.usp_itemSelectResult);
             // 
             // item_serial
             // 
@@ -1377,7 +895,7 @@ namespace standard.master
             // catnameDataGridViewTextBoxColumn
             // 
             this.catnameDataGridViewTextBoxColumn.DataPropertyName = "cat_name";
-            this.catnameDataGridViewTextBoxColumn.HeaderText = "Catogery";
+            this.catnameDataGridViewTextBoxColumn.HeaderText = "Category";
             this.catnameDataGridViewTextBoxColumn.Name = "catnameDataGridViewTextBoxColumn";
             this.catnameDataGridViewTextBoxColumn.ReadOnly = true;
             this.catnameDataGridViewTextBoxColumn.Width = 200;
@@ -1396,6 +914,7 @@ namespace standard.master
             this.itemfullnameDataGridViewTextBoxColumn.HeaderText = "Item Full Name";
             this.itemfullnameDataGridViewTextBoxColumn.Name = "itemfullnameDataGridViewTextBoxColumn";
             this.itemfullnameDataGridViewTextBoxColumn.ReadOnly = true;
+            this.itemfullnameDataGridViewTextBoxColumn.Visible = false;
             this.itemfullnameDataGridViewTextBoxColumn.Width = 250;
             // 
             // itemtamilnameDataGridViewTextBoxColumn
@@ -1524,20 +1043,442 @@ namespace standard.master
             this.itemudateDataGridViewTextBoxColumn.ReadOnly = true;
             this.itemudateDataGridViewTextBoxColumn.Visible = false;
             // 
-            // lbItemUnitType
+            // uspitemSelectResultBindingSource2
             // 
-            this.lbItemUnitType.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.lbItemUnitType.AutoSize = true;
-            this.lbItemUnitType.BackColor = System.Drawing.Color.Transparent;
-            this.lbItemUnitType.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lbItemUnitType.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.lbItemUnitType.Location = new System.Drawing.Point(4, 200);
-            this.lbItemUnitType.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.lbItemUnitType.Name = "lbItemUnitType";
-            this.lbItemUnitType.Size = new System.Drawing.Size(187, 28);
-            this.lbItemUnitType.TabIndex = 33;
-            this.lbItemUnitType.Text = "Item Unit Type";
-            this.lbItemUnitType.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.uspitemSelectResultBindingSource2.DataSource = typeof(standard.classes.usp_itemSelectResult);
+            // 
+            // tblEntry
+            // 
+            this.tblEntry.ColumnCount = 7;
+            this.tblEntry.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 300F));
+            this.tblEntry.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 300F));
+            this.tblEntry.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 300F));
+            this.tblEntry.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 300F));
+            this.tblEntry.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 300F));
+            this.tblEntry.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 300F));
+            this.tblEntry.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tblEntry.Controls.Add(this.chkTaxable, 3, 6);
+            this.tblEntry.Controls.Add(this.lblPurUnitRate, 0, 6);
+            this.tblEntry.Controls.Add(this.txtPurUnitRate, 1, 6);
+            this.tblEntry.Controls.Add(this.txtItemName, 1, 0);
+            this.tblEntry.Controls.Add(this.label1, 0, 0);
+            this.tblEntry.Controls.Add(this.txtItemTamilName, 1, 1);
+            this.tblEntry.Controls.Add(this.cboCategory, 1, 2);
+            this.tblEntry.Controls.Add(this.tableLayoutPanel1, 1, 3);
+            this.tblEntry.Controls.Add(this.chkIsUnitPerRate, 1, 4);
+            this.tblEntry.Controls.Add(this.txtUnitPerRate, 1, 5);
+            this.tblEntry.Controls.Add(this.lblSalesPerRate, 0, 5);
+            this.tblEntry.Controls.Add(this.lblItemTamilName, 0, 1);
+            this.tblEntry.Controls.Add(this.label3, 0, 2);
+            this.tblEntry.Controls.Add(this.lblItemUnit, 0, 3);
+            this.tblEntry.Controls.Add(this.txtPRate, 3, 5);
+            this.tblEntry.Controls.Add(this.txtWholeSaleRate, 3, 4);
+            this.tblEntry.Controls.Add(this.txtSpecialRate, 3, 3);
+            this.tblEntry.Controls.Add(this.txtSuperSplRate, 3, 2);
+            this.tblEntry.Controls.Add(this.cboCompany, 3, 1);
+            this.tblEntry.Controls.Add(this.label4, 2, 5);
+            this.tblEntry.Controls.Add(this.label7, 2, 4);
+            this.tblEntry.Controls.Add(this.label8, 2, 3);
+            this.tblEntry.Controls.Add(this.label9, 2, 2);
+            this.tblEntry.Controls.Add(this.lblCompany, 2, 1);
+            this.tblEntry.Controls.Add(this.cboItemUnitType, 3, 0);
+            this.tblEntry.Controls.Add(this.lbItemUnitType, 2, 0);
+            this.tblEntry.Controls.Add(this.label6, 6, 0);
+            this.tblEntry.Controls.Add(this.label2, 6, 1);
+            this.tblEntry.Controls.Add(this.txtItemCode, 6, 3);
+            this.tblEntry.Controls.Add(this.lblItemFullName, 6, 2);
+            this.tblEntry.Controls.Add(this.txtCostRate, 6, 4);
+            this.tblEntry.Controls.Add(this.txtItemFullName, 6, 5);
+            this.tblEntry.Controls.Add(this.txtMRP, 6, 6);
+            this.tblEntry.Controls.Add(this.txtCGST, 5, 3);
+            this.tblEntry.Controls.Add(this.label15, 5, 4);
+            this.tblEntry.Controls.Add(this.txtSGST, 5, 5);
+            this.tblEntry.Controls.Add(this.progressBar1, 5, 6);
+            this.tblEntry.Controls.Add(this.lblProgress, 4, 6);
+            this.tblEntry.Controls.Add(this.lblTamil, 4, 4);
+            this.tblEntry.Controls.Add(this.label14, 4, 3);
+            this.tblEntry.Controls.Add(this.label12, 4, 2);
+            this.tblEntry.Controls.Add(this.txtSerial, 5, 2);
+            this.tblEntry.Controls.Add(this.txtHSNCode, 5, 1);
+            this.tblEntry.Controls.Add(this.label5, 4, 1);
+            this.tblEntry.Controls.Add(this.txtTaxPercentage, 5, 0);
+            this.tblEntry.Controls.Add(this.lblTaxPercentage, 4, 0);
+            this.tblEntry.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tblEntry.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tblEntry.Location = new System.Drawing.Point(5, 61);
+            this.tblEntry.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.tblEntry.Name = "tblEntry";
+            this.tblEntry.RowCount = 7;
+            this.tblEntry.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 14.28531F));
+            this.tblEntry.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 14.28531F));
+            this.tblEntry.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 14.28531F));
+            this.tblEntry.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 14.28531F));
+            this.tblEntry.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 14.28531F));
+            this.tblEntry.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 14.28531F));
+            this.tblEntry.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 14.28816F));
+            this.tblEntry.Size = new System.Drawing.Size(1914, 275);
+            this.tblEntry.TabIndex = 2;
+            // 
+            // chkTaxable
+            // 
+            this.chkTaxable.AutoSize = true;
+            this.chkTaxable.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
+            this.chkTaxable.Location = new System.Drawing.Point(903, 237);
+            this.chkTaxable.Name = "chkTaxable";
+            this.chkTaxable.Size = new System.Drawing.Size(160, 32);
+            this.chkTaxable.TabIndex = 16;
+            this.chkTaxable.Text = "Is Taxable";
+            this.chkTaxable.UseVisualStyleBackColor = true;
+            // 
+            // lblPurUnitRate
+            // 
+            this.lblPurUnitRate.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblPurUnitRate.AutoSize = true;
+            this.lblPurUnitRate.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
+            this.lblPurUnitRate.Location = new System.Drawing.Point(3, 240);
+            this.lblPurUnitRate.Name = "lblPurUnitRate";
+            this.lblPurUnitRate.Size = new System.Drawing.Size(237, 28);
+            this.lblPurUnitRate.TabIndex = 22;
+            this.lblPurUnitRate.Text = "Purchase Unit Rate";
+            // 
+            // txtPurUnitRate
+            // 
+            this.txtPurUnitRate.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.txtPurUnitRate.Enabled = false;
+            this.txtPurUnitRate.Location = new System.Drawing.Point(303, 237);
+            this.txtPurUnitRate.Name = "txtPurUnitRate";
+            this.txtPurUnitRate.Size = new System.Drawing.Size(291, 35);
+            this.txtPurUnitRate.TabIndex = 9;
+            this.txtPurUnitRate.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtPurUnitRate_KeyDown);
+            this.txtPurUnitRate.Leave += new System.EventHandler(this.txtPurUnitRate_Leave);
+            // 
+            // txtItemName
+            // 
+            this.txtItemName.BackColor = System.Drawing.Color.White;
+            this.txtItemName.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.txtItemName.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtItemName.Location = new System.Drawing.Point(304, 5);
+            this.txtItemName.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.txtItemName.MaxLength = 50;
+            this.txtItemName.Name = "txtItemName";
+            this.txtItemName.Size = new System.Drawing.Size(290, 35);
+            this.txtItemName.TabIndex = 1;
+            this.txtItemName.KeyDown += new System.Windows.Forms.KeyEventHandler(this.inputControl_KeyDown);
+            // 
+            // label1
+            // 
+            this.label1.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.label1.AutoSize = true;
+            this.label1.BackColor = System.Drawing.Color.Transparent;
+            this.label1.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
+            this.label1.Location = new System.Drawing.Point(4, 5);
+            this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(144, 28);
+            this.label1.TabIndex = 0;
+            this.label1.Text = "Item Name";
+            this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // txtItemTamilName
+            // 
+            this.txtItemTamilName.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.txtItemTamilName.Location = new System.Drawing.Point(303, 42);
+            this.txtItemTamilName.Name = "txtItemTamilName";
+            this.txtItemTamilName.Size = new System.Drawing.Size(291, 35);
+            this.txtItemTamilName.TabIndex = 3;
+            this.txtItemTamilName.KeyDown += new System.Windows.Forms.KeyEventHandler(this.inputControl_KeyDown);
+            this.txtItemTamilName.KeyUp += new System.Windows.Forms.KeyEventHandler(this.txtItemTamilName_KeyUp);
+            this.txtItemTamilName.Leave += new System.EventHandler(this.txtItemTamilName_Leave);
+            // 
+            // cboCategory
+            // 
+            this.cboCategory.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.cboCategory.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
+            this.cboCategory.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
+            this.cboCategory.DataSource = this.categoryBindingSource;
+            this.cboCategory.DisplayMember = "cat_name";
+            this.cboCategory.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.cboCategory.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cboCategory.FormattingEnabled = true;
+            this.cboCategory.Location = new System.Drawing.Point(305, 83);
+            this.cboCategory.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.cboCategory.Name = "cboCategory";
+            this.cboCategory.Size = new System.Drawing.Size(290, 36);
+            this.cboCategory.TabIndex = 4;
+            this.cboCategory.ValueMember = "cat_id";
+            this.cboCategory.SelectedValueChanged += new System.EventHandler(this.cboCategory_SelectedValueChanged);
+            this.cboCategory.KeyDown += new System.Windows.Forms.KeyEventHandler(this.cboCategory_KeyDown_1);
+            // 
+            // categoryBindingSource
+            // 
+            this.categoryBindingSource.DataSource = typeof(standard.classes.category);
+            // 
+            // tableLayoutPanel1
+            // 
+            this.tableLayoutPanel1.ColumnCount = 2;
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel1.Controls.Add(this.cboItemUnit, 1, 0);
+            this.tableLayoutPanel1.Controls.Add(this.txtItemQuantity, 0, 0);
+            this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tableLayoutPanel1.Location = new System.Drawing.Point(303, 120);
+            this.tableLayoutPanel1.Name = "tableLayoutPanel1";
+            this.tableLayoutPanel1.RowCount = 1;
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 33F));
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(294, 33);
+            this.tableLayoutPanel1.TabIndex = 43;
+            // 
+            // cboItemUnit
+            // 
+            this.cboItemUnit.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
+            this.cboItemUnit.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
+            this.cboItemUnit.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.cboItemUnit.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
+            this.cboItemUnit.FormattingEnabled = true;
+            this.cboItemUnit.Items.AddRange(new object[] {
+            "---Select---",
+            "Kg",
+            "G"});
+            this.cboItemUnit.Location = new System.Drawing.Point(151, 5);
+            this.cboItemUnit.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.cboItemUnit.Name = "cboItemUnit";
+            this.cboItemUnit.Size = new System.Drawing.Size(139, 36);
+            this.cboItemUnit.TabIndex = 1;
+            this.cboItemUnit.KeyDown += new System.Windows.Forms.KeyEventHandler(this.cboItemUnit_KeyDown_1);
+            // 
+            // txtItemQuantity
+            // 
+            this.txtItemQuantity.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.txtItemQuantity.Location = new System.Drawing.Point(3, 3);
+            this.txtItemQuantity.Name = "txtItemQuantity";
+            this.txtItemQuantity.Size = new System.Drawing.Size(141, 35);
+            this.txtItemQuantity.TabIndex = 0;
+            this.txtItemQuantity.TextChanged += new System.EventHandler(this.txtItemQuantity_TextChanged);
+            this.txtItemQuantity.KeyDown += new System.Windows.Forms.KeyEventHandler(this.inputControl_KeyDown);
+            this.txtItemQuantity.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtItemQuantity_KeyPress);
+            this.txtItemQuantity.Leave += new System.EventHandler(this.txtItemQuantity_Leave);
+            // 
+            // chkIsUnitPerRate
+            // 
+            this.chkIsUnitPerRate.AutoSize = true;
+            this.chkIsUnitPerRate.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
+            this.chkIsUnitPerRate.Location = new System.Drawing.Point(303, 159);
+            this.chkIsUnitPerRate.Name = "chkIsUnitPerRate";
+            this.chkIsUnitPerRate.Size = new System.Drawing.Size(225, 32);
+            this.chkIsUnitPerRate.TabIndex = 7;
+            this.chkIsUnitPerRate.Text = "Is Unit Per Rate";
+            this.chkIsUnitPerRate.UseVisualStyleBackColor = true;
+            this.chkIsUnitPerRate.CheckedChanged += new System.EventHandler(this.chkIsUnitPerRate_CheckedChanged);
+            this.chkIsUnitPerRate.KeyDown += new System.Windows.Forms.KeyEventHandler(this.chkIsUnitPerRate_KeyDown);
+            // 
+            // txtUnitPerRate
+            // 
+            this.txtUnitPerRate.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.txtUnitPerRate.Enabled = false;
+            this.txtUnitPerRate.Location = new System.Drawing.Point(303, 198);
+            this.txtUnitPerRate.Name = "txtUnitPerRate";
+            this.txtUnitPerRate.Size = new System.Drawing.Size(291, 35);
+            this.txtUnitPerRate.TabIndex = 8;
+            this.txtUnitPerRate.KeyDown += new System.Windows.Forms.KeyEventHandler(this.inputControl_KeyDown);
+            this.txtUnitPerRate.Leave += new System.EventHandler(this.txtItemQuantity_Leave);
+            // 
+            // lblSalesPerRate
+            // 
+            this.lblSalesPerRate.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblSalesPerRate.AutoSize = true;
+            this.lblSalesPerRate.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
+            this.lblSalesPerRate.Location = new System.Drawing.Point(3, 200);
+            this.lblSalesPerRate.Name = "lblSalesPerRate";
+            this.lblSalesPerRate.Size = new System.Drawing.Size(192, 28);
+            this.lblSalesPerRate.TabIndex = 21;
+            this.lblSalesPerRate.Text = "Sales Unit Rate";
+            // 
+            // lblItemTamilName
+            // 
+            this.lblItemTamilName.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblItemTamilName.AutoSize = true;
+            this.lblItemTamilName.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
+            this.lblItemTamilName.Location = new System.Drawing.Point(3, 44);
+            this.lblItemTamilName.Name = "lblItemTamilName";
+            this.lblItemTamilName.Size = new System.Drawing.Size(215, 28);
+            this.lblItemTamilName.TabIndex = 20;
+            this.lblItemTamilName.Text = "Item Tamil Name";
+            // 
+            // label3
+            // 
+            this.label3.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.label3.AutoSize = true;
+            this.label3.BackColor = System.Drawing.Color.Transparent;
+            this.label3.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
+            this.label3.Location = new System.Drawing.Point(4, 83);
+            this.label3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(116, 28);
+            this.label3.TabIndex = 4;
+            this.label3.Text = "Category";
+            this.label3.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // lblItemUnit
+            // 
+            this.lblItemUnit.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblItemUnit.AutoSize = true;
+            this.lblItemUnit.BackColor = System.Drawing.Color.Transparent;
+            this.lblItemUnit.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblItemUnit.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
+            this.lblItemUnit.Location = new System.Drawing.Point(4, 122);
+            this.lblItemUnit.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblItemUnit.Name = "lblItemUnit";
+            this.lblItemUnit.Size = new System.Drawing.Size(61, 28);
+            this.lblItemUnit.TabIndex = 28;
+            this.lblItemUnit.Text = "Unit";
+            this.lblItemUnit.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // txtPRate
+            // 
+            this.txtPRate.BackColor = System.Drawing.Color.White;
+            this.txtPRate.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.txtPRate.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtPRate.Location = new System.Drawing.Point(904, 200);
+            this.txtPRate.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.txtPRate.MaxLength = 50;
+            this.txtPRate.Name = "txtPRate";
+            this.txtPRate.Size = new System.Drawing.Size(290, 35);
+            this.txtPRate.TabIndex = 15;
+            this.txtPRate.Text = "0";
+            this.txtPRate.KeyDown += new System.Windows.Forms.KeyEventHandler(this.inputControl_KeyDown);
+            // 
+            // txtWholeSaleRate
+            // 
+            this.txtWholeSaleRate.BackColor = System.Drawing.Color.White;
+            this.txtWholeSaleRate.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.txtWholeSaleRate.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtWholeSaleRate.Location = new System.Drawing.Point(904, 161);
+            this.txtWholeSaleRate.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.txtWholeSaleRate.MaxLength = 50;
+            this.txtWholeSaleRate.Name = "txtWholeSaleRate";
+            this.txtWholeSaleRate.Size = new System.Drawing.Size(290, 35);
+            this.txtWholeSaleRate.TabIndex = 14;
+            this.txtWholeSaleRate.Text = "0";
+            this.txtWholeSaleRate.KeyDown += new System.Windows.Forms.KeyEventHandler(this.inputControl_KeyDown);
+            // 
+            // txtSpecialRate
+            // 
+            this.txtSpecialRate.BackColor = System.Drawing.Color.White;
+            this.txtSpecialRate.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.txtSpecialRate.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtSpecialRate.Location = new System.Drawing.Point(904, 122);
+            this.txtSpecialRate.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.txtSpecialRate.MaxLength = 50;
+            this.txtSpecialRate.Name = "txtSpecialRate";
+            this.txtSpecialRate.Size = new System.Drawing.Size(290, 35);
+            this.txtSpecialRate.TabIndex = 13;
+            this.txtSpecialRate.Text = "0";
+            this.txtSpecialRate.KeyDown += new System.Windows.Forms.KeyEventHandler(this.inputControl_KeyDown);
+            // 
+            // txtSuperSplRate
+            // 
+            this.txtSuperSplRate.BackColor = System.Drawing.Color.White;
+            this.txtSuperSplRate.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.txtSuperSplRate.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtSuperSplRate.Location = new System.Drawing.Point(904, 83);
+            this.txtSuperSplRate.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.txtSuperSplRate.MaxLength = 50;
+            this.txtSuperSplRate.Name = "txtSuperSplRate";
+            this.txtSuperSplRate.Size = new System.Drawing.Size(290, 35);
+            this.txtSuperSplRate.TabIndex = 12;
+            this.txtSuperSplRate.Text = "0";
+            this.txtSuperSplRate.KeyDown += new System.Windows.Forms.KeyEventHandler(this.inputControl_KeyDown);
+            // 
+            // cboCompany
+            // 
+            this.cboCompany.DataSource = this.companyBindingSource;
+            this.cboCompany.DisplayMember = "com_name";
+            this.cboCompany.Enabled = false;
+            this.cboCompany.FormattingEnabled = true;
+            this.cboCompany.Location = new System.Drawing.Point(903, 42);
+            this.cboCompany.Name = "cboCompany";
+            this.cboCompany.Size = new System.Drawing.Size(291, 36);
+            this.cboCompany.TabIndex = 11;
+            this.cboCompany.ValueMember = "com_id";
+            // 
+            // companyBindingSource
+            // 
+            this.companyBindingSource.DataSource = typeof(standard.classes.company);
+            // 
+            // label4
+            // 
+            this.label4.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.label4.AutoSize = true;
+            this.label4.BackColor = System.Drawing.Color.Transparent;
+            this.label4.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
+            this.label4.Location = new System.Drawing.Point(604, 200);
+            this.label4.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(181, 28);
+            this.label4.TabIndex = 6;
+            this.label4.Text = "Purchase Rate";
+            this.label4.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // label7
+            // 
+            this.label7.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.label7.AutoSize = true;
+            this.label7.BackColor = System.Drawing.Color.Transparent;
+            this.label7.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label7.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
+            this.label7.Location = new System.Drawing.Point(604, 161);
+            this.label7.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(247, 28);
+            this.label7.TabIndex = 12;
+            this.label7.Text = "Whole Sale Rate (C)";
+            this.label7.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // label8
+            // 
+            this.label8.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.label8.AutoSize = true;
+            this.label8.BackColor = System.Drawing.Color.Transparent;
+            this.label8.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label8.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
+            this.label8.Location = new System.Drawing.Point(604, 122);
+            this.label8.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(200, 28);
+            this.label8.TabIndex = 14;
+            this.label8.Text = "Special Rate (B)";
+            this.label8.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // label9
+            // 
+            this.label9.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.label9.AutoSize = true;
+            this.label9.BackColor = System.Drawing.Color.Transparent;
+            this.label9.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label9.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
+            this.label9.Location = new System.Drawing.Point(604, 83);
+            this.label9.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(275, 28);
+            this.label9.TabIndex = 16;
+            this.label9.Text = "Super Special Rate (A)";
+            this.label9.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // lblCompany
+            // 
+            this.lblCompany.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblCompany.AutoSize = true;
+            this.lblCompany.BackColor = System.Drawing.Color.Transparent;
+            this.lblCompany.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
+            this.lblCompany.Location = new System.Drawing.Point(603, 44);
+            this.lblCompany.Name = "lblCompany";
+            this.lblCompany.Size = new System.Drawing.Size(119, 28);
+            this.lblCompany.TabIndex = 22;
+            this.lblCompany.Text = "Company";
             // 
             // cboItemUnitType
             // 
@@ -1549,12 +1490,391 @@ namespace standard.master
             this.cboItemUnitType.Items.AddRange(new object[] {
             "---Select---",
             "Bags"});
-            this.cboItemUnitType.Location = new System.Drawing.Point(304, 200);
+            this.cboItemUnitType.Location = new System.Drawing.Point(904, 5);
             this.cboItemUnitType.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.cboItemUnitType.Name = "cboItemUnitType";
             this.cboItemUnitType.Size = new System.Drawing.Size(289, 36);
-            this.cboItemUnitType.TabIndex = 34;
-            this.cboItemUnitType.KeyDown += new System.Windows.Forms.KeyEventHandler(this.cboItemUnitType_KeyDown);
+            this.cboItemUnitType.TabIndex = 10;
+            this.cboItemUnitType.KeyDown += new System.Windows.Forms.KeyEventHandler(this.inputControl_KeyDown);
+            // 
+            // lbItemUnitType
+            // 
+            this.lbItemUnitType.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lbItemUnitType.AutoSize = true;
+            this.lbItemUnitType.BackColor = System.Drawing.Color.Transparent;
+            this.lbItemUnitType.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lbItemUnitType.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
+            this.lbItemUnitType.Location = new System.Drawing.Point(604, 5);
+            this.lbItemUnitType.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lbItemUnitType.Name = "lbItemUnitType";
+            this.lbItemUnitType.Size = new System.Drawing.Size(187, 28);
+            this.lbItemUnitType.TabIndex = 33;
+            this.lbItemUnitType.Text = "Item Unit Type";
+            this.lbItemUnitType.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // label6
+            // 
+            this.label6.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.label6.AutoSize = true;
+            this.label6.BackColor = System.Drawing.Color.Transparent;
+            this.label6.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label6.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
+            this.label6.Location = new System.Drawing.Point(1804, 0);
+            this.label6.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(65, 39);
+            this.label6.TabIndex = 10;
+            this.label6.Text = "MRP (D)";
+            this.label6.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.label6.Visible = false;
+            // 
+            // label2
+            // 
+            this.label2.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.label2.AutoSize = true;
+            this.label2.BackColor = System.Drawing.Color.Transparent;
+            this.label2.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
+            this.label2.Location = new System.Drawing.Point(1804, 39);
+            this.label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(79, 39);
+            this.label2.TabIndex = 2;
+            this.label2.Text = "Batch Code";
+            this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.label2.Visible = false;
+            // 
+            // txtItemCode
+            // 
+            this.txtItemCode.BackColor = System.Drawing.Color.White;
+            this.txtItemCode.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.txtItemCode.Enabled = false;
+            this.txtItemCode.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtItemCode.Location = new System.Drawing.Point(1804, 122);
+            this.txtItemCode.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.txtItemCode.MaxLength = 50;
+            this.txtItemCode.Name = "txtItemCode";
+            this.txtItemCode.Size = new System.Drawing.Size(106, 35);
+            this.txtItemCode.TabIndex = 41;
+            this.txtItemCode.Visible = false;
+            this.txtItemCode.TextChanged += new System.EventHandler(this.txtSearch_TextChanged);
+            this.txtItemCode.KeyDown += new System.Windows.Forms.KeyEventHandler(this.inputControl_KeyDown);
+            this.txtItemCode.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtSerial_KeyPress);
+            // 
+            // lblItemFullName
+            // 
+            this.lblItemFullName.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblItemFullName.AutoSize = true;
+            this.lblItemFullName.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
+            this.lblItemFullName.Location = new System.Drawing.Point(1803, 78);
+            this.lblItemFullName.Name = "lblItemFullName";
+            this.lblItemFullName.Size = new System.Drawing.Size(80, 39);
+            this.lblItemFullName.TabIndex = 18;
+            this.lblItemFullName.Text = "Item Full Name";
+            this.lblItemFullName.Visible = false;
+            // 
+            // txtCostRate
+            // 
+            this.txtCostRate.BackColor = System.Drawing.Color.White;
+            this.txtCostRate.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.txtCostRate.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtCostRate.Location = new System.Drawing.Point(1804, 161);
+            this.txtCostRate.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.txtCostRate.MaxLength = 50;
+            this.txtCostRate.Name = "txtCostRate";
+            this.txtCostRate.Size = new System.Drawing.Size(106, 35);
+            this.txtCostRate.TabIndex = 41;
+            this.txtCostRate.Text = "0";
+            this.txtCostRate.Visible = false;
+            this.txtCostRate.KeyDown += new System.Windows.Forms.KeyEventHandler(this.inputControl_KeyDown);
+            // 
+            // txtItemFullName
+            // 
+            this.txtItemFullName.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.txtItemFullName.Location = new System.Drawing.Point(1803, 198);
+            this.txtItemFullName.Name = "txtItemFullName";
+            this.txtItemFullName.Size = new System.Drawing.Size(108, 35);
+            this.txtItemFullName.TabIndex = 42;
+            this.txtItemFullName.Visible = false;
+            this.txtItemFullName.KeyDown += new System.Windows.Forms.KeyEventHandler(this.inputControl_KeyDown);
+            // 
+            // txtMRP
+            // 
+            this.txtMRP.BackColor = System.Drawing.Color.White;
+            this.txtMRP.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.txtMRP.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtMRP.Location = new System.Drawing.Point(1804, 239);
+            this.txtMRP.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.txtMRP.MaxLength = 50;
+            this.txtMRP.Name = "txtMRP";
+            this.txtMRP.Size = new System.Drawing.Size(106, 35);
+            this.txtMRP.TabIndex = 50;
+            this.txtMRP.Text = "0";
+            this.txtMRP.Visible = false;
+            this.txtMRP.KeyDown += new System.Windows.Forms.KeyEventHandler(this.inputControl_KeyDown);
+            // 
+            // txtCGST
+            // 
+            this.txtCGST.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.txtCGST.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.txtCGST.Location = new System.Drawing.Point(1503, 120);
+            this.txtCGST.Name = "txtCGST";
+            this.txtCGST.Size = new System.Drawing.Size(291, 35);
+            this.txtCGST.TabIndex = 37;
+            this.txtCGST.Text = "0";
+            this.txtCGST.Visible = false;
+            // 
+            // label15
+            // 
+            this.label15.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.label15.AutoSize = true;
+            this.label15.BackColor = System.Drawing.Color.Transparent;
+            this.label15.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label15.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
+            this.label15.Location = new System.Drawing.Point(1504, 161);
+            this.label15.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label15.Name = "label15";
+            this.label15.Size = new System.Drawing.Size(73, 28);
+            this.label15.TabIndex = 18;
+            this.label15.Text = "SGST";
+            this.label15.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.label15.Visible = false;
+            // 
+            // txtSGST
+            // 
+            this.txtSGST.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.txtSGST.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.txtSGST.Location = new System.Drawing.Point(1503, 198);
+            this.txtSGST.Name = "txtSGST";
+            this.txtSGST.Size = new System.Drawing.Size(291, 35);
+            this.txtSGST.TabIndex = 37;
+            this.txtSGST.Text = "0";
+            this.txtSGST.Visible = false;
+            // 
+            // progressBar1
+            // 
+            this.progressBar1.Location = new System.Drawing.Point(1503, 237);
+            this.progressBar1.Name = "progressBar1";
+            this.progressBar1.Size = new System.Drawing.Size(196, 35);
+            this.progressBar1.TabIndex = 51;
+            this.progressBar1.Visible = false;
+            // 
+            // lblProgress
+            // 
+            this.lblProgress.AutoSize = true;
+            this.lblProgress.Dock = System.Windows.Forms.DockStyle.Right;
+            this.lblProgress.Location = new System.Drawing.Point(1478, 234);
+            this.lblProgress.Name = "lblProgress";
+            this.lblProgress.Size = new System.Drawing.Size(19, 41);
+            this.lblProgress.TabIndex = 52;
+            this.lblProgress.Text = " ";
+            this.lblProgress.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // lblTamil
+            // 
+            this.lblTamil.BackColor = System.Drawing.Color.White;
+            this.lblTamil.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.lblTamil.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
+            this.lblTamil.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
+            this.lblTamil.Location = new System.Drawing.Point(1204, 156);
+            this.lblTamil.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblTamil.Name = "lblTamil";
+            this.tblEntry.SetRowSpan(this.lblTamil, 2);
+            this.lblTamil.Size = new System.Drawing.Size(292, 78);
+            this.lblTamil.TabIndex = 27;
+            // 
+            // label14
+            // 
+            this.label14.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.label14.AutoSize = true;
+            this.label14.BackColor = System.Drawing.Color.Transparent;
+            this.label14.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label14.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
+            this.label14.Location = new System.Drawing.Point(1204, 122);
+            this.label14.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label14.Name = "label14";
+            this.label14.Size = new System.Drawing.Size(73, 28);
+            this.label14.TabIndex = 18;
+            this.label14.Text = "CGST";
+            this.label14.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.label14.Visible = false;
+            // 
+            // label12
+            // 
+            this.label12.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.label12.AutoSize = true;
+            this.label12.BackColor = System.Drawing.Color.Transparent;
+            this.label12.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label12.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
+            this.label12.Location = new System.Drawing.Point(1204, 83);
+            this.label12.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(143, 28);
+            this.label12.TabIndex = 17;
+            this.label12.Text = "Serial Code";
+            this.label12.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // txtSerial
+            // 
+            this.txtSerial.BackColor = System.Drawing.Color.White;
+            this.txtSerial.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.txtSerial.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtSerial.Location = new System.Drawing.Point(1504, 83);
+            this.txtSerial.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.txtSerial.MaxLength = 50;
+            this.txtSerial.Name = "txtSerial";
+            this.txtSerial.Size = new System.Drawing.Size(290, 35);
+            this.txtSerial.TabIndex = 19;
+            this.txtSerial.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtSerial_KeyDown);
+            this.txtSerial.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtSerial_KeyPress);
+            // 
+            // txtHSNCode
+            // 
+            this.txtHSNCode.BackColor = System.Drawing.Color.White;
+            this.txtHSNCode.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.txtHSNCode.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtHSNCode.Location = new System.Drawing.Point(1504, 44);
+            this.txtHSNCode.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.txtHSNCode.MaxLength = 50;
+            this.txtHSNCode.Name = "txtHSNCode";
+            this.txtHSNCode.Size = new System.Drawing.Size(290, 35);
+            this.txtHSNCode.TabIndex = 18;
+            this.txtHSNCode.KeyDown += new System.Windows.Forms.KeyEventHandler(this.inputControl_KeyDown);
+            // 
+            // label5
+            // 
+            this.label5.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.label5.AutoSize = true;
+            this.label5.BackColor = System.Drawing.Color.Transparent;
+            this.label5.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label5.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
+            this.label5.Location = new System.Drawing.Point(1204, 44);
+            this.label5.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(186, 28);
+            this.label5.TabIndex = 18;
+            this.label5.Text = "HSN/SAC Code";
+            this.label5.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // txtTaxPercentage
+            // 
+            this.txtTaxPercentage.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.txtTaxPercentage.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.txtTaxPercentage.Location = new System.Drawing.Point(1503, 3);
+            this.txtTaxPercentage.Name = "txtTaxPercentage";
+            this.txtTaxPercentage.Size = new System.Drawing.Size(291, 35);
+            this.txtTaxPercentage.TabIndex = 17;
+            this.txtTaxPercentage.Text = "0";
+            this.txtTaxPercentage.KeyDown += new System.Windows.Forms.KeyEventHandler(this.inputControl_KeyDown);
+            this.txtTaxPercentage.Leave += new System.EventHandler(this.txtTaxPercentage_Leave);
+            // 
+            // lblTaxPercentage
+            // 
+            this.lblTaxPercentage.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblTaxPercentage.AutoSize = true;
+            this.lblTaxPercentage.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
+            this.lblTaxPercentage.Location = new System.Drawing.Point(1203, 5);
+            this.lblTaxPercentage.Name = "lblTaxPercentage";
+            this.lblTaxPercentage.Size = new System.Drawing.Size(89, 28);
+            this.lblTaxPercentage.TabIndex = 24;
+            this.lblTaxPercentage.Text = "Tax %";
+            // 
+            // tblCommand
+            // 
+            this.tblCommand.ColumnCount = 5;
+            this.tblCommand.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tblCommand.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 150F));
+            this.tblCommand.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 150F));
+            this.tblCommand.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 150F));
+            this.tblCommand.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 150F));
+            this.tblCommand.Controls.Add(this.cmdclose, 4, 0);
+            this.tblCommand.Controls.Add(this.btnClear, 3, 0);
+            this.tblCommand.Controls.Add(this.btnDelete, 2, 0);
+            this.tblCommand.Controls.Add(this.btnSave, 1, 0);
+            this.tblCommand.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tblCommand.Location = new System.Drawing.Point(5, 703);
+            this.tblCommand.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.tblCommand.Name = "tblCommand";
+            this.tblCommand.RowCount = 1;
+            this.tblCommand.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tblCommand.Size = new System.Drawing.Size(1914, 59);
+            this.tblCommand.TabIndex = 3;
+            // 
+            // cmdclose
+            // 
+            this.cmdclose.AutoSize = true;
+            this.cmdclose.BackColor = System.Drawing.Color.Transparent;
+            this.cmdclose.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold);
+            this.cmdclose.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(41)))), ((int)(((byte)(66)))), ((int)(((byte)(122)))));
+            this.cmdclose.Location = new System.Drawing.Point(1768, 5);
+            this.cmdclose.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.cmdclose.Name = "cmdclose";
+            this.cmdclose.Size = new System.Drawing.Size(135, 49);
+            this.cmdclose.TabIndex = 3;
+            this.cmdclose.Text = "&Close";
+            this.cmdclose.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.cmdclose.UseVisualStyleBackColor = false;
+            this.cmdclose.Click += new System.EventHandler(this.cmdclose_Click);
+            // 
+            // btnClear
+            // 
+            this.btnClear.AutoSize = true;
+            this.btnClear.BackColor = System.Drawing.Color.Transparent;
+            this.btnClear.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold);
+            this.btnClear.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(41)))), ((int)(((byte)(66)))), ((int)(((byte)(122)))));
+            this.btnClear.Location = new System.Drawing.Point(1618, 5);
+            this.btnClear.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.btnClear.Name = "btnClear";
+            this.btnClear.Size = new System.Drawing.Size(135, 49);
+            this.btnClear.TabIndex = 2;
+            this.btnClear.Text = "&Clear";
+            this.btnClear.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.btnClear.UseVisualStyleBackColor = false;
+            this.btnClear.Click += new System.EventHandler(this.btnClear_Click);
+            // 
+            // btnDelete
+            // 
+            this.btnDelete.AutoSize = true;
+            this.btnDelete.BackColor = System.Drawing.Color.Transparent;
+            this.btnDelete.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold);
+            this.btnDelete.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(41)))), ((int)(((byte)(66)))), ((int)(((byte)(122)))));
+            this.btnDelete.Location = new System.Drawing.Point(1468, 5);
+            this.btnDelete.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.btnDelete.Name = "btnDelete";
+            this.btnDelete.Size = new System.Drawing.Size(135, 49);
+            this.btnDelete.TabIndex = 1;
+            this.btnDelete.Text = "&Delete";
+            this.btnDelete.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.btnDelete.UseVisualStyleBackColor = false;
+            this.btnDelete.Click += new System.EventHandler(this.btnDelete_Click);
+            // 
+            // btnSave
+            // 
+            this.btnSave.AutoSize = true;
+            this.btnSave.BackColor = System.Drawing.Color.Transparent;
+            this.btnSave.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold);
+            this.btnSave.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(41)))), ((int)(((byte)(66)))), ((int)(((byte)(122)))));
+            this.btnSave.Location = new System.Drawing.Point(1318, 5);
+            this.btnSave.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.btnSave.Name = "btnSave";
+            this.btnSave.Size = new System.Drawing.Size(135, 49);
+            this.btnSave.TabIndex = 0;
+            this.btnSave.Text = "&Save";
+            this.btnSave.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.btnSave.UseVisualStyleBackColor = false;
+            this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
+            // 
+            // uspcategorySelectResultBindingSource
+            // 
+            this.uspcategorySelectResultBindingSource.DataSource = typeof(standard.classes.usp_categorySelectResult);
+            // 
+            // uspitemSelectResultBindingSource
+            // 
+            this.uspitemSelectResultBindingSource.DataSource = typeof(standard.classes.usp_itemSelectResult);
+            // 
+            // uspitemSelectResultBindingSource1
+            // 
+            this.uspitemSelectResultBindingSource1.DataSource = typeof(standard.classes.usp_itemSelectResult);
             // 
             // frmItems
             // 
@@ -1574,14 +1894,18 @@ namespace standard.master
             this.tblSearch.ResumeLayout(false);
             this.tblSearch.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.searchcategoryBindingSource)).EndInit();
+            this.tableLayoutPanel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dgview)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.uspitemSelectResultBindingSource2)).EndInit();
             this.tblEntry.ResumeLayout(false);
             this.tblEntry.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.uspcategorySelectResultBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.categoryBindingSource)).EndInit();
+            this.tableLayoutPanel1.ResumeLayout(false);
+            this.tableLayoutPanel1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.companyBindingSource)).EndInit();
             this.tblCommand.ResumeLayout(false);
             this.tblCommand.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.uspcategorySelectResultBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.uspitemSelectResultBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.uspitemSelectResultBindingSource1)).EndInit();
             this.ResumeLayout(false);
@@ -1590,10 +1914,10 @@ namespace standard.master
 
         private void txtSerial_KeyPress(object sender, KeyPressEventArgs e)
         {
-            if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar) )
+            if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar))
             {
                 e.Handled = true;
-            }           
+            }
         }
 
         private void cboCategory_SelectedValueChanged(object sender, EventArgs e)
@@ -1626,7 +1950,7 @@ namespace standard.master
         {
             if (e.KeyData == Keys.Return)
             {
-                cboItemUnit.Focus();
+                chkIsUnitPerRate.Focus();
             }
         }
 
@@ -1640,7 +1964,7 @@ namespace standard.master
         {
             if (e.KeyData == Keys.Return)
             {
-                txtCostRate.Focus();
+                SendKeys.Send("{TAB}");
             }
         }
 
@@ -1752,7 +2076,494 @@ namespace standard.master
 
         private void cboItemUnitType_KeyDown(object sender, KeyEventArgs e)
         {
-            cboCategory.Focus();
+            if (e.KeyData == Keys.Return)
+            {
+                cboCategory.Focus();
+            }
+        }
+
+        private void chkIsUnitPerRate_CheckedChanged(object sender, EventArgs e)
+        {
+            if (chkIsUnitPerRate.Checked)
+            {
+                txtUnitPerRate.Enabled = true;
+                txtPurUnitRate.Enabled = true;
+                txtSuperSplRate.Enabled = false;
+                txtSpecialRate.Enabled = false;
+                txtWholeSaleRate.Enabled = false;
+                txtPRate.Enabled = false;
+                txtUnitPerRate.Focus();
+            }
+            else
+            {
+                txtUnitPerRate.Enabled = false;
+                txtUnitPerRate.ResetText();
+                txtPurUnitRate.Enabled = false;
+                txtPurUnitRate.ResetText();
+                txtSuperSplRate.Enabled = true;
+                txtSpecialRate.Enabled = true;
+                txtWholeSaleRate.Enabled = true;
+                txtPRate.Enabled = true;
+                cboItemUnit.Focus();
+            }
+        }
+
+        private void txtUnitPerRate_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyData == Keys.Return)
+            {
+                cboItemUnit.Focus();
+            }
+        }
+
+        private void txtItemQuantity_TextChanged(object sender, EventArgs e)
+        {
+            if (chkIsUnitPerRate.Checked && txtUnitPerRate.Text != "")
+            {
+                decimal rate = Convert.ToDecimal(txtUnitPerRate.Text);
+                decimal qty = string.IsNullOrWhiteSpace(txtItemQuantity.Text)? 0 : Convert.ToDecimal(txtItemQuantity.Text);
+                decimal purRate = Convert.ToDecimal(txtPurUnitRate.Text);
+                txtPRate.Text = (purRate * qty).ToString("N2");
+                txtSuperSplRate.Text = (rate * qty).ToString("N2");
+            }
+        }
+
+        private void txtItemQuantity_Leave(object sender, EventArgs e)
+        {
+            calculateRates();
+        }
+
+        private void txtPurUnitRate_Leave(object sender, EventArgs e)
+        {
+            if (chkIsUnitPerRate.Checked && txtPurUnitRate.Text != "")
+            {
+                decimal rate = Convert.ToDecimal(txtPurUnitRate.Text);
+                decimal qty = string.IsNullOrWhiteSpace(txtItemQuantity.Text) ? 0 : Convert.ToDecimal(txtItemQuantity.Text);
+                txtPRate.Text = (rate * qty).ToString("N2");
+            }
+        }
+
+        private void calculateRates()
+        {
+            try
+            {
+                if (chkIsUnitPerRate.Checked)
+                {
+                    decimal rate = Convert.ToDecimal(txtUnitPerRate.Text);
+
+                    if (rate > 0)
+                    {
+                        decimal qty = Convert.ToDecimal(txtItemQuantity.Text);
+                        txtSuperSplRate.Text = (rate * qty).ToString("N2");
+                        rate = (rate + Convert.ToDecimal(1.00));
+                        txtSpecialRate.Text = ((rate) * qty).ToString("N2");
+                        rate = (rate + Convert.ToDecimal(0.50));
+                        txtWholeSaleRate.Text = (rate * qty).ToString("N2");
+                        rate = (rate + Convert.ToDecimal(0.50));
+                        txtMRP.Text = (rate * qty).ToString("N2");
+                    }
+                    else
+                    {
+                        txtSuperSplRate.Text = "0.00";
+                        txtSpecialRate.Text = "0.00";
+                        txtWholeSaleRate.Text = "0.00";
+                        txtMRP.Text = "0.00";
+                    }
+                }
+
+            }
+            catch (Exception ex)
+            {
+
+            }
+        }
+
+        private void chkIsUnitPerRate_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyData == Keys.Return && chkIsUnitPerRate.Checked)
+            {
+                txtUnitPerRate.Focus();
+            }
+            else if (e.KeyData == Keys.Return)
+            {
+                txtSuperSplRate.Focus();
+            }
+        }
+
+        private void cboCategory_KeyDown_1(object sender, KeyEventArgs e)
+        {
+            if (e.KeyData == Keys.Return)
+            {
+                txtItemQuantity.Focus();
+            }
+        }
+
+        private void cboItemUnit_KeyDown_1(object sender, KeyEventArgs e)
+        {
+            if (e.KeyData == Keys.Return)
+            {
+                chkIsUnitPerRate.Focus();
+            }
+        }
+
+
+
+        private void btnExport_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                // Load data from your database (item table)
+                InventoryDataContext db = new InventoryDataContext();
+                var items = db.items.ToList();
+
+                if (items.Count == 0)
+                {
+                    MessageBox.Show("No records to export.", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+
+                // Create Excel Application
+                Excel.Application excelApp = new Excel.Application();
+                Excel.Workbook workbook = excelApp.Workbooks.Add(Type.Missing);
+                Excel.Worksheet worksheet = (Excel.Worksheet)workbook.Sheets[1];
+                worksheet.Name = "ItemExport".Replace(":", "").Replace("/", "").Replace("\\", "");
+
+                worksheet.Cells[1, 1] = "Serial No";
+                worksheet.Cells[1, 2] = "Item Name";
+                worksheet.Cells[1, 3] = "Item TamilName";                
+                worksheet.Cells[1, 4] = "Quantity";
+                worksheet.Cells[1, 5] = "Unit";
+                worksheet.Cells[1, 6] = "Unit Type";
+                worksheet.Cells[1, 7] = "Category";
+                worksheet.Cells[1, 8] = "IsUnit Per Rate";
+                worksheet.Cells[1, 9] = "Sales Unit Rate";
+                worksheet.Cells[1, 10] = "Purchase Unit Rate";
+                worksheet.Cells[1, 11] = "Taxable";
+                worksheet.Cells[1, 12] = "Tax Percentage";
+                worksheet.Cells[1, 13] = "HSN/SAC Code";
+                worksheet.Cells[1, 14] = "Company";
+
+                // Fill data
+                int row = 2;
+                foreach (var item in items)
+                {
+                    worksheet.Cells[row, 1] = item.item_serial;
+                    worksheet.Cells[row, 2] = item.item_name;
+                    worksheet.Cells[row, 3] = item.item_tamilname;                   
+                    worksheet.Cells[row, 4] = item.item_quantity;
+                    worksheet.Cells[row, 5] = item.item_unit;
+                    worksheet.Cells[row, 6] = item.item_unittype;
+                    worksheet.Cells[row, 7] = item.cat_id;
+                    worksheet.Cells[row, 8] = item.item_isunitperrate;
+                    worksheet.Cells[row, 9] = item.item_perunitrate;
+                    worksheet.Cells[row, 10] = item.item_purunitrate;
+                    worksheet.Cells[row, 11] = item.item_istaxable;
+                    worksheet.Cells[row, 12] = item.item_taxpercentage;
+                    worksheet.Cells[row, 13] = item.item_hsncode;
+                    worksheet.Cells[row, 14] = item.com_id;
+                    row++;
+                }
+
+                // Show save dialog
+                SaveFileDialog saveFileDialog = new SaveFileDialog();
+                saveFileDialog.Filter = "Excel Files|*.xlsx";
+                saveFileDialog.Title = "Save Excel File";
+                saveFileDialog.FileName = "ItemExport.xlsx";
+
+                if (saveFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    workbook.SaveAs(saveFileDialog.FileName);
+                    workbook.Close();
+                    excelApp.Quit();
+
+                    MessageBox.Show("Exported successfully!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error: " + ex.Message, "Export Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void btnImport_Click(object sender, EventArgs e)
+        {
+            Excel.Application excelApp = null;
+            Excel.Workbook workbook = null;
+            Excel.Worksheet worksheet = null;
+            Excel.Range range = null;
+
+            try
+            {
+                OpenFileDialog openFileDialog = new OpenFileDialog();
+                openFileDialog.Filter = "Excel Files|*.xlsx;*.xls";
+                openFileDialog.Title = "Select Excel File";
+
+                if (openFileDialog.ShowDialog() != DialogResult.OK)
+                    return;
+
+                string filePath = openFileDialog.FileName;               
+
+                excelApp = new Excel.Application();
+                workbook = excelApp.Workbooks.Open(filePath);
+                worksheet = (Excel.Worksheet)workbook.Sheets[1];
+                range = worksheet.UsedRange;
+
+                string header1 = Convert.ToString((range.Cells[1, 1] as Excel.Range)?.Value2)?.Trim();
+                string header2 = Convert.ToString((range.Cells[1, 2] as Excel.Range)?.Value2)?.Trim();
+
+                if (!string.Equals(header1, "Serial No", StringComparison.OrdinalIgnoreCase) ||
+                    !string.Equals(header2, "Item Name", StringComparison.OrdinalIgnoreCase))
+                {
+                    MessageBox.Show("Invalid Excel format.",
+                        "Import Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+                progressBar1.Visible = true;
+                lblProgress.Text = "";
+                foreach (Control ctrl in this.Controls)
+                {
+                    if (ctrl != progressBar1)
+                        ctrl.Enabled = false;
+                }
+
+                Cursor.Current = Cursors.WaitCursor;
+
+                int totalRows = range.Rows.Count - 1;
+
+                InventoryDataContext db = new InventoryDataContext();
+
+                for (int row = 2; row <= range.Rows.Count; row++) // Start from row 2 (skip headers)
+                {
+                    string SerialNo = Convert.ToString((range.Cells[row, 1] as Excel.Range)?.Value2)?.Trim();
+                    string itemName = Convert.ToString((range.Cells[row, 2] as Excel.Range).Value2);
+                    string itemTamilName = Convert.ToString((range.Cells[row, 3] as Excel.Range).Value2);
+                    bool isUnitPerRate = Convert.ToBoolean((range.Cells[row, 8] as Excel.Range)?.Value2);
+                    decimal tax = Convert.ToDecimal((range.Cells[row, 12] as Excel.Range)?.Value2);
+                    int qty = 0;
+                    var qtyValue = (range.Cells[row, 4] as Excel.Range)?.Value2;
+                    double qtyDouble = 0;
+
+                    if (qtyValue != null)
+                    {
+                        int.TryParse(qtyValue.ToString(), out qty);
+                    }
+
+                    if (qtyValue != null)
+                    {
+                        double.TryParse(qtyValue.ToString(), out qtyDouble);
+                    }
+
+                    decimal purUnitRate = Convert.ToDecimal((range.Cells[row, 10] as Excel.Range)?.Value2);
+
+                    decimal baseRate = Convert.ToDecimal((range.Cells[row, 9] as Excel.Range)?.Value2);
+
+                    decimal superSplRate = 0, splRate = 0, wholesaleRate = 0, mrp = 0, purchaseRate = 0;
+
+                    if (isUnitPerRate && baseRate > 0 && qty > 0)
+                    {
+                        superSplRate = baseRate * qty;
+                        baseRate += 1.00m;
+                        splRate = baseRate * qty;
+                        baseRate += 0.50m;
+                        wholesaleRate = baseRate * qty;
+                        baseRate += 0.50m;
+                        mrp = baseRate * qty;
+                        purchaseRate = Convert.ToDecimal(qtyDouble) * purUnitRate;
+
+                    }
+                    else
+                    {
+                        superSplRate = 0;
+                        splRate = 0;
+                        wholesaleRate = 0;
+                        mrp = 0;
+                    }
+
+                    if (isUnitPerRate && purchaseRate > 0 && qty > 0)
+                    {
+                        purchaseRate = Convert.ToDecimal(qtyDouble) * purUnitRate;
+
+                    }
+                    else
+                    {
+                        purchaseRate = 0;
+                    }
+
+                    if (!string.IsNullOrWhiteSpace(SerialNo) && string.IsNullOrWhiteSpace(itemName) && string.IsNullOrWhiteSpace(itemTamilName))
+                    {
+                        continue; // skip row if only serial number is filled
+                    }
+
+                    if (row > 2 && string.IsNullOrWhiteSpace(SerialNo))
+                    {
+                        MessageBox.Show($"Serial number should not be empty for item: {itemName}", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return; // or continue; if you want to skip only this row
+                    }
+
+
+                    if (int.TryParse(SerialNo, out int serialNumber))
+                    {
+                        var existingItem = db.items.FirstOrDefault(x => x.item_serial == serialNumber);
+
+                        if (existingItem != null)
+                        {
+                            existingItem.item_name = Convert.ToString((range.Cells[row, 2] as Excel.Range)?.Value2) ?? " ";
+                            existingItem.item_tamilname = Convert.ToString((range.Cells[row, 3] as Excel.Range)?.Value2);                           
+                            existingItem.item_quantity = Convert.ToInt32((range.Cells[row, 4] as Excel.Range)?.Value2);
+                            existingItem.item_unit = Convert.ToString((range.Cells[row, 5] as Excel.Range)?.Value2);
+                            existingItem.item_unittype = Convert.ToString((range.Cells[row, 6] as Excel.Range)?.Value2);
+                            existingItem.cat_id = Convert.ToInt32((range.Cells[row, 7] as Excel.Range)?.Value2);
+                            existingItem.item_isunitperrate = Convert.ToBoolean((range.Cells[row, 8] as Excel.Range)?.Value2);
+                            existingItem.item_perunitrate = isUnitPerRate ? Convert.ToDecimal((range.Cells[row, 9] as Excel.Range)?.Value2) : 0;
+                            existingItem.item_purunitrate = isUnitPerRate ? purUnitRate : 0;
+                            existingItem.item_istaxable = Convert.ToBoolean((range.Cells[row, 11] as Excel.Range)?.Value2);
+                            existingItem.item_taxpercentage = Convert.ToDecimal((range.Cells[row, 12] as Excel.Range)?.Value2);
+                            existingItem.item_hsncode = Convert.ToString((range.Cells[row, 13] as Excel.Range)?.Value2) ?? "";
+                            existingItem.com_id = Convert.ToInt32((range.Cells[row, 14] as Excel.Range)?.Value2);
+                            existingItem.item_supersepecialrate = superSplRate;
+                            existingItem.item_specialrate = splRate;
+                            existingItem.item_wholesalerate = wholesaleRate;
+                            existingItem.item_cgst = tax / 2;
+                            existingItem.item_sgst = tax / 2;
+                            existingItem.item_mrp = Convert.ToDecimal((range.Cells[row, 16] as Excel.Range)?.Value2);
+                            existingItem.item_purchaserate = purchaseRate;
+
+                        }
+                        else
+                        {
+                            // Add new item
+                            item newItem = new item
+                            {
+                                item_serial = serialNumber,
+                                item_name = Convert.ToString((range.Cells[row, 2] as Excel.Range)?.Value2) ?? " ",
+                                item_tamilname = Convert.ToString((range.Cells[row, 3] as Excel.Range)?.Value2),                               
+                                item_quantity = qty,
+                                item_unit = Convert.ToString((range.Cells[row, 5] as Excel.Range)?.Value2),
+                                item_unittype = Convert.ToString((range.Cells[row, 6] as Excel.Range)?.Value2),
+                                cat_id = Convert.ToInt32((range.Cells[row, 7] as Excel.Range)?.Value2),
+                                item_istaxable = Convert.ToBoolean((range.Cells[row, 11] as Excel.Range)?.Value2),
+                                item_taxpercentage = Convert.ToDecimal((range.Cells[row, 12] as Excel.Range)?.Value2),
+                                item_hsncode = Convert.ToString((range.Cells[row, 13] as Excel.Range)?.Value2) ?? "",
+                                com_id = Convert.ToInt32((range.Cells[row, 14] as Excel.Range)?.Value2),
+                                item_isunitperrate = isUnitPerRate,
+                                item_perunitrate = baseRate, // final rate after addition
+                                item_purunitrate = purUnitRate,
+                                item_purchaserate = purchaseRate,
+                                item_supersepecialrate = superSplRate,
+                                item_specialrate = splRate,
+                                item_wholesalerate = wholesaleRate,
+                                item_cgst = tax / 2,
+                                item_sgst = tax / 2,
+                                item_mrp = mrp,
+                                item_code = "",
+                                item_fullname = "",
+                                users_uid = 1,
+                                item_udate = DateTime.Now.Date
+                            };
+
+                            db.items.InsertOnSubmit(newItem);
+                        }
+                    }
+                    int currentRow = row - 1; // Since you started at 2
+                    int percent = (int)((currentRow * 100.0) / totalRows);
+
+                    progressBar1.Value = percent;
+                    lblProgress.Text = $"Progress: {percent}%";
+                    Application.DoEvents();
+                }
+
+                foreach (Control ctrl in this.Controls)
+                {
+                    ctrl.Enabled = true;
+                }
+
+                Cursor.Current = Cursors.Default;
+                progressBar1.Visible = false;
+                lblProgress.Text = "";
+                progressBar1.Value = 100;
+
+                db.SubmitChanges();
+
+                workbook.Close(false);
+                excelApp.Quit();
+
+                MessageBox.Show("Items imported successfully!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Import Error: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            finally
+            {
+                try
+                {
+                    if (range != null)
+                    {
+                        Marshal.ReleaseComObject(range);
+                        range = null;
+                    }
+
+                    if (worksheet != null)
+                    {
+                        Marshal.ReleaseComObject(worksheet);
+                        worksheet = null;
+                    }
+
+                    if (workbook != null)
+                    {
+                        try
+                        {
+                            workbook.Close(false);
+                        }
+                        catch (Exception ex)
+                        {
+                            // Optional: log or ignore close exception
+                        }
+                        Marshal.ReleaseComObject(workbook);
+                        workbook = null;
+                    }
+
+                    if (excelApp != null)
+                    {
+                        try
+                        {
+                            excelApp.Quit();
+                        }
+                        catch (Exception ex)
+                        {
+                            // Optional: log or ignore quit exception
+                        }
+                        Marshal.ReleaseComObject(excelApp);
+                        excelApp = null;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    // Optional: log cleanup exceptions
+                }
+                finally
+                {
+                    GC.Collect();
+                    GC.WaitForPendingFinalizers();
+                }
+            }
+        }
+
+        private void txtPurUnitRate_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyData == Keys.Return)
+            {
+                txtTaxPercentage.Focus();
+            }
+        }
+
+        private void txtTaxPercentage_Leave(object sender, EventArgs e)
+        {
+            decimal tax = Convert.ToDecimal(txtTaxPercentage.Text);
+
+            txtCGST.Text = Convert.ToString(tax / 2);
+            txtSGST.Text = Convert.ToString(tax / 2);
         }
     }
 }
