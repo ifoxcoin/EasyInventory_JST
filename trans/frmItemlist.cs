@@ -17,6 +17,7 @@ namespace standard.trans
 		private IContainer components = null;
 
 		public DataGridView dgview;
+        private DataGridViewTextBoxColumn itemtamilnameDataGridViewTextBoxColumn;
         private DataGridViewTextBoxColumn itemidDataGridViewTextBoxColumn;
         private DataGridViewTextBoxColumn itemnameDataGridViewTextBoxColumn;
         private DataGridViewTextBoxColumn item_quantity;
@@ -182,7 +183,7 @@ namespace standard.trans
             // 
             // itemnameDataGridViewTextBoxColumn
             // 
-            this.itemnameDataGridViewTextBoxColumn.DataPropertyName = "item_name";
+            this.itemnameDataGridViewTextBoxColumn.DataPropertyName = "item_tamilname";
             this.itemnameDataGridViewTextBoxColumn.FillWeight = 428.2585F;
             this.itemnameDataGridViewTextBoxColumn.HeaderText = "Item Name";
             this.itemnameDataGridViewTextBoxColumn.Name = "itemnameDataGridViewTextBoxColumn";

@@ -338,10 +338,10 @@ namespace standard.trans
 						a.led_name,
 						a.led_address2
 					} into x
-					orderby x.led_address2
+					orderby x.led_id
 					select x;
-                ledgermasterBindingSource.DataSource = source.OrderBy(x => x.led_address2);
-                ledgermasteCityViewrBindingSource.DataSource = source.Select(x => x.led_address2).Distinct();
+                ledgermasterBindingSource.DataSource = source.OrderBy(x => x.led_name);
+                //ledgermasteCityViewrBindingSource.DataSource = source.Select(x => x.led_address2).Distinct();
 				usppurchasemasterSelectResultBindingSource.DataSource = inventoryDataContext.usp_purchasemasterSelect(null, null, null, null, null, null);
 				List<usp_itemSelectResult> list = inventoryDataContext.usp_itemSelect(null, null, null,null).ToList();
 				AutoCompleteStringCollection autoCompleteStringCollection = new AutoCompleteStringCollection();
@@ -412,8 +412,8 @@ namespace standard.trans
 					{
 						if (!dr.IsNewRow)
 						{
-							item = source.FirstOrDefault((item match) => match.item_name.ToUpper().Trim() == dr.Cells["cItemName"].Value.ToString().ToUpper().Trim());
-							dr.Cells["cItemId"].Value = (item?.item_id ?? 0);
+                            item = source.FirstOrDefault(match => match.item_id == Convert.ToInt32(dr.Cells["cItemID"].Value));
+                            dr.Cells["cItemId"].Value = (item?.item_id ?? 0);
 							if (Convert.ToInt32(dr.Cells["cItemId"].Value) == 0 || Convert.ToDecimal(dr.Cells["cAmount"].Value) == 0m || Convert.ToDecimal(dr.Cells["cQty"].Value) == 0m)
 							{
 								MessageBox.Show("Invalid data to save", "Information", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
@@ -615,7 +615,7 @@ namespace standard.trans
 			{
 				return;
 			}
-            if (cbopurfrom == null || cbopurfrom.SelectedIndex == 0)
+            if (cbopurfrom == null || Convert.ToInt32(cbopurfrom.SelectedValue) == 0)
             {
                 MessageBox.Show("Invalid 'Customer'", "Information", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
                 cbopurfrom.Focus();
@@ -656,6 +656,11 @@ namespace standard.trans
 							{
                                 var selectedItem = inventoryDataContext2.items.FirstOrDefault(i => i.item_id == itemid);
 
+                                if (selectedItem.item_purchaserate <= 0)
+                                {
+                                    MessageBox.Show("Invalid purchase rate!", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                    return;
+                                }
                                 IQueryable<item> queryable = from li in inventoryDataContext2.items
 									join cat in inventoryDataContext2.categories on li.cat_id equals cat.cat_id
 									where cat.cat_name == Convert.ToString(dgvPurchase["cCategory", r].Value)

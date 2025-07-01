@@ -159,6 +159,10 @@ namespace standard.master
         private Label lblFssai;
         private TextBox txtCode;
         private Label label1;
+        private Label label2;
+        private TextBox txtGodown;
+        private TextBox txtIFSC;
+        private Label label3;
         private TabControl tabemp;
 
 		public frmCompany()
@@ -191,6 +195,7 @@ namespace standard.master
 			txtcompany.Text = string.Empty;
 			txtadd1.Text = string.Empty;
 			txtadd2.Text = string.Empty;
+            txtGodown.Text = string.Empty;
 			txtcity.Text = string.Empty;
 			txtstate.Text = string.Empty;
 			txtcountry.Text = string.Empty;
@@ -208,6 +213,7 @@ namespace standard.master
             txtGSTIN.Text = string.Empty;
             txtBankName.Text = string.Empty;
             txtBranch.Text = string.Empty;
+            txtIFSC.Text = string.Empty;
             txtFssai.Text = string.Empty;
             txtAccNo.Text = string.Empty;
             txtCode.Text = string.Empty;
@@ -254,6 +260,7 @@ namespace standard.master
 					txtcompany.Text = item.com_name;
 					txtadd1.Text = item.com_add1;
 					txtadd2.Text = item.com_add2;
+                    txtGodown.Text = item.com_godownadd;
 					txtcity.Text = item.com_city;
 					txtstate.Text = item.com_state;
 					txtcountry.Text = item.com_country;
@@ -271,6 +278,7 @@ namespace standard.master
                     txtGSTIN.Text = item.com_gstin;
                     txtBankName.Text = item.com_bankname;
                     txtBranch.Text = item.com_branch;
+                    txtIFSC.Text = item.com_ifsc;
                     txtFssai.Text = item.com_fssai;
                     txtAccNo.Text = item.com_accountnumber;
                     txtCode.Text = item.com_code.ToString();
@@ -289,7 +297,8 @@ namespace standard.master
 				cm.com_name = txtcompany.Text.Trim();
 				cm.com_add1 = txtadd1.Text.Trim();
 				cm.com_add2 = txtadd2.Text.Trim();
-				cm.com_city = txtcity.Text.Trim();
+                cm.com_godownadd = txtGodown.Text.Trim();
+                cm.com_city = txtcity.Text.Trim();
 				cm.com_state = txtstate.Text.Trim();
 				cm.com_country = txtcountry.Text.Trim();
 				cm.com_pin = txtpin.Text.Trim();
@@ -306,6 +315,7 @@ namespace standard.master
                 cm.com_gstin = txtGSTIN.Text.Trim();
                 cm.com_bankname = txtBankName.Text.Trim();
                 cm.com_branch = txtBranch.Text.Trim();
+                cm.com_ifsc = txtIFSC.Text.Trim();
                 cm.com_fssai = txtFssai.Text.Trim();
                 cm.com_accountnumber = txtAccNo.Text.Trim();
                 cm.com_code = string.IsNullOrWhiteSpace(txtCode.Text) ? (int?)null : int.Parse(txtCode.Text.Trim());
@@ -361,14 +371,14 @@ namespace standard.master
 				{
 					if (MessageBox.Show("Are you sure to save?", "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.No)
 					{
-						inventoryDataContext.usp_companyInsert(cm.com_name, cm.com_add1, cm.com_add2, cm.com_add3, cm.com_city, cm.com_state, cm.com_country, cm.com_phone, cm.com_mobile1, cm.com_mobile2, cm.com_fax, cm.com_pin, cm.com_email, cm.com_web, cm.com_default, cm.com_tin, cm.com_cst, cm.com_cstdate, cm.com_pan, cm.com_gstin, cm.com_bankname, cm.com_branch, cm.com_fssai, cm.com_accountnumber, cm.com_code);
+						inventoryDataContext.usp_companyInsert(cm.com_name, cm.com_add1, cm.com_add2, cm.com_add3, cm.com_godownadd, cm.com_city, cm.com_state, cm.com_country, cm.com_phone, cm.com_mobile1, cm.com_mobile2, cm.com_fax, cm.com_pin, cm.com_email, cm.com_web, cm.com_default, cm.com_tin, cm.com_cst, cm.com_cstdate, cm.com_pan, cm.com_gstin, cm.com_bankname, cm.com_branch, cm.com_ifsc, cm.com_fssai, cm.com_accountnumber, cm.com_code);
 						MessageBox.Show("Record saved successfully...", "Information", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
 						goto IL_083f;
 					}
 				}
 				else if (MessageBox.Show("Are you sure to update?", "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.No)
 				{
-					inventoryDataContext.usp_companyUpdate(id, cm.com_name, cm.com_add1, cm.com_add2, cm.com_add3, cm.com_city, cm.com_state, cm.com_country, cm.com_phone, cm.com_mobile1, cm.com_mobile2, cm.com_fax, cm.com_pin, cm.com_email, cm.com_web, cm.com_default, cm.com_tin, cm.com_cst, cm.com_cstdate, cm.com_pan, cm.com_gstin, cm.com_bankname, cm.com_branch, cm.com_fssai, cm.com_accountnumber, cm.com_code);
+					inventoryDataContext.usp_companyUpdate(id, cm.com_name, cm.com_add1, cm.com_add2, cm.com_add3, cm.com_godownadd, cm.com_city, cm.com_state, cm.com_country, cm.com_phone, cm.com_mobile1, cm.com_mobile2, cm.com_fax, cm.com_pin, cm.com_email, cm.com_web, cm.com_default, cm.com_tin, cm.com_cst, cm.com_cstdate, cm.com_pan, cm.com_gstin, cm.com_bankname, cm.com_branch, cm.com_ifsc, cm.com_fssai, cm.com_accountnumber, cm.com_code);
 					MessageBox.Show("Record updated successfully...", "Information", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
 					goto IL_083f;
 				}
@@ -513,6 +523,8 @@ namespace standard.master
             this.txtcompany = new System.Windows.Forms.TextBox();
             this.lblcompany = new System.Windows.Forms.Label();
             this.tabadd = new System.Windows.Forms.TabPage();
+            this.label2 = new System.Windows.Forms.Label();
+            this.txtGodown = new System.Windows.Forms.TextBox();
             this.dtpcstdate = new System.Windows.Forms.DateTimePicker();
             this.lblpan = new System.Windows.Forms.Label();
             this.txtpan = new System.Windows.Forms.TextBox();
@@ -538,6 +550,8 @@ namespace standard.master
             this.lblAccNo = new System.Windows.Forms.Label();
             this.txtBankName = new System.Windows.Forms.TextBox();
             this.lblBankName = new System.Windows.Forms.Label();
+            this.label3 = new System.Windows.Forms.Label();
+            this.txtIFSC = new System.Windows.Forms.TextBox();
             this.pnlview.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgview)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.companyBindingSource)).BeginInit();
@@ -1183,6 +1197,8 @@ namespace standard.master
             // 
             // tabadd
             // 
+            this.tabadd.Controls.Add(this.label2);
+            this.tabadd.Controls.Add(this.txtGodown);
             this.tabadd.Controls.Add(this.dtpcstdate);
             this.tabadd.Controls.Add(this.lblpan);
             this.tabadd.Controls.Add(this.txtpan);
@@ -1209,13 +1225,31 @@ namespace standard.master
             this.tabadd.Text = "Address";
             this.tabadd.UseVisualStyleBackColor = true;
             // 
+            // label2
+            // 
+            this.label2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
+            this.label2.Location = new System.Drawing.Point(6, 29);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(65, 20);
+            this.label2.TabIndex = 76;
+            this.label2.Text = "Godown";
+            this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // txtGodown
+            // 
+            this.txtGodown.Location = new System.Drawing.Point(82, 20);
+            this.txtGodown.MaxLength = 100;
+            this.txtGodown.Name = "txtGodown";
+            this.txtGodown.Size = new System.Drawing.Size(191, 29);
+            this.txtGodown.TabIndex = 75;
+            // 
             // dtpcstdate
             // 
             this.dtpcstdate.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.dtpcstdate.CustomFormat = "dd-MM-yyyy";
             this.dtpcstdate.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.dtpcstdate.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-            this.dtpcstdate.Location = new System.Drawing.Point(82, 191);
+            this.dtpcstdate.Location = new System.Drawing.Point(82, 218);
             this.dtpcstdate.Name = "dtpcstdate";
             this.dtpcstdate.ShowCheckBox = true;
             this.dtpcstdate.Size = new System.Drawing.Size(108, 27);
@@ -1225,7 +1259,7 @@ namespace standard.master
             // lblpan
             // 
             this.lblpan.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.lblpan.Location = new System.Drawing.Point(8, 216);
+            this.lblpan.Location = new System.Drawing.Point(8, 260);
             this.lblpan.Name = "lblpan";
             this.lblpan.Size = new System.Drawing.Size(65, 20);
             this.lblpan.TabIndex = 74;
@@ -1234,7 +1268,7 @@ namespace standard.master
             // 
             // txtpan
             // 
-            this.txtpan.Location = new System.Drawing.Point(82, 216);
+            this.txtpan.Location = new System.Drawing.Point(82, 251);
             this.txtpan.MaxLength = 50;
             this.txtpan.Name = "txtpan";
             this.txtpan.Size = new System.Drawing.Size(191, 29);
@@ -1244,7 +1278,7 @@ namespace standard.master
             // lblweb
             // 
             this.lblweb.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.lblweb.Location = new System.Drawing.Point(8, 28);
+            this.lblweb.Location = new System.Drawing.Point(8, 55);
             this.lblweb.Name = "lblweb";
             this.lblweb.Size = new System.Drawing.Size(65, 20);
             this.lblweb.TabIndex = 73;
@@ -1254,7 +1288,7 @@ namespace standard.master
             // lbltinno
             // 
             this.lbltinno.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.lbltinno.Location = new System.Drawing.Point(8, 136);
+            this.lbltinno.Location = new System.Drawing.Point(8, 168);
             this.lbltinno.Name = "lbltinno";
             this.lbltinno.Size = new System.Drawing.Size(65, 20);
             this.lbltinno.TabIndex = 72;
@@ -1264,7 +1298,7 @@ namespace standard.master
             // lblcstno
             // 
             this.lblcstno.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.lblcstno.Location = new System.Drawing.Point(8, 163);
+            this.lblcstno.Location = new System.Drawing.Point(8, 196);
             this.lblcstno.Name = "lblcstno";
             this.lblcstno.Size = new System.Drawing.Size(65, 20);
             this.lblcstno.TabIndex = 71;
@@ -1274,7 +1308,7 @@ namespace standard.master
             // lblmail
             // 
             this.lblmail.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.lblmail.Location = new System.Drawing.Point(8, 109);
+            this.lblmail.Location = new System.Drawing.Point(8, 136);
             this.lblmail.Name = "lblmail";
             this.lblmail.Size = new System.Drawing.Size(65, 20);
             this.lblmail.TabIndex = 70;
@@ -1284,7 +1318,7 @@ namespace standard.master
             // lblcstdate
             // 
             this.lblcstdate.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.lblcstdate.Location = new System.Drawing.Point(8, 188);
+            this.lblcstdate.Location = new System.Drawing.Point(6, 286);
             this.lblcstdate.Name = "lblcstdate";
             this.lblcstdate.Size = new System.Drawing.Size(65, 20);
             this.lblcstdate.TabIndex = 68;
@@ -1294,7 +1328,7 @@ namespace standard.master
             // lblm1
             // 
             this.lblm1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.lblm1.Location = new System.Drawing.Point(8, 82);
+            this.lblm1.Location = new System.Drawing.Point(8, 104);
             this.lblm1.Name = "lblm1";
             this.lblm1.Size = new System.Drawing.Size(65, 20);
             this.lblm1.TabIndex = 67;
@@ -1304,7 +1338,7 @@ namespace standard.master
             // lblphone
             // 
             this.lblphone.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.lblphone.Location = new System.Drawing.Point(8, 55);
+            this.lblphone.Location = new System.Drawing.Point(8, 77);
             this.lblphone.Name = "lblphone";
             this.lblphone.Size = new System.Drawing.Size(65, 20);
             this.lblphone.TabIndex = 69;
@@ -1313,7 +1347,7 @@ namespace standard.master
             // 
             // txtweb
             // 
-            this.txtweb.Location = new System.Drawing.Point(82, 28);
+            this.txtweb.Location = new System.Drawing.Point(82, 46);
             this.txtweb.MaxLength = 50;
             this.txtweb.Name = "txtweb";
             this.txtweb.Size = new System.Drawing.Size(191, 29);
@@ -1324,7 +1358,7 @@ namespace standard.master
             // 
             this.chkdefault.AutoSize = true;
             this.chkdefault.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.chkdefault.Location = new System.Drawing.Point(82, 244);
+            this.chkdefault.Location = new System.Drawing.Point(82, 286);
             this.chkdefault.Name = "chkdefault";
             this.chkdefault.Size = new System.Drawing.Size(103, 26);
             this.chkdefault.TabIndex = 9;
@@ -1334,7 +1368,7 @@ namespace standard.master
             // 
             // txttinno
             // 
-            this.txttinno.Location = new System.Drawing.Point(82, 136);
+            this.txttinno.Location = new System.Drawing.Point(82, 159);
             this.txttinno.MaxLength = 50;
             this.txttinno.Name = "txttinno";
             this.txttinno.Size = new System.Drawing.Size(191, 29);
@@ -1343,7 +1377,7 @@ namespace standard.master
             // 
             // txtcstno
             // 
-            this.txtcstno.Location = new System.Drawing.Point(82, 163);
+            this.txtcstno.Location = new System.Drawing.Point(82, 188);
             this.txtcstno.MaxLength = 50;
             this.txtcstno.Name = "txtcstno";
             this.txtcstno.Size = new System.Drawing.Size(191, 29);
@@ -1352,7 +1386,7 @@ namespace standard.master
             // 
             // txtmail
             // 
-            this.txtmail.Location = new System.Drawing.Point(82, 109);
+            this.txtmail.Location = new System.Drawing.Point(82, 127);
             this.txtmail.MaxLength = 50;
             this.txtmail.Name = "txtmail";
             this.txtmail.Size = new System.Drawing.Size(191, 29);
@@ -1361,7 +1395,7 @@ namespace standard.master
             // 
             // txtm2
             // 
-            this.txtm2.Location = new System.Drawing.Point(181, 82);
+            this.txtm2.Location = new System.Drawing.Point(181, 100);
             this.txtm2.Mask = "0000000000";
             this.txtm2.Name = "txtm2";
             this.txtm2.Size = new System.Drawing.Size(92, 29);
@@ -1370,7 +1404,7 @@ namespace standard.master
             // 
             // txtm1
             // 
-            this.txtm1.Location = new System.Drawing.Point(82, 82);
+            this.txtm1.Location = new System.Drawing.Point(82, 100);
             this.txtm1.Mask = "0000000000";
             this.txtm1.Name = "txtm1";
             this.txtm1.Size = new System.Drawing.Size(93, 29);
@@ -1379,7 +1413,7 @@ namespace standard.master
             // 
             // txtphone
             // 
-            this.txtphone.Location = new System.Drawing.Point(82, 55);
+            this.txtphone.Location = new System.Drawing.Point(82, 73);
             this.txtphone.Mask = "0000-0000000";
             this.txtphone.Name = "txtphone";
             this.txtphone.Size = new System.Drawing.Size(191, 29);
@@ -1388,6 +1422,8 @@ namespace standard.master
             // 
             // tabPage1
             // 
+            this.tabPage1.Controls.Add(this.txtIFSC);
+            this.tabPage1.Controls.Add(this.label3);
             this.tabPage1.Controls.Add(this.txtBranch);
             this.tabPage1.Controls.Add(this.lblBranch);
             this.tabPage1.Controls.Add(this.txtAccNo);
@@ -1418,7 +1454,7 @@ namespace standard.master
             this.lblBranch.Name = "lblBranch";
             this.lblBranch.Size = new System.Drawing.Size(80, 49);
             this.lblBranch.TabIndex = 60;
-            this.lblBranch.Text = "Branch & IFSC";
+            this.lblBranch.Text = "Branch";
             this.lblBranch.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // txtAccNo
@@ -1461,6 +1497,24 @@ namespace standard.master
             this.lblBankName.TabIndex = 55;
             this.lblBankName.Text = "Bank Name";
             this.lblBankName.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // label3
+            // 
+            this.label3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
+            this.label3.Location = new System.Drawing.Point(6, 118);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(80, 49);
+            this.label3.TabIndex = 61;
+            this.label3.Text = "IFSC";
+            this.label3.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // txtIFSC
+            // 
+            this.txtIFSC.Location = new System.Drawing.Point(95, 128);
+            this.txtIFSC.MaxLength = 100;
+            this.txtIFSC.Name = "txtIFSC";
+            this.txtIFSC.Size = new System.Drawing.Size(181, 29);
+            this.txtIFSC.TabIndex = 62;
             // 
             // frmCompany
             // 

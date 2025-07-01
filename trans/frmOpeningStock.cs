@@ -464,7 +464,7 @@ namespace standard.trans
                 {
                     if (!dr.IsNewRow)
                     {
-                        item = source.FirstOrDefault((item match) => match.item_name.ToUpper().Trim() == dr.Cells["cItemName"].Value.ToString().ToUpper().Trim());
+                        item = source.FirstOrDefault(match => match.item_id == Convert.ToInt32(dr.Cells["cItemId"].Value));
                         dr.Cells["cCatID"].Value = (item?.item_id ?? 0);
                         if (Convert.ToInt32(dr.Cells["cCatID"].Value) == 0 || Convert.ToDecimal(dr.Cells["cQty"].Value) == 0m)
                         {

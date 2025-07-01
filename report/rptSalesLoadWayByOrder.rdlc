@@ -159,7 +159,7 @@
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>=Fields!led_name.Value</Value>
+                                  <Value>=Fields!led_address2.Value</Value>
                                   <Style>
                                     <FontFamily>tahoma</FontFamily>
                                     <FontSize>9pt</FontSize>
@@ -193,7 +193,7 @@
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>=Fields!led_address2.Value</Value>
+                                  <Value>=Fields!led_name.Value</Value>
                                   <Style>
                                     <FontFamily>tahoma</FontFamily>
                                     <FontSize>9pt</FontSize>
@@ -808,11 +808,101 @@
               <PaddingBottom>2pt</PaddingBottom>
             </Style>
           </Textbox>
+          <Textbox Name="Textbox4">
+            <CanGrow>true</CanGrow>
+            <KeepTogether>true</KeepTogether>
+            <Paragraphs>
+              <Paragraph>
+                <TextRuns>
+                  <TextRun>
+                    <Value>Total Bags : </Value>
+                    <Style>
+                      <FontWeight>Bold</FontWeight>
+                    </Style>
+                  </TextRun>
+                  <TextRun>
+                    <Value>=Format(RunningValue(Fields!od_qty.Value, Sum, "usp_getLoadwayBySalesOrder"), "N2")</Value>
+                    <Style>
+                      <FontFamily>tahoma</FontFamily>
+                      <FontWeight>Bold</FontWeight>
+                    </Style>
+                  </TextRun>
+                  <TextRun>
+                    <Value xml:space="preserve"> </Value>
+                    <Style />
+                  </TextRun>
+                </TextRuns>
+                <Style>
+                  <TextAlign>Right</TextAlign>
+                </Style>
+              </Paragraph>
+            </Paragraphs>
+            <rd:DefaultName>Textbox4</rd:DefaultName>
+            <Top>1.94319in</Top>
+            <Left>0.18957in</Left>
+            <Height>0.21875in</Height>
+            <Width>3.58848in</Width>
+            <ZIndex>3</ZIndex>
+            <Style>
+              <Border>
+                <Style>None</Style>
+              </Border>
+              <PaddingLeft>2pt</PaddingLeft>
+              <PaddingRight>2pt</PaddingRight>
+              <PaddingTop>2pt</PaddingTop>
+              <PaddingBottom>2pt</PaddingBottom>
+            </Style>
+          </Textbox>
+          <Textbox Name="Textbox6">
+            <CanGrow>true</CanGrow>
+            <KeepTogether>true</KeepTogether>
+            <Paragraphs>
+              <Paragraph>
+                <TextRuns>
+                  <TextRun>
+                    <Value>Grand Total : </Value>
+                    <Style>
+                      <FontWeight>Bold</FontWeight>
+                    </Style>
+                  </TextRun>
+                  <TextRun>
+                    <Value>=Format(RunningValue(Fields!od_unitvalue.Value * Fields!od_qty.Value, Sum, "usp_getLoadwayBySalesOrder"), "N2")</Value>
+                    <Style>
+                      <FontFamily>tahoma</FontFamily>
+                      <FontWeight>Bold</FontWeight>
+                    </Style>
+                  </TextRun>
+                  <TextRun>
+                    <Value xml:space="preserve"> </Value>
+                    <Style />
+                  </TextRun>
+                </TextRuns>
+                <Style>
+                  <TextAlign>Right</TextAlign>
+                </Style>
+              </Paragraph>
+            </Paragraphs>
+            <rd:DefaultName>Textbox4</rd:DefaultName>
+            <Top>2.16073in</Top>
+            <Left>0.18958in</Left>
+            <Height>0.21875in</Height>
+            <Width>3.58848in</Width>
+            <ZIndex>4</ZIndex>
+            <Style>
+              <Border>
+                <Style>None</Style>
+              </Border>
+              <PaddingLeft>2pt</PaddingLeft>
+              <PaddingRight>2pt</PaddingRight>
+              <PaddingTop>2pt</PaddingTop>
+              <PaddingBottom>2pt</PaddingBottom>
+            </Style>
+          </Textbox>
         </ReportItems>
-        <Height>1.76937in</Height>
+        <Height>2.5402in</Height>
         <Style />
       </Body>
-      <Width>4.02806in</Width>
+      <Width>3.77806in</Width>
       <Page>
         <PageHeader>
           <Height>0.45139in</Height>
@@ -842,7 +932,7 @@
               <rd:DefaultName>Textbox1</rd:DefaultName>
               <Top>0.38778cm</Top>
               <Height>0.75875cm</Height>
-              <Width>10.23127cm</Width>
+              <Width>9.59626cm</Width>
               <Style>
                 <Border>
                   <Style>None</Style>

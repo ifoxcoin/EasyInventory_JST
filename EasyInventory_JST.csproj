@@ -297,6 +297,7 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
     <EmbeddedResource Include="report\rptLedgersOutstandingedited.rdlc" />
+    <EmbeddedResource Include="report\rptSalesInvoice2.rdlc" />
     <EmbeddedResource Include="report\rptSalesInvoice1.rdlc" />
     <EmbeddedResource Include="report\rptSalesKachathu.rdlc" />
     <EmbeddedResource Include="report\rptSalesLoadWayByOrder.rdlc" />
@@ -453,7 +454,9 @@
     <None Include="Properties\DataSources\standard.classes.usp_SupplierOutstandingRptResult.datasource" />
     <None Include="Properties\DataSources\standard.classes.usp_vehicleSelectResult.datasource" />
     <None Include="Properties\DataSources\standard.classes.vehicle.datasource" />
+    <None Include="Properties\DataSources\standard.trans.frmSales+CopyDetailWrapper.datasource" />
     <None Include="Properties\DataSources\standard.trans.frmSales+CopyLabelWrapper.datasource" />
+    <None Include="Properties\DataSources\standard.trans.frmSales+LogoImageModel.datasource" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

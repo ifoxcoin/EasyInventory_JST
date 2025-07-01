@@ -556,7 +556,7 @@
                   </Paragraph>
                 </Paragraphs>
                 <rd:DefaultName>Textbox4</rd:DefaultName>
-                <Top>0.03528cm</Top>
+                <Top>0.35278cm</Top>
                 <Height>0.6cm</Height>
                 <Width>4.83398cm</Width>
                 <Style>
@@ -588,7 +588,7 @@
                   </Paragraph>
                 </Paragraphs>
                 <rd:DefaultName>Textbox4</rd:DefaultName>
-                <Top>0.74111cm</Top>
+                <Top>1.05861cm</Top>
                 <Height>0.6cm</Height>
                 <Width>8.30884cm</Width>
                 <ZIndex>1</ZIndex>
@@ -609,13 +609,13 @@
                       <Width>3.03689cm</Width>
                     </TablixColumn>
                     <TablixColumn>
-                      <Width>6.18364cm</Width>
+                      <Width>7.92991cm</Width>
                     </TablixColumn>
                     <TablixColumn>
-                      <Width>2.6312cm</Width>
+                      <Width>1.62578cm</Width>
                     </TablixColumn>
                     <TablixColumn>
-                      <Width>4.00703cm</Width>
+                      <Width>3.2662cm</Width>
                     </TablixColumn>
                   </TablixColumns>
                   <TablixRows>
@@ -699,7 +699,7 @@
                                 <Paragraph>
                                   <TextRuns>
                                     <TextRun>
-                                      <Value>QUANTITY</Value>
+                                      <Value>QTY</Value>
                                       <Style>
                                         <FontWeight>Bold</FontWeight>
                                       </Style>
@@ -809,7 +809,7 @@
                                     </TextRun>
                                   </TextRuns>
                                   <Style>
-                                    <TextAlign>Center</TextAlign>
+                                    <TextAlign>Left</TextAlign>
                                   </Style>
                                 </Paragraph>
                               </Paragraphs>
@@ -1336,9 +1336,9 @@
                   </TablixMembers>
                 </TablixRowHierarchy>
                 <DataSetName>usp_salesDetailSelect</DataSetName>
-                <Top>2.58634cm</Top>
+                <Top>2.90384cm</Top>
                 <Height>3.77025cm</Height>
-                <Width>15.85876cm</Width>
+                <Width>15.85878cm</Width>
                 <ZIndex>2</ZIndex>
                 <Style>
                   <Border>
@@ -1361,7 +1361,7 @@
                   </Paragraph>
                 </Paragraphs>
                 <rd:DefaultName>Textbox4</rd:DefaultName>
-                <Top>1.48222cm</Top>
+                <Top>1.79972cm</Top>
                 <Left>1.32245cm</Left>
                 <Height>0.6cm</Height>
                 <Width>6.98639cm</Width>
@@ -1393,7 +1393,7 @@
                   </Paragraph>
                 </Paragraphs>
                 <rd:DefaultName>Textbox54</rd:DefaultName>
-                <Top>0.07056cm</Top>
+                <Top>0.38806cm</Top>
                 <Left>13.35878cm</Left>
                 <Height>0.6cm</Height>
                 <Width>2.5cm</Width>
@@ -1410,7 +1410,7 @@
               </Textbox>
             </ReportItems>
             <KeepTogether>true</KeepTogether>
-            <Height>9.04875cm</Height>
+            <Height>6.79979cm</Height>
             <Width>15.85878cm</Width>
             <Style>
               <Border>
@@ -1419,13 +1419,13 @@
             </Style>
           </Rectangle>
         </ReportItems>
-        <Height>3.60417in</Height>
+        <Height>2.67708in</Height>
         <Style />
       </Body>
       <Width>6.24361in</Width>
       <Page>
         <PageHeader>
-          <Height>1.67028cm</Height>
+          <Height>1.26459cm</Height>
           <PrintOnFirstPage>true</PrintOnFirstPage>
           <PrintOnLastPage>true</PrintOnLastPage>
           <ReportItems>
@@ -1459,11 +1459,30 @@
                     <TextAlign>Center</TextAlign>
                   </Style>
                 </Paragraph>
+              </Paragraphs>
+              <rd:DefaultName>Textbox3</rd:DefaultName>
+              <Height>1.26459cm</Height>
+              <Width>15.85878cm</Width>
+              <Style>
+                <Border>
+                  <Style>None</Style>
+                </Border>
+                <PaddingLeft>2pt</PaddingLeft>
+                <PaddingRight>2pt</PaddingRight>
+                <PaddingTop>2pt</PaddingTop>
+                <PaddingBottom>2pt</PaddingBottom>
+              </Style>
+            </Textbox>
+            <Textbox Name="Textbox1">
+              <CanGrow>true</CanGrow>
+              <KeepTogether>true</KeepTogether>
+              <Paragraphs>
                 <Paragraph>
                   <TextRuns>
                     <TextRun>
                       <Value>ESTIMATION</Value>
                       <Style>
+                        <FontSize>9pt</FontSize>
                         <FontWeight>Bold</FontWeight>
                       </Style>
                     </TextRun>
@@ -1473,9 +1492,12 @@
                   </Style>
                 </Paragraph>
               </Paragraphs>
-              <rd:DefaultName>Textbox3</rd:DefaultName>
-              <Height>1.52917cm</Height>
-              <Width>15.85878cm</Width>
+              <rd:DefaultName>Textbox1</rd:DefaultName>
+              <Top>0.64695cm</Top>
+              <Left>5.68537cm</Left>
+              <Height>0.49417cm</Height>
+              <Width>4.32893cm</Width>
+              <ZIndex>1</ZIndex>
               <Style>
                 <Border>
                   <Style>None</Style>
@@ -1497,7 +1519,7 @@
         <PageWidth>21cm</PageWidth>
         <LeftMargin>2cm</LeftMargin>
         <RightMargin>2cm</RightMargin>
-        <TopMargin>2cm</TopMargin>
+        <TopMargin>0.5cm</TopMargin>
         <BottomMargin>2cm</BottomMargin>
         <ColumnSpacing>0.13cm</ColumnSpacing>
         <Style />

@@ -10,6 +10,7 @@ using System.Data.Common;
 using System.Data.Linq;
 using System.Diagnostics;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
@@ -577,7 +578,7 @@ namespace standard.trans
                     {
                         if (!dr.IsNewRow)
                         {
-                            item = source.FirstOrDefault((item match) => match.item_name.ToUpper().Trim() == dr.Cells["cItemName"].Value.ToString().ToUpper().Trim());
+                            item = source.FirstOrDefault(match => match.item_id == Convert.ToInt32(dr.Cells["cItemID"].Value));
                             dr.Cells["cCatID"].Value = (item?.item_id ?? 0);
                             if (Convert.ToInt32(dr.Cells["cCatID"].Value) == 0 || Convert.ToDecimal(dr.Cells["cAmount"].Value) == 0m || Convert.ToDecimal(dr.Cells["cQty"].Value) == 0m)
                             {
@@ -1137,6 +1138,11 @@ namespace standard.trans
         {
         }
 
+        public class LogoImageModel
+        {
+            public byte[] LogoImage { get; set; }
+        }
+
         private void loadReport(int smid)
         {
             decimal amount = 0m;
@@ -1164,11 +1170,13 @@ namespace standard.trans
                 {
                     InventoryDataContext inventoryDataContext = new InventoryDataContext();
                     var masterList = inventoryDataContext.usp_salesmasterSelect(smid, null, null, null, null, null, null).ToList();
-                    var copyLabels = new[] { "ORIGINAL", "DUPLICATE", "TRIPLICATE" };
+                    var copyLabels = new[] { "ORIGINAL FOR RECIPIENT", "DUPLICATE FOR TRANSPORTER", "TRIPLICATE FOR SUPPLIER" };
+
                     foreach (var label in copyLabels)
                     {
                         List<ReportParameter> list = new List<ReportParameter>();
                         var item = masterList.First();
+
                         int? num9 = 1;
                         dateTime = item.sm_date;
                         num8 = item.sm_refno;
@@ -1184,7 +1192,13 @@ namespace standard.trans
                         ledid = item.led_id;
 
                         string titleValue = num7 > 0 ? "Tax Invoice" : "Bill of Supply";
-                        
+
+                        byte[] logoBytes = File.ReadAllBytes(Path.Combine(Application.StartupPath, comId == 1 ? "SaamySign.png" : "JeyakkodiSign.png"));
+                        List<LogoImageModel> logoList = new List<LogoImageModel>
+                        {
+                            new LogoImageModel { LogoImage = logoBytes }
+                        };
+
                         ISingleResult<usp_companySelectResult> singleResult2 = inventoryDataContext.usp_companySelect(comId);
                         using (IEnumerator<usp_companySelectResult> enumerator2 = singleResult2.GetEnumerator())
                         {
@@ -1206,6 +1220,8 @@ namespace standard.trans
                                 list.Add(new ReportParameter("com_cstdate", Convert.ToDateTime(current2.com_cstdate).ToString("dd-MMM-yyyy")));
                             }
                         }
+
+                        // 📌 Invoice parameters
                         list.Add(new ReportParameter("ordno", num8.ToString()));
                         list.Add(new ReportParameter("orddate", $"{dateTime:dd-MMM-yyyy}"));
                         list.Add(new ReportParameter("rstext", value));
@@ -1215,7 +1231,6 @@ namespace standard.trans
                         list.Add(new ReportParameter("title", empty5));
                         list.Add(new ReportParameter("mi_totamt", num3.ToString("0.00")));
                         list.Add(new ReportParameter("mi_discount", num5.ToString("0.00")));
-                        list.Add(new ReportParameter("mi_discount", num5.ToString("0.00")));
                         list.Add(new ReportParameter("mi_taxamt", num6.ToString("0.00")));
                         list.Add(new ReportParameter("mi_taxper", num7.ToString("0.00")));
                         list.Add(new ReportParameter("mi_packing", num2.ToString("0.00")));
@@ -1223,19 +1238,27 @@ namespace standard.trans
                         list.Add(new ReportParameter("mi_roundamt", num.ToString("0.00")));
                         list.Add(new ReportParameter("CopyLabel", label));
                         list.Add(new ReportParameter("title_header", titleValue));
+
+                        // 🔽 Load form & report
                         frmRpt frmRpt = new frmRpt();
                         frmRpt.WindowState = FormWindowState.Maximized;
+
                         ISingleResult<usp_salesmasterSelectResult> dataSourceValue = inventoryDataContext.usp_salesmasterSelect(smid, null, null, null, null, null, null);
                         ISingleResult<usp_salesdetailsSelectResult> dataSourceValue2 = inventoryDataContext.usp_salesdetailsSelect(smid, null, null, null, null, null, null);
                         ISingleResult<usp_companySelectResult> dataSourceValue3 = inventoryDataContext.usp_companySelect(comId);
                         ISingleResult<usp_ledgermasterSelectResult> dataSourceValue4 = inventoryDataContext.usp_ledgermasterSelect(ledid, null, null, null, null, null);
-                        frmRpt.reportview.RefreshReport();
+
+                        // 🧾 Assign report viewer
                         frmRpt.reportview.LocalReport.ReportEmbeddedResource = "standard.report.rptSalesInvoice1.rdlc";
                         frmRpt.reportview.LocalReport.DataSources.Clear();
+
+                        // ✅ Add all DataSources
                         frmRpt.reportview.LocalReport.DataSources.Add(new ReportDataSource("usp_minvoiceSelect", dataSourceValue));
                         frmRpt.reportview.LocalReport.DataSources.Add(new ReportDataSource("ds_usp_dinvoiceSelect", dataSourceValue2));
                         frmRpt.reportview.LocalReport.DataSources.Add(new ReportDataSource("usp_companySelect", dataSourceValue3));
                         frmRpt.reportview.LocalReport.DataSources.Add(new ReportDataSource("usp_ledgermasterSelect", dataSourceValue4));
+                        frmRpt.reportview.LocalReport.DataSources.Add(new ReportDataSource("LogoDataSet", logoList));
+
                         frmRpt.reportview.LocalReport.SetParameters(list);
                         frmRpt.reportview.ZoomMode = ZoomMode.Percent;
                         frmRpt.reportview.ZoomPercent = 100;
@@ -1243,6 +1266,7 @@ namespace standard.trans
                         frmRpt.reportview.LocalReport.Refresh();
                         frmRpt.reportview.RefreshReport();
                         frmRpt.ShowDialog();
+
                     }
 
 

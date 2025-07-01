@@ -445,11 +445,11 @@ namespace standard.master
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle7 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle8 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle9 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle10 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
             this.a1Paneltitle = new mylib.a1panel();
             this.lbltitle = new System.Windows.Forms.Label();
             this.tblMain = new System.Windows.Forms.TableLayoutPanel();
@@ -787,19 +787,19 @@ namespace standard.master
             this.dgview.AllowUserToAddRows = false;
             this.dgview.AllowUserToDeleteRows = false;
             this.dgview.AllowUserToResizeRows = false;
-            dataGridViewCellStyle6.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
-            this.dgview.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle6;
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
+            this.dgview.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
             this.dgview.AutoGenerateColumns = false;
             this.dgview.BackgroundColor = System.Drawing.Color.White;
             this.dgview.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            dataGridViewCellStyle7.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle7.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle7.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Bold);
-            dataGridViewCellStyle7.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            dataGridViewCellStyle7.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle7.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle7.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dgview.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle7;
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Bold);
+            dataGridViewCellStyle2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
+            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dgview.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle2;
             this.dgview.ColumnHeadersHeight = 28;
             this.dgview.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.item_serial,
@@ -827,14 +827,14 @@ namespace standard.master
             this.itemudateDataGridViewTextBoxColumn});
             this.dgview.Cursor = System.Windows.Forms.Cursors.Default;
             this.dgview.DataSource = this.uspitemSelectResultBindingSource2;
-            dataGridViewCellStyle8.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle8.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle8.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Bold);
-            dataGridViewCellStyle8.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            dataGridViewCellStyle8.SelectionBackColor = System.Drawing.Color.Orange;
-            dataGridViewCellStyle8.SelectionForeColor = System.Drawing.Color.White;
-            dataGridViewCellStyle8.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dgview.DefaultCellStyle = dataGridViewCellStyle8;
+            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle3.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Bold);
+            dataGridViewCellStyle3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
+            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.Color.Orange;
+            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.Color.White;
+            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dgview.DefaultCellStyle = dataGridViewCellStyle3;
             this.dgview.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dgview.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Bold);
             this.dgview.ImeMode = System.Windows.Forms.ImeMode.NoControl;
@@ -844,17 +844,17 @@ namespace standard.master
             this.dgview.Name = "dgview";
             this.dgview.ReadOnly = true;
             this.dgview.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            dataGridViewCellStyle9.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle9.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle9.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
-            dataGridViewCellStyle9.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle9.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle9.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle9.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dgview.RowHeadersDefaultCellStyle = dataGridViewCellStyle9;
+            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle4.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle4.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
+            dataGridViewCellStyle4.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle4.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle4.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dgview.RowHeadersDefaultCellStyle = dataGridViewCellStyle4;
             this.dgview.RowHeadersVisible = false;
-            dataGridViewCellStyle10.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
-            this.dgview.RowsDefaultCellStyle = dataGridViewCellStyle10;
+            dataGridViewCellStyle5.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
+            this.dgview.RowsDefaultCellStyle = dataGridViewCellStyle5;
             this.dgview.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dgview.Size = new System.Drawing.Size(1914, 275);
             this.dgview.TabIndex = 0;
@@ -2121,7 +2121,7 @@ namespace standard.master
             if (chkIsUnitPerRate.Checked && txtUnitPerRate.Text != "")
             {
                 decimal rate = Convert.ToDecimal(txtUnitPerRate.Text);
-                decimal qty = Convert.ToDecimal(txtItemQuantity.Text);
+                decimal qty = string.IsNullOrWhiteSpace(txtItemQuantity.Text)? 0 : Convert.ToDecimal(txtItemQuantity.Text);
                 decimal purRate = Convert.ToDecimal(txtPurUnitRate.Text);
                 txtPRate.Text = (purRate * qty).ToString("N2");
                 txtSuperSplRate.Text = (rate * qty).ToString("N2");
@@ -2138,7 +2138,7 @@ namespace standard.master
             if (chkIsUnitPerRate.Checked && txtPurUnitRate.Text != "")
             {
                 decimal rate = Convert.ToDecimal(txtPurUnitRate.Text);
-                decimal qty = Convert.ToDecimal(txtItemQuantity.Text);
+                decimal qty = string.IsNullOrWhiteSpace(txtItemQuantity.Text) ? 0 : Convert.ToDecimal(txtItemQuantity.Text);
                 txtPRate.Text = (rate * qty).ToString("N2");
             }
         }
@@ -2230,11 +2230,11 @@ namespace standard.master
 
                 worksheet.Cells[1, 1] = "Serial No";
                 worksheet.Cells[1, 2] = "Item Name";
-                worksheet.Cells[1, 3] = "Item TamilName";
-                worksheet.Cells[1, 4] = "Category";
-                worksheet.Cells[1, 5] = "Quantity";
-                worksheet.Cells[1, 6] = "Unit";
-                worksheet.Cells[1, 7] = "Unit Type";
+                worksheet.Cells[1, 3] = "Item TamilName";                
+                worksheet.Cells[1, 4] = "Quantity";
+                worksheet.Cells[1, 5] = "Unit";
+                worksheet.Cells[1, 6] = "Unit Type";
+                worksheet.Cells[1, 7] = "Category";
                 worksheet.Cells[1, 8] = "IsUnit Per Rate";
                 worksheet.Cells[1, 9] = "Sales Unit Rate";
                 worksheet.Cells[1, 10] = "Purchase Unit Rate";
@@ -2249,11 +2249,11 @@ namespace standard.master
                 {
                     worksheet.Cells[row, 1] = item.item_serial;
                     worksheet.Cells[row, 2] = item.item_name;
-                    worksheet.Cells[row, 3] = item.item_tamilname;
-                    worksheet.Cells[row, 4] = item.cat_id;
-                    worksheet.Cells[row, 5] = item.item_quantity;
-                    worksheet.Cells[row, 6] = item.item_unit;
-                    worksheet.Cells[row, 7] = item.item_unittype;
+                    worksheet.Cells[row, 3] = item.item_tamilname;                   
+                    worksheet.Cells[row, 4] = item.item_quantity;
+                    worksheet.Cells[row, 5] = item.item_unit;
+                    worksheet.Cells[row, 6] = item.item_unittype;
+                    worksheet.Cells[row, 7] = item.cat_id;
                     worksheet.Cells[row, 8] = item.item_isunitperrate;
                     worksheet.Cells[row, 9] = item.item_perunitrate;
                     worksheet.Cells[row, 10] = item.item_purunitrate;
@@ -2341,7 +2341,7 @@ namespace standard.master
                     bool isUnitPerRate = Convert.ToBoolean((range.Cells[row, 8] as Excel.Range)?.Value2);
                     decimal tax = Convert.ToDecimal((range.Cells[row, 12] as Excel.Range)?.Value2);
                     int qty = 0;
-                    var qtyValue = (range.Cells[row, 5] as Excel.Range)?.Value2;
+                    var qtyValue = (range.Cells[row, 4] as Excel.Range)?.Value2;
                     double qtyDouble = 0;
 
                     if (qtyValue != null)
@@ -2409,10 +2409,11 @@ namespace standard.master
                         if (existingItem != null)
                         {
                             existingItem.item_name = Convert.ToString((range.Cells[row, 2] as Excel.Range)?.Value2) ?? " ";
-                            existingItem.item_tamilname = Convert.ToString((range.Cells[row, 3] as Excel.Range)?.Value2);
-                            existingItem.cat_id = Convert.ToInt32((range.Cells[row, 4] as Excel.Range)?.Value2);
-                            existingItem.item_quantity = Convert.ToInt32((range.Cells[row, 5] as Excel.Range)?.Value2);
-                            existingItem.item_unittype = Convert.ToString((range.Cells[row, 7] as Excel.Range)?.Value2);
+                            existingItem.item_tamilname = Convert.ToString((range.Cells[row, 3] as Excel.Range)?.Value2);                           
+                            existingItem.item_quantity = Convert.ToInt32((range.Cells[row, 4] as Excel.Range)?.Value2);
+                            existingItem.item_unit = Convert.ToString((range.Cells[row, 5] as Excel.Range)?.Value2);
+                            existingItem.item_unittype = Convert.ToString((range.Cells[row, 6] as Excel.Range)?.Value2);
+                            existingItem.cat_id = Convert.ToInt32((range.Cells[row, 7] as Excel.Range)?.Value2);
                             existingItem.item_isunitperrate = Convert.ToBoolean((range.Cells[row, 8] as Excel.Range)?.Value2);
                             existingItem.item_perunitrate = isUnitPerRate ? Convert.ToDecimal((range.Cells[row, 9] as Excel.Range)?.Value2) : 0;
                             existingItem.item_purunitrate = isUnitPerRate ? purUnitRate : 0;
@@ -2436,11 +2437,11 @@ namespace standard.master
                             {
                                 item_serial = serialNumber,
                                 item_name = Convert.ToString((range.Cells[row, 2] as Excel.Range)?.Value2) ?? " ",
-                                item_tamilname = Convert.ToString((range.Cells[row, 3] as Excel.Range)?.Value2),
-                                cat_id = Convert.ToInt32((range.Cells[row, 4] as Excel.Range)?.Value2),
+                                item_tamilname = Convert.ToString((range.Cells[row, 3] as Excel.Range)?.Value2),                               
                                 item_quantity = qty,
-                                item_unit = Convert.ToString((range.Cells[row, 6] as Excel.Range)?.Value2),
-                                item_unittype = Convert.ToString((range.Cells[row, 7] as Excel.Range)?.Value2),
+                                item_unit = Convert.ToString((range.Cells[row, 5] as Excel.Range)?.Value2),
+                                item_unittype = Convert.ToString((range.Cells[row, 6] as Excel.Range)?.Value2),
+                                cat_id = Convert.ToInt32((range.Cells[row, 7] as Excel.Range)?.Value2),
                                 item_istaxable = Convert.ToBoolean((range.Cells[row, 11] as Excel.Range)?.Value2),
                                 item_taxpercentage = Convert.ToDecimal((range.Cells[row, 12] as Excel.Range)?.Value2),
                                 item_hsncode = Convert.ToString((range.Cells[row, 13] as Excel.Range)?.Value2) ?? "",
