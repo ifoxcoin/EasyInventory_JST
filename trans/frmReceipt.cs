@@ -1,4 +1,4 @@
-using mylib;
+﻿using mylib;
 using standard.classes;
 using standard.Properties;
 using System;
@@ -12,125 +12,125 @@ using System.Windows.Forms;
 
 namespace standard.trans
 {
-	public class frmReceipt : Form
-	{
-		private delegate void SetColumnIndex(string colname);
+    public class frmReceipt : Form
+    {
+        private delegate void SetColumnIndex(string colname);
 
-		private int? id;
-        private bool? IsHavingOpeningBalance=false;
+        private int? id;
+        private bool? IsHavingOpeningBalance = false;
         private AutoCompleteStringCollection acsItemCode;
 
-		private AutoCompleteStringCollection acsItemName;
+        private AutoCompleteStringCollection acsItemName;
 
-		private AutoCompleteStringCollection acsCategoryName;
+        private AutoCompleteStringCollection acsCategoryName;
 
-		private IContainer components = null;
+        private IContainer components = null;
 
-		private TableLayoutPanel tablemain;
+        private TableLayoutPanel tablemain;
 
-		private Label lbltitle;
+        private Label lbltitle;
 
-		private mygrid dgvReceipt;
+        private mygrid dgvReceipt;
 
-		private TableLayoutPanel tableentry;
+        private TableLayoutPanel tableentry;
 
-		private Label lblopno;
+        private Label lblopno;
 
-		private Label lbldate;
+        private Label lbldate;
 
-		private DateTimePicker dtprecdate;
+        private DateTimePicker dtprecdate;
 
-		private TableLayoutPanel tablecmd;
+        private TableLayoutPanel tablecmd;
 
-		private lightbutton cmdsave;
+        private lightbutton cmdsave;
 
-		private lightbutton cmdrefresh;
+        private lightbutton cmdrefresh;
 
-		private lightbutton cmdclose;
+        private lightbutton cmdclose;
 
-		private Panel pnlentry;
+        private Panel pnlentry;
 
-		private Label lblfrom;
+        private Label lblfrom;
 
-		private ComboBox cbocustomer;
+        private ComboBox cbocustomer;
 
-		private Panel pnlview;
+        private Panel pnlview;
 
-		private TableLayoutPanel tableview;
+        private TableLayoutPanel tableview;
 
-		private mygrid dglist;
+        private mygrid dglist;
 
-		private TableLayoutPanel tablelist;
+        private TableLayoutPanel tablelist;
 
-		private Label lblhyp;
+        private Label lblhyp;
 
-		private DateTimePicker dtpfdate;
+        private DateTimePicker dtpfdate;
 
-		private Label lblfdate;
+        private Label lblfdate;
 
-		private DateTimePicker dtptdate;
+        private DateTimePicker dtptdate;
 
-		private lightbutton cmdList;
+        private lightbutton cmdList;
 
-		private lightbutton cmdexit;
+        private lightbutton cmdexit;
 
-		private lightbutton cmdview;
+        private lightbutton cmdview;
 
-		private Label lblsubtitle;
+        private Label lblsubtitle;
 
-		private DataGridViewTextBoxColumn miidDataGridViewTextBoxColumn;
+        private DataGridViewTextBoxColumn miidDataGridViewTextBoxColumn;
 
-		private DataGridViewTextBoxColumn mibillnoDataGridViewTextBoxColumn;
+        private DataGridViewTextBoxColumn mibillnoDataGridViewTextBoxColumn;
 
-		private DataGridViewTextBoxColumn mibilldateDataGridViewTextBoxColumn;
+        private DataGridViewTextBoxColumn mibilldateDataGridViewTextBoxColumn;
 
-		private DataGridViewTextBoxColumn amnameDataGridViewTextBoxColumn;
+        private DataGridViewTextBoxColumn amnameDataGridViewTextBoxColumn;
 
-		private DataGridViewTextBoxColumn mitotamtDataGridViewTextBoxColumn;
+        private DataGridViewTextBoxColumn mitotamtDataGridViewTextBoxColumn;
 
-		private DataGridViewTextBoxColumn minetamtDataGridViewTextBoxColumn;
+        private DataGridViewTextBoxColumn minetamtDataGridViewTextBoxColumn;
 
-		private DataGridViewTextBoxColumn minarrationDataGridViewTextBoxColumn;
+        private DataGridViewTextBoxColumn minarrationDataGridViewTextBoxColumn;
 
-		private TextBox txtrecno;
+        private TextBox txtrecno;
 
-		private BindingSource ledgermasterBindingSource;
+        private BindingSource ledgermasterBindingSource;
 
-		private Label label2;
+        private Label label2;
 
-		private ComboBox cboCity;
+        private ComboBox cboCity;
 
-		private BindingSource ledgermasterCityBindingSource;
+        private BindingSource ledgermasterCityBindingSource;
 
-		private DataGridViewTextBoxColumn comname1DataGridViewTextBoxColumn;
+        private DataGridViewTextBoxColumn comname1DataGridViewTextBoxColumn;
 
-		private Label lblAddress;
+        private Label lblAddress;
 
-		private Label label1;
+        private Label label1;
 
-		private Label label3;
+        private Label label3;
 
-		private Label label4;
+        private Label label4;
 
-		private decimalbox txtOutstanding;
+        private decimalbox txtOutstanding;
 
-		private decimalbox txtPaidamt;
+        private decimalbox txtPaidamt;
 
-		private decimalbox txtNewBalance;
+        private decimalbox txtNewBalance;
 
-		private BindingSource uspreceiptSelectResultBindingSource;
+        private BindingSource uspreceiptSelectResultBindingSource;
 
-		private Label label5;
+        private Label label5;
 
-		private ComboBox cboCityView;
+        private ComboBox cboCityView;
 
-		private Label label6;
+        private Label label6;
 
-		private ComboBox cboCustomerView;
+        private ComboBox cboCustomerView;
 
-		private BindingSource ledgermasteCityViewrBindingSource;
+        private BindingSource ledgermasteCityViewrBindingSource;
 
-		private BindingSource ledgermasterViewBindingSource;
+        private BindingSource ledgermasterViewBindingSource;
         private Label lblReceiptType;
         private DataGridViewTextBoxColumn osno;
         private DataGridViewTextBoxColumn cBillNo;
@@ -159,29 +159,29 @@ namespace standard.trans
         private DataGridViewTextBoxColumn ob_id;
         private Label lblAddress1;
 
-		public frmReceipt()
-		{
-			InitializeComponent();
-		}
+        public frmReceipt()
+        {
+            InitializeComponent();
+        }
 
-		private void frmAmType_Load(object sender, EventArgs e)
-		{
-			try
-			{
-				id = 0;
-				LoadData();
-				AutoFill();
-				dtprecdate.Select();
-			}
-			catch (Exception ex)
-			{
-				frmException ex2 = new frmException(ex);
-				ex2.ShowDialog();
-			}
-		}
+        private void frmAmType_Load(object sender, EventArgs e)
+        {
+            try
+            {
+                id = 0;
+                LoadData();
+                AutoFill();
+                dtprecdate.Select();
+            }
+            catch (Exception ex)
+            {
+                frmException ex2 = new frmException(ex);
+                ex2.ShowDialog();
+            }
+        }
 
-		private void LoadData()
-		{
+        private void LoadData()
+        {
             DateTime now = DateTime.Now;
             if (now < dtprecdate.MinDate)
                 dtprecdate.Value = dtprecdate.MinDate;
@@ -194,553 +194,514 @@ namespace standard.trans
             DateTime subtracted = dtpfdate.Value.Subtract(new TimeSpan(30, 0, 0, 0, 0));
             dtpfdate.Value = subtracted < dtpfdate.MinDate ? dtpfdate.MinDate : subtracted;
             InventoryDataContext inventoryDataContext = new InventoryDataContext();
-			using (inventoryDataContext)
-			{
-				var source = from a in inventoryDataContext.ledgermasters
-					where a.led_accounttype == "Customer" || a.led_id == 0
-					select new
-					{
-						a.led_id,
-						a.led_name,
-						a.led_address2
-					};
-				ledgermasterCityBindingSource.DataSource = source.Select(x => x.led_address2).Distinct();
-				ledgermasteCityViewrBindingSource.DataSource = source.Select(x => x.led_address2).Distinct();
-				uspreceiptSelectResultBindingSource.DataSource = inventoryDataContext.usp_receiptSelect(null, null, null, null);
-				cbocustomer.SelectedIndex = -1;
-				long? no = 0L;
-				inventoryDataContext.usp_getYearNo("pkrec_no", global.sysdate, ref no,null);
-				txtrecno.Text = Convert.ToString(no);
-			}
-		}
+            using (inventoryDataContext)
+            {
+                var source = from a in inventoryDataContext.ledgermasters
+                             where a.led_accounttype == "Customer" || a.led_id == 0
+                             select new
+                             {
+                                 a.led_id,
+                                 a.led_name,
+                                 a.led_address2
+                             };
+                ledgermasterCityBindingSource.DataSource = source.Select(x => x.led_address2).Distinct();
+                ledgermasteCityViewrBindingSource.DataSource = source.Select(x => x.led_address2).Distinct();
+                uspreceiptSelectResultBindingSource.DataSource = inventoryDataContext.usp_receiptSelect(null, null, null, null);
+                cbocustomer.SelectedIndex = -1;
+                long? no = 0L;
+                inventoryDataContext.usp_getYearNo("pkrec_no", global.sysdate, ref no, null);
+                txtrecno.Text = Convert.ToString(no);
+            }
+        }
 
-		private void AutoFill()
-		{
-			acsItemCode = new AutoCompleteStringCollection();
-			acsItemName = new AutoCompleteStringCollection();
-			acsCategoryName = new AutoCompleteStringCollection();
-			InventoryDataContext inventoryDataContext = new InventoryDataContext();
-			using (inventoryDataContext)
-			{
-				IQueryable<category> queryable = inventoryDataContext.categories.Select((category li) => li);
-				foreach (category item in queryable)
-				{
-					acsCategoryName.Add(item.cat_name);
-				}
-				IQueryable<item> queryable2 = inventoryDataContext.items.Select((item li) => li);
-				foreach (item item2 in queryable2)
-				{
-					acsItemCode.Add(item2.item_code);
-					acsItemName.Add(item2.item_name);
-				}
-			}
-		}
+        private void AutoFill()
+        {
+            acsItemCode = new AutoCompleteStringCollection();
+            acsItemName = new AutoCompleteStringCollection();
+            acsCategoryName = new AutoCompleteStringCollection();
+            InventoryDataContext inventoryDataContext = new InventoryDataContext();
+            using (inventoryDataContext)
+            {
+                IQueryable<category> queryable = inventoryDataContext.categories.Select((category li) => li);
+                foreach (category item in queryable)
+                {
+                    acsCategoryName.Add(item.cat_name);
+                }
+                IQueryable<item> queryable2 = inventoryDataContext.items.Select((item li) => li);
+                foreach (item item2 in queryable2)
+                {
+                    acsItemCode.Add(item2.item_code);
+                    acsItemName.Add(item2.item_name);
+                }
+            }
+        }
 
-		private void ClearData()
-		{
-			cbocustomer.SelectedIndex = -1;
-			cbocustomer.Text = string.Empty;
-			dgvReceipt.Rows.Clear();
-			txtPaidamt.Value = 0m;
-			txtOutstanding.Value = 0m;
-			txtNewBalance.Value = 0m;
-			id = 0;
-		}
+        private void ClearData()
+        {
+            cbocustomer.SelectedIndex = -1;
+            cbocustomer.Text = string.Empty;
+            dgvReceipt.Rows.Clear();
+            txtPaidamt.Value = 0m;
+            txtOutstanding.Value = 0m;
+            txtNewBalance.Value = 0m;
+            id = 0;
+        }
 
-		private void cmdsave_Click(object sender, EventArgs e)
-		{
-			DbTransaction dbTransaction = null;
-			try
-			{
-				InventoryDataContext inventoryDataContext = new InventoryDataContext();
-				receipt receipt = new receipt();
-				receipt.led_id = Convert.ToInt32(cbocustomer.SelectedValue);
-				if (receipt.led_id == 0)
-				{
-					MessageBox.Show("Invalid 'Customer'", "Information", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
-					cbocustomer.Focus();
-				}
-				else if (dgvReceipt.RowCount <= 1)
-				{
-					MessageBox.Show("Invalid data to save", "Information", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
-					dgvReceipt.Focus();
-				}
+        private void cmdsave_Click(object sender, EventArgs e)
+        {
+            DbTransaction dbTransaction = null;
+            try
+            {
+                InventoryDataContext inventoryDataContext = new InventoryDataContext();
+                receipt receipt = new receipt();
+                receipt.led_id = Convert.ToInt32(cbocustomer.SelectedValue);
+                if (receipt.led_id == 0)
+                {
+                    MessageBox.Show("Invalid 'Customer'", "Information", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+                    cbocustomer.Focus();
+                }
+                else if (dgvReceipt.RowCount <= 1)
+                {
+                    MessageBox.Show("Invalid data to save", "Information", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+                    dgvReceipt.Focus();
+                }
                 else if (txtPaidamt.Value == 0 || txtPaidamt.Value == null)
                 {
                     MessageBox.Show("Invalid Paid Amount to save", "Information", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
                     dgvReceipt.Focus();
                 }
                 else
-				{
-					int? num = id;
-					if (num.GetValueOrDefault() != 0 || !num.HasValue)
-					{
-					}
-					if (MessageBox.Show("Are you sure to save?", "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.No)
-					{
-						receipt.rec_date = dtprecdate.Value;
-						num = id;
-						if (num.GetValueOrDefault() == 0 && num.HasValue)
-						{
-							receipt.rec_date = dtprecdate.Value;
-							receipt.com_id = 1L;
-							long? no = 0L;
-							inventoryDataContext.usp_setYearNo("pkrec_no", global.sysdate, ref no,null);
-							foreach (DataGridViewRow item in (IEnumerable)dgvReceipt.Rows)
-							{
-								if (Convert.ToDecimal(item.Cells["cReceived"].Value) > 0m)
-								{
-									txtrecno.Text = Convert.ToString(no);
-									if (!item.IsNewRow)
-									{
-										receipt.rec_billamt = Convert.ToDecimal(item.Cells["cBillAmt"].Value);
-                                        if(IsHavingOpeningBalance==true)
+                {
+                    int? num = id;
+                    if (num.GetValueOrDefault() != 0 || !num.HasValue)
+                    {
+                    }
+                    if (MessageBox.Show("Are you sure to save?", "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.No)
+                    {
+                        receipt.rec_date = dtprecdate.Value;
+                        num = id;
+                        if (num.GetValueOrDefault() == 0 && num.HasValue)
+                        {
+                            receipt.rec_date = dtprecdate.Value;
+                            receipt.com_id = 1L;
+                            long? no = 0L;
+                            inventoryDataContext.usp_setYearNo("pkrec_no", global.sysdate, ref no, null);
+                            foreach (DataGridViewRow item in (IEnumerable)dgvReceipt.Rows)
+                            {
+                                if (Convert.ToDecimal(item.Cells["cReceived"].Value) > 0m)
+                                {
+                                    txtrecno.Text = Convert.ToString(no);
+                                    if (!item.IsNewRow)
+                                    {
+                                        receipt.rec_billamt = Convert.ToDecimal(item.Cells["cBillAmt"].Value);
+                                        if (IsHavingOpeningBalance == true)
                                         {
-                                            receipt.sm_id =0;
+                                            receipt.sm_id = 0;
                                             receipt.ob_id = Convert.ToInt32(item.Cells["cSMId"].Value);
                                         }
                                         else
                                         {
                                             receipt.sm_id = Convert.ToInt32(item.Cells["cSMId"].Value);
-                                            receipt.ob_id =0;
+                                            receipt.ob_id = 0;
                                         }
-										
-										receipt.rec_newbalance = Convert.ToDecimal(item.Cells["cNewBalance"].Value);
-										receipt.rec_receivedamt = Convert.ToDecimal(item.Cells["cReceived"].Value);
-										receipt.rec_no = Convert.ToInt32(no);
-										if (receipt.rec_newbalance <= 0m)
-										{
-											receipt.rec_isclose = true;
-										}
-										else
-										{
-											receipt.rec_isclose = false;
-										}
-										inventoryDataContext.usp_receiptInsert(receipt.rec_no, receipt.rec_date, receipt.led_id, receipt.sm_id,receipt.ob_id, receipt.com_id, receipt.rec_billamt, receipt.rec_receivedamt, receipt.rec_newbalance, receipt.rec_isclose);
-									}
-								}
-							}
-						}
-						ClearData();
-						LoadData();
-						MessageBox.Show("Record saved successfully...", "Information", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
-						dtprecdate.Focus();
-					}
-				}
-			}
-			catch (Exception ex)
-			{
-				dbTransaction?.Rollback();
-				ClearData();
-				frmException ex2 = new frmException(ex);
-				ex2.ShowDialog();
-			}
-		}
 
-		private void cmdrefresh_Click(object sender, EventArgs e)
-		{
-			ClearData();
-			LoadData();
-			dtprecdate.Focus();
-		}
+                                        receipt.rec_newbalance = Convert.ToDecimal(item.Cells["cNewBalance"].Value);
+                                        receipt.rec_receivedamt = Convert.ToDecimal(item.Cells["cReceived"].Value);
+                                        receipt.rec_no = Convert.ToInt32(no);
+                                        if (receipt.rec_newbalance <= 0m)
+                                        {
+                                            receipt.rec_isclose = true;
+                                        }
+                                        else
+                                        {
+                                            receipt.rec_isclose = false;
+                                        }
+                                        inventoryDataContext.usp_receiptInsert(receipt.rec_no, receipt.rec_date, receipt.led_id, receipt.sm_id, receipt.ob_id, receipt.com_id, receipt.rec_billamt, receipt.rec_receivedamt, receipt.rec_newbalance, receipt.rec_isclose);
+                                    }
+                                }
+                            }
+                        }
+                        ClearData();
+                        LoadData();
+                        MessageBox.Show("Record saved successfully...", "Information", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+                        dtprecdate.Focus();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                dbTransaction?.Rollback();
+                ClearData();
+                frmException ex2 = new frmException(ex);
+                ex2.ShowDialog();
+            }
+        }
 
-		private void cmdclose_Click(object sender, EventArgs e)
-		{
-			Close();
-		}
+        private void cmdrefresh_Click(object sender, EventArgs e)
+        {
+            ClearData();
+            LoadData();
+            dtprecdate.Focus();
+        }
 
-		private void Mymethod(string colname)
-		{
-			dgvReceipt.CurrentCell = dgvReceipt[colname, dgvReceipt.RowCount - 1];
-			dgvReceipt.BeginEdit(selectAll: true);
-			dgvReceipt.Focus();
-		}
+        private void cmdclose_Click(object sender, EventArgs e)
+        {
+            Close();
+        }
 
-		private void dgopen_CellEndEdit(object sender, DataGridViewCellEventArgs e)
-		{
-			if (dgvReceipt.CurrentCell != null)
-			{
-				int r = dgvReceipt.CurrentCell.RowIndex;
-				int columnIndex = dgvReceipt.CurrentCell.ColumnIndex;
-				if (Convert.ToString(dgvReceipt["cCategory", r].Value) == string.Empty && !dgvReceipt.CurrentRow.IsNewRow)
-				{
-					dgvReceipt.Rows.RemoveAt(r);
-				}
-				acsItemName = new AutoCompleteStringCollection();
-				InventoryDataContext inventoryDataContext = new InventoryDataContext();
-				using (inventoryDataContext)
-				{
-					IQueryable<item> queryable = from li in inventoryDataContext.items
-						join cat in inventoryDataContext.categories on li.cat_id equals cat.cat_id
-						where cat.cat_name == Convert.ToString(dgvReceipt["cCategory", r].Value)
-						select li;
-					foreach (item item in queryable)
-					{
-						acsItemCode.Add(item.item_code);
-						acsItemName.Add(item.item_name);
-					}
-				}
-				if (Convert.ToString(dgvReceipt["cItemName", r].Value) == string.Empty && !dgvReceipt.CurrentRow.IsNewRow)
-				{
-					dgvReceipt.Rows.RemoveAt(r);
-				}
-				using (inventoryDataContext)
-				{
-					var queryable2 = from li in inventoryDataContext.items
-						join cat in inventoryDataContext.categories on li.cat_id equals cat.cat_id
-						where li.item_name == Convert.ToString(dgvReceipt["cItemName", r].Value)
-						select new
-						{
-							cat,
-							li
-						};
-					foreach (var item2 in queryable2)
-					{
-						dgvReceipt["cPurRate", r].Value = item2.li.item_purchaserate;
-						dgvReceipt["cItemCode", r].Value = item2.li.item_code;
-						dgvReceipt["cItemId", r].Value = item2.li.item_id;
-						dgvReceipt["cCategory", r].Value = item2.cat.cat_name;
-						dgvReceipt["cCatId", r].Value = item2.cat.cat_id;
-					}
-				}
-				dgvReceipt.CurrentCell = dgvReceipt.Rows[dgvReceipt.CurrentCellAddress.Y].Cells["cQty"];
-				dgvReceipt.Focus();
-				if (Convert.ToString(dgvReceipt["cItemName", r].Value) == string.Empty && !dgvReceipt.CurrentRow.IsNewRow)
-				{
-					dgvReceipt.Rows.RemoveAt(r);
-				}
-				decimal.TryParse(Convert.ToString(dgvReceipt["cQty", r].Value), out decimal result);
-				result = Math.Abs(result);
-				dgvReceipt["cQty", r].Value = ((result > 0m) ? ((object)result) : null);
-				decimal.TryParse(Convert.ToString(dgvReceipt["cPurRate", r].Value), out decimal result2);
-				dgvReceipt["cAmount", r].Value = ((result2 > 0m && result > 0m) ? ((object)(result2 * result)) : null);
-				calacTotal();
-				SetColumnIndex method = Mymethod;
-				dgvReceipt.BeginInvoke(method, "cCategory");
-				if (Convert.ToString(dgvReceipt["cItemName", r].Value) == string.Empty && !dgvReceipt.CurrentRow.IsNewRow)
-				{
-					dgvReceipt.Rows.RemoveAt(r);
-				}
-				decimal.TryParse(Convert.ToString(dgvReceipt["cMrp", r].Value), out result2);
-				result2 = Math.Abs(result2);
-				dgvReceipt["cMrp", r].Value = ((result2 > 0m) ? ((object)result2) : null);
-				if (Convert.ToString(dgvReceipt["cItemName", r].Value) == string.Empty && !dgvReceipt.CurrentRow.IsNewRow)
-				{
-					dgvReceipt.Rows.RemoveAt(r);
-				}
-				decimal.TryParse(Convert.ToString(dgvReceipt["cPurRate", r].Value), out result2);
-				result2 = Math.Abs(result2);
-				dgvReceipt["cPurRate", r].Value = ((result2 > 0m) ? ((object)result2) : null);
-				decimal.TryParse(Convert.ToString(dgvReceipt["cQty", r].Value), out result);
-				dgvReceipt["cAmount", r].Value = ((result2 > 0m && result > 0m) ? ((object)(result2 * result)) : null);
-				calacTotal();
-			}
-		}
+        private void Mymethod(string colname)
+        {
+            dgvReceipt.CurrentCell = dgvReceipt[colname, dgvReceipt.RowCount - 1];
+            dgvReceipt.BeginEdit(selectAll: true);
+            dgvReceipt.Focus();
+        }
 
-		private void dgopen_RowsAdded(object sender, DataGridViewRowsAddedEventArgs e)
-		{
-			calacTotal();
-		}
+        private void dgopen_CellEndEdit(object sender, DataGridViewCellEventArgs e)
+        {
+            if (dgvReceipt.Columns[e.ColumnIndex].Name == "cReceived")
+            {
+                isManualEdit = true;
 
-		private void dgopen_RowsRemoved(object sender, DataGridViewRowsRemovedEventArgs e)
-		{
-			calacTotal();
-		}
+                decimal totalReceived = 0m;
 
-		private void calacTotal()
-		{
-			List<string> list = new List<string>();
-			list.Add("cQty");
-			list.Add("cAmount");
-			txtNewBalance.Value = txtOutstanding.Value - txtPaidamt.Value;
-		}
+                foreach (DataGridViewRow row in dgvReceipt.Rows)
+                {
+                    if (row.IsNewRow) continue;
 
-		private void dgopen_KeyDown(object sender, KeyEventArgs e)
-		{
-			if (dgvReceipt.CurrentCell == null)
-			{
-				return;
-			}
-			if (dgvReceipt.CurrentCell.ColumnIndex == 1)
-			{
-			}
-			if (e.KeyCode == Keys.F3 || e.KeyCode == Keys.Delete)
-			{
-				if (dgvReceipt.CurrentRow.IsNewRow)
-				{
-					return;
-				}
-				dgvReceipt.Rows.RemoveAt(dgvReceipt.CurrentCell.RowIndex);
-			}
-			if (e.KeyCode == Keys.Return || e.KeyCode == Keys.Tab)
-			{
-				if (dgvReceipt.CurrentCell.ColumnIndex == dgvReceipt.Columns.Count - 5)
-				{
-					dgvReceipt.Rows.Add();
-					dgvReceipt.CurrentCell = dgvReceipt.Rows[dgvReceipt.CurrentCellAddress.Y + 1].Cells[1];
-					dgvReceipt.Focus();
-				}
-				else
-				{
-					dgvReceipt.CurrentCell = dgvReceipt.Rows[dgvReceipt.CurrentCellAddress.Y].Cells[dgvReceipt.CurrentCell.ColumnIndex + 1];
-					dgvReceipt.BeginEdit(selectAll: true);
-					dgvReceipt.Focus();
-				}
-			}
-		}
+                    decimal received = 0m, billAmt = 0m, existReceived = 0m;
 
-		private void dtpdate_KeyDown(object sender, KeyEventArgs e)
-		{
-			if (e.KeyCode == Keys.Return)
-			{
-				cboCity.Focus();
-			}
-		}
+                    decimal.TryParse(Convert.ToString(row.Cells["cReceived"].Value), out received);
+                    decimal.TryParse(Convert.ToString(row.Cells["cBillAmt"].Value), out billAmt);
+                    decimal.TryParse(Convert.ToString(row.Cells["cExistReceived"].Value), out existReceived);
 
-		private void dtpbilldate_KeyDown(object sender, KeyEventArgs e)
-		{
-			if (e.KeyCode == Keys.Return)
-			{
-				cbocustomer.Focus();
-			}
-		}
+                    decimal allowed = billAmt - existReceived;
 
-		private void cbopurfrom_KeyDown(object sender, KeyEventArgs e)
-		{
-			if (e.KeyCode == Keys.Return && cbocustomer.Text.Trim() != string.Empty)
-			{
-				txtPaidamt.Focus();
-			}
-		}
+                    // ❗ Validation
+                    if (received > allowed)
+                    {
+                        MessageBox.Show("Received amount should not exceed balance of this bill.", "Validation", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        row.Cells["cReceived"].Value = allowed.ToString("N2");
+                        received = allowed;
+                    }
 
-		private void cmdview_Click(object sender, EventArgs e)
-		{
-			pnlview.Enabled = true;
-			tablemain.Enabled = false;
-			pnlview.BringToFront();
-			tablemain.SendToBack();
-			pnlview.Select();
-			cmdList_Click(this, null);
-			dtpfdate.Focus();
-		}
+                    totalReceived += received;
 
-		private void dgList_KeyDown(object sender, KeyEventArgs e)
-		{
-			try
-			{
-				if (e.KeyCode == Keys.Escape)
-				{
-					cmdexit_Click(this, null);
-				}
-			}
-			catch (Exception ex)
-			{
-				frmException ex2 = new frmException(ex);
-				ex2.ShowDialog();
-			}
-		}
+                    // Update New Balance
+                    decimal newBal = billAmt - existReceived - received;
+                    row.Cells["cNewBalance"].Value = newBal > 0 ? newBal.ToString("N2") : "0.00";
+                }
 
-		private void cmdexit_Click(object sender, EventArgs e)
-		{
-			pnlview.Enabled = false;
-			tablemain.Enabled = true;
-			pnlview.SendToBack();
-			tablemain.BringToFront();
-			dtprecdate.Focus();
-		}
+                txtPaidamt.Value = totalReceived;
+                txtNewBalance.Value = txtOutstanding.Value - totalReceived;
 
-		private void cmdList_Click(object sender, EventArgs e)
-		{
-			try
-			{
-				InventoryDataContext inventoryDataContext = new InventoryDataContext();
-				if (Convert.ToInt32(cboCustomerView.SelectedValue) > 0)
-				{
-					uspreceiptSelectResultBindingSource.DataSource = inventoryDataContext.usp_receiptSelect(null, Convert.ToInt32(cboCustomerView.SelectedValue), dtpfdate.Value, dtptdate.Value);
-				}
-				else
-				{
-					uspreceiptSelectResultBindingSource.DataSource = inventoryDataContext.usp_receiptSelect(null, null, dtpfdate.Value, dtptdate.Value);
-				}
-			}
-			catch (Exception ex)
-			{
-				frmException ex2 = new frmException(ex);
-				ex2.ShowDialog();
-			}
-		}
+                isManualEdit = false;
+            }
+        }
 
-		private void dglist_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
-		{
-			if (dglist.CurrentCell != null)
-			{
-				loadlist();
-			}
-		}
+        private void dgopen_RowsAdded(object sender, DataGridViewRowsAddedEventArgs e)
+        {
+            calacTotal();
+        }
 
-		private void loadlist()
-		{
-		}
+        private void dgopen_RowsRemoved(object sender, DataGridViewRowsRemovedEventArgs e)
+        {
+            calacTotal();
+        }
 
-		private void dglist_CellContentClick(object sender, DataGridViewCellEventArgs e)
-		{
-			try
-			{
-				if (e.ColumnIndex == ldelete.Index && e.RowIndex > -1)
-				{
-					int recid = Convert.ToInt32(dglist["idDataGridViewTextBoxColumn", e.RowIndex].Value);
-					int smid = Convert.ToInt32(dglist["smidDataGridViewTextBoxColumn", e.RowIndex].Value);
-                    int ob_id = Convert.ToInt32(dglist["ob_id", e.RowIndex].Value);                    
+        private void calacTotal()
+        {
+            List<string> list = new List<string>();
+            list.Add("cQty");
+            list.Add("cAmount");
+            txtNewBalance.Value = txtOutstanding.Value - txtPaidamt.Value;
+        }
+
+        private void dgopen_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (dgvReceipt.CurrentCell == null)
+            {
+                return;
+            }
+            if (dgvReceipt.CurrentCell.ColumnIndex == 1)
+            {
+            }
+            if (e.KeyCode == Keys.F3 || e.KeyCode == Keys.Delete)
+            {
+                if (dgvReceipt.CurrentRow.IsNewRow)
+                {
+                    return;
+                }
+                dgvReceipt.Rows.RemoveAt(dgvReceipt.CurrentCell.RowIndex);
+            }
+            if (e.KeyCode == Keys.Return || e.KeyCode == Keys.Tab)
+            {
+                if (dgvReceipt.CurrentCell.ColumnIndex == dgvReceipt.Columns.Count - 5)
+                {
+                    dgvReceipt.Rows.Add();
+                    dgvReceipt.CurrentCell = dgvReceipt.Rows[dgvReceipt.CurrentCellAddress.Y + 1].Cells[1];
+                    dgvReceipt.Focus();
+                }
+                else
+                {
+                    dgvReceipt.CurrentCell = dgvReceipt.Rows[dgvReceipt.CurrentCellAddress.Y].Cells[dgvReceipt.CurrentCell.ColumnIndex + 1];
+                    dgvReceipt.BeginEdit(selectAll: true);
+                    dgvReceipt.Focus();
+                }
+            }
+        }
+
+        private void dtpdate_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Return)
+            {
+                cboCity.Focus();
+            }
+        }
+
+        private void dtpbilldate_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Return)
+            {
+                cbocustomer.Focus();
+            }
+        }
+
+        private void cbopurfrom_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Return && cbocustomer.Text.Trim() != string.Empty)
+            {
+                txtPaidamt.Focus();
+            }
+        }
+
+        private void cmdview_Click(object sender, EventArgs e)
+        {
+            pnlview.Enabled = true;
+            tablemain.Enabled = false;
+            pnlview.BringToFront();
+            tablemain.SendToBack();
+            pnlview.Select();
+            cmdList_Click(this, null);
+            dtpfdate.Focus();
+        }
+
+        private void dgList_KeyDown(object sender, KeyEventArgs e)
+        {
+            try
+            {
+                if (e.KeyCode == Keys.Escape)
+                {
+                    cmdexit_Click(this, null);
+                }
+            }
+            catch (Exception ex)
+            {
+                frmException ex2 = new frmException(ex);
+                ex2.ShowDialog();
+            }
+        }
+
+        private void cmdexit_Click(object sender, EventArgs e)
+        {
+            pnlview.Enabled = false;
+            tablemain.Enabled = true;
+            pnlview.SendToBack();
+            tablemain.BringToFront();
+            dtprecdate.Focus();
+        }
+
+        private void cmdList_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                InventoryDataContext inventoryDataContext = new InventoryDataContext();
+                if (Convert.ToInt32(cboCustomerView.SelectedValue) > 0)
+                {
+                    uspreceiptSelectResultBindingSource.DataSource = inventoryDataContext.usp_receiptSelect(null, Convert.ToInt32(cboCustomerView.SelectedValue), dtpfdate.Value, dtptdate.Value);
+                }
+                else
+                {
+                    uspreceiptSelectResultBindingSource.DataSource = inventoryDataContext.usp_receiptSelect(null, null, dtpfdate.Value, dtptdate.Value);
+                }
+            }
+            catch (Exception ex)
+            {
+                frmException ex2 = new frmException(ex);
+                ex2.ShowDialog();
+            }
+        }
+
+        private void dglist_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (dglist.CurrentCell != null)
+            {
+                loadlist();
+            }
+        }
+
+        private void loadlist()
+        {
+        }
+
+        private void dglist_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+            try
+            {
+                if (e.ColumnIndex == ldelete.Index && e.RowIndex > -1)
+                {
+                    int recid = Convert.ToInt32(dglist["idDataGridViewTextBoxColumn", e.RowIndex].Value);
+                    int smid = Convert.ToInt32(dglist["smidDataGridViewTextBoxColumn", e.RowIndex].Value);
+                    int ob_id = Convert.ToInt32(dglist["ob_id", e.RowIndex].Value);
 
                     decimal value = Convert.ToDecimal(dglist["recreceivedamtDataGridViewTextBoxColumn", e.RowIndex].Value);
-					InventoryDataContext inventoryDataContext = new InventoryDataContext();
-					if (MessageBox.Show("Are you sure to delete?", "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.No)
-					{
-						inventoryDataContext.usp_receiptDelete(recid, smid, ob_id, value);
-						cmdList_Click(this, null);
-						MessageBox.Show("Record deleted successfully...", "Information", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
-					}
-				}
-				else if (e.ColumnIndex == ledit.Index && e.RowIndex > -1 && dglist.CurrentCell != null)
-				{
-					loadlist();
-				}
-			}
-			catch (Exception ex)
-			{
-				frmException ex2 = new frmException(ex);
-				ex2.ShowDialog();
-			}
-		}
+                    InventoryDataContext inventoryDataContext = new InventoryDataContext();
+                    if (MessageBox.Show("Are you sure to delete?", "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.No)
+                    {
+                        inventoryDataContext.usp_receiptDelete(recid, smid, ob_id, value);
+                        cmdList_Click(this, null);
+                        MessageBox.Show("Record deleted successfully...", "Information", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+                    }
+                }
+                else if (e.ColumnIndex == ledit.Index && e.RowIndex > -1 && dglist.CurrentCell != null)
+                {
+                    loadlist();
+                }
+            }
+            catch (Exception ex)
+            {
+                frmException ex2 = new frmException(ex);
+                ex2.ShowDialog();
+            }
+        }
 
-		private void dtpfdate_KeyDown(object sender, KeyEventArgs e)
-		{
-			if (e.KeyCode == Keys.Return)
-			{
-				dtptdate.Focus();
-			}
-		}
+        private void dtpfdate_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Return)
+            {
+                dtptdate.Focus();
+            }
+        }
 
-		private void dtptdate_KeyDown(object sender, KeyEventArgs e)
-		{
-			if (e.KeyCode == Keys.Return)
-			{
-				cboCityView.Focus();
-			}
-		}
+        private void dtptdate_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Return)
+            {
+                cboCityView.Focus();
+            }
+        }
 
-		private void dtpfdate_ValueChanged(object sender, EventArgs e)
-		{
-			if (dtpfdate.Value.Date > dtptdate.Value.Date)
-			{
-				dtptdate.Value = dtpfdate.Value.Date;
-			}
-		}
+        private void dtpfdate_ValueChanged(object sender, EventArgs e)
+        {
+            if (dtpfdate.Value.Date > dtptdate.Value.Date)
+            {
+                dtptdate.Value = dtpfdate.Value.Date;
+            }
+        }
 
-		private void dtptdate_ValueChanged(object sender, EventArgs e)
-		{
-			if (dtptdate.Value.Date < dtpfdate.Value.Date)
-			{
-				dtpfdate.Value = dtptdate.Value.Date;
-			}
-		}
+        private void dtptdate_ValueChanged(object sender, EventArgs e)
+        {
+            if (dtptdate.Value.Date < dtpfdate.Value.Date)
+            {
+                dtpfdate.Value = dtptdate.Value.Date;
+            }
+        }
 
-		private void cbopurfrom_SelectedValueChanged(object sender, EventArgs e)
-		{
-			if (!(cbocustomer.Text.Trim() == ""))
-			{
-			}
-		}
+        private void cbopurfrom_SelectedValueChanged(object sender, EventArgs e)
+        {
+            if (!(cbocustomer.Text.Trim() == ""))
+            {
+            }
+        }
 
-		private void dgvPurchase_EditingControlShowing(object sender, DataGridViewEditingControlShowingEventArgs e)
-		{
-			if (dgvReceipt.Columns[dgvReceipt.CurrentCellAddress.X].Name == "cItemName")
-			{
-				TextBox textBox = e.Control as TextBox;
-				if (textBox != null)
-				{
-					textBox.AutoCompleteMode = AutoCompleteMode.SuggestAppend;
-					textBox.AutoCompleteSource = AutoCompleteSource.CustomSource;
-					textBox.AutoCompleteCustomSource = acsItemName;
-				}
-			}
-			else if (dgvReceipt.Columns[dgvReceipt.CurrentCellAddress.X].Name == "cItemCode")
-			{
-				TextBox textBox = e.Control as TextBox;
-				if (textBox != null)
-				{
-					textBox.AutoCompleteMode = AutoCompleteMode.SuggestAppend;
-					textBox.AutoCompleteSource = AutoCompleteSource.CustomSource;
-					textBox.AutoCompleteCustomSource = acsItemCode;
-				}
-			}
-			else if (dgvReceipt.Columns[dgvReceipt.CurrentCellAddress.X].Name == "cCategory")
-			{
-				TextBox textBox = e.Control as TextBox;
-				if (textBox != null)
-				{
-					textBox.AutoCompleteMode = AutoCompleteMode.SuggestAppend;
-					textBox.AutoCompleteSource = AutoCompleteSource.CustomSource;
-					textBox.AutoCompleteCustomSource = acsCategoryName;
-				}
-			}
-			else
-			{
-				TextBox textBox = e.Control as TextBox;
-				if (textBox != null)
-				{
-					textBox.AutoCompleteCustomSource = null;
-				}
-			}
-		}
+        private void dgvPurchase_EditingControlShowing(object sender, DataGridViewEditingControlShowingEventArgs e)
+        {
+            if (dgvReceipt.Columns[dgvReceipt.CurrentCellAddress.X].Name == "cItemName")
+            {
+                TextBox textBox = e.Control as TextBox;
+                if (textBox != null)
+                {
+                    textBox.AutoCompleteMode = AutoCompleteMode.SuggestAppend;
+                    textBox.AutoCompleteSource = AutoCompleteSource.CustomSource;
+                    textBox.AutoCompleteCustomSource = acsItemName;
+                }
+            }
+            else if (dgvReceipt.Columns[dgvReceipt.CurrentCellAddress.X].Name == "cItemCode")
+            {
+                TextBox textBox = e.Control as TextBox;
+                if (textBox != null)
+                {
+                    textBox.AutoCompleteMode = AutoCompleteMode.SuggestAppend;
+                    textBox.AutoCompleteSource = AutoCompleteSource.CustomSource;
+                    textBox.AutoCompleteCustomSource = acsItemCode;
+                }
+            }
+            else if (dgvReceipt.Columns[dgvReceipt.CurrentCellAddress.X].Name == "cCategory")
+            {
+                TextBox textBox = e.Control as TextBox;
+                if (textBox != null)
+                {
+                    textBox.AutoCompleteMode = AutoCompleteMode.SuggestAppend;
+                    textBox.AutoCompleteSource = AutoCompleteSource.CustomSource;
+                    textBox.AutoCompleteCustomSource = acsCategoryName;
+                }
+            }
+            else
+            {
+                TextBox textBox = e.Control as TextBox;
+                if (textBox != null)
+                {
+                    textBox.AutoCompleteCustomSource = null;
+                }
+            }
+        }
 
-		private void cboCity_SelectedValueChanged(object sender, EventArgs e)
-		{
-			if (cboCity.SelectedItem != null)
-			{
-				InventoryDataContext inventoryDataContext = new InventoryDataContext();
-				using (inventoryDataContext)
-				{
-					ledgermasterBindingSource.Clear();
-					var source = from a in inventoryDataContext.ledgermasters
-						where a.led_accounttype == "Customer" && a.led_address2 == cboCity.Text.ToString()
-						select new
-						{
-							a.led_id,
-							a.led_name
-						};
-					ledgermasterBindingSource.DataSource = source.OrderBy(x => x.led_name);
-				}
-			}
-		}
+        private void cboCity_SelectedValueChanged(object sender, EventArgs e)
+        {
+            if (cboCity.SelectedItem != null)
+            {
+                InventoryDataContext inventoryDataContext = new InventoryDataContext();
+                using (inventoryDataContext)
+                {
+                    ledgermasterBindingSource.Clear();
+                    var source = from a in inventoryDataContext.ledgermasters
+                                 where a.led_accounttype == "Customer" && a.led_address2 == cboCity.Text.ToString()
+                                 select new
+                                 {
+                                     a.led_id,
+                                     a.led_name
+                                 };
+                    ledgermasterBindingSource.DataSource = source.OrderBy(x => x.led_name);
+                }
+            }
+        }
 
-		private void cboCity_KeyDown(object sender, KeyEventArgs e)
-		{
-			if (e.KeyCode == Keys.Return)
-			{
-				cbocustomer.Focus();
-			}
-		}
+        private void cboCity_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Return)
+            {
+                cbocustomer.Focus();
+            }
+        }
 
-		private void txtPaidamt_KeyDown(object sender, KeyEventArgs e)
-		{
-			if (e.KeyCode == Keys.Return)
-			{
-				cmdsave.Focus();
-			}
-		}
+        private void txtPaidamt_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Return)
+            {
+                cmdsave.Focus();
+            }
+        }
 
-		private void cbocustomer_Leave(object sender, EventArgs e)
-		{
-			InventoryDataContext inventoryDataContext = new InventoryDataContext();
-			using (inventoryDataContext)
-			{
-				IQueryable<ledgermaster> queryable = inventoryDataContext.ledgermasters.Where((ledgermaster li) => li.led_id == (long)Convert.ToInt32(cbocustomer.SelectedValue));
-				foreach (ledgermaster item in queryable)
-				{
-					lblAddress.Text = item.led_address + "," + item.led_address1 + ",";
-					lblAddress1.Text = item.led_address2 + "-" + item.led_pincode;
-				}
+        private void cbocustomer_Leave(object sender, EventArgs e)
+        {
+            InventoryDataContext inventoryDataContext = new InventoryDataContext();
+            using (inventoryDataContext)
+            {
+                IQueryable<ledgermaster> queryable = inventoryDataContext.ledgermasters.Where((ledgermaster li) => li.led_id == (long)Convert.ToInt32(cbocustomer.SelectedValue));
+                foreach (ledgermaster item in queryable)
+                {
+                    lblAddress.Text = item.led_address + "," + item.led_address1 + ",";
+                    lblAddress1.Text = item.led_address2 + "-" + item.led_pincode;
+                }
                 IQueryable<openingbalance> openingbalancedata = inventoryDataContext.openingbalances.Where((openingbalance list) => list.led_id == (long?)(long)Convert.ToInt32(cbocustomer.SelectedValue) && list.ob_isclose == (bool?)false).OrderBy(ob => ob.ob_refno);
                 if (openingbalancedata.Count() > 0)
                 {
@@ -765,6 +726,9 @@ namespace standard.trans
                         dgvReceipt.Rows[num].Cells["cNewBalance"].Value = item2.ob_netamount - item2.ob_received;
                         num++;
                     }
+
+                    dgvReceipt.CurrentCell = dgvReceipt.Rows[0].Cells["cReceived"];
+                    dgvReceipt.Focus();
                     txtOutstanding.DecimalPlaces = 2;
                     txtNewBalance.DecimalPlaces = 2;
                     txtOutstanding.Value = Convert.ToDecimal(num2.ToString("N2"));
@@ -775,7 +739,7 @@ namespace standard.trans
                     lblReceiptType.Text = "Sales";
                     IsHavingOpeningBalance = false;
 
-                    IQueryable<salesmaster> queryable2 = inventoryDataContext.salesmasters.Where((salesmaster list) => list.led_id == (long?)(long)Convert.ToInt32(cbocustomer.SelectedValue) && list.sm_isclose == (bool?)false);
+                    IQueryable<salesmaster> queryable2 = inventoryDataContext.salesmasters.Where((salesmaster list) => list.led_id == (long?)(long)Convert.ToInt32(cbocustomer.SelectedValue) && list.sm_isclose == (bool?)false && list.sm_isdraft == (bool?)true);
                     if (queryable2.Count() <= 0)
                     {
                         MessageBox.Show("No pending bills for " + cbocustomer.Text, "Info", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
@@ -802,129 +766,129 @@ namespace standard.trans
                             dgvReceipt.Rows[num].Cells["cNewBalance"].Value = item2.sm_netamount - item2.sm_received;
                             num++;
                         }
+
+                        dgvReceipt.CurrentCell = dgvReceipt.Rows[0].Cells["cReceived"];
+                        dgvReceipt.Focus();
+
                         txtOutstanding.DecimalPlaces = 2;
                         txtNewBalance.DecimalPlaces = 2;
                         txtOutstanding.Value = Convert.ToDecimal(num2.ToString("N2"));
                         txtNewBalance.Value = Convert.ToDecimal(num2.ToString("N2"));
                     }
                 }
-			}
-		}
+            }
+        }
 
-		private void txtPaidamt_TextChanged(object sender, EventArgs e)
-		{
-			if (txtPaidamt.Value > txtOutstanding.Value)
-			{
-				MessageBox.Show("Paid amount should not greater then outsatanding...", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-				txtPaidamt.Value = 0m;
-				return;
-			}
-			decimal num = 0m;
-			foreach (DataGridViewRow item in (IEnumerable)dgvReceipt.Rows)
-			{
-				item.Cells["cReceived"].Value = "0.00";
-				item.Cells["cNewBalance"].Value = Convert.ToDecimal(item.Cells["cBillAmt"].Value) - Convert.ToDecimal(item.Cells["cExistReceived"].Value);
-			}
-			if (txtPaidamt.Value > 0m)
-			{
-				foreach (DataGridViewRow item2 in (IEnumerable)dgvReceipt.Rows)
-				{
-					if (num == txtPaidamt.Value)
-					{
-						break;
-					}
-					decimal num2 = txtPaidamt.Value - num;
-					if (num2 > 0m)
-					{
-						if (num2 >= Convert.ToDecimal(item2.Cells["cNewBalance"].Value))
-						{
-							item2.Cells["cReceived"].Value = Convert.ToDecimal(item2.Cells["cNewBalance"].Value);
-							num += Convert.ToDecimal(item2.Cells["cNewBalance"].Value);
-							item2.Cells["cNewBalance"].Value = "0.00";
-						}
-						else
-						{
-							item2.Cells["cReceived"].Value = num2;
-							item2.Cells["cNewBalance"].Value = Convert.ToDecimal(item2.Cells["cNewBalance"].Value) - num2;
-							num += num2;
-						}
-					}
-				}
-			}
-			else
-			{
-				foreach (DataGridViewRow item3 in (IEnumerable)dgvReceipt.Rows)
-				{
-					item3.Cells["cReceived"].Value = "0.00";
-					item3.Cells["cNewBalance"].Value = Convert.ToDecimal(item3.Cells["cBillAmt"].Value) - Convert.ToDecimal(item3.Cells["cExistReceived"].Value);
-				}
-			}
-			calacTotal();
-		}
+        private bool isManualEdit = false;
 
-		private void cboCityView_SelectedValueChanged(object sender, EventArgs e)
-		{
-			if (cboCityView.SelectedItem != null)
-			{
-				InventoryDataContext inventoryDataContext = new InventoryDataContext();
-				using (inventoryDataContext)
-				{
-					ledgermasterViewBindingSource.Clear();
-					var source = from a in inventoryDataContext.ledgermasters
-						where a.led_accounttype == "Customer" && a.led_address2 == cboCityView.Text.ToString()
-						select new
-						{
-							a.led_id,
-							a.led_name
-						};
-					ledgermasterViewBindingSource.DataSource = source.OrderBy(x => x.led_name);
-				}
-			}
-		}
+        private void txtPaidamt_TextChanged(object sender, EventArgs e)
+        {
+            if (isManualEdit) return; // Don't auto-distribute if manually editing cells
 
-		private void txtPaidamt_KeyDown_1(object sender, KeyEventArgs e)
-		{
-			if (e.KeyCode == Keys.Return)
-			{
-				cmdsave.Focus();
-			}
-		}
+            if (txtPaidamt.Value > txtOutstanding.Value)
+            {
+                MessageBox.Show("Paid amount should not be greater than outstanding...", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                txtPaidamt.Value = 0m;
+                return;
+            }
 
-		private void cboCustomerView_KeyDown(object sender, KeyEventArgs e)
-		{
-			if (e.KeyCode == Keys.Return)
-			{
-				cmdList_Click(null, null);
-			}
-		}
+            decimal num = 0m;
+            foreach (DataGridViewRow item in dgvReceipt.Rows)
+            {
+                item.Cells["cReceived"].Value = "0.00";
+                item.Cells["cNewBalance"].Value = Convert.ToDecimal(item.Cells["cBillAmt"].Value) - Convert.ToDecimal(item.Cells["cExistReceived"].Value);
+            }
 
-		private void tablelist_Paint(object sender, PaintEventArgs e)
-		{
-		}
+            if (txtPaidamt.Value > 0m)
+            {
+                foreach (DataGridViewRow item2 in dgvReceipt.Rows)
+                {
+                    if (num == txtPaidamt.Value) break;
 
-		private void tablemain_Paint(object sender, PaintEventArgs e)
-		{
-		}
+                    decimal remaining = txtPaidamt.Value - num;
+                    decimal currentBalance = Convert.ToDecimal(item2.Cells["cNewBalance"].Value);
 
-		private void cboCityView_KeyDown(object sender, KeyEventArgs e)
-		{
+                    if (remaining >= currentBalance)
+                    {
+                        item2.Cells["cReceived"].Value = currentBalance;
+                        item2.Cells["cNewBalance"].Value = "0.00";
+                        num += currentBalance;
+                    }
+                    else
+                    {
+                        item2.Cells["cReceived"].Value = remaining;
+                        item2.Cells["cNewBalance"].Value = (currentBalance - remaining).ToString("N2");
+                        num += remaining;
+                    }
+                }
+            }
+
+            calacTotal();
+        }
+
+        private void cboCityView_SelectedValueChanged(object sender, EventArgs e)
+        {
+            if (cboCityView.SelectedItem != null)
+            {
+                InventoryDataContext inventoryDataContext = new InventoryDataContext();
+                using (inventoryDataContext)
+                {
+                    ledgermasterViewBindingSource.Clear();
+                    var source = from a in inventoryDataContext.ledgermasters
+                                 where a.led_accounttype == "Customer" && a.led_address2 == cboCityView.Text.ToString()
+                                 select new
+                                 {
+                                     a.led_id,
+                                     a.led_name
+                                 };
+                    ledgermasterViewBindingSource.DataSource = source.OrderBy(x => x.led_name);
+                }
+            }
+        }
+
+        private void txtPaidamt_KeyDown_1(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Return)
+            {
+                cmdsave.Focus();
+            }
+        }
+
+        private void cboCustomerView_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Return)
+            {
+                cmdList_Click(null, null);
+            }
+        }
+
+        private void tablelist_Paint(object sender, PaintEventArgs e)
+        {
+        }
+
+        private void tablemain_Paint(object sender, PaintEventArgs e)
+        {
+        }
+
+        private void cboCityView_KeyDown(object sender, KeyEventArgs e)
+        {
             if (e.KeyCode == Keys.Return)
             {
                 cboCustomerView.Focus();
             }
         }
 
-		protected override void Dispose(bool disposing)
-		{
-			if (disposing && components != null)
-			{
-				components.Dispose();
-			}
-			base.Dispose(disposing);
-		}
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing && components != null)
+            {
+                components.Dispose();
+            }
+            base.Dispose(disposing);
+        }
 
-		private void InitializeComponent()
-		{
+        private void InitializeComponent()
+        {
             this.components = new System.ComponentModel.Container();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
@@ -1264,6 +1228,7 @@ namespace standard.trans
             this.txtPaidamt.Margin = new System.Windows.Forms.Padding(5, 7, 5, 7);
             this.txtPaidamt.MaxLength = 10;
             this.txtPaidamt.Name = "txtPaidamt";
+            this.txtPaidamt.ReadOnly = true;
             this.txtPaidamt.RightAlign = true;
             this.txtPaidamt.Size = new System.Drawing.Size(316, 30);
             this.txtPaidamt.TabIndex = 11;
@@ -1493,7 +1458,6 @@ namespace standard.trans
             this.dgvReceipt.Margin = new System.Windows.Forms.Padding(5, 7, 5, 7);
             this.dgvReceipt.MultiSelect = false;
             this.dgvReceipt.Name = "dgvReceipt";
-            this.dgvReceipt.ReadOnly = true;
             this.dgvReceipt.RowHeadersVisible = false;
             this.dgvReceipt.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.AutoSizeToAllHeaders;
             dataGridViewCellStyle8.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold);
@@ -1549,7 +1513,6 @@ namespace standard.trans
             this.cReceived.HeaderText = "RECEIVED";
             this.cReceived.MaxInputLength = 10;
             this.cReceived.Name = "cReceived";
-            this.cReceived.ReadOnly = true;
             this.cReceived.Resizable = System.Windows.Forms.DataGridViewTriState.False;
             this.cReceived.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
             this.cReceived.Width = 150;
@@ -2057,6 +2020,6 @@ namespace standard.trans
             this.pnlview.ResumeLayout(false);
             this.ResumeLayout(false);
 
-		}
-	}
+        }
+    }
 }

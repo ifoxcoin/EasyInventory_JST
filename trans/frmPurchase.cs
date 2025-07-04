@@ -1,7 +1,6 @@
 using Microsoft.Reporting.WinForms;
 using mylib;
 using standard.classes;
-using standard.Properties;
 using standard.report;
 using System;
 using System.Collections;
@@ -9,165 +8,164 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data.Common;
 using System.Data.Linq;
-using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 
 namespace standard.trans
 {
-	public class frmPurchase : Form
-	{
-		private delegate void SetColumnIndex(string colname);
+    public class frmPurchase : Form
+    {
+        private delegate void SetColumnIndex(string colname);
 
-		private long? id;
+        private long? id;
 
-		private frmItemlist objsv;
+        private frmItemlist objsv;
 
-		private AutoCompleteStringCollection acsItemCode;
+        private AutoCompleteStringCollection acsItemCode;
 
-		private AutoCompleteStringCollection acsItemName;
+        private AutoCompleteStringCollection acsItemName;
 
-		private AutoCompleteStringCollection acsCategoryName;
+        private AutoCompleteStringCollection acsCategoryName;
 
-		private IContainer components = null;
+        private IContainer components = null;
 
-		private TableLayoutPanel tablemain;
+        private TableLayoutPanel tablemain;
 
-		private Label lbltitle;
+        private Label lbltitle;
 
-		private TableLayoutPanel tableentry;
+        private TableLayoutPanel tableentry;
 
-		private Label lblopno;
+        private Label lblopno;
 
-		private Label lbldate;
+        private Label lbldate;
 
-		private DateTimePicker dtppurdate;
+        private DateTimePicker dtppurdate;
 
-		private TableLayoutPanel tablecmd;
+        private TableLayoutPanel tablecmd;
 
-		private lightbutton cmdsave;
+        private lightbutton cmdsave;
 
-		private lightbutton cmdrefresh;
+        private lightbutton cmdrefresh;
 
-		private lightbutton cmdclose;
+        private lightbutton cmdclose;
 
-		private TableLayoutPanel tablesum;
+        private TableLayoutPanel tablesum;
 
-		private Label lbltotqty;
+        private Label lbltotqty;
 
-		private decimalbox txttotqty;
+        private decimalbox txttotqty;
 
-		private Panel pnlentry;
+        private Panel pnlentry;
 
-		private Label lblfrom;
+        private Label lblfrom;
 
-		private ComboBox cbopurfrom;
+        private ComboBox cbopurfrom;
 
-		private decimalbox txttotamt;
+        private decimalbox txttotamt;
 
-		private Label lblnetamt;
+        private Label lblnetamt;
 
-		private Panel pnlview;
+        private Panel pnlview;
 
-		private TableLayoutPanel tableview;
+        private TableLayoutPanel tableview;
 
-		private mygrid dglist;
+        private mygrid dglist;
 
-		private lightbutton cmdview;
+        private lightbutton cmdview;
 
-		private Label lblsubtitle;
+        private Label lblsubtitle;
 
-		private DataGridViewTextBoxColumn miidDataGridViewTextBoxColumn;
+        private DataGridViewTextBoxColumn miidDataGridViewTextBoxColumn;
 
-		private DataGridViewTextBoxColumn mibillnoDataGridViewTextBoxColumn;
+        private DataGridViewTextBoxColumn mibillnoDataGridViewTextBoxColumn;
 
-		private DataGridViewTextBoxColumn mibilldateDataGridViewTextBoxColumn;
+        private DataGridViewTextBoxColumn mibilldateDataGridViewTextBoxColumn;
 
-		private DataGridViewTextBoxColumn amnameDataGridViewTextBoxColumn;
+        private DataGridViewTextBoxColumn amnameDataGridViewTextBoxColumn;
 
-		private DataGridViewTextBoxColumn mitotamtDataGridViewTextBoxColumn;
+        private DataGridViewTextBoxColumn mitotamtDataGridViewTextBoxColumn;
 
-		private DataGridViewTextBoxColumn minetamtDataGridViewTextBoxColumn;
+        private DataGridViewTextBoxColumn minetamtDataGridViewTextBoxColumn;
 
-		private DataGridViewTextBoxColumn minarrationDataGridViewTextBoxColumn;
+        private DataGridViewTextBoxColumn minarrationDataGridViewTextBoxColumn;
 
-		private TextBox txtpurno;
+        private TextBox txtpurno;
 
-		private BindingSource ledgermasterBindingSource;
+        private BindingSource ledgermasterBindingSource;
 
-		private Label lblAddress;
+        private Label lblAddress;
 
-		private Label label2;
+        private Label label2;
 
-		private ComboBox cboCity;
+        private ComboBox cboCity;
 
-		private BindingSource ledgermasterCityBindingSource;
+        private BindingSource ledgermasterCityBindingSource;
 
-		private BindingSource usppurchasemasterSelectResultBindingSource;
+        private BindingSource usppurchasemasterSelectResultBindingSource;
 
-		private DataGridViewTextBoxColumn comname1DataGridViewTextBoxColumn;
+        private DataGridViewTextBoxColumn comname1DataGridViewTextBoxColumn;
 
-		private BindingSource ledgermasteCityViewrBindingSource;
+        private BindingSource ledgermasteCityViewrBindingSource;
 
-		private BindingSource ledgermasterViewBindingSource;
+        private BindingSource ledgermasterViewBindingSource;
 
-		private mygrid dgvPurchase;
+        private mygrid dgvPurchase;
 
-		private DateTimePicker dtptdate;
+        private DateTimePicker dtptdate;
 
-		private lightbutton cmdexit;
+        private lightbutton cmdexit;
 
-		private Label lblhyp;
+        private Label lblhyp;
 
-		private DateTimePicker dtpfdate;
+        private DateTimePicker dtpfdate;
 
-		private Label lblfdate;
+        private Label lblfdate;
 
-		private Label label5;
+        private Label label5;
 
-		private ComboBox cboCityView;
+        private ComboBox cboCityView;
 
-		private Label label6;
+        private Label label6;
 
-		private lightbutton cmdList;
+        private lightbutton cmdList;
 
-		private TableLayoutPanel tableLayoutPanel1;
+        private TableLayoutPanel tableLayoutPanel1;
 
-		private Label lblBillNo;
+        private Label lblBillNo;
 
-		private TextBox txtSearchBillNo;
+        private TextBox txtSearchBillNo;
 
-		private ComboBox cboSupplierView;
+        private ComboBox cboSupplierView;
 
-		private DataGridViewImageColumn ldelete;
+        private DataGridViewImageColumn ldelete;
 
-		private DataGridViewImageColumn ledit;
+        private DataGridViewImageColumn ledit;
 
-		private DataGridViewImageColumn lprint;
+        private DataGridViewImageColumn lprint;
 
-		private DataGridViewTextBoxColumn pmnoDataGridViewTextBoxColumn;
+        private DataGridViewTextBoxColumn pmnoDataGridViewTextBoxColumn;
 
-		private DataGridViewTextBoxColumn pmdateDataGridViewTextBoxColumn;
+        private DataGridViewTextBoxColumn pmdateDataGridViewTextBoxColumn;
 
-		private DataGridViewTextBoxColumn lednameDataGridViewTextBoxColumn;
+        private DataGridViewTextBoxColumn lednameDataGridViewTextBoxColumn;
 
-		private DataGridViewTextBoxColumn pmtotqtyDataGridViewTextBoxColumn;
+        private DataGridViewTextBoxColumn pmtotqtyDataGridViewTextBoxColumn;
 
-		private DataGridViewTextBoxColumn pmtotamountDataGridViewTextBoxColumn;
+        private DataGridViewTextBoxColumn pmtotamountDataGridViewTextBoxColumn;
 
-		private DataGridViewTextBoxColumn ledidDataGridViewTextBoxColumn;
+        private DataGridViewTextBoxColumn ledidDataGridViewTextBoxColumn;
 
-		private DataGridViewTextBoxColumn comnameDataGridViewTextBoxColumn;
+        private DataGridViewTextBoxColumn comnameDataGridViewTextBoxColumn;
 
-		private DataGridViewTextBoxColumn usersuidDataGridViewTextBoxColumn;
+        private DataGridViewTextBoxColumn usersuidDataGridViewTextBoxColumn;
 
-		private DataGridViewTextBoxColumn usersnameDataGridViewTextBoxColumn;
+        private DataGridViewTextBoxColumn usersnameDataGridViewTextBoxColumn;
 
-		private DataGridViewTextBoxColumn pmudateDataGridViewTextBoxColumn;
+        private DataGridViewTextBoxColumn pmudateDataGridViewTextBoxColumn;
 
-		private DataGridViewTextBoxColumn pmdescDataGridViewTextBoxColumn;
+        private DataGridViewTextBoxColumn pmdescDataGridViewTextBoxColumn;
 
-		private DataGridViewTextBoxColumn comidDataGridViewTextBoxColumn;
+        private DataGridViewTextBoxColumn comidDataGridViewTextBoxColumn;
         private Label lblDiscountPer;
         private Label lblDiscountRate;
         private decimalbox txtDiscountPercentage;
@@ -177,6 +175,8 @@ namespace standard.trans
         private CheckBox chkIsFrieght;
         private Label label1;
         private TextBox txtBillNo;
+        private decimalbox txtWages;
+        private Label label3;
         private DataGridViewTextBoxColumn cSNo;
         private DataGridViewTextBoxColumn cCategory;
         private DataGridViewTextBoxColumn cItemName;
@@ -191,430 +191,436 @@ namespace standard.trans
         private DataGridViewTextBoxColumn cMrp;
         private DataGridViewTextBoxColumn pmidDataGridViewTextBoxColumn;
 
-		public frmPurchase()
-		{
-			InitializeComponent();
-		}
+        public frmPurchase()
+        {
+            InitializeComponent();
+        }
 
-		private void frmAmType_Load(object sender, EventArgs e)
-		{
-			try
-			{
-				id = 0L;
-				objsv = new frmItemlist();
-				objsv.dgview.KeyDown += dgSearch_KeyDown;
-				objsv.dgview.CellDoubleClick += dgSearch_CellDoubleClick;
-				LoadData();
-				AutoFill();
-				txtBillNo.Select();
-			}
-			catch (Exception ex)
-			{
-				frmException ex2 = new frmException(ex);
-				ex2.ShowDialog();
-			}
-		}
+        private void frmAmType_Load(object sender, EventArgs e)
+        {
+            try
+            {
+                id = 0L;
+                objsv = new frmItemlist();
+                objsv.dgview.KeyDown += dgSearch_KeyDown;
+                objsv.dgview.CellDoubleClick += dgSearch_CellDoubleClick;
+                LoadData();
+                AutoFill();
+                txtBillNo.Select();
+            }
+            catch (Exception ex)
+            {
+                frmException ex2 = new frmException(ex);
+                ex2.ShowDialog();
+            }
+        }
 
-		private void dgSearch_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
-		{
-			if (objsv.dgview.CurrentCell != null)
-			{
-				int rowIndex = Convert.ToInt32(objsv.dgview.CurrentCell.RowIndex);
-				int r = dgvPurchase.CurrentCell.RowIndex;
-				dgvPurchase["cItemId", r].Value = objsv.dgview["itemidDataGridViewTextBoxColumn", rowIndex].Value;
-				dgvPurchase["cItemName", r].Value = objsv.dgview["itemnameDataGridViewTextBoxColumn", rowIndex].Value;
-				global.itemname = objsv.dgview["itemnameDataGridViewTextBoxColumn", rowIndex].Value.ToString();
-				global.itemid = Convert.ToInt32(objsv.dgview["itemidDataGridViewTextBoxColumn", rowIndex].Value);
-				dgvPurchase["cItemName", r].Value = global.itemname;
-				dgvPurchase["cItemId", r].Value = global.itemid;
-				if (Convert.ToString(dgvPurchase["cItemName", r].Value) == string.Empty && !dgvPurchase.CurrentRow.IsNewRow)
-				{
-					dgvPurchase.Rows.RemoveAt(r);
-				}
-				InventoryDataContext inventoryDataContext = new InventoryDataContext();
-				using (inventoryDataContext)
-				{
-					var queryable = from li in inventoryDataContext.items
-						join cat in inventoryDataContext.categories on li.cat_id equals cat.cat_id
-						where li.item_id == Convert.ToInt32(dgvPurchase["cItemId", r].Value)
-						select new
-						{
-							cat,
-							li
-						};
-					foreach (var item in queryable)
-					{
-						dgvPurchase["cRate", r].Value = item.li.item_purchaserate;
-						dgvPurchase["cItemID", r].Value = item.li.item_id;
-						dgvPurchase["cCategory", r].Value = item.cat.cat_name;
-						dgvPurchase["cCatID", r].Value = item.cat.cat_id;
+        private void dgSearch_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (objsv.dgview.CurrentCell != null)
+            {
+                int rowIndex = Convert.ToInt32(objsv.dgview.CurrentCell.RowIndex);
+                int r = dgvPurchase.CurrentCell.RowIndex;
+                dgvPurchase["cItemId", r].Value = objsv.dgview["itemidDataGridViewTextBoxColumn", rowIndex].Value;
+                dgvPurchase["cItemName", r].Value = objsv.dgview["itemnameDataGridViewTextBoxColumn", rowIndex].Value;
+                global.itemname = objsv.dgview["itemnameDataGridViewTextBoxColumn", rowIndex].Value.ToString();
+                global.itemid = Convert.ToInt32(objsv.dgview["itemidDataGridViewTextBoxColumn", rowIndex].Value);
+                dgvPurchase["cItemName", r].Value = global.itemname;
+                dgvPurchase["cItemId", r].Value = global.itemid;
+                if (Convert.ToString(dgvPurchase["cItemName", r].Value) == string.Empty && !dgvPurchase.CurrentRow.IsNewRow)
+                {
+                    dgvPurchase.Rows.RemoveAt(r);
+                }
+                InventoryDataContext inventoryDataContext = new InventoryDataContext();
+                using (inventoryDataContext)
+                {
+                    var queryable = from li in inventoryDataContext.items
+                                    join cat in inventoryDataContext.categories on li.cat_id equals cat.cat_id
+                                    where li.item_id == Convert.ToInt32(dgvPurchase["cItemId", r].Value)
+                                    select new
+                                    {
+                                        cat,
+                                        li
+                                    };
+                    foreach (var item in queryable)
+                    {
+                        dgvPurchase["cRate", r].Value = item.li.item_purchaserate;
+                        dgvPurchase["cItemID", r].Value = item.li.item_id;
+                        dgvPurchase["cCategory", r].Value = item.cat.cat_name;
+                        dgvPurchase["cCatID", r].Value = item.cat.cat_id;
                         dgvPurchase["cItemUnitValue", r].Value = item.li.item_quantity;
                         dgvPurchase["cItemUnit", r].Value = item.li.item_unit;
                     }
-				}
-				dgvPurchase.Focus();
-				objsv.Close();
-			}
-		}
+                }
+                dgvPurchase.Focus();
+                objsv.Close();
+            }
+        }
 
-		private void dgSearch_KeyDown(object sender, KeyEventArgs e)
-		{
-			if (objsv.dgview.CurrentCell == null)
-			{
-				return;
-			}
+        private void dgSearch_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (objsv.dgview.CurrentCell == null)
+            {
+                return;
+            }
             if (e.KeyCode == Keys.Return)
-			{
-				int rowIndex = Convert.ToInt32(objsv.dgview.CurrentCell.RowIndex);
-				int r = dgvPurchase.CurrentCell.RowIndex;
-				dgvPurchase["cItemId", r].Value = objsv.dgview["itemidDataGridViewTextBoxColumn", rowIndex].Value;
-				dgvPurchase["cItemName", r].Value = objsv.dgview["itemnameDataGridViewTextBoxColumn", rowIndex].Value;
-				global.itemname = objsv.dgview["itemnameDataGridViewTextBoxColumn", rowIndex].Value.ToString();
-				global.itemid = Convert.ToInt32(objsv.dgview["itemidDataGridViewTextBoxColumn", rowIndex].Value);
-				dgvPurchase["cItemName", r].Value = global.itemname;
-				dgvPurchase["cItemId", r].Value = global.itemid;
-				if (Convert.ToString(dgvPurchase["cItemName", r].Value) == string.Empty && !dgvPurchase.CurrentRow.IsNewRow)
-				{
-					dgvPurchase.Rows.RemoveAt(r);
-				}
-				InventoryDataContext inventoryDataContext = new InventoryDataContext();
-				using (inventoryDataContext)
-				{
-					var queryable = from li in inventoryDataContext.items
-						join cat in inventoryDataContext.categories on li.cat_id equals cat.cat_id
-						where li.item_id == Convert.ToInt32(dgvPurchase["cItemId", r].Value)
-						select new
-						{
-							cat,
-							li
-						};
-					foreach (var item in queryable)
-					{
+            {
+                int rowIndex = Convert.ToInt32(objsv.dgview.CurrentCell.RowIndex);
+                int r = dgvPurchase.CurrentCell.RowIndex;
+                dgvPurchase["cItemId", r].Value = objsv.dgview["itemidDataGridViewTextBoxColumn", rowIndex].Value;
+                dgvPurchase["cItemName", r].Value = objsv.dgview["itemnameDataGridViewTextBoxColumn", rowIndex].Value;
+                global.itemname = objsv.dgview["itemnameDataGridViewTextBoxColumn", rowIndex].Value.ToString();
+                global.itemid = Convert.ToInt32(objsv.dgview["itemidDataGridViewTextBoxColumn", rowIndex].Value);
+                dgvPurchase["cItemName", r].Value = global.itemname;
+                dgvPurchase["cItemId", r].Value = global.itemid;
+                if (Convert.ToString(dgvPurchase["cItemName", r].Value) == string.Empty && !dgvPurchase.CurrentRow.IsNewRow)
+                {
+                    dgvPurchase.Rows.RemoveAt(r);
+                }
+                InventoryDataContext inventoryDataContext = new InventoryDataContext();
+                using (inventoryDataContext)
+                {
+                    var queryable = from li in inventoryDataContext.items
+                                    join cat in inventoryDataContext.categories on li.cat_id equals cat.cat_id
+                                    where li.item_id == Convert.ToInt32(dgvPurchase["cItemId", r].Value)
+                                    select new
+                                    {
+                                        cat,
+                                        li
+                                    };
+                    foreach (var item in queryable)
+                    {
                         dgvPurchase["cRate", r].Value = item.li.item_purchaserate;
-						dgvPurchase["cItemID", r].Value = item.li.item_id;
-						dgvPurchase["cCategory", r].Value = item.cat.cat_name;
-						dgvPurchase["cCatID", r].Value = item.cat.cat_id;
+                        dgvPurchase["cItemID", r].Value = item.li.item_id;
+                        dgvPurchase["cCategory", r].Value = item.cat.cat_name;
+                        dgvPurchase["cCatID", r].Value = item.cat.cat_id;
                         dgvPurchase["cItemUnitValue", r].Value = item.li.item_quantity;
-                        dgvPurchase["cItemUnit", r].Value = item.li.item_unit;                        
+                        dgvPurchase["cItemUnit", r].Value = item.li.item_unit;
                     }
                 }
-				dgvPurchase.CurrentCell = dgvPurchase.Rows[r].Cells["cQty"];
-				dgvPurchase.Focus();
-				objsv.Close();
-				dgvPurchase.CurrentCell = dgvPurchase["cQty", r];
-				dgvPurchase.Focus();
-			}
-			else if (e.KeyCode == Keys.Escape)
-			{
-				objsv.Close();
-			}
-		}
+                dgvPurchase.CurrentCell = dgvPurchase.Rows[r].Cells["cQty"];
+                dgvPurchase.Focus();
+                objsv.Close();
+                dgvPurchase.CurrentCell = dgvPurchase["cQty", r];
+                dgvPurchase.Focus();
+            }
+            else if (e.KeyCode == Keys.Escape)
+            {
+                objsv.Close();
+            }
+        }
 
-		private void loadgrid(long catid)
-		{
-			InventoryDataContext inventoryDataContext = new InventoryDataContext();
-			objsv.dgview.DataSource = inventoryDataContext.usp_GetItemList(null, catid);
-		}
+        private void loadgrid(long catid)
+        {
+            InventoryDataContext inventoryDataContext = new InventoryDataContext();
+            objsv.dgview.DataSource = inventoryDataContext.usp_GetItemList(null, catid);
+        }
 
-		private void LoadData()
-		{
-			dtppurdate.MinDate = global.fdate;
-			dtppurdate.MaxDate = global.sysdate;
-			dtppurdate.Value = global.sysdate;
-			dtpfdate.MinDate = global.fdate;
-			dtpfdate.MaxDate = global.sysdate;
-			dtptdate.MinDate = global.fdate;
-			dtptdate.MaxDate = global.sysdate;
-			TimeSpan value = new TimeSpan(30, 0, 0, 0, 0);
-			dtpfdate.Value = dtpfdate.Value.Subtract(value);
-			InventoryDataContext inventoryDataContext = new InventoryDataContext();
-			using (inventoryDataContext)
-			{
-				var source = from a in inventoryDataContext.ledgermasters
-					where a.led_accounttype == "SUPPLIER" || a.led_id == 0
-					select new
-					{
-						a.led_id,
-						a.led_name,
-						a.led_address2
-					} into x
-					orderby x.led_id
-					select x;
-                ledgermasterBindingSource.DataSource = source.OrderBy(x => x.led_name);
-                //ledgermasteCityViewrBindingSource.DataSource = source.Select(x => x.led_address2).Distinct();
-				usppurchasemasterSelectResultBindingSource.DataSource = inventoryDataContext.usp_purchasemasterSelect(null, null, null, null, null, null);
-				List<usp_itemSelectResult> list = inventoryDataContext.usp_itemSelect(null, null, null,null).ToList();
-				AutoCompleteStringCollection autoCompleteStringCollection = new AutoCompleteStringCollection();
-				foreach (usp_itemSelectResult item in list)
-				{
-					autoCompleteStringCollection.Add(item.item_name);
-				}
-				long? no = 0L;
-				inventoryDataContext.usp_getYearNo("pur_no", global.sysdate, ref no,null);
-				txtpurno.Text = Convert.ToString(no);
-			}
-		}
+        private void LoadData()
+        {
+            dtppurdate.MinDate = global.fdate;
+            dtppurdate.MaxDate = global.sysdate;
+            dtppurdate.Value = global.sysdate;
+            dtpfdate.MinDate = global.fdate;
+            dtpfdate.MaxDate = global.sysdate;
+            dtptdate.MinDate = global.fdate;
+            dtptdate.MaxDate = global.sysdate;
+            TimeSpan value = new TimeSpan(30, 0, 0, 0, 0);
+            dtpfdate.Value = dtpfdate.Value.Subtract(value);
+            InventoryDataContext inventoryDataContext = new InventoryDataContext();
+            using (inventoryDataContext)
+            {
+                var source = from a in inventoryDataContext.ledgermasters
+                             where a.led_accounttype == "SUPPLIER" || a.led_id == 0
+                             select new
+                             {
+                                 a.led_id,
+                                 a.led_name,
+                                 a.led_address2
+                             } into x
+                             orderby x.led_id
+                             select x;
+                ledgermasterBindingSource.DataSource = source.OrderBy(x => x.led_address2);
+                ledgermasterViewBindingSource.DataSource = source.OrderBy(x => x.led_address2);
+                ledgermasteCityViewrBindingSource.DataSource = source.Select(x => x.led_address2).Distinct();
+                usppurchasemasterSelectResultBindingSource.DataSource = inventoryDataContext.usp_purchasemasterSelect(null, null, null, null, null, null);
+                List<usp_itemSelectResult> list = inventoryDataContext.usp_itemSelect(null, null, null, null).ToList();
+                AutoCompleteStringCollection autoCompleteStringCollection = new AutoCompleteStringCollection();
+                foreach (usp_itemSelectResult item in list)
+                {
+                    autoCompleteStringCollection.Add(item.item_name);
+                }
+                long? no = 0L;
+                inventoryDataContext.usp_getYearNo("pur_no", global.sysdate, ref no, null);
+                txtpurno.Text = Convert.ToString(no);
+            }
+        }
 
-		private void AutoFill()
-		{
-			acsItemCode = new AutoCompleteStringCollection();
-			acsItemName = new AutoCompleteStringCollection();
-			acsCategoryName = new AutoCompleteStringCollection();
-			InventoryDataContext inventoryDataContext = new InventoryDataContext();
-			using (inventoryDataContext)
-			{
-				IQueryable<category> queryable = inventoryDataContext.categories.Select((category li) => li);
-				foreach (category item in queryable)
-				{
-					acsCategoryName.Add(item.cat_name);
-				}
-				IQueryable<item> queryable2 = inventoryDataContext.items.Select((item li) => li);
-				foreach (item item2 in queryable2)
-				{
-					acsItemCode.Add(item2.item_code);
-					acsItemName.Add(item2.item_name);
-				}
-			}
-		}
+        private void AutoFill()
+        {
+            acsItemCode = new AutoCompleteStringCollection();
+            acsItemName = new AutoCompleteStringCollection();
+            acsCategoryName = new AutoCompleteStringCollection();
+            InventoryDataContext inventoryDataContext = new InventoryDataContext();
+            using (inventoryDataContext)
+            {
+                IQueryable<category> queryable = inventoryDataContext.categories.Select((category li) => li);
+                foreach (category item in queryable)
+                {
+                    acsCategoryName.Add(item.cat_name);
+                }
+                IQueryable<item> queryable2 = inventoryDataContext.items.Select((item li) => li);
+                foreach (item item2 in queryable2)
+                {
+                    acsItemCode.Add(item2.item_code);
+                    acsItemName.Add(item2.item_name);
+                }
+            }
+        }
 
-		private void ClearData()
-		{
-			cbopurfrom.SelectedIndex = -1;
-			cbopurfrom.Text = string.Empty;
-			dgvPurchase.Rows.Clear();
-			txttotqty.Value = 0m;
-			txttotamt.Value = 0m;
+        private void ClearData()
+        {
+            cbopurfrom.SelectedIndex = 0;
+            //cbopurfrom.Text = string.Empty;
+            lblAddress.Text = string.Empty;
+            dgvPurchase.Rows.Clear();
+            txttotqty.Value = 0m;
+            txttotamt.Value = 0m;
             txtBillNo.Text = string.Empty;
             txtDiscountRate.Value = 0m;
             txtDiscountPercentage.Value = 0m;
-			id = 0L;
-		}
+            txtWages.Value = 0m;
+            txtFrieght.Value = 0m;
+            id = 0L;
+        }
 
-		private void cmdsave_Click(object sender, EventArgs e)
-		{
-			item item = null;
-			DbTransaction dbTransaction = null;
-			try
-			{
-				InventoryDataContext inventoryDataContext = new InventoryDataContext();
-				purchasemaster purchasemaster = new purchasemaster();
-				purchasedetail purchasedetail = new purchasedetail();
-				purchasemaster.led_id = Convert.ToInt32(cbopurfrom.SelectedValue);
-				if (purchasemaster.led_id == 0)
-				{
-					MessageBox.Show("Invalid 'Supplier'", "Information", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
-					cbopurfrom.Focus();
-				}
-				else
-				{
-					List<item> source = inventoryDataContext.items.Select((item itemRow) => itemRow).ToList();
-					foreach (DataGridViewRow dr in (IEnumerable)dgvPurchase.Rows)
-					{
-						if (!dr.IsNewRow)
-						{
+        private void cmdsave_Click(object sender, EventArgs e)
+        {
+            item item = null;
+            DbTransaction dbTransaction = null;
+            try
+            {
+                InventoryDataContext inventoryDataContext = new InventoryDataContext();
+                purchasemaster purchasemaster = new purchasemaster();
+                purchasedetail purchasedetail = new purchasedetail();
+                purchasemaster.led_id = Convert.ToInt32(cbopurfrom.SelectedValue);
+                if (purchasemaster.led_id == 0)
+                {
+                    MessageBox.Show("Invalid 'Supplier'", "Information", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+                    cbopurfrom.Focus();
+                }
+                else
+                {
+                    List<item> source = inventoryDataContext.items.Select((item itemRow) => itemRow).ToList();
+                    foreach (DataGridViewRow dr in (IEnumerable)dgvPurchase.Rows)
+                    {
+                        if (!dr.IsNewRow)
+                        {
                             item = source.FirstOrDefault(match => match.item_id == Convert.ToInt32(dr.Cells["cItemID"].Value));
                             dr.Cells["cItemId"].Value = (item?.item_id ?? 0);
-							if (Convert.ToInt32(dr.Cells["cItemId"].Value) == 0 || Convert.ToDecimal(dr.Cells["cAmount"].Value) == 0m || Convert.ToDecimal(dr.Cells["cQty"].Value) == 0m)
-							{
-								MessageBox.Show("Invalid data to save", "Information", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
-								dgvPurchase.Focus();
-								return;
-							}
-						}
-					}
-					if (dgvPurchase.RowCount <= 1)
-					{
-						MessageBox.Show("Invalid data to save", "Information", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
-						dgvPurchase.Focus();
-					}
-					else
-					{
-						if (id != 0)
-						{
-						}
-						if (MessageBox.Show("Are you sure to save?", "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.No)
-						{
-							purchasemaster.pm_totamount = txttotamt.Value;
-							purchasemaster.pm_totqty = txttotqty.Value;
+                            if (Convert.ToInt32(dr.Cells["cItemId"].Value) == 0 || Convert.ToDecimal(dr.Cells["cAmount"].Value) == 0m || Convert.ToDecimal(dr.Cells["cQty"].Value) == 0m)
+                            {
+                                MessageBox.Show("Invalid data to save", "Information", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+                                dgvPurchase.Focus();
+                                return;
+                            }
+                        }
+                    }
+                    if (dgvPurchase.RowCount <= 1)
+                    {
+                        MessageBox.Show("Invalid data to save", "Information", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+                        dgvPurchase.Focus();
+                    }
+                    else
+                    {
+                        if (id != 0)
+                        {
+                        }
+                        if (MessageBox.Show("Are you sure to save?", "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.No)
+                        {
+                            purchasemaster.pm_totamount = txttotamt.Value;
+                            purchasemaster.pm_totqty = txttotqty.Value;
                             purchasemaster.pm_billno = txtBillNo.Text;
+                            purchasemaster.pm_wages = txtWages.Value;
+                            purchasemaster.pm_frieght = txtFrieght.Value;
                             purchasemaster.pm_discountpercentage = txtDiscountPercentage.Value;
                             purchasemaster.pm_discountamount = txtDiscountRate.Value;
-							purchasemaster.pm_date = dtppurdate.Value;
-							purchasemaster.pm_desc = "";
-							purchasemaster.pm_id = 1L;
+                            purchasemaster.pm_date = dtppurdate.Value;
+                            purchasemaster.pm_desc = "";
+                            purchasemaster.pm_id = 1L;
                             purchasemaster.pm_paid = 0;
-							if (id == 0)
-							{
-								long? no = 0L;
-								inventoryDataContext.usp_setYearNo("pur_no", global.sysdate, ref no,null);
-								purchasemaster.pm_no = Convert.ToInt64(no);
-								inventoryDataContext.usp_purchasemasterInsert(ref id, purchasemaster.pm_no, purchasemaster.pm_date, purchasemaster.led_id, purchasemaster.pm_totqty, purchasemaster.pm_totamount, purchasemaster.pm_discountpercentage, purchasemaster.pm_discountamount, purchasemaster.pm_billno, global.comid, global.ucode, global.sysdate, purchasemaster.pm_desc, false, purchasemaster.pm_paid);
-								foreach (DataGridViewRow item2 in (IEnumerable)dgvPurchase.Rows)
-								{
-									if (!item2.IsNewRow)
-									{
-										purchasedetail.pd_qty = Convert.ToDecimal(item2.Cells["cQty"].Value);
-										purchasedetail.pd_prate = Convert.ToDecimal(item2.Cells["cRate"].Value);
-										purchasedetail.cat_id = Convert.ToInt32(item2.Cells["cCatID"].Value);
-										purchasedetail.item_id = Convert.ToInt32(item2.Cells["cItemId"].Value);
-										purchasedetail.pd_amount = purchasedetail.pd_prate * purchasedetail.pd_qty;
-										purchasedetail.item_id = Convert.ToInt32(item2.Cells["cItemId"].Value);
-										purchasedetail.pd_particulars = item2.Cells["cItemName"].Value.ToString();
+                            if (id == 0)
+                            {
+                                long? no = 0L;
+                                inventoryDataContext.usp_setYearNo("pur_no", global.sysdate, ref no, null);
+                                purchasemaster.pm_no = Convert.ToInt64(no);
+                                inventoryDataContext.usp_purchasemasterInsert(ref id, purchasemaster.pm_no, purchasemaster.pm_date, purchasemaster.led_id, purchasemaster.pm_totqty, purchasemaster.pm_totamount, purchasemaster.pm_discountpercentage, purchasemaster.pm_discountamount, purchasemaster.pm_wages, purchasemaster.pm_frieght, purchasemaster.pm_billno, global.comid, global.ucode, global.sysdate, purchasemaster.pm_desc, false, purchasemaster.pm_paid);
+                                foreach (DataGridViewRow item2 in (IEnumerable)dgvPurchase.Rows)
+                                {
+                                    if (!item2.IsNewRow)
+                                    {
+                                        purchasedetail.pd_qty = Convert.ToDecimal(item2.Cells["cQty"].Value);
+                                        purchasedetail.pd_prate = Convert.ToDecimal(item2.Cells["cRate"].Value);
+                                        purchasedetail.cat_id = Convert.ToInt32(item2.Cells["cCatID"].Value);
+                                        purchasedetail.item_id = Convert.ToInt32(item2.Cells["cItemId"].Value);
+                                        purchasedetail.pd_amount = purchasedetail.pd_prate * purchasedetail.pd_qty;
+                                        purchasedetail.item_id = Convert.ToInt32(item2.Cells["cItemId"].Value);
+                                        purchasedetail.pd_particulars = item2.Cells["cItemName"].Value.ToString();
                                         purchasedetail.pd_totfrieght = Convert.ToDecimal(item2.Cells["cFrieghtCharge"].Value);
                                         inventoryDataContext.usp_purchasedetailsInsert(Convert.ToInt32(id), purchasedetail.item_id, purchasedetail.cat_id, purchasedetail.pd_particulars, purchasedetail.pd_qty, purchasedetail.pd_prate, purchasedetail.pd_amount, purchasedetail.pd_totfrieght);
-										inventoryDataContext.usp_stockInsert(id, "PURCHASE", purchasedetail.item_id, global.comid, purchasedetail.pd_qty, 0m, global.sysdate);
-									}
-								}
-							}
-							else
-							{
-								purchasemaster.pm_no = Convert.ToInt64(txtpurno.Text);
-								inventoryDataContext.usp_purchasemasterUpdate(Convert.ToInt64(id), purchasemaster.pm_no, purchasemaster.pm_date, purchasemaster.led_id, purchasemaster.pm_totqty, purchasemaster.pm_totamount, purchasemaster.pm_discountpercentage, purchasemaster.pm_discountamount, purchasemaster.pm_billno, global.comid, global.ucode, global.sysdate, purchasemaster.pm_desc, false, purchasemaster.pm_paid);
-								inventoryDataContext.usp_purchasedetailsDelete(Convert.ToInt32(id));
-								inventoryDataContext.usp_stockDelete(Convert.ToInt32(id), "PURCHASE");
-								foreach (DataGridViewRow item3 in (IEnumerable)dgvPurchase.Rows)
-								{
-									if (!item3.IsNewRow)
-									{
-										purchasedetail.pd_qty = Convert.ToDecimal(item3.Cells["cQty"].Value);
-										purchasedetail.pd_prate = Convert.ToDecimal(item3.Cells["cRate"].Value);
-										purchasedetail.cat_id = Convert.ToInt32(item3.Cells["cCatID"].Value);
-										purchasedetail.pd_particulars = item3.Cells["cItemName"].Value.ToString();
-										purchasedetail.item_id = Convert.ToInt32(item3.Cells["cItemId"].Value);
-										purchasedetail.pd_amount = purchasedetail.pd_prate * purchasedetail.pd_qty;
-										purchasedetail.item_id = Convert.ToInt32(item3.Cells["cItemId"].Value);
+                                        inventoryDataContext.usp_stockInsert(id, "PURCHASE", purchasedetail.item_id, global.comid, purchasedetail.pd_qty, 0m, global.sysdate);
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                purchasemaster.pm_no = Convert.ToInt64(txtpurno.Text);
+                                inventoryDataContext.usp_purchasemasterUpdate(Convert.ToInt64(id), purchasemaster.pm_no, purchasemaster.pm_date, purchasemaster.led_id, purchasemaster.pm_totqty, purchasemaster.pm_totamount, purchasemaster.pm_discountpercentage, purchasemaster.pm_discountamount, purchasemaster.pm_wages, purchasemaster.pm_frieght, purchasemaster.pm_billno, global.comid, global.ucode, global.sysdate, purchasemaster.pm_desc, false, purchasemaster.pm_paid);
+                                inventoryDataContext.usp_purchasedetailsDelete(Convert.ToInt32(id));
+                                inventoryDataContext.usp_stockDelete(Convert.ToInt32(id), "PURCHASE");
+                                foreach (DataGridViewRow item3 in (IEnumerable)dgvPurchase.Rows)
+                                {
+                                    if (!item3.IsNewRow)
+                                    {
+                                        purchasedetail.pd_qty = Convert.ToDecimal(item3.Cells["cQty"].Value);
+                                        purchasedetail.pd_prate = Convert.ToDecimal(item3.Cells["cRate"].Value);
+                                        purchasedetail.cat_id = Convert.ToInt32(item3.Cells["cCatID"].Value);
+                                        purchasedetail.pd_particulars = item3.Cells["cItemName"].Value.ToString();
+                                        purchasedetail.item_id = Convert.ToInt32(item3.Cells["cItemId"].Value);
+                                        purchasedetail.pd_amount = purchasedetail.pd_prate * purchasedetail.pd_qty;
+                                        purchasedetail.item_id = Convert.ToInt32(item3.Cells["cItemId"].Value);
                                         purchasedetail.pd_totfrieght = Convert.ToDecimal(item3.Cells["cFrieghtCharge"].Value);
                                         purchasedetail.pd_particulars = "";
-										inventoryDataContext.usp_purchasedetailsInsert(Convert.ToInt32(id), purchasedetail.item_id, purchasedetail.cat_id, purchasedetail.pd_particulars, purchasedetail.pd_qty, purchasedetail.pd_prate, purchasedetail.pd_amount, purchasedetail.pd_totfrieght);
-										inventoryDataContext.usp_stockInsert(id, "PURCHASE", purchasedetail.item_id, global.comid, purchasedetail.pd_qty, 0m, global.sysdate);
-									}
-								}
-							}
-							//loadReport(Convert.ToInt32(id));
-							ClearData();
-							LoadData();
-							dtppurdate.Focus();
-						}
-					}
-				}
-			}
-			catch (Exception ex)
-			{
-				dbTransaction?.Rollback();
-				ClearData();
-				frmException ex2 = new frmException(ex);
-				ex2.ShowDialog();
-			}
-		}
+                                        inventoryDataContext.usp_purchasedetailsInsert(Convert.ToInt32(id), purchasedetail.item_id, purchasedetail.cat_id, purchasedetail.pd_particulars, purchasedetail.pd_qty, purchasedetail.pd_prate, purchasedetail.pd_amount, purchasedetail.pd_totfrieght);
+                                        inventoryDataContext.usp_stockInsert(id, "PURCHASE", purchasedetail.item_id, global.comid, purchasedetail.pd_qty, 0m, global.sysdate);
+                                    }
+                                }
+                            }
+                            //loadReport(Convert.ToInt32(id));
+                            ClearData();
+                            LoadData();
+                            dtppurdate.Focus();
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                dbTransaction?.Rollback();
+                ClearData();
+                frmException ex2 = new frmException(ex);
+                ex2.ShowDialog();
+            }
+        }
 
-		private void loadReport(int smid)
-		{
-			decimal amount = 0m;
-			decimal num = 0m;
-			decimal num2 = 0m;
-			decimal num3 = 0m;
-			decimal num4 = 0m;
-			string empty = string.Empty;
-			long num5 = 0L;
-			string empty2 = string.Empty;
-			string empty3 = string.Empty;
-			string empty4 = string.Empty;
-			string value = string.Empty;
-			string empty5 = string.Empty;
-			DateTime? dateTime = null;
-			if (dglist.CurrentCell != null)
-			{
-				List<ReportParameter> list = new List<ReportParameter>();
-				if (MessageBox.Show("Are you sure to Print Bill?", "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.No)
-				{
-					InventoryDataContext inventoryDataContext = new InventoryDataContext();
-					ISingleResult<usp_purchasemasterSelectResult> singleResult = inventoryDataContext.usp_purchasemasterSelect(smid, null, null, null, null, null);
-					foreach (usp_purchasemasterSelectResult item in singleResult)
-					{
-						int? num6 = 1;
-						dateTime = item.pm_date;
-						num5 = item.pm_no;
-						amount = item.pm_totamount;
-						num = 0m;
-						num4 = 0m;
-						num2 = item.pm_totamount;
-						value = general.MoneyToText(amount);
-					}
-					ISingleResult<usp_companySelectResult> singleResult2 = inventoryDataContext.usp_companySelect(1L);
-					using (IEnumerator<usp_companySelectResult> enumerator2 = singleResult2.GetEnumerator())
-					{
-						if (enumerator2.MoveNext())
-						{
-							usp_companySelectResult current2 = enumerator2.Current;
-							list.Add(new ReportParameter("com_name", current2.com_name));
-							list.Add(new ReportParameter("com_add1", current2.com_add1));
-							list.Add(new ReportParameter("com_add2", current2.com_add2));
-							list.Add(new ReportParameter("com_add3", current2.com_add3));
-							list.Add(new ReportParameter("com_city", current2.com_city));
-							list.Add(new ReportParameter("com_pin", current2.com_pin));
-							list.Add(new ReportParameter("com_phone", current2.com_phone));
-							list.Add(new ReportParameter("com_mobile1", current2.com_mobile1));
-							list.Add(new ReportParameter("com_tin", current2.com_tin));
-							list.Add(new ReportParameter("com_cst", current2.com_cst));
-							list.Add(new ReportParameter("com_email", current2.com_email));
-							list.Add(new ReportParameter("com_pan", current2.com_pan));
-							list.Add(new ReportParameter("com_cstdate", Convert.ToDateTime(current2.com_cstdate).ToString("dd-MMM-yyyy")));
-						}
-					}
-					list.Add(new ReportParameter("ordno", num5.ToString()));
-					list.Add(new ReportParameter("orddate", $"{dateTime:dd-MMM-yyyy}"));
-					list.Add(new ReportParameter("rstext", value));
-					list.Add(new ReportParameter("am_acccode", empty2));
-					list.Add(new ReportParameter("am_account", empty3));
-					list.Add(new ReportParameter("am_bank", empty4));
-					list.Add(new ReportParameter("title", empty5));
-					list.Add(new ReportParameter("mi_totamt", num2.ToString("0.00")));
-					list.Add(new ReportParameter("mi_discount", num4.ToString("0.00")));
-					list.Add(new ReportParameter("mi_discount", num4.ToString("0.00")));
-					list.Add(new ReportParameter("mi_packing", num.ToString("0.00")));
-					list.Add(new ReportParameter("mi_netamt", amount.ToString("0.00")));
-					frmRpt frmRpt = new frmRpt();
-					frmRpt.WindowState = FormWindowState.Maximized;
-					ISingleResult<usp_purchasemasterSelectResult> dataSourceValue = inventoryDataContext.usp_purchasemasterSelect(smid, null, null, null, null, null);
-					ISingleResult<usp_purchasedetailsSelectResult> dataSourceValue2 = inventoryDataContext.usp_purchasedetailsSelect(smid, null, null, null, null, null);
-					frmRpt.reportview.RefreshReport();
-					frmRpt.reportview.LocalReport.ReportEmbeddedResource = "standard.report.purinv.rdlc";
-					frmRpt.reportview.LocalReport.DataSources.Clear();
-					frmRpt.reportview.LocalReport.DataSources.Add(new ReportDataSource("usp_minvoiceSelect", dataSourceValue));
-					frmRpt.reportview.LocalReport.DataSources.Add(new ReportDataSource("ds_usp_dinvoiceSelect", dataSourceValue2));
-					frmRpt.reportview.LocalReport.SetParameters(list);
-					frmRpt.reportview.RefreshReport();
-					frmRpt.reportview.LocalReport.Refresh();
-					frmRpt.ShowDialog();
-				}
-			}
-		}
+        private void loadReport(int smid)
+        {
+            decimal amount = 0m;
+            decimal num = 0m;
+            decimal num2 = 0m;
+            decimal num3 = 0m;
+            decimal num4 = 0m;
+            string empty = string.Empty;
+            long num5 = 0L;
+            string empty2 = string.Empty;
+            string empty3 = string.Empty;
+            string empty4 = string.Empty;
+            string value = string.Empty;
+            string empty5 = string.Empty;
+            DateTime? dateTime = null;
+            if (dglist.CurrentCell != null)
+            {
+                List<ReportParameter> list = new List<ReportParameter>();
+                if (MessageBox.Show("Are you sure to Print Bill?", "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.No)
+                {
+                    InventoryDataContext inventoryDataContext = new InventoryDataContext();
+                    ISingleResult<usp_purchasemasterSelectResult> singleResult = inventoryDataContext.usp_purchasemasterSelect(smid, null, null, null, null, null);
+                    foreach (usp_purchasemasterSelectResult item in singleResult)
+                    {
+                        int? num6 = 1;
+                        dateTime = item.pm_date;
+                        num5 = item.pm_no;
+                        amount = item.pm_totamount;
+                        num = 0m;
+                        num4 = 0m;
+                        num2 = item.pm_totamount;
+                        value = general.MoneyToText(amount);
+                    }
+                    ISingleResult<usp_companySelectResult> singleResult2 = inventoryDataContext.usp_companySelect(1L);
+                    using (IEnumerator<usp_companySelectResult> enumerator2 = singleResult2.GetEnumerator())
+                    {
+                        if (enumerator2.MoveNext())
+                        {
+                            usp_companySelectResult current2 = enumerator2.Current;
+                            list.Add(new ReportParameter("com_name", current2.com_name));
+                            list.Add(new ReportParameter("com_add1", current2.com_add1));
+                            list.Add(new ReportParameter("com_add2", current2.com_add2));
+                            list.Add(new ReportParameter("com_add3", current2.com_add3));
+                            list.Add(new ReportParameter("com_city", current2.com_city));
+                            list.Add(new ReportParameter("com_pin", current2.com_pin));
+                            list.Add(new ReportParameter("com_phone", current2.com_phone));
+                            list.Add(new ReportParameter("com_mobile1", current2.com_mobile1));
+                            list.Add(new ReportParameter("com_tin", current2.com_tin));
+                            list.Add(new ReportParameter("com_cst", current2.com_cst));
+                            list.Add(new ReportParameter("com_email", current2.com_email));
+                            list.Add(new ReportParameter("com_pan", current2.com_pan));
+                            list.Add(new ReportParameter("com_cstdate", Convert.ToDateTime(current2.com_cstdate).ToString("dd-MMM-yyyy")));
+                        }
+                    }
+                    list.Add(new ReportParameter("ordno", num5.ToString()));
+                    list.Add(new ReportParameter("orddate", $"{dateTime:dd-MMM-yyyy}"));
+                    list.Add(new ReportParameter("rstext", value));
+                    list.Add(new ReportParameter("am_acccode", empty2));
+                    list.Add(new ReportParameter("am_account", empty3));
+                    list.Add(new ReportParameter("am_bank", empty4));
+                    list.Add(new ReportParameter("title", empty5));
+                    list.Add(new ReportParameter("mi_totamt", num2.ToString("0.00")));
+                    list.Add(new ReportParameter("mi_discount", num4.ToString("0.00")));
+                    list.Add(new ReportParameter("mi_discount", num4.ToString("0.00")));
+                    list.Add(new ReportParameter("mi_packing", num.ToString("0.00")));
+                    list.Add(new ReportParameter("mi_netamt", amount.ToString("0.00")));
+                    frmRpt frmRpt = new frmRpt();
+                    frmRpt.WindowState = FormWindowState.Maximized;
+                    ISingleResult<usp_purchasemasterSelectResult> dataSourceValue = inventoryDataContext.usp_purchasemasterSelect(smid, null, null, null, null, null);
+                    ISingleResult<usp_purchasedetailsSelectResult> dataSourceValue2 = inventoryDataContext.usp_purchasedetailsSelect(smid, null, null, null, null, null);
+                    frmRpt.reportview.RefreshReport();
+                    frmRpt.reportview.LocalReport.ReportEmbeddedResource = "standard.report.purinv.rdlc";
+                    frmRpt.reportview.LocalReport.DataSources.Clear();
+                    frmRpt.reportview.LocalReport.DataSources.Add(new ReportDataSource("usp_minvoiceSelect", dataSourceValue));
+                    frmRpt.reportview.LocalReport.DataSources.Add(new ReportDataSource("ds_usp_dinvoiceSelect", dataSourceValue2));
+                    frmRpt.reportview.LocalReport.SetParameters(list);
+                    frmRpt.reportview.RefreshReport();
+                    frmRpt.reportview.LocalReport.Refresh();
+                    frmRpt.ShowDialog();
+                }
+            }
+        }
 
-		private void cmdrefresh_Click(object sender, EventArgs e)
-		{
-			ClearData();
-			LoadData();
-			dtppurdate.Focus();
-		}
+        private void cmdrefresh_Click(object sender, EventArgs e)
+        {
+            ClearData();
+            LoadData();
+            dtppurdate.Focus();
+        }
 
-		private void cmdclose_Click(object sender, EventArgs e)
-		{
-			Close();
-		}
+        private void cmdclose_Click(object sender, EventArgs e)
+        {
+            Close();
+        }
 
-		private void Mymethod(string colname)
-		{
-			dgvPurchase.CurrentCell = dgvPurchase[colname, dgvPurchase.RowCount - 1];
-			dgvPurchase.BeginEdit(selectAll: true);
-			dgvPurchase.Focus();
-		}
+        private void Mymethod(string colname)
+        {
+            dgvPurchase.CurrentCell = dgvPurchase[colname, dgvPurchase.RowCount - 1];
+            dgvPurchase.BeginEdit(selectAll: true);
+            dgvPurchase.Focus();
+        }
 
-		private void dgopen_CellEndEdit(object sender, DataGridViewCellEventArgs e)
-		{
-			if (dgvPurchase.CurrentCell == null)
-			{
-				return;
-			}
+        private void dgopen_CellEndEdit(object sender, DataGridViewCellEventArgs e)
+        {
+            if (dgvPurchase.CurrentCell == null)
+            {
+                return;
+            }
             if (cbopurfrom == null || Convert.ToInt32(cbopurfrom.SelectedValue) == 0)
             {
                 MessageBox.Show("Invalid 'Customer'", "Information", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
@@ -622,38 +628,38 @@ namespace standard.trans
                 return;
             }
             int r = dgvPurchase.CurrentCell.RowIndex;
-			int columnIndex = dgvPurchase.CurrentCell.ColumnIndex;
-			decimal result;
-			decimal result2;
+            int columnIndex = dgvPurchase.CurrentCell.ColumnIndex;
+            decimal result;
+            decimal result2;
             decimal qty;
             decimal unitValue;
             if (columnIndex == cCategory.Index)
-			{
-				try
-				{
-					if (dgvPurchase["cCategory", r].Value != null)
-					{
-						if (Convert.ToString(dgvPurchase["cCategory", r].Value) == string.Empty && !dgvPurchase.CurrentRow.IsNewRow)
-						{
-							dgvPurchase.Rows.RemoveAt(r);
-						}
-						InventoryDataContext inventoryDataContext = new InventoryDataContext();
-						long num = (from li in inventoryDataContext.categories
-							where li.cat_name == dgvPurchase["cCategory", r].Value.ToString().Trim()
-							select li.cat_id).SingleOrDefault();
-						if (num <= 0)
-						{
-							MessageBox.Show("Invalid 'Category'", "Information", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
-						}
-						else
-						{
-							loadgrid(num);
-							objsv.ShowDialog();
-							string itemname = global.itemname;
-							long itemid = global.itemid;
-							InventoryDataContext inventoryDataContext2 = new InventoryDataContext();
-							using (inventoryDataContext2)
-							{
+            {
+                try
+                {
+                    if (dgvPurchase["cCategory", r].Value != null)
+                    {
+                        if (Convert.ToString(dgvPurchase["cCategory", r].Value) == string.Empty && !dgvPurchase.CurrentRow.IsNewRow)
+                        {
+                            dgvPurchase.Rows.RemoveAt(r);
+                        }
+                        InventoryDataContext inventoryDataContext = new InventoryDataContext();
+                        long num = (from li in inventoryDataContext.categories
+                                    where li.cat_name == dgvPurchase["cCategory", r].Value.ToString().Trim()
+                                    select li.cat_id).SingleOrDefault();
+                        if (num <= 0)
+                        {
+                            MessageBox.Show("Invalid 'Category'", "Information", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+                        }
+                        else
+                        {
+                            loadgrid(num);
+                            objsv.ShowDialog();
+                            string itemname = global.itemname;
+                            long itemid = global.itemid;
+                            InventoryDataContext inventoryDataContext2 = new InventoryDataContext();
+                            using (inventoryDataContext2)
+                            {
                                 var selectedItem = inventoryDataContext2.items.FirstOrDefault(i => i.item_id == itemid);
 
                                 if (selectedItem.item_purchaserate <= 0)
@@ -662,47 +668,48 @@ namespace standard.trans
                                     return;
                                 }
                                 IQueryable<item> queryable = from li in inventoryDataContext2.items
-									join cat in inventoryDataContext2.categories on li.cat_id equals cat.cat_id
-									where cat.cat_name == Convert.ToString(dgvPurchase["cCategory", r].Value)
-									select li;
-								foreach (item item in queryable)
-								{
-									acsItemCode.Add(item.item_code);
-									acsItemName.Add(item.item_name);
+                                                             join cat in inventoryDataContext2.categories on li.cat_id equals cat.cat_id
+                                                             where cat.cat_name == Convert.ToString(dgvPurchase["cCategory", r].Value)
+                                                             select li;
+                                foreach (item item in queryable)
+                                {
+                                    acsItemCode.Add(item.item_code);
+                                    acsItemName.Add(item.item_name);
                                 }
-							}
-							dgvPurchase.CurrentCell = dgvPurchase.Rows[dgvPurchase.CurrentCellAddress.Y].Cells["cQty"];
-							dgvPurchase.Focus();
-						}
-					}
-				}
+                            }
+                            dgvPurchase.CurrentCell = dgvPurchase.Rows[dgvPurchase.CurrentCellAddress.Y].Cells["cQty"];
+                            dgvPurchase.Focus();
+                        }
+                    }
+                }
                 catch (Exception ex)
                 {
                     frmException ex2 = new frmException(ex);
                     ex2.ShowDialog();
                 }
-			}
-			else if (columnIndex == cItemName.Index)
-			{
-                if (Convert.ToString(dgvPurchase["cItemName", r].Value) == string.Empty&& !dgvPurchase.CurrentRow.IsNewRow)
+            }
+            else if (columnIndex == cItemName.Index)
+            {
+                if (Convert.ToString(dgvPurchase["cItemName", r].Value) == string.Empty && !dgvPurchase.CurrentRow.IsNewRow)
                 {
-                    this.BeginInvoke(new MethodInvoker(() => {
+                    this.BeginInvoke(new MethodInvoker(() =>
+                    {
                         dgvPurchase.Rows.RemoveAt(r);
                     }));
                 }
                 InventoryDataContext inventoryDataContext2 = new InventoryDataContext();
-				using (inventoryDataContext2)
-				{
-					var queryable2 = from li in inventoryDataContext2.items
-						join cat in inventoryDataContext2.categories on li.cat_id equals cat.cat_id
-						where li.item_id == Convert.ToInt32(dgvPurchase["cItemID", r].Value)
-						select new
-						{
-							cat,
-							li
-						};
-					foreach (var item2 in queryable2)
-					{
+                using (inventoryDataContext2)
+                {
+                    var queryable2 = from li in inventoryDataContext2.items
+                                     join cat in inventoryDataContext2.categories on li.cat_id equals cat.cat_id
+                                     where li.item_id == Convert.ToInt32(dgvPurchase["cItemID", r].Value)
+                                     select new
+                                     {
+                                         cat,
+                                         li
+                                     };
+                    foreach (var item2 in queryable2)
+                    {
                         var selectedItem = inventoryDataContext2.items.FirstOrDefault(i => i.item_id == item2.li.item_id);
                         if (selectedItem != null)
                         {
@@ -713,36 +720,31 @@ namespace standard.trans
                             }
                         }
                         dgvPurchase["cRate", r].Value = item2.li.item_purchaserate;
-						dgvPurchase["cItemId", r].Value = item2.li.item_id;
-						dgvPurchase["cCategory", r].Value = item2.cat.cat_name;
-						dgvPurchase["cCatID", r].Value = item2.cat.cat_id;
+                        dgvPurchase["cItemId", r].Value = item2.li.item_id;
+                        dgvPurchase["cCategory", r].Value = item2.cat.cat_name;
+                        dgvPurchase["cCatID", r].Value = item2.cat.cat_id;
                         dgvPurchase["cItemUnitValue", r].Value = item2.li.item_quantity;
                         dgvPurchase["cItemUnit", r].Value = item2.li.item_unit;
                     }
-				}
-				dgvPurchase.CurrentCell = dgvPurchase.Rows[dgvPurchase.CurrentCellAddress.Y].Cells["cQty"];
-				dgvPurchase.Focus();
-			}
-			else if (columnIndex == cQty.Index)
-			{
-				if (Convert.ToString(dgvPurchase["cItemName", r].Value) == string.Empty && !dgvPurchase.CurrentRow.IsNewRow)
-				{
-					dgvPurchase.Rows.RemoveAt(r);
-				}
-				decimal.TryParse(Convert.ToString(dgvPurchase["cQty", r].Value), out qty);
-				result = Math.Abs(qty);
+                }
+                dgvPurchase.CurrentCell = dgvPurchase.Rows[dgvPurchase.CurrentCellAddress.Y].Cells["cQty"];
+                dgvPurchase.Focus();
+            }
+            else if (columnIndex == cQty.Index)
+            {
+                if (Convert.ToString(dgvPurchase["cItemName", r].Value) == string.Empty && !dgvPurchase.CurrentRow.IsNewRow)
+                {
+                    dgvPurchase.Rows.RemoveAt(r);
+                }
+                decimal.TryParse(Convert.ToString(dgvPurchase["cQty", r].Value), out qty);
+                result = Math.Abs(qty);
                 decimal.TryParse(Convert.ToString(dgvPurchase["cItemUnitValue", r].Value), out unitValue);
 
-                if (chkIsFrieght.Checked == true)
-                    dgvPurchase["cFrieghtCharge", r].Value = (unitValue * qty).ToString("N2");
-                else
-                    dgvPurchase["cFrieghtCharge", r].Value = "0.00";
-
                 dgvPurchase["cQty", r].Value = ((result > 0m) ? ((object)result) : null);
-				decimal.TryParse(Convert.ToString(dgvPurchase["cRate", r].Value), out result2);
+                decimal.TryParse(Convert.ToString(dgvPurchase["cRate", r].Value), out result2);
                 if (result2 > 0m && result > 0m)
                 {
-                    decimal amount = (result2 * result) + (unitValue * qty);
+                    decimal amount = (result2 * result);
                     dgvPurchase["cAmount", r].Value = amount.ToString("N2"); // format to 2 decimals
                 }
                 else
@@ -750,366 +752,374 @@ namespace standard.trans
                     dgvPurchase["cAmount", r].Value = null;
                 }
                 calacTotal();
-				dgvPurchase.CurrentCell = dgvPurchase.Rows[dgvPurchase.CurrentCellAddress.Y].Cells["cRate"];
-				dgvPurchase.Focus();
-			}
-			else if (columnIndex == cMrp.Index)
-			{
-				if (Convert.ToString(dgvPurchase["cItemName", r].Value) == string.Empty && !dgvPurchase.CurrentRow.IsNewRow)
-				{
-					dgvPurchase.Rows.RemoveAt(r);
-				}
-				decimal.TryParse(Convert.ToString(dgvPurchase["cMrp", r].Value), out result2);
-				result2 = Math.Abs(result2);
-				dgvPurchase["cMrp", r].Value = ((result2 > 0m) ? ((object)result2) : null);
-			}
-			else if (columnIndex == cRate.Index)
-			{
-				if (Convert.ToString(dgvPurchase["cItemName", r].Value) == string.Empty && !dgvPurchase.CurrentRow.IsNewRow)
-				{
-					dgvPurchase.Rows.RemoveAt(r);
-				}
-				decimal.TryParse(Convert.ToString(dgvPurchase["cRate", r].Value), out result2);
-				result2 = Math.Abs(result2);
-				dgvPurchase["cRate", r].Value = ((result2 > 0m) ? ((object)result2) : null);
-				decimal.TryParse(Convert.ToString(dgvPurchase["cQty", r].Value), out result);
-				dgvPurchase["cAmount", r].Value = ((result2 > 0m && result > 0m) ? ((object)(result2 * result)) : null);
-				calacTotal();
-				SetColumnIndex method = Mymethod;
-				dgvPurchase.BeginInvoke(method, "cCategory");
-				dgvPurchase.Focus();
-			}
-		}
+                dgvPurchase.CurrentCell = dgvPurchase.Rows[dgvPurchase.CurrentCellAddress.Y].Cells["cRate"];
+                dgvPurchase.Focus();
+            }
+            else if (columnIndex == cMrp.Index)
+            {
+                if (Convert.ToString(dgvPurchase["cItemName", r].Value) == string.Empty && !dgvPurchase.CurrentRow.IsNewRow)
+                {
+                    dgvPurchase.Rows.RemoveAt(r);
+                }
+                decimal.TryParse(Convert.ToString(dgvPurchase["cMrp", r].Value), out result2);
+                result2 = Math.Abs(result2);
+                dgvPurchase["cMrp", r].Value = ((result2 > 0m) ? ((object)result2) : null);
+            }
+            else if (columnIndex == cRate.Index)
+            {
+                if (Convert.ToString(dgvPurchase["cItemName", r].Value) == string.Empty && !dgvPurchase.CurrentRow.IsNewRow)
+                {
+                    dgvPurchase.Rows.RemoveAt(r);
+                }
+                decimal.TryParse(Convert.ToString(dgvPurchase["cRate", r].Value), out result2);
+                result2 = Math.Abs(result2);
+                dgvPurchase["cRate", r].Value = ((result2 > 0m) ? ((object)result2) : null);
+                decimal.TryParse(Convert.ToString(dgvPurchase["cQty", r].Value), out result);
+                dgvPurchase["cAmount", r].Value = ((result2 > 0m && result > 0m) ? ((object)(result2 * result)) : null);
+                calacTotal();
+                SetColumnIndex method = Mymethod;
+                dgvPurchase.BeginInvoke(method, "cCategory");
+                dgvPurchase.Focus();
+            }
+        }
 
-		private void dgopen_RowsAdded(object sender, DataGridViewRowsAddedEventArgs e)
-		{
-			calacTotal();
-		}
+        private void dgopen_RowsAdded(object sender, DataGridViewRowsAddedEventArgs e)
+        {
+            calacTotal();
+        }
 
-		private void dgopen_RowsRemoved(object sender, DataGridViewRowsRemovedEventArgs e)
-		{
-			calacTotal();
-		}
+        private void dgopen_RowsRemoved(object sender, DataGridViewRowsRemovedEventArgs e)
+        {
+            calacTotal();
+        }
 
-		private void calacTotal()
-		{
-			List<string> list = new List<string>();
-			list.Add("cQty");
-			list.Add("cAmount");
-            list.Add("cFrieghtCharge");
-			List<decimal> totalSNo = bus.getTotalSNo(dgvPurchase, "cSNo", list);
-			txttotqty.Value = Convert.ToDecimal(totalSNo[0]);
-			txttotamt.Text = totalSNo[1].ToString("0.00");
-            txtFrieght.Text = totalSNo[2].ToString("0.00");
-			List<decimal> list2 = new List<decimal>();
+        private void calacTotal()
+        {
+            List<string> list = new List<string>();
+            list.Add("cQty");
+            list.Add("cAmount");
+            List<decimal> totalSNo = bus.getTotalSNo(dgvPurchase, "cSNo", list);
+            txttotqty.Value = Convert.ToDecimal(totalSNo[0]);
+            txttotamt.Text = totalSNo[1].ToString("0.00");
+            List<decimal> list2 = new List<decimal>();
             decimal d1 = totalSNo[1];
             decimal d2 = 0m;
             decimal value = txtDiscountPercentage.Value;
             decimal d3 = (d1 + d2) * value / 100m;
-            txtDiscountRate.Text = string.Format("{0:0.00}", d3.ToString("N2"));
-            txttotamt.Text = $"{Math.Round(d1 - d3, 2):0.00}";
+            decimal frieght = txtFrieght.Value;
+            decimal wages = txtWages.Value;
+            decimal discountRate = txtDiscountRate.Value;
+            //if (!string.IsNullOrWhiteSpace(txtDiscountRate.Text) && txtDiscountRate.Value > 0)
+            //{
+            //    txtDiscountPercentage.Text = "0";
+            //    decimal num = txtDiscountRate.Value / d1 * 100m;
+            //    txtDiscountPercentage.Text = $"{num:0.00}";
+            //}                      
+            txttotamt.Text = $"{Math.Round(d1 + frieght + wages - discountRate, 2):0.00}";
             list2.Add(txttotamt.Value);
-			list2.Add(0m);
-			list2.Add(0m);
-			list2.Add(0m);
-			list2.Add(0m);
-			list2.Add(0m);
-			list2.Add(0m);
-		}
+            list2.Add(0m);
+            list2.Add(0m);
+            list2.Add(0m);
+            list2.Add(0m);
+            list2.Add(0m);
+            list2.Add(0m);
+        }
 
-		private void dgopen_KeyDown(object sender, KeyEventArgs e)
-		{
-			if (dgvPurchase.CurrentCell == null)
-			{
-				return;
-			}
-			if (dgvPurchase.CurrentCell.ColumnIndex == 1)
-			{
-			}
-			if (e.KeyCode == Keys.F3 || e.KeyCode == Keys.Delete)
-			{
-				if (dgvPurchase.CurrentRow.IsNewRow)
-				{
-					return;
-				}
-				dgvPurchase.Rows.RemoveAt(dgvPurchase.CurrentCell.RowIndex);
-			}
-			if ((e.KeyCode == Keys.Return || e.KeyCode == Keys.Tab) && dgvPurchase.CurrentCell.ColumnIndex == cQty.Index && !dgvPurchase.CurrentRow.IsNewRow)
-			{
-				dgvPurchase.CurrentCell = dgvPurchase.Rows[dgvPurchase.CurrentCell.RowIndex + 1].Cells["cCategory"];
-				dgvPurchase.Focus();
-			}
-		}
+        private void dgopen_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (dgvPurchase.CurrentCell == null)
+            {
+                return;
+            }
+            if (dgvPurchase.CurrentCell.ColumnIndex == 1)
+            {
+            }
+            if (e.KeyCode == Keys.F3 || e.KeyCode == Keys.Delete)
+            {
+                if (dgvPurchase.CurrentRow.IsNewRow)
+                {
+                    return;
+                }
+                dgvPurchase.Rows.RemoveAt(dgvPurchase.CurrentCell.RowIndex);
+            }
+            if ((e.KeyCode == Keys.Return || e.KeyCode == Keys.Tab) && dgvPurchase.CurrentCell.ColumnIndex == cQty.Index && !dgvPurchase.CurrentRow.IsNewRow)
+            {
+                dgvPurchase.CurrentCell = dgvPurchase.Rows[dgvPurchase.CurrentCell.RowIndex + 1].Cells["cCategory"];
+                dgvPurchase.Focus();
+            }
+        }
 
-		private void dtpdate_KeyDown(object sender, KeyEventArgs e)
-		{
-			if (e.KeyCode == Keys.Return)
-			{
-				cbopurfrom.Focus();
-			}
-		}
+        private void dtpdate_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Return)
+            {
+                cbopurfrom.Focus();
+            }
+        }
 
-		private void dtpbilldate_KeyDown(object sender, KeyEventArgs e)
-		{
-			if (e.KeyCode == Keys.Return)
-			{
-				cbopurfrom.Focus();
-			}
-		}
+        private void dtpbilldate_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Return)
+            {
+                cbopurfrom.Focus();
+            }
+        }
 
-		private void cbopurfrom_KeyDown(object sender, KeyEventArgs e)
-		{
-			if (e.KeyCode == Keys.Return && cbopurfrom.Text.Trim() != string.Empty)
-			{
-				dgvPurchase.CurrentCell = dgvPurchase["cCategory", 0];
-				dgvPurchase.Focus();
-			}
-		}
+        private void cbopurfrom_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Return && cbopurfrom.Text.Trim() != string.Empty)
+            {
+                dgvPurchase.CurrentCell = dgvPurchase["cCategory", 0];
+                dgvPurchase.Focus();
+            }
+        }
 
-		private void cmdview_Click(object sender, EventArgs e)
-		{
-			pnlview.Enabled = true;
-			tablemain.Enabled = false;
-			pnlview.BringToFront();
-			tablemain.SendToBack();
-			pnlview.Select();
-			cmdList_Click(this, null);
-			dtpfdate.Focus();
-		}
+        private void cmdview_Click(object sender, EventArgs e)
+        {
+            pnlview.Enabled = true;
+            tablemain.Enabled = false;
+            pnlview.BringToFront();
+            tablemain.SendToBack();
+            pnlview.Select();
+            cmdList_Click(this, null);
+            dtpfdate.Focus();
+        }
 
-		private void dgList_KeyDown(object sender, KeyEventArgs e)
-		{
-			try
-			{
-				if (e.KeyCode == Keys.Escape)
-				{
-					cmdexit_Click(this, null);
-				}
-				else if (e.KeyCode == Keys.F8)
-				{
-					loadReport(Convert.ToInt32(dglist.CurrentRow.Cells["pmidDataGridViewTextBoxColumn"].Value));
-				}
-			}
-			catch (Exception ex)
-			{
-				frmException ex2 = new frmException(ex);
-				ex2.ShowDialog();
-			}
-		}
+        private void dgList_KeyDown(object sender, KeyEventArgs e)
+        {
+            try
+            {
+                if (e.KeyCode == Keys.Escape)
+                {
+                    cmdexit_Click(this, null);
+                }
+                else if (e.KeyCode == Keys.F8)
+                {
+                    loadReport(Convert.ToInt32(dglist.CurrentRow.Cells["pmidDataGridViewTextBoxColumn"].Value));
+                }
+            }
+            catch (Exception ex)
+            {
+                frmException ex2 = new frmException(ex);
+                ex2.ShowDialog();
+            }
+        }
 
-		private void cmdexit_Click(object sender, EventArgs e)
-		{
-			pnlview.Enabled = false;
-			tablemain.Enabled = true;
-			pnlview.SendToBack();
-			tablemain.BringToFront();
-			txtBillNo.Focus();
-		}
+        private void cmdexit_Click(object sender, EventArgs e)
+        {
+            pnlview.Enabled = false;
+            tablemain.Enabled = true;
+            pnlview.SendToBack();
+            tablemain.BringToFront();
+            txtBillNo.Focus();
+        }
 
-		private void cmdList_Click(object sender, EventArgs e)
-		{
-			try
-			{
-				InventoryDataContext inventoryDataContext = new InventoryDataContext();
-				if (txtSearchBillNo.Text == string.Empty)
-				{
-					usppurchasemasterSelectResultBindingSource.DataSource = inventoryDataContext.usp_purchasemasterSelect(null, Convert.ToInt32(cboSupplierView.SelectedValue), dtpfdate.Value.Date, dtptdate.Value.Date, null, null);
-				}
-				else
-				{
-					usppurchasemasterSelectResultBindingSource.DataSource = inventoryDataContext.usp_purchasemasterSelect(null, null, null, null, null, Convert.ToInt32(txtSearchBillNo.Text));
-				}
-			}
-			catch (Exception ex)
-			{
-				frmException ex2 = new frmException(ex);
-				ex2.ShowDialog();
-			}
-		}
+        private void cmdList_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                InventoryDataContext inventoryDataContext = new InventoryDataContext();
+                if (txtSearchBillNo.Text == string.Empty)
+                {
+                    usppurchasemasterSelectResultBindingSource.DataSource = inventoryDataContext.usp_purchasemasterSelect(null, Convert.ToInt32(cboSupplierView.SelectedValue), dtpfdate.Value.Date, dtptdate.Value.Date, null, null);
+                }
+                else
+                {
+                    usppurchasemasterSelectResultBindingSource.DataSource = inventoryDataContext.usp_purchasemasterSelect(null, null, null, null, null, Convert.ToInt32(txtSearchBillNo.Text));
+                }
+            }
+            catch (Exception ex)
+            {
+                frmException ex2 = new frmException(ex);
+                ex2.ShowDialog();
+            }
+        }
 
-		private void dglist_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
-		{
-			if (dglist.CurrentCell != null)
-			{
-				loadlist();
-			}
-		}
+        private void dglist_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (dglist.CurrentCell != null)
+            {
+                loadlist();
+            }
+        }
 
-		private void loadlist()
-		{
-			int num = Convert.ToInt32(dglist["pmidDataGridViewTextBoxColumn", dglist.CurrentRow.Index].Value);
-			id = num;
-			InventoryDataContext inventoryDataContext = new InventoryDataContext();
-			ISingleResult<usp_purchasemasterSelectResult> singleResult = inventoryDataContext.usp_purchasemasterSelect(num, null, null, null, null, null);
-			using (IEnumerator<usp_purchasemasterSelectResult> enumerator = singleResult.GetEnumerator())
-			{
-				if (enumerator.MoveNext())
-				{
-					usp_purchasemasterSelectResult current = enumerator.Current;
-					txtpurno.Text = Convert.ToString(current.pm_no);
+        private void loadlist()
+        {
+            int num = Convert.ToInt32(dglist["pmidDataGridViewTextBoxColumn", dglist.CurrentRow.Index].Value);
+            id = num;
+            InventoryDataContext inventoryDataContext = new InventoryDataContext();
+            ISingleResult<usp_purchasemasterSelectResult> singleResult = inventoryDataContext.usp_purchasemasterSelect(num, null, null, null, null, null);
+            using (IEnumerator<usp_purchasemasterSelectResult> enumerator = singleResult.GetEnumerator())
+            {
+                if (enumerator.MoveNext())
+                {
+                    usp_purchasemasterSelectResult current = enumerator.Current;
+                    txtpurno.Text = Convert.ToString(current.pm_no);
                     txtBillNo.Text = current.pm_billno;
-					cboCity.Text = current.led_address2.ToString();
-					cbopurfrom.SelectedValue = current.led_id;
-					dtppurdate.Value = Convert.ToDateTime(current.pm_date);
-					cbopurfrom.SelectedValue = current.led_id;
+                    cboCity.Text = current.led_address2.ToString();
+                    cbopurfrom.SelectedValue = current.led_id;
+                    dtppurdate.Value = Convert.ToDateTime(current.pm_date);
+                    cbopurfrom.SelectedValue = current.led_id;
                     txtDiscountPercentage.Text = current.pm_discountpercentage.ToString();
                     txtDiscountRate.Text = current.pm_discountamount.ToString();
-				}
-			}
-			ISingleResult<usp_purchasedetailsSelectResult> singleResult2 = inventoryDataContext.usp_purchasedetailsSelect(num, null, null, null, null, null);
-			dgvPurchase.Rows.Clear();
-			dgvPurchase.AllowUserToAddRows = false;
-			foreach (usp_purchasedetailsSelectResult item in singleResult2)
-			{
-				dgvPurchase.Rows.Add();
-				dgvPurchase["cCatID", dgvPurchase.RowCount - 1].Value = item.cat_id;
-				dgvPurchase["cItemId", dgvPurchase.RowCount - 1].Value = item.item_id;
-				dgvPurchase["cCategory", dgvPurchase.RowCount - 1].Value = item.cat_name;
-				dgvPurchase["cItemName", dgvPurchase.RowCount - 1].Value = item.item_name;
-				dgvPurchase["cRate", dgvPurchase.RowCount - 1].Value = item.pd_prate;
-				dgvPurchase["cQty", dgvPurchase.RowCount - 1].Value = item.pd_qty;
-				dgvPurchase["cAmount", dgvPurchase.RowCount - 1].Value = item.pd_amount;
+                    txtWages.Text = current.pm_wages.ToString();
+                    txtFrieght.Text = current.pm_frieght.ToString();
+                }
+            }
+            ISingleResult<usp_purchasedetailsSelectResult> singleResult2 = inventoryDataContext.usp_purchasedetailsSelect(num, null, null, null, null, null);
+            dgvPurchase.Rows.Clear();
+            dgvPurchase.AllowUserToAddRows = false;
+            foreach (usp_purchasedetailsSelectResult item in singleResult2)
+            {
+                dgvPurchase.Rows.Add();
+                dgvPurchase["cCatID", dgvPurchase.RowCount - 1].Value = item.cat_id;
+                dgvPurchase["cItemId", dgvPurchase.RowCount - 1].Value = item.item_id;
+                dgvPurchase["cCategory", dgvPurchase.RowCount - 1].Value = item.cat_name;
+                dgvPurchase["cItemName", dgvPurchase.RowCount - 1].Value = item.item_name;
+                dgvPurchase["cRate", dgvPurchase.RowCount - 1].Value = item.pd_prate;
+                dgvPurchase["cQty", dgvPurchase.RowCount - 1].Value = item.pd_qty;
+                dgvPurchase["cAmount", dgvPurchase.RowCount - 1].Value = item.pd_amount;
                 dgvPurchase["cItemUnitValue", dgvPurchase.RowCount - 1].Value = item.item_quantity;
                 dgvPurchase["cItemUnit", dgvPurchase.RowCount - 1].Value = item.item_unit;
-                dgvPurchase["cFrieghtCharge", dgvPurchase.RowCount - 1].Value = item.pd_totfrieght;
+                //dgvPurchase["cFrieghtCharge", dgvPurchase.RowCount - 1].Value = item.pd_totfrieght;
             }
-			dgvPurchase.AllowUserToAddRows = true;
-			calacTotal();
-			pnlview.Enabled = false;
-			tablemain.Enabled = true;
-			pnlview.SendToBack();
-			tablemain.BringToFront();
-			txtBillNo.Focus();
-		}
+            dgvPurchase.AllowUserToAddRows = true;
+            calacTotal();
+            pnlview.Enabled = false;
+            tablemain.Enabled = true;
+            pnlview.SendToBack();
+            tablemain.BringToFront();
+            txtBillNo.Focus();
+        }
 
-		private void dglist_CellContentClick(object sender, DataGridViewCellEventArgs e)
-		{
-			try
-			{
-				if (e.ColumnIndex == ldelete.Index && e.RowIndex > -1)
-				{
-					int num = Convert.ToInt32(dglist["pmidDataGridViewTextBoxColumn", e.RowIndex].Value);
-					InventoryDataContext inventoryDataContext = new InventoryDataContext();
-					if (MessageBox.Show("Are you sure to delete?", "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.No)
-					{
-						InventoryDataContext inventoryDataContext2 = new InventoryDataContext();
-						inventoryDataContext2.usp_stockDelete(num, "PURCHASE");
-						inventoryDataContext2.usp_purchasedetailsDelete(num);
-						inventoryDataContext2.usp_purchasemasterDelete(num);
-						cmdList_Click(this, null);
-						MessageBox.Show("Record deleted successfully...", "Information", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
-					}
-				}
-				else if (e.ColumnIndex == ledit.Index && e.RowIndex > -1)
-				{
-					if (dglist.CurrentCell != null)
-					{
-						loadlist();
-					}
-				}
-				else if (e.ColumnIndex == lprint.Index && e.RowIndex > -1)
-				{
-					loadReport(Convert.ToInt32(dglist.CurrentRow.Cells["pmidDataGridViewTextBoxColumn"].Value));
-				}
-			}
-			catch (Exception ex)
-			{
-				frmException ex2 = new frmException(ex);
-				ex2.ShowDialog();
-			}
-		}
+        private void dglist_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+            try
+            {
+                if (e.ColumnIndex == ldelete.Index && e.RowIndex > -1)
+                {
+                    int num = Convert.ToInt32(dglist["pmidDataGridViewTextBoxColumn", e.RowIndex].Value);
+                    InventoryDataContext inventoryDataContext = new InventoryDataContext();
+                    if (MessageBox.Show("Are you sure to delete?", "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.No)
+                    {
+                        InventoryDataContext inventoryDataContext2 = new InventoryDataContext();
+                        inventoryDataContext2.usp_stockDelete(num, "PURCHASE");
+                        inventoryDataContext2.usp_purchasedetailsDelete(num);
+                        inventoryDataContext2.usp_purchasemasterDelete(num);
+                        cmdList_Click(this, null);
+                        MessageBox.Show("Record deleted successfully...", "Information", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+                    }
+                }
+                else if (e.ColumnIndex == ledit.Index && e.RowIndex > -1)
+                {
+                    if (dglist.CurrentCell != null)
+                    {
+                        loadlist();
+                    }
+                }
+                else if (e.ColumnIndex == lprint.Index && e.RowIndex > -1)
+                {
+                    loadReport(Convert.ToInt32(dglist.CurrentRow.Cells["pmidDataGridViewTextBoxColumn"].Value));
+                }
+            }
+            catch (Exception ex)
+            {
+                frmException ex2 = new frmException(ex);
+                ex2.ShowDialog();
+            }
+        }
 
-		private void dtpfdate_KeyDown(object sender, KeyEventArgs e)
-		{
-			if (e.KeyCode == Keys.Return)
-			{
-				dtptdate.Focus();
-			}
-		}
+        private void dtpfdate_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Return)
+            {
+                dtptdate.Focus();
+            }
+        }
 
-		private void dtptdate_KeyDown(object sender, KeyEventArgs e)
-		{
-			if (e.KeyCode == Keys.Return)
-			{
-				cmdList.Focus();
-			}
-		}
+        private void dtptdate_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Return)
+            {
+                cmdList.Focus();
+            }
+        }
 
-		private void dtpfdate_ValueChanged(object sender, EventArgs e)
-		{
-			if (dtpfdate.Value.Date > dtptdate.Value.Date)
-			{
-				dtptdate.Value = dtpfdate.Value.Date;
-			}
-		}
+        private void dtpfdate_ValueChanged(object sender, EventArgs e)
+        {
+            if (dtpfdate.Value.Date > dtptdate.Value.Date)
+            {
+                dtptdate.Value = dtpfdate.Value.Date;
+            }
+        }
 
-		private void dtptdate_ValueChanged(object sender, EventArgs e)
-		{
-			if (dtptdate.Value.Date < dtpfdate.Value.Date)
-			{
-				dtpfdate.Value = dtptdate.Value.Date;
-			}
-		}
+        private void dtptdate_ValueChanged(object sender, EventArgs e)
+        {
+            if (dtptdate.Value.Date < dtpfdate.Value.Date)
+            {
+                dtpfdate.Value = dtptdate.Value.Date;
+            }
+        }
 
-		private void cbopurfrom_SelectedValueChanged(object sender, EventArgs e)
-		{
-			if (!(cbopurfrom.Text.Trim() == ""))
-			{
-				InventoryDataContext inventoryDataContext = new InventoryDataContext();
-				using (inventoryDataContext)
-				{
-					IQueryable<ledgermaster> queryable = inventoryDataContext.ledgermasters.Where((ledgermaster li) => li.led_id == (long)Convert.ToInt32(cbopurfrom.SelectedValue));
-					foreach (ledgermaster item in queryable)
-					{
-						lblAddress.Text = item.led_address + "," + item.led_address1 + "," + item.led_address2 + "-" + item.led_pincode;
+        private void cbopurfrom_SelectedValueChanged(object sender, EventArgs e)
+        {
+            if (!(cbopurfrom.Text.Trim() == ""))
+            {
+                InventoryDataContext inventoryDataContext = new InventoryDataContext();
+                using (inventoryDataContext)
+                {
+                    IQueryable<ledgermaster> queryable = inventoryDataContext.ledgermasters.Where((ledgermaster li) => li.led_id == (long)Convert.ToInt32(cbopurfrom.SelectedValue));
+                    foreach (ledgermaster item in queryable)
+                    {
+                        lblAddress.Text = item.led_address + "," + item.led_address1 + "," + item.led_address2 + "-" + item.led_pincode;
                         chkIsFrieght.Checked = item.led_isfreight;
                     }
 
                 }
-			}
-		}
+            }
+        }
 
-		private void dgvPurchase_EditingControlShowing(object sender, DataGridViewEditingControlShowingEventArgs e)
-		{
-			if (dgvPurchase.Columns[dgvPurchase.CurrentCellAddress.X].Name == "cItemName")
-			{
-				TextBox textBox = e.Control as TextBox;
-				if (textBox != null)
-				{
-					textBox.AutoCompleteMode = AutoCompleteMode.SuggestAppend;
-					textBox.AutoCompleteSource = AutoCompleteSource.CustomSource;
-					textBox.AutoCompleteCustomSource = acsItemName;
-				}
-			}
-			else if (dgvPurchase.Columns[dgvPurchase.CurrentCellAddress.X].Name == "cItemCode")
-			{
-				TextBox textBox = e.Control as TextBox;
-				if (textBox != null)
-				{
-					textBox.AutoCompleteMode = AutoCompleteMode.SuggestAppend;
-					textBox.AutoCompleteSource = AutoCompleteSource.CustomSource;
-					textBox.AutoCompleteCustomSource = acsItemCode;
-				}
-			}
-			else if (dgvPurchase.Columns[dgvPurchase.CurrentCellAddress.X].Name == "cCategory")
-			{
-				TextBox textBox = e.Control as TextBox;
-				if (textBox != null)
-				{
-					textBox.AutoCompleteMode = AutoCompleteMode.SuggestAppend;
-					textBox.AutoCompleteSource = AutoCompleteSource.CustomSource;
-					textBox.AutoCompleteCustomSource = acsCategoryName;
-				}
-			}
-			else
-			{
-				TextBox textBox = e.Control as TextBox;
-				if (textBox != null)
-				{
-					textBox.AutoCompleteCustomSource = null;
-				}
-			}
-		}
+        private void dgvPurchase_EditingControlShowing(object sender, DataGridViewEditingControlShowingEventArgs e)
+        {
+            if (dgvPurchase.Columns[dgvPurchase.CurrentCellAddress.X].Name == "cItemName")
+            {
+                TextBox textBox = e.Control as TextBox;
+                if (textBox != null)
+                {
+                    textBox.AutoCompleteMode = AutoCompleteMode.SuggestAppend;
+                    textBox.AutoCompleteSource = AutoCompleteSource.CustomSource;
+                    textBox.AutoCompleteCustomSource = acsItemName;
+                }
+            }
+            else if (dgvPurchase.Columns[dgvPurchase.CurrentCellAddress.X].Name == "cItemCode")
+            {
+                TextBox textBox = e.Control as TextBox;
+                if (textBox != null)
+                {
+                    textBox.AutoCompleteMode = AutoCompleteMode.SuggestAppend;
+                    textBox.AutoCompleteSource = AutoCompleteSource.CustomSource;
+                    textBox.AutoCompleteCustomSource = acsItemCode;
+                }
+            }
+            else if (dgvPurchase.Columns[dgvPurchase.CurrentCellAddress.X].Name == "cCategory")
+            {
+                TextBox textBox = e.Control as TextBox;
+                if (textBox != null)
+                {
+                    textBox.AutoCompleteMode = AutoCompleteMode.SuggestAppend;
+                    textBox.AutoCompleteSource = AutoCompleteSource.CustomSource;
+                    textBox.AutoCompleteCustomSource = acsCategoryName;
+                }
+            }
+            else
+            {
+                TextBox textBox = e.Control as TextBox;
+                if (textBox != null)
+                {
+                    textBox.AutoCompleteCustomSource = null;
+                }
+            }
+        }
 
         private void cboCity_SelectedValueChanged(object sender, EventArgs e)
         {
@@ -1133,69 +1143,69 @@ namespace standard.trans
         }
 
         private void cboCity_KeyDown(object sender, KeyEventArgs e)
-		{
-			if (e.KeyCode == Keys.Return)
-			{
-				cbopurfrom.Focus();
-			}
-		}
+        {
+            if (e.KeyCode == Keys.Return)
+            {
+                cbopurfrom.Focus();
+            }
+        }
 
-		private void cboCityView_SelectedValueChanged(object sender, EventArgs e)
-		{
-			if (cboCityView.SelectedItem != null)
-			{
-				InventoryDataContext inventoryDataContext = new InventoryDataContext();
-				using (inventoryDataContext)
-				{
-					ledgermasterViewBindingSource.Clear();
-					var source = from a in inventoryDataContext.ledgermasters
-						where a.led_accounttype == "Supplier" && a.led_address2 == cboCityView.Text.ToString().Trim()
-						select new
-						{
-							a.led_id,
-							a.led_name
-						};
-					ledgermasterViewBindingSource.DataSource = source.OrderBy(x => x.led_name);
-					cboSupplierView.DataSource = source.OrderBy(x => x.led_name);
-				}
-			}
-		}
+        //private void cboCityView_SelectedValueChanged(object sender, EventArgs e)
+        //{
+        //	if (cboCityView.SelectedItem != null)
+        //	{
+        //		InventoryDataContext inventoryDataContext = new InventoryDataContext();
+        //		using (inventoryDataContext)
+        //		{
+        //			ledgermasterViewBindingSource.Clear();
+        //			var source = from a in inventoryDataContext.ledgermasters
+        //				where a.led_accounttype == "Supplier" && a.led_address2 == cboCityView.Text.ToString().Trim()
+        //				select new
+        //				{
+        //					a.led_id,
+        //					a.led_name
+        //				};
+        //			ledgermasterViewBindingSource.DataSource = source.OrderBy(x => x.led_name);
+        //			cboSupplierView.DataSource = source.OrderBy(x => x.led_name);
+        //		}
+        //	}
+        //}
 
-		private void txtSearchBillNo_KeyDown(object sender, KeyEventArgs e)
-		{
-			if (e.KeyCode == Keys.Return)
-			{
-				cmdList_Click(null, null);
-			}
-		}
+        private void txtSearchBillNo_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Return)
+            {
+                cmdList_Click(null, null);
+            }
+        }
 
-		private void cboSupplierView_KeyDown(object sender, KeyEventArgs e)
-		{
-			if (e.KeyCode == Keys.Return)
-			{
-				cmdList_Click(null, null);
-			}
-		}
+        private void cboSupplierView_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Return)
+            {
+                cmdList_Click(null, null);
+            }
+        }
 
-		private void cboCityView_KeyDown(object sender, KeyEventArgs e)
-		{
-			if (e.KeyCode == Keys.Return)
-			{
-				cboSupplierView.Focus();
-			}
-		}
+        private void cboCityView_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Return)
+            {
+                cboSupplierView.Focus();
+            }
+        }
 
-		protected override void Dispose(bool disposing)
-		{
-			if (disposing && components != null)
-			{
-				components.Dispose();
-			}
-			base.Dispose(disposing);
-		}
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing && components != null)
+            {
+                components.Dispose();
+            }
+            base.Dispose(disposing);
+        }
 
-		private void InitializeComponent()
-		{
+        private void InitializeComponent()
+        {
             this.components = new System.ComponentModel.Container();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
@@ -1232,16 +1242,18 @@ namespace standard.trans
             this.cmdclose = new mylib.lightbutton();
             this.cmdview = new mylib.lightbutton();
             this.tablesum = new System.Windows.Forms.TableLayoutPanel();
+            this.txtWages = new mylib.decimalbox(this.components);
+            this.label3 = new System.Windows.Forms.Label();
             this.lblnetamt = new System.Windows.Forms.Label();
             this.txttotamt = new mylib.decimalbox(this.components);
             this.txttotqty = new mylib.decimalbox(this.components);
             this.lbltotqty = new System.Windows.Forms.Label();
             this.lblDiscountPer = new System.Windows.Forms.Label();
             this.lblDiscountRate = new System.Windows.Forms.Label();
-            this.txtDiscountPercentage = new mylib.decimalbox(this.components);
             this.txtDiscountRate = new mylib.decimalbox(this.components);
             this.lblFrieght = new System.Windows.Forms.Label();
             this.txtFrieght = new mylib.decimalbox(this.components);
+            this.txtDiscountPercentage = new mylib.decimalbox(this.components);
             this.pnlentry = new System.Windows.Forms.Panel();
             this.dgvPurchase = new mylib.mygrid();
             this.cSNo = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -1283,14 +1295,14 @@ namespace standard.trans
             this.lblhyp = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
             this.dtpfdate = new System.Windows.Forms.DateTimePicker();
-            this.label5 = new System.Windows.Forms.Label();
-            this.cboCityView = new System.Windows.Forms.ComboBox();
-            this.ledgermasteCityViewrBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.txtSearchBillNo = new System.Windows.Forms.TextBox();
             this.cmdexit = new mylib.lightbutton();
             this.cboSupplierView = new System.Windows.Forms.ComboBox();
-            this.cmdList = new mylib.lightbutton();
             this.ledgermasterViewBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.cmdList = new mylib.lightbutton();
+            this.label5 = new System.Windows.Forms.Label();
+            this.cboCityView = new System.Windows.Forms.ComboBox();
+            this.ledgermasteCityViewrBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.pnlview = new System.Windows.Forms.Panel();
             this.tablemain.SuspendLayout();
             this.tableentry.SuspendLayout();
@@ -1304,8 +1316,8 @@ namespace standard.trans
             ((System.ComponentModel.ISupportInitialize)(this.dglist)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.usppurchasemasterSelectResultBindingSource)).BeginInit();
             this.tableLayoutPanel1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.ledgermasteCityViewrBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ledgermasterViewBindingSource)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ledgermasteCityViewrBindingSource)).BeginInit();
             this.pnlview.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -1329,7 +1341,7 @@ namespace standard.trans
             this.tablemain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tablemain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 100F));
             this.tablemain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 64F));
-            this.tablemain.Size = new System.Drawing.Size(1315, 690);
+            this.tablemain.Size = new System.Drawing.Size(1284, 690);
             this.tablemain.TabIndex = 0;
             // 
             // lbltitle
@@ -1338,10 +1350,10 @@ namespace standard.trans
             this.lbltitle.AutoSize = true;
             this.lbltitle.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold);
             this.lbltitle.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.lbltitle.Location = new System.Drawing.Point(8, 3);
+            this.lbltitle.Location = new System.Drawing.Point(8, 9);
             this.lbltitle.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.lbltitle.Name = "lbltitle";
-            this.lbltitle.Size = new System.Drawing.Size(173, 35);
+            this.lbltitle.Size = new System.Drawing.Size(115, 23);
             this.lbltitle.TabIndex = 3;
             this.lbltitle.Text = "PURCHASE";
             // 
@@ -1376,7 +1388,7 @@ namespace standard.trans
             this.tableentry.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
             this.tableentry.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
             this.tableentry.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
-            this.tableentry.Size = new System.Drawing.Size(1299, 138);
+            this.tableentry.Size = new System.Drawing.Size(1268, 138);
             this.tableentry.TabIndex = 0;
             // 
             // label1
@@ -1388,7 +1400,7 @@ namespace standard.trans
             this.label1.Location = new System.Drawing.Point(6, 0);
             this.label1.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(120, 46);
+            this.label1.Size = new System.Drawing.Size(80, 46);
             this.label1.TabIndex = 4;
             this.label1.Text = "Bill No.";
             // 
@@ -1401,10 +1413,10 @@ namespace standard.trans
             this.cboCity.DisplayMember = "led_address2";
             this.cboCity.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold);
             this.cboCity.FormattingEnabled = true;
-            this.cboCity.Location = new System.Drawing.Point(1024, 6);
+            this.cboCity.Location = new System.Drawing.Point(1024, 7);
             this.cboCity.Margin = new System.Windows.Forms.Padding(6);
             this.cboCity.Name = "cboCity";
-            this.cboCity.Size = new System.Drawing.Size(282, 43);
+            this.cboCity.Size = new System.Drawing.Size(282, 31);
             this.cboCity.TabIndex = 4;
             this.cboCity.ValueMember = "led_id";
             this.cboCity.Visible = false;
@@ -1420,10 +1432,10 @@ namespace standard.trans
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold);
             this.label2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.label2.Location = new System.Drawing.Point(962, 0);
+            this.label2.Location = new System.Drawing.Point(962, 11);
             this.label2.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(44, 46);
+            this.label2.Size = new System.Drawing.Size(48, 23);
             this.label2.TabIndex = 10;
             this.label2.Text = "City";
             this.label2.Visible = false;
@@ -1437,10 +1449,10 @@ namespace standard.trans
             this.cbopurfrom.DisplayMember = "led_name";
             this.cbopurfrom.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold);
             this.cbopurfrom.FormattingEnabled = true;
-            this.cbopurfrom.Location = new System.Drawing.Point(688, 52);
+            this.cbopurfrom.Location = new System.Drawing.Point(688, 53);
             this.cbopurfrom.Margin = new System.Windows.Forms.Padding(6);
             this.cbopurfrom.Name = "cbopurfrom";
-            this.cbopurfrom.Size = new System.Drawing.Size(262, 43);
+            this.cbopurfrom.Size = new System.Drawing.Size(262, 31);
             this.cbopurfrom.TabIndex = 4;
             this.cbopurfrom.ValueMember = "led_id";
             this.cbopurfrom.SelectedValueChanged += new System.EventHandler(this.cbopurfrom_SelectedValueChanged);
@@ -1456,10 +1468,10 @@ namespace standard.trans
             this.lblfrom.AutoSize = true;
             this.lblfrom.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold);
             this.lblfrom.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.lblfrom.Location = new System.Drawing.Point(438, 51);
+            this.lblfrom.Location = new System.Drawing.Point(438, 57);
             this.lblfrom.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.lblfrom.Name = "lblfrom";
-            this.lblfrom.Size = new System.Drawing.Size(234, 35);
+            this.lblfrom.Size = new System.Drawing.Size(151, 23);
             this.lblfrom.TabIndex = 10;
             this.lblfrom.Text = "Purchase From";
             // 
@@ -1469,10 +1481,10 @@ namespace standard.trans
             this.lblopno.AutoSize = true;
             this.lblopno.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold);
             this.lblopno.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.lblopno.Location = new System.Drawing.Point(6, 46);
+            this.lblopno.Location = new System.Drawing.Point(6, 57);
             this.lblopno.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.lblopno.Name = "lblopno";
-            this.lblopno.Size = new System.Drawing.Size(158, 46);
+            this.lblopno.Size = new System.Drawing.Size(129, 23);
             this.lblopno.TabIndex = 1;
             this.lblopno.Text = "Purchase No";
             // 
@@ -1482,12 +1494,12 @@ namespace standard.trans
             this.txtpurno.BackColor = System.Drawing.Color.White;
             this.txtpurno.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.txtpurno.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold);
-            this.txtpurno.Location = new System.Drawing.Point(202, 52);
+            this.txtpurno.Location = new System.Drawing.Point(202, 54);
             this.txtpurno.Margin = new System.Windows.Forms.Padding(6);
             this.txtpurno.MaxLength = 20;
             this.txtpurno.Name = "txtpurno";
             this.txtpurno.ReadOnly = true;
-            this.txtpurno.Size = new System.Drawing.Size(224, 42);
+            this.txtpurno.Size = new System.Drawing.Size(224, 30);
             this.txtpurno.TabIndex = 0;
             this.txtpurno.TabStop = false;
             // 
@@ -1499,7 +1511,7 @@ namespace standard.trans
             this.dtppurdate.Location = new System.Drawing.Point(688, 6);
             this.dtppurdate.Margin = new System.Windows.Forms.Padding(6);
             this.dtppurdate.Name = "dtppurdate";
-            this.dtppurdate.Size = new System.Drawing.Size(262, 42);
+            this.dtppurdate.Size = new System.Drawing.Size(262, 30);
             this.dtppurdate.TabIndex = 0;
             this.dtppurdate.KeyDown += new System.Windows.Forms.KeyEventHandler(this.dtpdate_KeyDown);
             // 
@@ -1509,10 +1521,10 @@ namespace standard.trans
             this.lbldate.AutoSize = true;
             this.lbldate.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold);
             this.lbldate.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.lbldate.Location = new System.Drawing.Point(438, 5);
+            this.lbldate.Location = new System.Drawing.Point(438, 11);
             this.lbldate.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.lbldate.Name = "lbldate";
-            this.lbldate.Size = new System.Drawing.Size(143, 35);
+            this.lbldate.Size = new System.Drawing.Size(92, 23);
             this.lbldate.TabIndex = 2;
             this.lbldate.Text = "Pur Date";
             // 
@@ -1523,10 +1535,10 @@ namespace standard.trans
             this.tableentry.SetColumnSpan(this.lblAddress, 2);
             this.lblAddress.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold);
             this.lblAddress.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(192)))), ((int)(((byte)(0)))));
-            this.lblAddress.Location = new System.Drawing.Point(6, 97);
+            this.lblAddress.Location = new System.Drawing.Point(6, 103);
             this.lblAddress.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.lblAddress.Name = "lblAddress";
-            this.lblAddress.Size = new System.Drawing.Size(24, 35);
+            this.lblAddress.Size = new System.Drawing.Size(16, 23);
             this.lblAddress.TabIndex = 10;
             this.lblAddress.Text = ".";
             // 
@@ -1537,7 +1549,7 @@ namespace standard.trans
             this.chkIsFrieght.ForeColor = System.Drawing.Color.Red;
             this.chkIsFrieght.Location = new System.Drawing.Point(685, 95);
             this.chkIsFrieght.Name = "chkIsFrieght";
-            this.chkIsFrieght.Size = new System.Drawing.Size(268, 39);
+            this.chkIsFrieght.Size = new System.Drawing.Size(268, 27);
             this.chkIsFrieght.TabIndex = 12;
             this.chkIsFrieght.Text = "Frieght Charge Applicable";
             this.chkIsFrieght.UseVisualStyleBackColor = true;
@@ -1546,9 +1558,9 @@ namespace standard.trans
             // 
             this.txtBillNo.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.txtBillNo.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.txtBillNo.Location = new System.Drawing.Point(201, 3);
+            this.txtBillNo.Location = new System.Drawing.Point(201, 8);
             this.txtBillNo.Name = "txtBillNo";
-            this.txtBillNo.Size = new System.Drawing.Size(226, 42);
+            this.txtBillNo.Size = new System.Drawing.Size(226, 30);
             this.txtBillNo.TabIndex = 13;
             this.txtBillNo.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtBillNo_KeyDown);
             // 
@@ -1570,7 +1582,7 @@ namespace standard.trans
             this.tablecmd.Name = "tablecmd";
             this.tablecmd.RowCount = 1;
             this.tablecmd.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tablecmd.Size = new System.Drawing.Size(1299, 52);
+            this.tablecmd.Size = new System.Drawing.Size(1268, 52);
             this.tablecmd.TabIndex = 3;
             // 
             // cmdsave
@@ -1578,7 +1590,7 @@ namespace standard.trans
             this.cmdsave.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdsave.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold);
             this.cmdsave.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(41)))), ((int)(((byte)(66)))), ((int)(((byte)(122)))));
-            this.cmdsave.Location = new System.Drawing.Point(665, 6);
+            this.cmdsave.Location = new System.Drawing.Point(634, 6);
             this.cmdsave.Margin = new System.Windows.Forms.Padding(6);
             this.cmdsave.Name = "cmdsave";
             this.cmdsave.Size = new System.Drawing.Size(148, 40);
@@ -1592,7 +1604,7 @@ namespace standard.trans
             this.cmdrefresh.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdrefresh.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold);
             this.cmdrefresh.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(41)))), ((int)(((byte)(66)))), ((int)(((byte)(122)))));
-            this.cmdrefresh.Location = new System.Drawing.Point(825, 6);
+            this.cmdrefresh.Location = new System.Drawing.Point(794, 6);
             this.cmdrefresh.Margin = new System.Windows.Forms.Padding(6);
             this.cmdrefresh.Name = "cmdrefresh";
             this.cmdrefresh.Size = new System.Drawing.Size(148, 40);
@@ -1606,7 +1618,7 @@ namespace standard.trans
             this.cmdclose.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdclose.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold);
             this.cmdclose.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(41)))), ((int)(((byte)(66)))), ((int)(((byte)(122)))));
-            this.cmdclose.Location = new System.Drawing.Point(1145, 6);
+            this.cmdclose.Location = new System.Drawing.Point(1114, 6);
             this.cmdclose.Margin = new System.Windows.Forms.Padding(6);
             this.cmdclose.Name = "cmdclose";
             this.cmdclose.Size = new System.Drawing.Size(148, 40);
@@ -1620,7 +1632,7 @@ namespace standard.trans
             this.cmdview.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdview.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold);
             this.cmdview.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(41)))), ((int)(((byte)(66)))), ((int)(((byte)(122)))));
-            this.cmdview.Location = new System.Drawing.Point(985, 6);
+            this.cmdview.Location = new System.Drawing.Point(954, 6);
             this.cmdview.Margin = new System.Windows.Forms.Padding(6);
             this.cmdview.Name = "cmdview";
             this.cmdview.Size = new System.Drawing.Size(148, 40);
@@ -1642,12 +1654,14 @@ namespace standard.trans
             this.tablesum.Controls.Add(this.txttotamt, 5, 1);
             this.tablesum.Controls.Add(this.txttotqty, 5, 0);
             this.tablesum.Controls.Add(this.lbltotqty, 4, 0);
-            this.tablesum.Controls.Add(this.lblDiscountPer, 2, 0);
-            this.tablesum.Controls.Add(this.lblDiscountRate, 2, 1);
-            this.tablesum.Controls.Add(this.txtDiscountPercentage, 3, 0);
-            this.tablesum.Controls.Add(this.txtDiscountRate, 3, 1);
+            this.tablesum.Controls.Add(this.lblDiscountPer, 0, 1);
             this.tablesum.Controls.Add(this.lblFrieght, 0, 0);
             this.tablesum.Controls.Add(this.txtFrieght, 1, 0);
+            this.tablesum.Controls.Add(this.lblDiscountRate, 2, 0);
+            this.tablesum.Controls.Add(this.txtDiscountRate, 3, 0);
+            this.tablesum.Controls.Add(this.txtWages, 3, 1);
+            this.tablesum.Controls.Add(this.txtDiscountPercentage, 1, 1);
+            this.tablesum.Controls.Add(this.label3, 2, 1);
             this.tablesum.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tablesum.Location = new System.Drawing.Point(8, 528);
             this.tablesum.Margin = new System.Windows.Forms.Padding(6);
@@ -1655,8 +1669,45 @@ namespace standard.trans
             this.tablesum.RowCount = 2;
             this.tablesum.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tablesum.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tablesum.Size = new System.Drawing.Size(1299, 88);
+            this.tablesum.Size = new System.Drawing.Size(1268, 88);
             this.tablesum.TabIndex = 2;
+            // 
+            // txtWages
+            // 
+            this.txtWages.AllowFormat = false;
+            this.txtWages.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.txtWages.BackColor = System.Drawing.Color.White;
+            this.txtWages.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.txtWages.DecimalPlaces = 2;
+            this.txtWages.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold);
+            this.txtWages.Location = new System.Drawing.Point(621, 51);
+            this.txtWages.Margin = new System.Windows.Forms.Padding(6);
+            this.txtWages.Name = "txtWages";
+            this.txtWages.RightAlign = true;
+            this.txtWages.Size = new System.Drawing.Size(193, 30);
+            this.txtWages.TabIndex = 16;
+            this.txtWages.TabStop = false;
+            this.txtWages.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.txtWages.Value = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
+            this.txtWages.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtWages_KeyDown);
+            this.txtWages.Leave += new System.EventHandler(this.txtWages_Leave);
+            // 
+            // label3
+            // 
+            this.label3.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.label3.AutoSize = true;
+            this.label3.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
+            this.label3.Location = new System.Drawing.Point(376, 54);
+            this.label3.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(74, 23);
+            this.label3.TabIndex = 15;
+            this.label3.Text = "Wages";
             // 
             // lblnetamt
             // 
@@ -1664,10 +1715,10 @@ namespace standard.trans
             this.lblnetamt.AutoSize = true;
             this.lblnetamt.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold);
             this.lblnetamt.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.lblnetamt.Location = new System.Drawing.Point(826, 48);
+            this.lblnetamt.Location = new System.Drawing.Point(826, 54);
             this.lblnetamt.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.lblnetamt.Name = "lblnetamt";
-            this.lblnetamt.Size = new System.Drawing.Size(191, 35);
+            this.lblnetamt.Size = new System.Drawing.Size(125, 23);
             this.lblnetamt.TabIndex = 8;
             this.lblnetamt.Text = "Net Amount";
             // 
@@ -1679,12 +1730,12 @@ namespace standard.trans
             this.txttotamt.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.txttotamt.DecimalPlaces = 2;
             this.txttotamt.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold);
-            this.txttotamt.Location = new System.Drawing.Point(1031, 50);
+            this.txttotamt.Location = new System.Drawing.Point(1031, 51);
             this.txttotamt.Margin = new System.Windows.Forms.Padding(6);
             this.txttotamt.Name = "txttotamt";
             this.txttotamt.ReadOnly = true;
             this.txttotamt.RightAlign = true;
-            this.txttotamt.Size = new System.Drawing.Size(193, 42);
+            this.txttotamt.Size = new System.Drawing.Size(193, 30);
             this.txttotamt.TabIndex = 6;
             this.txttotamt.TabStop = false;
             this.txttotamt.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
@@ -1702,12 +1753,12 @@ namespace standard.trans
             this.txttotqty.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.txttotqty.DecimalPlaces = 2;
             this.txttotqty.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold);
-            this.txttotqty.Location = new System.Drawing.Point(1031, 6);
+            this.txttotqty.Location = new System.Drawing.Point(1031, 7);
             this.txttotqty.Margin = new System.Windows.Forms.Padding(6);
             this.txttotqty.Name = "txttotqty";
             this.txttotqty.ReadOnly = true;
             this.txttotqty.RightAlign = true;
-            this.txttotqty.Size = new System.Drawing.Size(193, 42);
+            this.txttotqty.Size = new System.Drawing.Size(193, 30);
             this.txttotqty.TabIndex = 5;
             this.txttotqty.TabStop = false;
             this.txttotqty.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
@@ -1723,10 +1774,10 @@ namespace standard.trans
             this.lbltotqty.AutoSize = true;
             this.lbltotqty.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold);
             this.lbltotqty.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.lbltotqty.Location = new System.Drawing.Point(826, 4);
+            this.lbltotqty.Location = new System.Drawing.Point(826, 10);
             this.lbltotqty.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.lbltotqty.Name = "lbltotqty";
-            this.lbltotqty.Size = new System.Drawing.Size(149, 35);
+            this.lbltotqty.Size = new System.Drawing.Size(99, 23);
             this.lbltotqty.TabIndex = 2;
             this.lbltotqty.Text = "Total Qty";
             // 
@@ -1736,12 +1787,13 @@ namespace standard.trans
             this.lblDiscountPer.AutoSize = true;
             this.lblDiscountPer.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold);
             this.lblDiscountPer.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.lblDiscountPer.Location = new System.Drawing.Point(377, 4);
+            this.lblDiscountPer.Location = new System.Drawing.Point(6, 54);
             this.lblDiscountPer.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.lblDiscountPer.Name = "lblDiscountPer";
-            this.lblDiscountPer.Size = new System.Drawing.Size(188, 35);
+            this.lblDiscountPer.Size = new System.Drawing.Size(123, 23);
             this.lblDiscountPer.TabIndex = 9;
             this.lblDiscountPer.Text = "Discount %";
+            this.lblDiscountPer.Visible = false;
             // 
             // lblDiscountRate
             // 
@@ -1749,35 +1801,12 @@ namespace standard.trans
             this.lblDiscountRate.AutoSize = true;
             this.lblDiscountRate.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold);
             this.lblDiscountRate.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.lblDiscountRate.Location = new System.Drawing.Point(377, 48);
+            this.lblDiscountRate.Location = new System.Drawing.Point(377, 10);
             this.lblDiscountRate.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.lblDiscountRate.Name = "lblDiscountRate";
-            this.lblDiscountRate.Size = new System.Drawing.Size(220, 35);
+            this.lblDiscountRate.Size = new System.Drawing.Size(144, 23);
             this.lblDiscountRate.TabIndex = 10;
             this.lblDiscountRate.Text = "Discount Rate";
-            // 
-            // txtDiscountPercentage
-            // 
-            this.txtDiscountPercentage.AllowFormat = false;
-            this.txtDiscountPercentage.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.txtDiscountPercentage.BackColor = System.Drawing.Color.White;
-            this.txtDiscountPercentage.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.txtDiscountPercentage.DecimalPlaces = 2;
-            this.txtDiscountPercentage.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold);
-            this.txtDiscountPercentage.Location = new System.Drawing.Point(621, 6);
-            this.txtDiscountPercentage.Margin = new System.Windows.Forms.Padding(6);
-            this.txtDiscountPercentage.Name = "txtDiscountPercentage";
-            this.txtDiscountPercentage.RightAlign = true;
-            this.txtDiscountPercentage.Size = new System.Drawing.Size(193, 42);
-            this.txtDiscountPercentage.TabIndex = 11;
-            this.txtDiscountPercentage.TabStop = false;
-            this.txtDiscountPercentage.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.txtDiscountPercentage.Value = new decimal(new int[] {
-            0,
-            0,
-            0,
-            0});
-            this.txtDiscountPercentage.Leave += new System.EventHandler(this.txtDiscountPercentage_Leave);
             // 
             // txtDiscountRate
             // 
@@ -1787,11 +1816,11 @@ namespace standard.trans
             this.txtDiscountRate.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.txtDiscountRate.DecimalPlaces = 2;
             this.txtDiscountRate.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold);
-            this.txtDiscountRate.Location = new System.Drawing.Point(621, 50);
+            this.txtDiscountRate.Location = new System.Drawing.Point(621, 7);
             this.txtDiscountRate.Margin = new System.Windows.Forms.Padding(6);
             this.txtDiscountRate.Name = "txtDiscountRate";
             this.txtDiscountRate.RightAlign = true;
-            this.txtDiscountRate.Size = new System.Drawing.Size(193, 42);
+            this.txtDiscountRate.Size = new System.Drawing.Size(193, 30);
             this.txtDiscountRate.TabIndex = 12;
             this.txtDiscountRate.TabStop = false;
             this.txtDiscountRate.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
@@ -1800,6 +1829,7 @@ namespace standard.trans
             0,
             0,
             0});
+            this.txtDiscountRate.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtDiscountRate_KeyDown);
             this.txtDiscountRate.Leave += new System.EventHandler(this.txtDiscountRate_Leave);
             // 
             // lblFrieght
@@ -1808,10 +1838,10 @@ namespace standard.trans
             this.lblFrieght.AutoSize = true;
             this.lblFrieght.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblFrieght.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.lblFrieght.Location = new System.Drawing.Point(5, 4);
+            this.lblFrieght.Location = new System.Drawing.Point(5, 10);
             this.lblFrieght.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.lblFrieght.Name = "lblFrieght";
-            this.lblFrieght.Size = new System.Drawing.Size(120, 35);
+            this.lblFrieght.Size = new System.Drawing.Size(78, 23);
             this.lblFrieght.TabIndex = 14;
             this.lblFrieght.Text = "Frieght";
             // 
@@ -1823,12 +1853,11 @@ namespace standard.trans
             this.txtFrieght.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.txtFrieght.DecimalPlaces = 2;
             this.txtFrieght.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold);
-            this.txtFrieght.Location = new System.Drawing.Point(165, 6);
+            this.txtFrieght.Location = new System.Drawing.Point(165, 7);
             this.txtFrieght.Margin = new System.Windows.Forms.Padding(6);
             this.txtFrieght.Name = "txtFrieght";
-            this.txtFrieght.ReadOnly = true;
             this.txtFrieght.RightAlign = true;
-            this.txtFrieght.Size = new System.Drawing.Size(193, 42);
+            this.txtFrieght.Size = new System.Drawing.Size(193, 30);
             this.txtFrieght.TabIndex = 15;
             this.txtFrieght.TabStop = false;
             this.txtFrieght.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
@@ -1837,6 +1866,32 @@ namespace standard.trans
             0,
             0,
             0});
+            this.txtFrieght.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtFrieght_KeyDown);
+            this.txtFrieght.Leave += new System.EventHandler(this.txtFrieght_Leave);
+            // 
+            // txtDiscountPercentage
+            // 
+            this.txtDiscountPercentage.AllowFormat = false;
+            this.txtDiscountPercentage.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.txtDiscountPercentage.BackColor = System.Drawing.Color.White;
+            this.txtDiscountPercentage.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.txtDiscountPercentage.DecimalPlaces = 2;
+            this.txtDiscountPercentage.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold);
+            this.txtDiscountPercentage.Location = new System.Drawing.Point(165, 51);
+            this.txtDiscountPercentage.Margin = new System.Windows.Forms.Padding(6);
+            this.txtDiscountPercentage.Name = "txtDiscountPercentage";
+            this.txtDiscountPercentage.ReadOnly = true;
+            this.txtDiscountPercentage.RightAlign = true;
+            this.txtDiscountPercentage.Size = new System.Drawing.Size(193, 30);
+            this.txtDiscountPercentage.TabIndex = 11;
+            this.txtDiscountPercentage.TabStop = false;
+            this.txtDiscountPercentage.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.txtDiscountPercentage.Value = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
+            this.txtDiscountPercentage.Visible = false;
             // 
             // pnlentry
             // 
@@ -1845,7 +1900,7 @@ namespace standard.trans
             this.pnlentry.Location = new System.Drawing.Point(8, 199);
             this.pnlentry.Margin = new System.Windows.Forms.Padding(6);
             this.pnlentry.Name = "pnlentry";
-            this.pnlentry.Size = new System.Drawing.Size(1299, 315);
+            this.pnlentry.Size = new System.Drawing.Size(1268, 315);
             this.pnlentry.TabIndex = 1;
             // 
             // dgvPurchase
@@ -1887,7 +1942,7 @@ namespace standard.trans
             this.dgvPurchase.RowsDefaultCellStyle = dataGridViewCellStyle8;
             this.dgvPurchase.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect;
             this.dgvPurchase.ShowCellToolTips = false;
-            this.dgvPurchase.Size = new System.Drawing.Size(1299, 315);
+            this.dgvPurchase.Size = new System.Drawing.Size(1268, 315);
             this.dgvPurchase.TabIndex = 1;
             this.dgvPurchase.CellEndEdit += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgopen_CellEndEdit);
             this.dgvPurchase.EditingControlShowing += new System.Windows.Forms.DataGridViewEditingControlShowingEventHandler(this.dgvPurchase_EditingControlShowing);
@@ -1959,6 +2014,7 @@ namespace standard.trans
             this.cFrieghtCharge.HeaderText = "FRIEGHT CHARGE";
             this.cFrieghtCharge.Name = "cFrieghtCharge";
             this.cFrieghtCharge.ReadOnly = true;
+            this.cFrieghtCharge.Visible = false;
             // 
             // cAmount
             // 
@@ -2010,7 +2066,7 @@ namespace standard.trans
             this.tableview.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 101F));
             this.tableview.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableview.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 18F));
-            this.tableview.Size = new System.Drawing.Size(1315, 690);
+            this.tableview.Size = new System.Drawing.Size(1284, 690);
             this.tableview.TabIndex = 0;
             // 
             // dglist
@@ -2057,7 +2113,7 @@ namespace standard.trans
             this.dglist.RowHeadersVisible = false;
             this.dglist.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect;
             this.dglist.ShowCellToolTips = false;
-            this.dglist.Size = new System.Drawing.Size(1299, 497);
+            this.dglist.Size = new System.Drawing.Size(1268, 497);
             this.dglist.TabIndex = 1;
             this.dglist.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dglist_CellContentClick);
             this.dglist.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dglist_CellDoubleClick);
@@ -2210,10 +2266,10 @@ namespace standard.trans
             this.lblsubtitle.AutoSize = true;
             this.lblsubtitle.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold);
             this.lblsubtitle.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.lblsubtitle.Location = new System.Drawing.Point(8, 10);
+            this.lblsubtitle.Location = new System.Drawing.Point(8, 16);
             this.lblsubtitle.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.lblsubtitle.Name = "lblsubtitle";
-            this.lblsubtitle.Size = new System.Drawing.Size(249, 35);
+            this.lblsubtitle.Size = new System.Drawing.Size(165, 23);
             this.lblsubtitle.TabIndex = 4;
             this.lblsubtitle.Text = "PURCHASE LIST";
             // 
@@ -2226,7 +2282,7 @@ namespace standard.trans
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 159F));
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 105F));
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 91F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 80F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 100F));
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 168F));
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 117F));
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
@@ -2234,13 +2290,11 @@ namespace standard.trans
             this.tableLayoutPanel1.Controls.Add(this.dtptdate, 3, 0);
             this.tableLayoutPanel1.Controls.Add(this.lblfdate, 0, 0);
             this.tableLayoutPanel1.Controls.Add(this.lblhyp, 2, 0);
-            this.tableLayoutPanel1.Controls.Add(this.label6, 4, 1);
+            this.tableLayoutPanel1.Controls.Add(this.label6, 6, 0);
             this.tableLayoutPanel1.Controls.Add(this.dtpfdate, 1, 0);
-            this.tableLayoutPanel1.Controls.Add(this.label5, 0, 1);
-            this.tableLayoutPanel1.Controls.Add(this.cboCityView, 1, 1);
             this.tableLayoutPanel1.Controls.Add(this.txtSearchBillNo, 5, 0);
             this.tableLayoutPanel1.Controls.Add(this.cmdexit, 9, 1);
-            this.tableLayoutPanel1.Controls.Add(this.cboSupplierView, 5, 1);
+            this.tableLayoutPanel1.Controls.Add(this.cboSupplierView, 7, 0);
             this.tableLayoutPanel1.Controls.Add(this.cmdList, 8, 1);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel1.Location = new System.Drawing.Point(5, 59);
@@ -2249,7 +2303,7 @@ namespace standard.trans
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(1305, 95);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(1274, 95);
             this.tableLayoutPanel1.TabIndex = 7;
             // 
             // lblBillNo
@@ -2258,10 +2312,10 @@ namespace standard.trans
             this.lblBillNo.AutoSize = true;
             this.lblBillNo.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold);
             this.lblBillNo.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.lblBillNo.Location = new System.Drawing.Point(444, 0);
+            this.lblBillNo.Location = new System.Drawing.Point(444, 12);
             this.lblBillNo.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblBillNo.Name = "lblBillNo";
-            this.lblBillNo.Size = new System.Drawing.Size(84, 47);
+            this.lblBillNo.Size = new System.Drawing.Size(68, 23);
             this.lblBillNo.TabIndex = 35;
             this.lblBillNo.Text = "BillNo";
             // 
@@ -2271,10 +2325,10 @@ namespace standard.trans
             this.dtptdate.CustomFormat = "dd-MM-yyyy";
             this.dtptdate.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold);
             this.dtptdate.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-            this.dtptdate.Location = new System.Drawing.Point(285, 6);
+            this.dtptdate.Location = new System.Drawing.Point(285, 8);
             this.dtptdate.Margin = new System.Windows.Forms.Padding(4, 6, 4, 6);
             this.dtptdate.Name = "dtptdate";
-            this.dtptdate.Size = new System.Drawing.Size(149, 42);
+            this.dtptdate.Size = new System.Drawing.Size(149, 30);
             this.dtptdate.TabIndex = 1;
             this.dtptdate.KeyDown += new System.Windows.Forms.KeyEventHandler(this.dtptdate_KeyDown);
             // 
@@ -2284,10 +2338,10 @@ namespace standard.trans
             this.lblfdate.AutoSize = true;
             this.lblfdate.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold);
             this.lblfdate.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.lblfdate.Location = new System.Drawing.Point(4, 6);
+            this.lblfdate.Location = new System.Drawing.Point(4, 12);
             this.lblfdate.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblfdate.Name = "lblfdate";
-            this.lblfdate.Size = new System.Drawing.Size(83, 35);
+            this.lblfdate.Size = new System.Drawing.Size(54, 23);
             this.lblfdate.TabIndex = 23;
             this.lblfdate.Text = "Date";
             // 
@@ -2297,10 +2351,10 @@ namespace standard.trans
             this.lblhyp.AutoSize = true;
             this.lblhyp.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblhyp.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.lblhyp.Location = new System.Drawing.Point(263, 9);
+            this.lblhyp.Location = new System.Drawing.Point(263, 14);
             this.lblhyp.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblhyp.Name = "lblhyp";
-            this.lblhyp.Size = new System.Drawing.Size(14, 28);
+            this.lblhyp.Size = new System.Drawing.Size(14, 18);
             this.lblhyp.TabIndex = 1;
             this.lblhyp.Text = "-";
             // 
@@ -2310,10 +2364,10 @@ namespace standard.trans
             this.label6.AutoSize = true;
             this.label6.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold);
             this.label6.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.label6.Location = new System.Drawing.Point(444, 47);
+            this.label6.Location = new System.Drawing.Point(640, 12);
             this.label6.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(97, 48);
+            this.label6.Size = new System.Drawing.Size(89, 23);
             this.label6.TabIndex = 31;
             this.label6.Text = "Supplier";
             // 
@@ -2324,55 +2378,19 @@ namespace standard.trans
             this.dtpfdate.CustomFormat = "dd-MM-yyyy";
             this.dtpfdate.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold);
             this.dtpfdate.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-            this.dtpfdate.Location = new System.Drawing.Point(96, 6);
+            this.dtpfdate.Location = new System.Drawing.Point(96, 8);
             this.dtpfdate.Margin = new System.Windows.Forms.Padding(4, 6, 4, 6);
             this.dtpfdate.Name = "dtpfdate";
-            this.dtpfdate.Size = new System.Drawing.Size(159, 42);
+            this.dtpfdate.Size = new System.Drawing.Size(159, 30);
             this.dtpfdate.TabIndex = 0;
             this.dtpfdate.KeyDown += new System.Windows.Forms.KeyEventHandler(this.dtpfdate_KeyDown);
-            // 
-            // label5
-            // 
-            this.label5.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.label5.AutoSize = true;
-            this.label5.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold);
-            this.label5.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.label5.Location = new System.Drawing.Point(4, 53);
-            this.label5.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(72, 35);
-            this.label5.TabIndex = 29;
-            this.label5.Text = "City";
-            // 
-            // cboCityView
-            // 
-            this.cboCityView.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.cboCityView.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
-            this.cboCityView.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
-            this.tableLayoutPanel1.SetColumnSpan(this.cboCityView, 3);
-            this.cboCityView.DataSource = this.ledgermasteCityViewrBindingSource;
-            this.cboCityView.DisplayMember = "led_address2";
-            this.cboCityView.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold);
-            this.cboCityView.FormattingEnabled = true;
-            this.cboCityView.Location = new System.Drawing.Point(96, 53);
-            this.cboCityView.Margin = new System.Windows.Forms.Padding(4, 6, 4, 6);
-            this.cboCityView.Name = "cboCityView";
-            this.cboCityView.Size = new System.Drawing.Size(340, 43);
-            this.cboCityView.TabIndex = 30;
-            this.cboCityView.ValueMember = "led_id";
-            this.cboCityView.SelectedValueChanged += new System.EventHandler(this.cboCityView_SelectedValueChanged);
-            this.cboCityView.KeyDown += new System.Windows.Forms.KeyEventHandler(this.cboCityView_KeyDown);
-            // 
-            // ledgermasteCityViewrBindingSource
-            // 
-            this.ledgermasteCityViewrBindingSource.DataSource = typeof(standard.classes.ledgermaster);
             // 
             // txtSearchBillNo
             // 
             this.txtSearchBillNo.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.txtSearchBillNo.Location = new System.Drawing.Point(548, 3);
+            this.txtSearchBillNo.Location = new System.Drawing.Point(548, 8);
             this.txtSearchBillNo.Name = "txtSearchBillNo";
-            this.txtSearchBillNo.Size = new System.Drawing.Size(85, 42);
+            this.txtSearchBillNo.Size = new System.Drawing.Size(85, 30);
             this.txtSearchBillNo.TabIndex = 34;
             this.txtSearchBillNo.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtSearchBillNo_KeyDown);
             // 
@@ -2383,7 +2401,7 @@ namespace standard.trans
             this.cmdexit.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.cmdexit.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold);
             this.cmdexit.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(41)))), ((int)(((byte)(66)))), ((int)(((byte)(122)))));
-            this.cmdexit.Location = new System.Drawing.Point(1002, 48);
+            this.cmdexit.Location = new System.Drawing.Point(1022, 48);
             this.cmdexit.Margin = new System.Windows.Forms.Padding(1);
             this.cmdexit.Name = "cmdexit";
             this.cmdexit.Size = new System.Drawing.Size(117, 45);
@@ -2398,16 +2416,20 @@ namespace standard.trans
             this.cboSupplierView.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
             this.cboSupplierView.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
             this.tableLayoutPanel1.SetColumnSpan(this.cboSupplierView, 3);
-            this.cboSupplierView.DataSource = this.usppurchasemasterSelectResultBindingSource;
+            this.cboSupplierView.DataSource = this.ledgermasterViewBindingSource;
             this.cboSupplierView.DisplayMember = "led_name";
             this.cboSupplierView.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold);
             this.cboSupplierView.FormattingEnabled = true;
-            this.cboSupplierView.Location = new System.Drawing.Point(549, 53);
+            this.cboSupplierView.Location = new System.Drawing.Point(740, 8);
             this.cboSupplierView.Margin = new System.Windows.Forms.Padding(4, 6, 4, 6);
             this.cboSupplierView.Name = "cboSupplierView";
-            this.cboSupplierView.Size = new System.Drawing.Size(329, 43);
+            this.cboSupplierView.Size = new System.Drawing.Size(329, 31);
             this.cboSupplierView.TabIndex = 36;
             this.cboSupplierView.ValueMember = "led_id";
+            // 
+            // ledgermasterViewBindingSource
+            // 
+            this.ledgermasterViewBindingSource.DataSource = typeof(standard.classes.ledgermaster);
             // 
             // cmdList
             // 
@@ -2415,7 +2437,7 @@ namespace standard.trans
             this.cmdList.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(191)))), ((int)(((byte)(219)))), ((int)(((byte)(254)))));
             this.cmdList.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold);
             this.cmdList.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(41)))), ((int)(((byte)(66)))), ((int)(((byte)(122)))));
-            this.cmdList.Location = new System.Drawing.Point(885, 48);
+            this.cmdList.Location = new System.Drawing.Point(905, 48);
             this.cmdList.Margin = new System.Windows.Forms.Padding(1);
             this.cmdList.Name = "cmdList";
             this.cmdList.Size = new System.Drawing.Size(115, 45);
@@ -2424,9 +2446,29 @@ namespace standard.trans
             this.cmdList.UseVisualStyleBackColor = false;
             this.cmdList.Click += new System.EventHandler(this.cmdList_Click);
             // 
-            // ledgermasterViewBindingSource
+            // label5
             // 
-            this.ledgermasterViewBindingSource.DataSource = typeof(standard.classes.ledgermaster);
+            this.label5.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.label5.AutoSize = true;
+            this.label5.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold);
+            this.label5.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
+            this.label5.Location = new System.Drawing.Point(4, 59);
+            this.label5.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(48, 23);
+            this.label5.TabIndex = 29;
+            this.label5.Text = "City";
+            // 
+            // cboCityView
+            // 
+            this.cboCityView.Location = new System.Drawing.Point(0, 0);
+            this.cboCityView.Name = "cboCityView";
+            this.cboCityView.Size = new System.Drawing.Size(121, 21);
+            this.cboCityView.TabIndex = 0;
+            // 
+            // ledgermasteCityViewrBindingSource
+            // 
+            this.ledgermasteCityViewrBindingSource.DataSource = typeof(standard.classes.ledgermaster);
             // 
             // pnlview
             // 
@@ -2436,15 +2478,15 @@ namespace standard.trans
             this.pnlview.Location = new System.Drawing.Point(0, 0);
             this.pnlview.Margin = new System.Windows.Forms.Padding(6);
             this.pnlview.Name = "pnlview";
-            this.pnlview.Size = new System.Drawing.Size(1315, 690);
+            this.pnlview.Size = new System.Drawing.Size(1284, 690);
             this.pnlview.TabIndex = 12;
             // 
             // frmPurchase
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(18F, 35F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 23F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(191)))), ((int)(((byte)(219)))), ((int)(((byte)(254)))));
-            this.ClientSize = new System.Drawing.Size(1315, 690);
+            this.ClientSize = new System.Drawing.Size(1284, 690);
             this.Controls.Add(this.tablemain);
             this.Controls.Add(this.pnlview);
             this.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold);
@@ -2472,44 +2514,45 @@ namespace standard.trans
             ((System.ComponentModel.ISupportInitialize)(this.usppurchasemasterSelectResultBindingSource)).EndInit();
             this.tableLayoutPanel1.ResumeLayout(false);
             this.tableLayoutPanel1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.ledgermasteCityViewrBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ledgermasterViewBindingSource)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ledgermasteCityViewrBindingSource)).EndInit();
             this.pnlview.ResumeLayout(false);
             this.ResumeLayout(false);
 
-		}
-
-        private void txtDiscountRate_Leave(object sender, EventArgs e)
-        {
-            if (txtDiscountRate.Text != null && !(txtDiscountRate.Text == string.Empty) && Convert.ToDecimal(txtDiscountRate.Text) > 0m)
-            {
-                List<string> list = new List<string>();
-                list.Add("cQty");
-                list.Add("cAmount");
-                List<decimal> totalSNo = bus.getTotalSNo(dgvPurchase, "cSNo", list);
-                txtDiscountPercentage.Text = "0";
-                decimal d1 = totalSNo[1];
-                decimal num = txtDiscountRate.Value / d1 * 100m;
-                txtDiscountPercentage.Text = $"{num:0.00}";
-           
-                txttotamt.Text = $"{d1 - txtDiscountRate.Value:0.00}";
-            }
         }
 
-        private void txtDiscountPercentage_Leave(object sender, EventArgs e)
-        {
-            if (txtDiscountPercentage.Tag == null)
-            {
-                if (txtDiscountPercentage.Value > 100m)
-                {
-                    txtDiscountPercentage.Text = "0";
-                }
-                else
-                {
-                    calacTotal();
-                }
-            }
-        }
+        //private void txtDiscountRate_Leave(object sender, EventArgs e)
+        //{
+        //    if (txtDiscountRate.Text != null && !(txtDiscountRate.Text == string.Empty) && Convert.ToDecimal(txtDiscountRate.Text) > 0m)
+        //    {
+        //        List<string> list = new List<string>();
+        //        list.Add("cQty");
+        //        list.Add("cAmount");
+        //        List<decimal> totalSNo = bus.getTotalSNo(dgvPurchase, "cSNo", list);
+        //        txtDiscountPercentage.Text = "0";
+        //        decimal d1 = totalSNo[1];
+        //        decimal num = txtDiscountRate.Value / d1 * 100m;
+        //        txtDiscountPercentage.Text = $"{num:0.00}";
+
+        //        txttotamt.Text = $"{d1 - txtDiscountRate.Value:0.00}";
+        //        cmdsave.Focus();
+        //    }
+        //}
+
+        //private void txtDiscountPercentage_Leave(object sender, EventArgs e)
+        //{
+        //    if (txtDiscountPercentage.Tag == null)
+        //    {
+        //        if (txtDiscountPercentage.Value > 100m)
+        //        {
+        //            txtDiscountPercentage.Text = "0";
+        //        }
+        //        else
+        //        {
+        //            calacTotal();
+        //        }
+        //    }
+        //}
 
         private void txtBillNo_KeyDown(object sender, KeyEventArgs e)
         {
@@ -2517,6 +2560,46 @@ namespace standard.trans
             {
                 dtppurdate.Focus();
             }
+        }
+
+
+        private void txtFrieght_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Return)
+            {
+                calacTotal();
+            }
+        }
+
+        private void txtWages_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Return)
+            {
+                calacTotal();
+            }
+        }
+
+        private void txtDiscountRate_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Return)
+            {
+                calacTotal();
+            }
+        }
+
+        private void txtFrieght_Leave(object sender, EventArgs e)
+        {
+                calacTotal();
+        }
+
+        private void txtWages_Leave(object sender, EventArgs e)
+        {
+            calacTotal();
+        }
+
+        private void txtDiscountRate_Leave(object sender, EventArgs e)
+        {
+            calacTotal();
         }
 
         //private void cboCity_SelectedValueChanged_1(object sender, EventArgs e)
