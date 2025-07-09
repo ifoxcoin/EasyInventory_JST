@@ -335,39 +335,51 @@ namespace standard.report
                 {
                     int? vehicleId = Convert.ToInt32(cboVehicleNo.SelectedValue) == 0 ? (int?)null : Convert.ToInt32(cboVehicleNo.SelectedValue);
                     //if (_ReportType == "LOADWAY")    --- From SalesBill
-                        //{
-                        //    var data = db.usp_getCutomerByRoute(Convert.ToInt32(cboRoute.SelectedValue.ToString()), vehicleId, dtpfdate.Value).ToList().OrderBy(x => x.led_deliveryorder);
-                        //    reportViewer1.LocalReport.ReportEmbeddedResource = "standard.report.rptSalesLoadWay.rdlc";
-                        //    ReportDataSource reportsource = new ReportDataSource("usp_getCustomerByRoute", data.ToList());
-                        //    reportViewer1.LocalReport.DataSources.Add(reportsource);
-                        //}
-                        //else
-                        //{
-                        //    var data = db.usp_getCutomerByRoute(Convert.ToInt32(cboRoute.SelectedValue.ToString()), vehicleId, dtpfdate.Value.Date).ToList().OrderBy(x => x.led_deliveryorder);
-                        //    reportViewer1.LocalReport.ReportEmbeddedResource = "standard.report.rptSalesKachathu.rdlc";
-                        //    ReportDataSource reportsource = new ReportDataSource("usp_getCustomerByRoute", data.ToList());
-                        //    reportViewer1.LocalReport.DataSources.Add(reportsource);
-                        //}
+                    //{
+                    //    var data = db.usp_getCutomerByRoute(Convert.ToInt32(cboRoute.SelectedValue.ToString()), vehicleId, dtpfdate.Value).ToList().OrderBy(x => x.led_deliveryorder);
+                    //    reportViewer1.LocalReport.ReportEmbeddedResource = "standard.report.rptSalesLoadWay.rdlc";
+                    //    ReportDataSource reportsource = new ReportDataSource("usp_getCustomerByRoute", data.ToList());
+                    //    reportViewer1.LocalReport.DataSources.Add(reportsource);
+                    //}
+                    //else
+                    //{
+                    //    var data = db.usp_getCutomerByRoute(Convert.ToInt32(cboRoute.SelectedValue.ToString()), vehicleId, dtpfdate.Value.Date).ToList().OrderBy(x => x.led_deliveryorder);
+                    //    reportViewer1.LocalReport.ReportEmbeddedResource = "standard.report.rptSalesKachathu.rdlc";
+                    //    ReportDataSource reportsource = new ReportDataSource("usp_getCustomerByRoute", data.ToList());
+                    //    reportViewer1.LocalReport.DataSources.Add(reportsource);
+                    //}
 
-                        if (_ReportType == "LOADWAY")
-                        {
+                    if (_ReportType == "WithRate")
+                    {
 
 
-                            var data = db.usp_getLoadwayBySalesOrder(Convert.ToInt32(cboRoute.SelectedValue.ToString()), vehicleId, dtpfdate.Value).ToList().OrderBy(x => x.led_deliveryorder);
-                            List<ReportParameter> list = new List<ReportParameter>();
-                            list.Add(new ReportParameter("BillDate", dtpfdate.Value.ToString("dd-MM-yyyy")));
-                            reportViewer1.LocalReport.ReportEmbeddedResource = "standard.report.rptSalesLoadWayByOrder.rdlc";
-                            ReportDataSource reportsource = new ReportDataSource("usp_getLoadwayBySalesOrder", data.ToList());
-                            reportViewer1.LocalReport.DataSources.Add(reportsource);
-                            reportViewer1.LocalReport.SetParameters(list);
-                        }
-                        else
-                        {
-                            var data = db.usp_getCutomerByRoute(Convert.ToInt32(cboRoute.SelectedValue.ToString()), vehicleId, dtpfdate.Value.Date).ToList().OrderBy(x => x.led_deliveryorder);
-                            reportViewer1.LocalReport.ReportEmbeddedResource = "standard.report.rptSalesKachathu.rdlc";
-                            ReportDataSource reportsource = new ReportDataSource("usp_getCustomerByRoute", data.ToList());
-                            reportViewer1.LocalReport.DataSources.Add(reportsource);
-                        }
+                        var data = db.usp_getLoadwayBySalesOrder(Convert.ToInt32(cboRoute.SelectedValue.ToString()), vehicleId, dtpfdate.Value).ToList().OrderBy(x => x.led_deliveryorder);
+                        List<ReportParameter> list = new List<ReportParameter>();
+                        list.Add(new ReportParameter("BillDate", dtpfdate.Value.ToString("dd-MM-yyyy")));
+                        reportViewer1.LocalReport.ReportEmbeddedResource = "standard.report.rptSalesLoadWayByOrder.rdlc";
+                        ReportDataSource reportsource = new ReportDataSource("usp_getLoadwayBySalesOrder", data.ToList());
+                        reportViewer1.LocalReport.DataSources.Add(reportsource);
+                        reportViewer1.LocalReport.SetParameters(list);
+                    }
+                    if (_ReportType == "WithOutRate" || _ReportType == "LOADWAY")
+                    {
+
+
+                        var data = db.usp_getLoadwayBySalesOrder(Convert.ToInt32(cboRoute.SelectedValue.ToString()), vehicleId, dtpfdate.Value).ToList().OrderBy(x => x.led_deliveryorder);
+                        List<ReportParameter> list = new List<ReportParameter>();
+                        list.Add(new ReportParameter("BillDate", dtpfdate.Value.ToString("dd-MM-yyyy")));
+                        reportViewer1.LocalReport.ReportEmbeddedResource = "standard.report.rptSalesLoadWayToLoadMan.rdlc";
+                        ReportDataSource reportsource = new ReportDataSource("usp_getLoadwayBySalesOrder", data.ToList());
+                        reportViewer1.LocalReport.DataSources.Add(reportsource);
+                        reportViewer1.LocalReport.SetParameters(list);
+                    }
+                    if (_ReportType == "KACHATHU")
+                    {
+                        var data = db.usp_getCutomerByRoute(Convert.ToInt32(cboRoute.SelectedValue.ToString()), vehicleId, dtpfdate.Value.Date).ToList().OrderBy(x => x.led_deliveryorder);
+                        reportViewer1.LocalReport.ReportEmbeddedResource = "standard.report.rptSalesKachathu.rdlc";
+                        ReportDataSource reportsource = new ReportDataSource("usp_getCustomerByRoute", data.ToList());
+                        reportViewer1.LocalReport.DataSources.Add(reportsource);
+                    }
 
                 }
                 // reportViewer1.SetDisplayMode(DisplayMode.PrintLayout);
@@ -736,16 +748,34 @@ namespace standard.report
             {
                 _ReportType = "KACHATHU";
                 chkIsSummary.Text = "KACHATHU";
+                chkLorryBill.Visible = false;
                 chkIsSummary.BackColor = Color.Green;
-                chkIsSummary.ForeColor = Color.White;
 
             }
             else
             {
                 _ReportType = "LOADWAY";
                 chkIsSummary.Text = "LOADWAY";
+                chkLorryBill.Visible = true;
                 chkIsSummary.BackColor = Color.Red;
-                chkIsSummary.ForeColor = Color.White;
+                chkLorryBill.Checked = true;
+            }
+        }
+
+        private void chkLorryBill_CheckedChanged(object sender, EventArgs e)
+        {
+            if (chkLorryBill.Checked == false)
+            {
+                _ReportType = "WithRate";
+                chkLorryBill.Text = "With Rate";
+                chkLorryBill.BackColor = Color.Green;
+
+            }
+            else
+            {
+                _ReportType = "WithOutRate";
+                chkLorryBill.Text = "WithOut Rate";
+                chkLorryBill.BackColor = Color.Red;
             }
         }
     }

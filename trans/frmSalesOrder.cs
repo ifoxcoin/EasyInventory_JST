@@ -1160,7 +1160,7 @@ namespace standard.trans
                         MessageBox.Show("This Record Already Converted to Sales", "Information", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
                         return;
                     }
-                    if (MessageBox.Show("Are you sure to Convert?", "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.No)
+                    //if (MessageBox.Show("Are you sure to Convert?", "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.No)
 
                         foreach (usp_salesorderdetailsSelectResult sod in salesOrderDetailsResult)
                         {
