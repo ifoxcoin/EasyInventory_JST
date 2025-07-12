@@ -42,20 +42,23 @@
             this.lblReference = new System.Windows.Forms.Label();
             this.cboReference = new System.Windows.Forms.ComboBox();
             this.uspledgermasterSelectResultBindingSource1 = new System.Windows.Forms.BindingSource(this.components);
-            this.txtCityNames = new System.Windows.Forms.RichTextBox();
             this.cmdexit = new mylib.lightbutton();
             this.cmdList = new mylib.lightbutton();
             this.btnClear = new mylib.lightbutton();
             this.btnAddSearch = new mylib.lightbutton();
-            this.lblCityName = new System.Windows.Forms.Label();
-            this.cboCityName = new System.Windows.Forms.ComboBox();
-            this.ledgermasterCityBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.btnSend = new mylib.lightbutton();
             this.cboCity = new System.Windows.Forms.ComboBox();
+            this.ledgermasterCityBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.cboName = new System.Windows.Forms.ComboBox();
             this.ledgermasterBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.lblCity = new System.Windows.Forms.Label();
             this.lblLedger = new System.Windows.Forms.Label();
+            this.cboCityName = new System.Windows.Forms.ComboBox();
+            this.lblCityName = new System.Windows.Forms.Label();
+            this.cboItemName = new System.Windows.Forms.ComboBox();
+            this.itemBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.label1 = new System.Windows.Forms.Label();
+            this.txtCityNames = new System.Windows.Forms.RichTextBox();
             this.a1Paneltitle = new mylib.a1panel();
             this.lbltitle = new System.Windows.Forms.Label();
             this.reportViewer1 = new Microsoft.Reporting.WinForms.ReportViewer();
@@ -67,6 +70,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.uspledgermasterSelectResultBindingSource1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ledgermasterCityBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ledgermasterBindingSource)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.itemBindingSource)).BeginInit();
             this.a1Paneltitle.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.uspledgermasterCustomerSelectResultBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.uspledgermasterCustomerCityBindingSource)).BeginInit();
@@ -114,18 +118,20 @@
             this.tablelist.Controls.Add(this.cboPartyType, 3, 2);
             this.tablelist.Controls.Add(this.lblReference, 5, 2);
             this.tablelist.Controls.Add(this.cboReference, 6, 2);
-            this.tablelist.Controls.Add(this.txtCityNames, 5, 1);
             this.tablelist.Controls.Add(this.cmdexit, 11, 1);
             this.tablelist.Controls.Add(this.cmdList, 10, 1);
             this.tablelist.Controls.Add(this.btnClear, 9, 1);
             this.tablelist.Controls.Add(this.btnAddSearch, 8, 1);
-            this.tablelist.Controls.Add(this.lblCityName, 3, 1);
-            this.tablelist.Controls.Add(this.cboCityName, 4, 1);
             this.tablelist.Controls.Add(this.btnSend, 10, 2);
             this.tablelist.Controls.Add(this.cboCity, 8, 0);
             this.tablelist.Controls.Add(this.cboName, 5, 0);
             this.tablelist.Controls.Add(this.lblCity, 7, 0);
             this.tablelist.Controls.Add(this.lblLedger, 4, 0);
+            this.tablelist.Controls.Add(this.cboCityName, 9, 2);
+            this.tablelist.Controls.Add(this.lblCityName, 8, 2);
+            this.tablelist.Controls.Add(this.cboItemName, 4, 1);
+            this.tablelist.Controls.Add(this.label1, 3, 1);
+            this.tablelist.Controls.Add(this.txtCityNames, 6, 1);
             this.tablelist.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tablelist.Location = new System.Drawing.Point(5, 47);
             this.tablelist.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
@@ -143,10 +149,10 @@
             this.dtptdate.CustomFormat = "dd-MM-yyyy";
             this.dtptdate.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
             this.dtptdate.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-            this.dtptdate.Location = new System.Drawing.Point(260, 5);
+            this.dtptdate.Location = new System.Drawing.Point(260, 8);
             this.dtptdate.Margin = new System.Windows.Forms.Padding(5);
             this.dtptdate.Name = "dtptdate";
-            this.dtptdate.Size = new System.Drawing.Size(132, 35);
+            this.dtptdate.Size = new System.Drawing.Size(132, 26);
             this.dtptdate.TabIndex = 1;
             this.dtptdate.KeyDown += new System.Windows.Forms.KeyEventHandler(this.dtptdate_KeyDown);
             // 
@@ -156,10 +162,10 @@
             this.lblhyp.AutoSize = true;
             this.lblhyp.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblhyp.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.lblhyp.Location = new System.Drawing.Point(228, 9);
+            this.lblhyp.Location = new System.Drawing.Point(230, 13);
             this.lblhyp.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.lblhyp.Name = "lblhyp";
-            this.lblhyp.Size = new System.Drawing.Size(19, 24);
+            this.lblhyp.Size = new System.Drawing.Size(14, 16);
             this.lblhyp.TabIndex = 1;
             this.lblhyp.Text = "-";
             // 
@@ -170,10 +176,10 @@
             this.dtpfdate.CustomFormat = "dd-MM-yyyy";
             this.dtpfdate.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
             this.dtpfdate.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-            this.dtpfdate.Location = new System.Drawing.Point(75, 5);
+            this.dtpfdate.Location = new System.Drawing.Point(75, 8);
             this.dtpfdate.Margin = new System.Windows.Forms.Padding(5);
             this.dtpfdate.Name = "dtpfdate";
-            this.dtpfdate.Size = new System.Drawing.Size(132, 35);
+            this.dtpfdate.Size = new System.Drawing.Size(132, 26);
             this.dtpfdate.TabIndex = 0;
             this.dtpfdate.KeyDown += new System.Windows.Forms.KeyEventHandler(this.dtpfdate_KeyDown);
             // 
@@ -183,10 +189,10 @@
             this.lblfdate.AutoSize = true;
             this.lblfdate.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
             this.lblfdate.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.lblfdate.Location = new System.Drawing.Point(5, 0);
+            this.lblfdate.Location = new System.Drawing.Point(5, 12);
             this.lblfdate.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.lblfdate.Name = "lblfdate";
-            this.lblfdate.Size = new System.Drawing.Size(53, 43);
+            this.lblfdate.Size = new System.Drawing.Size(43, 18);
             this.lblfdate.TabIndex = 23;
             this.lblfdate.Text = "Date";
             // 
@@ -214,12 +220,13 @@
             this.lblPartyType.AutoSize = true;
             this.lblPartyType.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
             this.lblPartyType.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.lblPartyType.Location = new System.Drawing.Point(75, 94);
+            this.lblPartyType.Location = new System.Drawing.Point(75, 99);
             this.lblPartyType.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.lblPartyType.Name = "lblPartyType";
-            this.lblPartyType.Size = new System.Drawing.Size(129, 28);
+            this.lblPartyType.Size = new System.Drawing.Size(85, 18);
             this.lblPartyType.TabIndex = 24;
             this.lblPartyType.Text = "PartyType";
+            this.lblPartyType.Visible = false;
             // 
             // cboPartyType
             // 
@@ -236,12 +243,13 @@
             "Customer",
             "Supplier",
             "Agent"});
-            this.cboPartyType.Location = new System.Drawing.Point(260, 90);
+            this.cboPartyType.Location = new System.Drawing.Point(260, 95);
             this.cboPartyType.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.cboPartyType.Name = "cboPartyType";
-            this.cboPartyType.Size = new System.Drawing.Size(290, 36);
+            this.cboPartyType.Size = new System.Drawing.Size(290, 26);
             this.cboPartyType.TabIndex = 25;
             this.cboPartyType.ValueMember = "led_id";
+            this.cboPartyType.Visible = false;
             this.cboPartyType.KeyDown += new System.Windows.Forms.KeyEventHandler(this.cboPartyType_KeyDown);
             // 
             // lblReference
@@ -250,10 +258,10 @@
             this.lblReference.AutoSize = true;
             this.lblReference.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
             this.lblReference.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.lblReference.Location = new System.Drawing.Point(560, 94);
+            this.lblReference.Location = new System.Drawing.Point(560, 99);
             this.lblReference.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.lblReference.Name = "lblReference";
-            this.lblReference.Size = new System.Drawing.Size(131, 28);
+            this.lblReference.Size = new System.Drawing.Size(85, 18);
             this.lblReference.TabIndex = 24;
             this.lblReference.Text = "Reference";
             this.lblReference.Visible = false;
@@ -268,10 +276,10 @@
             this.cboReference.DisplayMember = "led_name";
             this.cboReference.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cboReference.FormattingEnabled = true;
-            this.cboReference.Location = new System.Drawing.Point(730, 90);
+            this.cboReference.Location = new System.Drawing.Point(730, 95);
             this.cboReference.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.cboReference.Name = "cboReference";
-            this.cboReference.Size = new System.Drawing.Size(265, 36);
+            this.cboReference.Size = new System.Drawing.Size(265, 26);
             this.cboReference.TabIndex = 28;
             this.cboReference.ValueMember = "led_id";
             this.cboReference.Visible = false;
@@ -279,16 +287,6 @@
             // uspledgermasterSelectResultBindingSource1
             // 
             this.uspledgermasterSelectResultBindingSource1.DataSource = typeof(standard.classes.usp_ledgermasterSelectResult);
-            // 
-            // txtCityNames
-            // 
-            this.tablelist.SetColumnSpan(this.txtCityNames, 2);
-            this.txtCityNames.Location = new System.Drawing.Point(558, 46);
-            this.txtCityNames.Name = "txtCityNames";
-            this.txtCityNames.Size = new System.Drawing.Size(264, 37);
-            this.txtCityNames.TabIndex = 36;
-            this.txtCityNames.Text = "";
-            this.txtCityNames.Visible = false;
             // 
             // cmdexit
             // 
@@ -349,37 +347,6 @@
             this.btnAddSearch.Visible = false;
             this.btnAddSearch.Click += new System.EventHandler(this.btnAddSearch_Click);
             // 
-            // lblCityName
-            // 
-            this.lblCityName.AutoSize = true;
-            this.lblCityName.Dock = System.Windows.Forms.DockStyle.Right;
-            this.lblCityName.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
-            this.lblCityName.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.lblCityName.Location = new System.Drawing.Point(278, 43);
-            this.lblCityName.Name = "lblCityName";
-            this.lblCityName.Size = new System.Drawing.Size(124, 43);
-            this.lblCityName.TabIndex = 41;
-            this.lblCityName.Text = "Customer City ";
-            this.lblCityName.TextAlign = System.Drawing.ContentAlignment.TopCenter;
-            this.lblCityName.Visible = false;
-            // 
-            // cboCityName
-            // 
-            this.cboCityName.DataSource = this.ledgermasterCityBindingSource;
-            this.cboCityName.DisplayMember = "led_address2";
-            this.cboCityName.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.cboCityName.FormattingEnabled = true;
-            this.cboCityName.Location = new System.Drawing.Point(408, 46);
-            this.cboCityName.Name = "cboCityName";
-            this.cboCityName.Size = new System.Drawing.Size(144, 30);
-            this.cboCityName.TabIndex = 42;
-            this.cboCityName.ValueMember = "led_id";
-            this.cboCityName.Visible = false;
-            // 
-            // ledgermasterCityBindingSource
-            // 
-            this.ledgermasterCityBindingSource.DataSource = typeof(standard.classes.ledgermaster);
-            // 
             // btnSend
             // 
             this.btnSend.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(191)))), ((int)(((byte)(219)))), ((int)(((byte)(254)))));
@@ -404,14 +371,18 @@
             this.cboCity.DisplayMember = "led_address2";
             this.cboCity.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cboCity.FormattingEnabled = true;
-            this.cboCity.Location = new System.Drawing.Point(1005, 4);
+            this.cboCity.Location = new System.Drawing.Point(1005, 8);
             this.cboCity.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.cboCity.Name = "cboCity";
-            this.cboCity.Size = new System.Drawing.Size(111, 36);
+            this.cboCity.Size = new System.Drawing.Size(111, 26);
             this.cboCity.TabIndex = 25;
             this.cboCity.ValueMember = "led_id";
             this.cboCity.Visible = false;
             this.cboCity.KeyDown += new System.Windows.Forms.KeyEventHandler(this.cboCity_KeyDown);
+            // 
+            // ledgermasterCityBindingSource
+            // 
+            this.ledgermasterCityBindingSource.DataSource = typeof(standard.classes.ledgermaster);
             // 
             // cboName
             // 
@@ -422,10 +393,10 @@
             this.cboName.DisplayMember = "led_name";
             this.cboName.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cboName.FormattingEnabled = true;
-            this.cboName.Location = new System.Drawing.Point(560, 4);
+            this.cboName.Location = new System.Drawing.Point(560, 8);
             this.cboName.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.cboName.Name = "cboName";
-            this.cboName.Size = new System.Drawing.Size(160, 36);
+            this.cboName.Size = new System.Drawing.Size(160, 26);
             this.cboName.TabIndex = 25;
             this.cboName.ValueMember = "led_id";
             this.cboName.SelectedIndexChanged += new System.EventHandler(this.cboName_SelectedIndexChanged);
@@ -443,7 +414,7 @@
             this.lblCity.Location = new System.Drawing.Point(830, 0);
             this.lblCity.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.lblCity.Name = "lblCity";
-            this.lblCity.Size = new System.Drawing.Size(57, 28);
+            this.lblCity.Size = new System.Drawing.Size(38, 18);
             this.lblCity.TabIndex = 24;
             this.lblCity.Text = "City";
             this.lblCity.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -455,12 +426,83 @@
             this.lblLedger.AutoSize = true;
             this.lblLedger.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
             this.lblLedger.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.lblLedger.Location = new System.Drawing.Point(410, 7);
+            this.lblLedger.Location = new System.Drawing.Point(410, 12);
             this.lblLedger.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.lblLedger.Name = "lblLedger";
-            this.lblLedger.Size = new System.Drawing.Size(91, 28);
+            this.lblLedger.Size = new System.Drawing.Size(60, 18);
             this.lblLedger.TabIndex = 24;
             this.lblLedger.Text = "Ledger";
+            // 
+            // cboCityName
+            // 
+            this.cboCityName.DataSource = this.ledgermasterCityBindingSource;
+            this.cboCityName.DisplayMember = "led_address2";
+            this.cboCityName.FormattingEnabled = true;
+            this.cboCityName.Location = new System.Drawing.Point(1124, 89);
+            this.cboCityName.Name = "cboCityName";
+            this.cboCityName.Size = new System.Drawing.Size(115, 22);
+            this.cboCityName.TabIndex = 42;
+            this.cboCityName.ValueMember = "led_id";
+            this.cboCityName.Visible = false;
+            // 
+            // lblCityName
+            // 
+            this.lblCityName.AutoSize = true;
+            this.lblCityName.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
+            this.lblCityName.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
+            this.lblCityName.Location = new System.Drawing.Point(1003, 86);
+            this.lblCityName.Name = "lblCityName";
+            this.lblCityName.Size = new System.Drawing.Size(113, 18);
+            this.lblCityName.TabIndex = 41;
+            this.lblCityName.Text = "Customer City ";
+            this.lblCityName.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            this.lblCityName.Visible = false;
+            // 
+            // cboItemName
+            // 
+            this.cboItemName.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
+            this.cboItemName.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
+            this.tablelist.SetColumnSpan(this.cboItemName, 2);
+            this.cboItemName.DataSource = this.itemBindingSource;
+            this.cboItemName.DisplayMember = "itemName";
+            this.cboItemName.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.cboItemName.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Bold);
+            this.cboItemName.FormattingEnabled = true;
+            this.cboItemName.Location = new System.Drawing.Point(410, 47);
+            this.cboItemName.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.cboItemName.Name = "cboItemName";
+            this.cboItemName.Size = new System.Drawing.Size(310, 27);
+            this.cboItemName.TabIndex = 44;
+            this.cboItemName.ValueMember = "item_id";
+            this.cboItemName.Visible = false;
+            // 
+            // itemBindingSource
+            // 
+            this.itemBindingSource.DataSource = typeof(standard.classes.item);
+            // 
+            // label1
+            // 
+            this.label1.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.label1.AutoSize = true;
+            this.label1.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
+            this.label1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
+            this.label1.Location = new System.Drawing.Point(260, 55);
+            this.label1.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(90, 18);
+            this.label1.TabIndex = 45;
+            this.label1.Text = "Item Name";
+            this.label1.Visible = false;
+            // 
+            // txtCityNames
+            // 
+            this.tablelist.SetColumnSpan(this.txtCityNames, 2);
+            this.txtCityNames.Location = new System.Drawing.Point(728, 46);
+            this.txtCityNames.Name = "txtCityNames";
+            this.txtCityNames.Size = new System.Drawing.Size(264, 37);
+            this.txtCityNames.TabIndex = 36;
+            this.txtCityNames.Text = "";
+            this.txtCityNames.Visible = false;
             // 
             // a1Paneltitle
             // 
@@ -486,7 +528,7 @@
             this.lbltitle.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
             this.lbltitle.Location = new System.Drawing.Point(10, 6);
             this.lbltitle.Name = "lbltitle";
-            this.lbltitle.Size = new System.Drawing.Size(111, 29);
+            this.lbltitle.Size = new System.Drawing.Size(77, 19);
             this.lbltitle.TabIndex = 1;
             this.lbltitle.Text = "REPORT";
             this.lbltitle.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -518,7 +560,7 @@
             // 
             // frmTransactionRpt
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(11F, 22F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 14F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(191)))), ((int)(((byte)(219)))), ((int)(((byte)(254)))));
             this.ClientSize = new System.Drawing.Size(1497, 503);
@@ -534,6 +576,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.uspledgermasterSelectResultBindingSource1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ledgermasterCityBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ledgermasterBindingSource)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.itemBindingSource)).EndInit();
             this.a1Paneltitle.ResumeLayout(false);
             this.a1Paneltitle.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.uspledgermasterCustomerSelectResultBindingSource)).EndInit();
@@ -577,5 +620,8 @@
         private System.Windows.Forms.Label lblCityName;
         private System.Windows.Forms.ComboBox cboCityName;
         private mylib.lightbutton btnSend;
+        private System.Windows.Forms.ComboBox cboItemName;
+        private System.Windows.Forms.BindingSource itemBindingSource;
+        private System.Windows.Forms.Label label1;
     }
 }

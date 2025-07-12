@@ -6,13 +6,13 @@
         <TablixBody>
           <TablixColumns>
             <TablixColumn>
-              <Width>2.61767cm</Width>
+              <Width>2.30016cm</Width>
             </TablixColumn>
             <TablixColumn>
-              <Width>7.57036cm</Width>
+              <Width>4.44829cm</Width>
             </TablixColumn>
             <TablixColumn>
-              <Width>2.55414cm</Width>
+              <Width>2.3954cm</Width>
             </TablixColumn>
           </TablixColumns>
           <TablixRows>
@@ -31,7 +31,7 @@
                               <Value>=Fields!led_address2.Value</Value>
                               <Style>
                                 <FontFamily>tahoma</FontFamily>
-                                <FontSize>12pt</FontSize>
+                                <FontSize>14pt</FontSize>
                                 <FontWeight>Bold</FontWeight>
                               </Style>
                             </TextRun>
@@ -65,7 +65,7 @@
                               <Value>=Fields!led_name.Value</Value>
                               <Style>
                                 <FontFamily>tahoma</FontFamily>
-                                <FontSize>12pt</FontSize>
+                                <FontSize>14pt</FontSize>
                                 <FontWeight>Bold</FontWeight>
                               </Style>
                             </TextRun>
@@ -99,7 +99,7 @@
                               <Value />
                               <Style>
                                 <FontFamily>tahoma</FontFamily>
-                                <FontSize>12pt</FontSize>
+                                <FontSize>14pt</FontSize>
                                 <FontWeight>Bold</FontWeight>
                               </Style>
                             </TextRun>
@@ -137,10 +137,10 @@
                         <Paragraph>
                           <TextRuns>
                             <TextRun>
-                              <Value>=Fields!sd_unitvalue.Value &amp;""&amp; Fields!sd_unit.Value</Value>
+                              <Value>=Format(Fields!sd_unitvalue.Value,0) &amp;""&amp; Fields!sd_unit.Value</Value>
                               <Style>
                                 <FontFamily>tahoma</FontFamily>
-                                <FontSize>12pt</FontSize>
+                                <FontSize>14pt</FontSize>
                               </Style>
                             </TextRun>
                           </TextRuns>
@@ -175,7 +175,7 @@
                               <Value>=Fields!item_name.Value</Value>
                               <Style>
                                 <FontFamily>nirmala UI</FontFamily>
-                                <FontSize>12pt</FontSize>
+                                <FontSize>14pt</FontSize>
                               </Style>
                             </TextRun>
                           </TextRuns>
@@ -208,7 +208,7 @@
                               <Value>=FormatNumber(Fields!sd_qty.Value, 0)</Value>
                               <Style>
                                 <FontFamily>tahoma</FontFamily>
-                                <FontSize>12pt</FontSize>
+                                <FontSize>14pt</FontSize>
                               </Style>
                             </TextRun>
                           </TextRuns>
@@ -248,7 +248,7 @@
                               <Value />
                               <Style>
                                 <FontFamily>tahoma</FontFamily>
-                                <FontSize>12pt</FontSize>
+                                <FontSize>14pt</FontSize>
                                 <FontWeight>Bold</FontWeight>
                               </Style>
                             </TextRun>
@@ -282,7 +282,7 @@
                               <Value>Bags</Value>
                               <Style>
                                 <FontFamily>tahoma</FontFamily>
-                                <FontSize>12pt</FontSize>
+                                <FontSize>14pt</FontSize>
                                 <FontWeight>Bold</FontWeight>
                               </Style>
                             </TextRun>
@@ -316,7 +316,7 @@
                               <Value>=Format(Sum(Fields!sd_qty.Value), 0)</Value>
                               <Style>
                                 <FontFamily>tahoma</FontFamily>
-                                <FontSize>12pt</FontSize>
+                                <FontSize>14pt</FontSize>
                                 <FontWeight>Bold</FontWeight>
                               </Style>
                             </TextRun>
@@ -357,7 +357,7 @@
                               <Value />
                               <Style>
                                 <FontFamily>tahoma</FontFamily>
-                                <FontSize>12pt</FontSize>
+                                <FontSize>14pt</FontSize>
                                 <FontWeight>Bold</FontWeight>
                               </Style>
                             </TextRun>
@@ -391,7 +391,7 @@
                               <Value>Frieght Charge</Value>
                               <Style>
                                 <FontFamily>tahoma</FontFamily>
-                                <FontSize>12pt</FontSize>
+                                <FontSize>14pt</FontSize>
                                 <FontWeight>Bold</FontWeight>
                               </Style>
                             </TextRun>
@@ -425,7 +425,7 @@
                               <Value>=Format(Sum(Fields!sd_totfrieght.Value), "N2")</Value>
                               <Style>
                                 <FontFamily>tahoma</FontFamily>
-                                <FontSize>12pt</FontSize>
+                                <FontSize>14pt</FontSize>
                                 <FontWeight>Bold</FontWeight>
                               </Style>
                             </TextRun>
@@ -513,8 +513,8 @@
             <Value>=CInt(Fields!led_deliveryorder.Value)</Value>
           </SortExpression>
         </SortExpressions>
-        <Height>2.41601cm</Height>
-        <Width>12.74217cm</Width>
+        <Height>2.416cm</Height>
+        <Width>9.14385cm</Width>
         <Style>
           <Border>
             <Style>None</Style>
@@ -529,7 +529,7 @@
       </Border>
     </Style>
   </Body>
-  <Width>5.0166in</Width>
+  <Width>3.59994in</Width>
   <Page>
     <PageHeader>
       <Height>0.65625in</Height>
@@ -567,7 +567,7 @@
           </Paragraphs>
           <rd:DefaultName>Textbox1</rd:DefaultName>
           <Top>0.04167in</Top>
-          <Left>2.80141in</Left>
+          <Left>1.42641in</Left>
           <Height>0.22in</Height>
           <Width>2.17353in</Width>
           <Style>
@@ -587,10 +587,10 @@
         </Border>
       </Style>
     </PageFooter>
-    <PageHeight>8.27in</PageHeight>
-    <PageWidth>5.83in</PageWidth>
+    <PageHeight>6.49606in</PageHeight>
+    <PageWidth>3.93701in</PageWidth>
     <LeftMargin>0.2in</LeftMargin>
-    <BottomMargin>0.5in</BottomMargin>
+    <BottomMargin>0.2in</BottomMargin>
     <ColumnSpacing>0.05118in</ColumnSpacing>
     <Style />
   </Page>

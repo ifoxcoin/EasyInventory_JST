@@ -224,6 +224,12 @@
     <Compile Include="report\frmNewTransactionRpt.Designer.cs">
       <DependentUpon>frmNewTransactionRpt.cs</DependentUpon>
     </Compile>
+    <Compile Include="report\frmPendingSalesOrderRpt.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="report\frmPendingSalesOrderRpt.Designer.cs">
+      <DependentUpon>frmPendingSalesOrderRpt.cs</DependentUpon>
+    </Compile>
     <Compile Include="report\frmTransactionRpt.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -235,6 +241,9 @@
     </Compile>
     <Compile Include="report\frmAddressPrint.Designer.cs">
       <DependentUpon>frmAddressPrint.cs</DependentUpon>
+    </Compile>
+    <Compile Include="trans\frmCustomerVehicle.cs">
+      <SubType>Form</SubType>
     </Compile>
     <Compile Include="trans\frmPackingReceipt.cs">
       <SubType>Form</SubType>
@@ -282,6 +291,9 @@
     <EmbeddedResource Include="report\frmNewTransactionRpt.resx">
       <DependentUpon>frmNewTransactionRpt.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="report\frmPendingSalesOrderRpt.resx">
+      <DependentUpon>frmPendingSalesOrderRpt.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="report\purinv.rdlc" />
     <EmbeddedResource Include="report\rptAddPrintNoGst.rdlc" />
     <EmbeddedResource Include="report\rptAddStickerPrint.rdlc" />
@@ -300,6 +312,7 @@
     <EmbeddedResource Include="report\rptSalesInvoice2.rdlc" />
     <EmbeddedResource Include="report\rptSalesInvoice1.rdlc" />
     <EmbeddedResource Include="report\rptSalesKachathu.rdlc" />
+    <EmbeddedResource Include="report\rptPendingSalesorderList.rdlc" />
     <EmbeddedResource Include="report\rptSalesLoadWayToLoadMan.rdlc" />
     <EmbeddedResource Include="report\rptSalesLoadWayByOrder.rdlc" />
     <EmbeddedResource Include="report\rptSalesLoadWay.rdlc" />
@@ -322,8 +335,10 @@
     <EmbeddedResource Include="report\rptAddPrint.rdlc" />
     <EmbeddedResource Include="report\rptPurchaseSummary.rdlc" />
     <EmbeddedResource Include="report\rptSupplierOutstanding.rdlc" />
-    <EmbeddedResource Include="report\rptSalesInvoice.rdlc" />
     <EmbeddedResource Include="report\salinv.rdlc" />
+    <EmbeddedResource Include="trans\frmCustomerVehicle.resx">
+      <DependentUpon>frmCustomerVehicle.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="trans\frmPackingReceipt.resx">
       <DependentUpon>frmPackingReceipt.cs</DependentUpon>
     </EmbeddedResource>
@@ -439,9 +454,11 @@
     <None Include="Properties\DataSources\standard.classes.usp_commissionreceiptSelectResult.datasource" />
     <None Include="Properties\DataSources\standard.classes.usp_companySelectResult.datasource" />
     <None Include="Properties\DataSources\standard.classes.usp_companySelectResult1.datasource" />
+    <None Include="Properties\DataSources\standard.classes.usp_GetCustomerVehicleDetailinSalesorderResult.datasource" />
     <None Include="Properties\DataSources\standard.classes.usp_getCutomerByRouteResult.datasource" />
     <None Include="Properties\DataSources\standard.classes.usp_getCutomerByRouteResult1.datasource" />
     <None Include="Properties\DataSources\standard.classes.usp_getLoadwayBySalesOrderResult.datasource" />
+    <None Include="Properties\DataSources\standard.classes.usp_getPendingSaleorderListResult.datasource" />
     <None Include="Properties\DataSources\standard.classes.usp_itemSelectResult1.datasource" />
     <None Include="Properties\DataSources\standard.classes.usp_ledgerItemDetailsReportResult.datasource" />
     <None Include="Properties\DataSources\standard.classes.usp_ledgermasterSelectResult1.datasource" />

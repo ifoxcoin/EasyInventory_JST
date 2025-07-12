@@ -459,16 +459,25 @@ namespace standard.trans
                                 {
                                     if (!item2.IsNewRow)
                                     {
+                                        purchasedetail.pd_unitvalue = Convert.ToDecimal(item2.Cells["cItemUnitValue"].Value);
                                         purchasedetail.pd_qty = Convert.ToDecimal(item2.Cells["cQty"].Value);
                                         purchasedetail.pd_prate = Convert.ToDecimal(item2.Cells["cRate"].Value);
                                         purchasedetail.cat_id = Convert.ToInt32(item2.Cells["cCatID"].Value);
                                         purchasedetail.item_id = Convert.ToInt32(item2.Cells["cItemId"].Value);
-                                        purchasedetail.pd_amount = purchasedetail.pd_prate * purchasedetail.pd_qty;
+                                        purchasedetail.pd_amount = Convert.ToDecimal(item2.Cells["cAmount"].Value);
                                         purchasedetail.item_id = Convert.ToInt32(item2.Cells["cItemId"].Value);
                                         purchasedetail.pd_particulars = item2.Cells["cItemName"].Value.ToString();
                                         purchasedetail.pd_totfrieght = Convert.ToDecimal(item2.Cells["cFrieghtCharge"].Value);
-                                        inventoryDataContext.usp_purchasedetailsInsert(Convert.ToInt32(id), purchasedetail.item_id, purchasedetail.cat_id, purchasedetail.pd_particulars, purchasedetail.pd_qty, purchasedetail.pd_prate, purchasedetail.pd_amount, purchasedetail.pd_totfrieght);
-                                        inventoryDataContext.usp_stockInsert(id, "PURCHASE", purchasedetail.item_id, global.comid, purchasedetail.pd_qty, 0m, global.sysdate);
+                                        inventoryDataContext.usp_purchasedetailsInsert(Convert.ToInt32(id), purchasedetail.item_id, purchasedetail.cat_id, purchasedetail.pd_particulars, purchasedetail.pd_qty, purchasedetail.pd_unitvalue, purchasedetail.pd_prate, purchasedetail.pd_amount, purchasedetail.pd_totfrieght);
+                                        var catid = inventoryDataContext.items.Where(i => i.item_id == purchasedetail.item_id).Select(i => i.cat_id).FirstOrDefault();
+                                        if (catid == 39)
+                                        {
+                                            inventoryDataContext.usp_stockInsert(id, "PURCHASE", purchasedetail.item_id, global.comid, purchasedetail.pd_unitvalue, 0m, global.sysdate);
+                                        }
+                                        else
+                                        {
+                                            inventoryDataContext.usp_stockInsert(id, "PURCHASE", purchasedetail.item_id, global.comid, purchasedetail.pd_qty, 0m, global.sysdate);
+                                        }
                                     }
                                 }
                             }
@@ -482,17 +491,26 @@ namespace standard.trans
                                 {
                                     if (!item3.IsNewRow)
                                     {
+                                        purchasedetail.pd_unitvalue = Convert.ToDecimal(item3.Cells["cItemUnitValue"].Value);
                                         purchasedetail.pd_qty = Convert.ToDecimal(item3.Cells["cQty"].Value);
                                         purchasedetail.pd_prate = Convert.ToDecimal(item3.Cells["cRate"].Value);
                                         purchasedetail.cat_id = Convert.ToInt32(item3.Cells["cCatID"].Value);
                                         purchasedetail.pd_particulars = item3.Cells["cItemName"].Value.ToString();
                                         purchasedetail.item_id = Convert.ToInt32(item3.Cells["cItemId"].Value);
-                                        purchasedetail.pd_amount = purchasedetail.pd_prate * purchasedetail.pd_qty;
+                                        purchasedetail.pd_amount = Convert.ToDecimal(item3.Cells["cAmount"].Value);
                                         purchasedetail.item_id = Convert.ToInt32(item3.Cells["cItemId"].Value);
                                         purchasedetail.pd_totfrieght = Convert.ToDecimal(item3.Cells["cFrieghtCharge"].Value);
                                         purchasedetail.pd_particulars = "";
-                                        inventoryDataContext.usp_purchasedetailsInsert(Convert.ToInt32(id), purchasedetail.item_id, purchasedetail.cat_id, purchasedetail.pd_particulars, purchasedetail.pd_qty, purchasedetail.pd_prate, purchasedetail.pd_amount, purchasedetail.pd_totfrieght);
-                                        inventoryDataContext.usp_stockInsert(id, "PURCHASE", purchasedetail.item_id, global.comid, purchasedetail.pd_qty, 0m, global.sysdate);
+                                        inventoryDataContext.usp_purchasedetailsInsert(Convert.ToInt32(id), purchasedetail.item_id, purchasedetail.cat_id, purchasedetail.pd_particulars, purchasedetail.pd_qty, purchasedetail.pd_unitvalue, purchasedetail.pd_prate, purchasedetail.pd_amount, purchasedetail.pd_totfrieght);
+                                        var catid = inventoryDataContext.items.Where(i => i.item_id == purchasedetail.item_id).Select(i => i.cat_id).FirstOrDefault();
+                                        if (catid == 39)
+                                        {
+                                            inventoryDataContext.usp_stockInsert(id, "PURCHASE", purchasedetail.item_id, global.comid, purchasedetail.pd_unitvalue, 0m, global.sysdate);
+                                        }
+                                        else
+                                        {
+                                            inventoryDataContext.usp_stockInsert(id, "PURCHASE", purchasedetail.item_id, global.comid, purchasedetail.pd_qty, 0m, global.sysdate);
+                                        }
                                     }
                                 }
                             }
@@ -671,6 +689,16 @@ namespace standard.trans
                                                              join cat in inventoryDataContext2.categories on li.cat_id equals cat.cat_id
                                                              where cat.cat_name == Convert.ToString(dgvPurchase["cCategory", r].Value)
                                                              select li;
+                                if (dgvPurchase["cCatID", r].Value != null && Convert.ToInt32(dgvPurchase["cCatID", r].Value) == 39)
+                                {
+                                    dgvPurchase["cItemUnitValue", r].ReadOnly = false;
+                                }
+                                decimal amount = 0;
+
+                                if (dgvPurchase["cCatID", r].Value != null && Convert.ToInt32(dgvPurchase["cCatID", r].Value) == 39)
+                                {
+                                    amount = 0;
+                                }
                                 foreach (item item in queryable)
                                 {
                                     acsItemCode.Add(item.item_code);
@@ -708,6 +736,18 @@ namespace standard.trans
                                          cat,
                                          li
                                      };
+
+                    if (dgvPurchase["cCatID", r].Value != null && Convert.ToInt32(dgvPurchase["cCatID", r].Value) == 39)
+                    {
+                        dgvPurchase["cItemUnitValue", r].ReadOnly = false;
+                    }
+                    decimal amount = 0;
+
+                    if (dgvPurchase["cCatID", r].Value != null && Convert.ToInt32(dgvPurchase["cCatID", r].Value) == 39)
+                    {
+                        amount = 0;
+                    }
+
                     foreach (var item2 in queryable2)
                     {
                         var selectedItem = inventoryDataContext2.items.FirstOrDefault(i => i.item_id == item2.li.item_id);
@@ -730,6 +770,38 @@ namespace standard.trans
                 dgvPurchase.CurrentCell = dgvPurchase.Rows[dgvPurchase.CurrentCellAddress.Y].Cells["cQty"];
                 dgvPurchase.Focus();
             }
+
+            else if (columnIndex == cItemUnitValue.Index)
+            {
+                if (Convert.ToString(dgvPurchase["cItemName", r].Value) == string.Empty && !dgvPurchase.CurrentRow.IsNewRow)
+                {
+                    dgvPurchase.Rows.RemoveAt(r);
+                }
+                decimal.TryParse(Convert.ToString(dgvPurchase["cQty", r].Value), out qty);
+                result = Math.Abs(qty);
+                decimal.TryParse(Convert.ToString(dgvPurchase["cItemUnitValue", r].Value), out unitValue);
+
+                dgvPurchase["cQty", r].Value = ((result > 0m) ? ((object)result) : null);
+                decimal.TryParse(Convert.ToString(dgvPurchase["cRate", r].Value), out result2);
+
+                if (dgvPurchase["cCatID", r].Value != null && Convert.ToInt32(dgvPurchase["cCatID", r].Value) == 39)
+                {
+                    if (result2 > 0m && unitValue > 0m)
+                    {
+                        decimal amount = (result2 * unitValue);
+                        dgvPurchase["cAmount", r].Value = amount.ToString("N2"); // format to 2 decimals
+                    }
+                    else
+                    {
+                        dgvPurchase["cAmount", r].Value = null;
+                    }
+                }
+                calacTotal();
+                dgvPurchase.CurrentCell = dgvPurchase.Rows[dgvPurchase.CurrentCellAddress.Y].Cells["cRate"];
+                dgvPurchase.Focus();
+
+            }
+
             else if (columnIndex == cQty.Index)
             {
                 if (Convert.ToString(dgvPurchase["cItemName", r].Value) == string.Empty && !dgvPurchase.CurrentRow.IsNewRow)
@@ -742,19 +814,37 @@ namespace standard.trans
 
                 dgvPurchase["cQty", r].Value = ((result > 0m) ? ((object)result) : null);
                 decimal.TryParse(Convert.ToString(dgvPurchase["cRate", r].Value), out result2);
-                if (result2 > 0m && result > 0m)
+
+                if (dgvPurchase["cCatID", r].Value != null && Convert.ToInt32(dgvPurchase["cCatID", r].Value) == 39)
                 {
-                    decimal amount = (result2 * result);
-                    dgvPurchase["cAmount", r].Value = amount.ToString("N2"); // format to 2 decimals
+                    if (result2 > 0m && unitValue > 0m)
+                    {
+                        decimal amount = (result2 * unitValue);
+                        dgvPurchase["cAmount", r].Value = amount.ToString("N2"); // format to 2 decimals
+                    }
+                    else
+                    {
+                        dgvPurchase["cAmount", r].Value = null;
+                    }
                 }
                 else
                 {
-                    dgvPurchase["cAmount", r].Value = null;
-                }
+                    if (result2 > 0m && result > 0m)
+                    {
+                        decimal amount = (result2 * result);
+                        dgvPurchase["cAmount", r].Value = amount.ToString("N2"); // format to 2 decimals
+                    }
+                    else
+                    {
+                        dgvPurchase["cAmount", r].Value = null;
+                    }
+                }  
+
                 calacTotal();
                 dgvPurchase.CurrentCell = dgvPurchase.Rows[dgvPurchase.CurrentCellAddress.Y].Cells["cRate"];
                 dgvPurchase.Focus();
             }
+
             else if (columnIndex == cMrp.Index)
             {
                 if (Convert.ToString(dgvPurchase["cItemName", r].Value) == string.Empty && !dgvPurchase.CurrentRow.IsNewRow)
@@ -765,6 +855,7 @@ namespace standard.trans
                 result2 = Math.Abs(result2);
                 dgvPurchase["cMrp", r].Value = ((result2 > 0m) ? ((object)result2) : null);
             }
+
             else if (columnIndex == cRate.Index)
             {
                 if (Convert.ToString(dgvPurchase["cItemName", r].Value) == string.Empty && !dgvPurchase.CurrentRow.IsNewRow)
@@ -775,7 +866,16 @@ namespace standard.trans
                 result2 = Math.Abs(result2);
                 dgvPurchase["cRate", r].Value = ((result2 > 0m) ? ((object)result2) : null);
                 decimal.TryParse(Convert.ToString(dgvPurchase["cQty", r].Value), out result);
-                dgvPurchase["cAmount", r].Value = ((result2 > 0m && result > 0m) ? ((object)(result2 * result)) : null);
+                decimal.TryParse(Convert.ToString(dgvPurchase["cItemUnitValue", r].Value), out unitValue);
+
+                if (dgvPurchase["cCatID", r].Value != null && Convert.ToInt32(dgvPurchase["cCatID", r].Value) == 39)
+                {
+                    dgvPurchase["cAmount", r].Value = ((result2 > 0m && unitValue > 0m) ? ((object)(result2 * unitValue)) : null);
+                }
+                else
+                {
+                    dgvPurchase["cAmount", r].Value = ((result2 > 0m && result > 0m) ? ((object)(result2 * result)) : null);
+                }
                 calacTotal();
                 SetColumnIndex method = Mymethod;
                 dgvPurchase.BeginInvoke(method, "cCategory");
@@ -979,7 +1079,7 @@ namespace standard.trans
                 dgvPurchase["cRate", dgvPurchase.RowCount - 1].Value = item.pd_prate;
                 dgvPurchase["cQty", dgvPurchase.RowCount - 1].Value = item.pd_qty;
                 dgvPurchase["cAmount", dgvPurchase.RowCount - 1].Value = item.pd_amount;
-                dgvPurchase["cItemUnitValue", dgvPurchase.RowCount - 1].Value = item.item_quantity;
+                dgvPurchase["cItemUnitValue", dgvPurchase.RowCount - 1].Value = item.pd_unitvalue;
                 dgvPurchase["cItemUnit", dgvPurchase.RowCount - 1].Value = item.item_unit;
                 //dgvPurchase["cFrieghtCharge", dgvPurchase.RowCount - 1].Value = item.pd_totfrieght;
             }
@@ -2589,7 +2689,7 @@ namespace standard.trans
 
         private void txtFrieght_Leave(object sender, EventArgs e)
         {
-                calacTotal();
+            calacTotal();
         }
 
         private void txtWages_Leave(object sender, EventArgs e)

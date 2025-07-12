@@ -87,7 +87,6 @@ namespace standard.trans
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle8 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle9 = new System.Windows.Forms.DataGridViewCellStyle();
             this.dgview = new System.Windows.Forms.DataGridView();
-            this.uspGetItemListResultBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.itemidDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.itemnameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.item_quantity = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -99,6 +98,7 @@ namespace standard.trans
             this.itemspecialrateDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.itemwholesalerateDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.itemmrpDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.uspGetItemListResultBindingSource = new System.Windows.Forms.BindingSource(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.dgview)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.uspGetItemListResultBindingSource)).BeginInit();
             this.SuspendLayout();
@@ -167,10 +167,6 @@ namespace standard.trans
             this.dgview.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dgview.Size = new System.Drawing.Size(1112, 674);
             this.dgview.TabIndex = 3;
-            // 
-            // uspGetItemListResultBindingSource
-            // 
-            this.uspGetItemListResultBindingSource.DataSource = typeof(standard.classes.usp_GetItemListResult);
             // 
             // itemidDataGridViewTextBoxColumn
             // 
@@ -286,9 +282,13 @@ namespace standard.trans
             this.itemmrpDataGridViewTextBoxColumn.ReadOnly = true;
             this.itemmrpDataGridViewTextBoxColumn.Visible = false;
             // 
+            // uspGetItemListResultBindingSource
+            // 
+            this.uspGetItemListResultBindingSource.DataSource = typeof(standard.classes.usp_GetItemListResult);
+            // 
             // frmItemlist
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(20F, 39F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(13F, 25F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1112, 674);
             this.Controls.Add(this.dgview);

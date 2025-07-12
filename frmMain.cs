@@ -539,7 +539,7 @@ namespace standard
         private void btnSalesOrder_Click(object sender, EventArgs e)
         {
             HighlightActiveButton((RibbonButton)sender);
-            frmSalesOrder frm = new frmSalesOrder();
+            frmSalesOrder frm = new frmSalesOrder(this);
             if (!bu.CheckRights(Convert.ToString(frm.Tag), frm.Text))
             {
                 frm.Close();

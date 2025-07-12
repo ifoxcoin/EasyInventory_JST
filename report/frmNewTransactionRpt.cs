@@ -353,7 +353,7 @@ namespace standard.report
                     {
 
 
-                        var data = db.usp_getLoadwayBySalesOrder(Convert.ToInt32(cboRoute.SelectedValue.ToString()), vehicleId, dtpfdate.Value).ToList().OrderBy(x => x.led_deliveryorder);
+                        var data = db.usp_getLoadwayBySalesOrder(vehicleId, dtpfdate.Value).ToList().OrderBy(x => x.led_deliveryorder);
                         List<ReportParameter> list = new List<ReportParameter>();
                         list.Add(new ReportParameter("BillDate", dtpfdate.Value.ToString("dd-MM-yyyy")));
                         reportViewer1.LocalReport.ReportEmbeddedResource = "standard.report.rptSalesLoadWayByOrder.rdlc";
@@ -365,7 +365,7 @@ namespace standard.report
                     {
 
 
-                        var data = db.usp_getLoadwayBySalesOrder(Convert.ToInt32(cboRoute.SelectedValue.ToString()), vehicleId, dtpfdate.Value).ToList().OrderBy(x => x.led_deliveryorder);
+                        var data = db.usp_getLoadwayBySalesOrder(vehicleId, dtpfdate.Value).ToList().OrderBy(x => x.led_deliveryorder);
                         List<ReportParameter> list = new List<ReportParameter>();
                         list.Add(new ReportParameter("BillDate", dtpfdate.Value.ToString("dd-MM-yyyy")));
                         reportViewer1.LocalReport.ReportEmbeddedResource = "standard.report.rptSalesLoadWayToLoadMan.rdlc";
@@ -375,7 +375,7 @@ namespace standard.report
                     }
                     if (_ReportType == "KACHATHU")
                     {
-                        var data = db.usp_getCutomerByRoute(Convert.ToInt32(cboRoute.SelectedValue.ToString()), vehicleId, dtpfdate.Value.Date).ToList().OrderBy(x => x.led_deliveryorder);
+                        var data = db.usp_getCutomerByRoute(vehicleId, dtpfdate.Value.Date).ToList().OrderBy(x => x.led_deliveryorder);
                         reportViewer1.LocalReport.ReportEmbeddedResource = "standard.report.rptSalesKachathu.rdlc";
                         ReportDataSource reportsource = new ReportDataSource("usp_getCustomerByRoute", data.ToList());
                         reportViewer1.LocalReport.DataSources.Add(reportsource);
@@ -409,13 +409,13 @@ namespace standard.report
 
         private void cmdList_Click(object sender, EventArgs e)
         {
-            if (cboRoute.SelectedIndex <= 0)
-            {
-                MessageBox.Show("Please select the route.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                cboRoute.Focus();
-                return;
-            }
-            else if (cboVehicleNo.SelectedIndex <= 0)
+            //if (cboRoute.SelectedIndex <= 0)
+            //{
+            //    MessageBox.Show("Please select the route.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            //    cboRoute.Focus();
+            //    return;
+            //}
+            if (cboVehicleNo.SelectedIndex <= 0)
             {
                 MessageBox.Show("Please select the Vehicle No.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 cboVehicleNo.Focus();
@@ -718,20 +718,20 @@ namespace standard.report
             Process.Start("explorer.exe", filePath);
         }
 
-        private void cmdList_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (cboRoute.SelectedIndex == 0)
-            {
-                MessageBox.Show("Please select the route.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                cboRoute.Focus();
-                return;
-            }
-        }
+        //private void cmdList_KeyDown(object sender, KeyEventArgs e)
+        //{
+        //    if (cboRoute.SelectedIndex == 0)
+        //    {
+        //        MessageBox.Show("Please select the route.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+        //        cboRoute.Focus();
+        //        return;
+        //    }
+        //}
 
         private void dtpfdate_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Enter)
-                cboRoute.Focus();
+                cboVehicleNo.Focus();
         }
 
         private void cboRoute_KeyDown(object sender, KeyEventArgs e)

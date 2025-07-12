@@ -76,7 +76,18 @@ namespace standard.report
                              where a.led_accounttype.ToUpper() == "AGENT" || a.led_id == 0
                              select new { a.led_id, a.led_name, a.led_address2 });
 
+                var item = (from it in db.items
+                             where it.item_id != 0
+                             select new {
+                                 it.item_id, it.item_name,
+                                 it.item_quantity,
+                                 it.item_unit,
+                                 itemName = it.item_name + " - " + it.item_quantity + " " + it.item_unit,
+                             });
+
                 ledgermasterBindingSource.DataSource = cus.OrderBy(x => x.led_name);
+                itemBindingSource.DataSource = item.OrderBy(x => x.itemName);
+                cboItemName.SelectedIndex = -1;
                 uspledgermasterSelectResultBindingSource1.DataSource = db.usp_ledgermasterSelect(null, "Ledger", null, null, null, null);
                 ledgermasterCityBindingSource.DataSource = sup.Select(x => x.led_address2).Distinct();
                 uspledgermasterCustomerCityBindingSource.DataSource = cus.Select(x => x.led_address2).Distinct();
@@ -139,6 +150,19 @@ namespace standard.report
             if (_ReportName == "Ledger Outstanding Report" || _ReportName == "Supplier Outstanding Report")
             {
                 btnSend.Visible = true;
+            }
+            if(_ReportName == "Sales Report")
+            {
+                if(_ReportType == "Summary")
+                {
+                    label1.Visible = false;
+                    cboItemName.Visible = false;
+                }
+                else
+                {
+                    label1.Visible = true;
+                    cboItemName.Visible = true;
+                }
             }
             else if (_ReportName == "Ledger Report")
             {
@@ -310,7 +334,8 @@ namespace standard.report
                     }
                     else
                     {
-                        var data = db.usp_salesdetailsSelect(null, dtpfdate.Value, dtptdate.Value, ledid, null, null,null);
+                        long? itemId = cboItemName.SelectedValue != null ? Convert.ToInt64(cboItemName.SelectedValue) : (long?)null;
+                        var data = db.usp_salesdetailsSelect(null, dtpfdate.Value, dtptdate.Value, ledid, itemId, null,null);
                         reportViewer1.LocalReport.ReportEmbeddedResource = "standard.report.rptSalesDetail.rdlc";
                         ReportDataSource reportsource = new ReportDataSource("DataSet1", data.ToList());
                         reportViewer1.LocalReport.DataSources.Add(reportsource);
@@ -443,6 +468,8 @@ namespace standard.report
                 chkIsSummary.Text = "DETAILED";
                 chkIsSummary.BackColor = Color.Green;
                 chkIsSummary.ForeColor = Color.White;
+                label1.Visible = true;
+                cboItemName.Visible = true;
 
             }
             else
@@ -451,6 +478,8 @@ namespace standard.report
                 chkIsSummary.Text = "SUMMARY";
                 chkIsSummary.BackColor = Color.Red;
                 chkIsSummary.ForeColor = Color.White;
+                label1.Visible = false;
+                cboItemName.Visible = false;
             }
         }
 

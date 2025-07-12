@@ -119,6 +119,12 @@ namespace standard.trans
 
         private lightbutton cmdexit;
 
+        private lightbutton cmdCustomerVehicleList;
+
+        private lightbutton cmdConvertAll;
+
+        private lightbutton cmdPendingSalesOrderList;
+
         private Label lblhyp;
 
         private DateTimePicker dtpfdate;
@@ -197,9 +203,11 @@ namespace standard.trans
         private DataGridViewTextBoxColumn cCostAmount;
         private TableLayoutPanel tableLayoutPanel2;
 
-        public frmSalesOrder()
+        frmMain _mainForm;
+        public frmSalesOrder(frmMain main)
         {
             InitializeComponent();
+            _mainForm = main;
         }
 
         private void frmAmType_Load(object sender, EventArgs e)
@@ -397,6 +405,7 @@ namespace standard.trans
                 txtopno.Value = no.Value;
                 uspsalesorderSelectResultBindingSource.DataSource = inventoryDataContext.usp_salesorderSelect(null, Convert.ToInt32(cboCustomerView.SelectedValue), dtpfdate.Value.Date, dtptdate.Value.Date, null, null);
                 LoadStock();
+                CheckDateRange();
             }
         }
 
@@ -802,18 +811,20 @@ namespace standard.trans
 
         private void dtpFromDate_ValueChanged(object sender, EventArgs e)
         {
-            if (dtptdate.Value.Date < dtpfdate.Value.Date)
-            {
-                dtptdate.Value = dtpfdate.Value.Date;
-            }
+            //if (dtptdate.Value.Date < dtpfdate.Value.Date)
+            //{
+            //    dtptdate.Value = dtpfdate.Value.Date;
+            //}
+            CheckDateRange();
         }
 
         private void dtpToDate_ValueChanged(object sender, EventArgs e)
         {
-            if (dtpfdate.Value.Date > dtptdate.Value.Date)
-            {
-                dtpfdate.Value = dtptdate.Value.Date;
-            }
+            //if (dtpfdate.Value.Date > dtptdate.Value.Date)
+            //{
+            //    dtpfdate.Value = dtptdate.Value.Date;
+            //}
+            CheckDateRange();
         }
 
         private void dtpfdate_KeyDown(object sender, KeyEventArgs e)
@@ -826,6 +837,7 @@ namespace standard.trans
             {
                 cmdexit_Click(this, null);
             }
+            CheckDateRange();
         }
 
         private void dtptdate_KeyDown(object sender, KeyEventArgs e)
@@ -838,6 +850,7 @@ namespace standard.trans
             {
                 cmdexit_Click(this, null);
             }
+            CheckDateRange();
         }
 
         private void cmdprint_Click(object sender, EventArgs e)
@@ -869,6 +882,27 @@ namespace standard.trans
             tablemain.BringToFront();
             cboissueto.Focus();
         }
+
+        private void cmdCustomerVehicleList_Click(object sender, EventArgs e)
+        {
+            if (dglist.CurrentRow != null)
+            {
+                int selectedSoId = Convert.ToInt32(dglist.CurrentRow.Cells["soidDataGridViewTextBoxColumn"].Value);
+
+                frmCustomerVehicle frm = new frmCustomerVehicle();
+                frm.soid = selectedSoId;
+                frm.ShowDialog();
+            }
+        }
+
+        private void cmdPendingSalesOrderList_Click(object sender, EventArgs e)
+        {
+            frmPendingSalesOrderRpt frm = new frmPendingSalesOrderRpt();
+            frm.MdiParent = _mainForm; // the real MDI container
+            frm.WindowState = FormWindowState.Maximized;
+            frm.Show();
+        }
+
 
         private void LedgerReport(int LedgerID)
         {
@@ -997,6 +1031,396 @@ namespace standard.trans
                     //}
                 }
             }
+        }
+
+        private void CheckDateRange()
+        {
+            if (dtptdate.Value.Date == dtpfdate.Value.Date)
+            {
+                cmdConvertAll.Visible = true;
+            }
+            else
+            {
+                cmdConvertAll.Visible = false;
+            }
+        }
+
+
+        private void btnConvertToday_Click(object sender, EventArgs e)
+        {
+            var date = dtpfdate.Value.Date;
+            cmdprint_Click(this, null);
+            InventoryDataContext db = new InventoryDataContext();
+
+            var todaysOrders = db.salesorders
+                .Where(x => x.so_date == date && (x.so_isclose == null || x.so_isclose == false))
+                .ToList();
+
+            if (todaysOrders.Count == 0)
+            {
+                MessageBox.Show("Today has no sales to convert or all sales are already converted.", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            var confirmResult = MessageBox.Show("Are you sure to convert all today's sales orders?",
+                                                "Confirm Conversion",
+                                                MessageBoxButtons.YesNo,
+                                                MessageBoxIcon.Question);
+
+            if (confirmResult != DialogResult.Yes)
+                return;
+
+            foreach (var order in todaysOrders)
+            {
+                ConvertSalesOrder((int)order.so_id, false); // Don't show success message per record
+            }
+
+            MessageBox.Show("All today’s orders are converted.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+
+
+
+        private void ConvertSalesOrder(int sdId, bool showMessage = true)
+        {
+            InventoryDataContext inventoryDataContext = new InventoryDataContext();
+            ISingleResult<usp_salesorderdetailsSelectResult> salesOrderDetailsResult = inventoryDataContext.usp_salesorderdetailsSelect(sdId, null, null, null, null, null);
+            ISingleResult<usp_salesorderSelectResult> salesOrderResult = inventoryDataContext.usp_salesorderSelect(sdId, null, null, null, null, null);
+            salesmaster salesmaster = new salesmaster();
+            salesdetail salesdetail = new salesdetail();
+            salesorder salesorder = new salesorder();
+            salesorderdetail salesorderdetail = new salesorderdetail();
+            List<usp_salesorderdetailsSelectResult> com1list = new List<usp_salesorderdetailsSelectResult>();
+            List<usp_salesorderdetailsSelectResult> com2list = new List<usp_salesorderdetailsSelectResult>();
+            List<usp_salesorderdetailsSelectResult> com1taxlist = new List<usp_salesorderdetailsSelectResult>();
+            List<usp_salesorderdetailsSelectResult> com2taxlist = new List<usp_salesorderdetailsSelectResult>();
+
+            var result = salesOrderResult.FirstOrDefault();
+            if (result.so_isclose == true)
+            {
+                MessageBox.Show("This Record Already Converted to Sales", "Information", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+                return;
+            }
+            //if (MessageBox.Show("Are you sure to Convert?", "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.No)
+
+            foreach (usp_salesorderdetailsSelectResult sod in salesOrderDetailsResult)
+            {
+
+                if (sod.com_id == 1 && sod.item_istaxable == false)
+                {
+                    com1list.Add(sod);
+                }
+                else if (sod.com_id == 1 && sod.item_istaxable == true)
+                {
+                    com1taxlist.Add(sod);
+                }
+                else if (sod.com_id == 2 && sod.item_istaxable == false)
+                {
+                    com2list.Add(sod);
+                }
+                else if (sod.com_id == 2 && sod.item_istaxable == true)
+                {
+                    com2taxlist.Add(sod);
+                }
+            }
+
+            var com1 = com1list.FirstOrDefault();
+            var com2 = com2list.FirstOrDefault();
+            var com1tax = com1taxlist.FirstOrDefault();
+            var com2tax = com2taxlist.FirstOrDefault();
+            bool isConverted = false;
+
+            if (com1list.Count > 0 && com1.com_id == 1)
+            {
+                var firstItem = com1list.FirstOrDefault();
+
+                var lowStockItems = new List<string>();
+                foreach (var item in com1list)
+                {
+                    var stock = inventoryDataContext.usp_stockSelect(item.item_id, null, null, null, null).FirstOrDefault()?.stock ?? 0;
+                    var itemName = inventoryDataContext.items.Where(i => i.item_id == item.item_id).Select(i => i.item_name).FirstOrDefault() ?? "Unknown Item";
+
+                    if (stock < item.od_qty)
+                    {
+                        lowStockItems.Add($"• {itemName} (Available: {stock}, Order: {item.od_qty}, Required: {item.od_qty - stock})");
+                    }
+                }
+
+                if (lowStockItems.Any())
+                {
+                    string message = "Insufficient stock for the following items:\n\n" + string.Join("\n", lowStockItems);
+                    MessageBox.Show(message, "Stock Alert", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return; // stop saving
+                }
+
+
+                long? no = 0L;
+                inventoryDataContext.usp_setYearNo("sal_no", global.sysdate, ref no, firstItem.com_id);
+                salesmaster.sm_refno = Convert.ToInt64(no);
+                salesmaster.sm_bookno = "S";
+                salesmaster.sm_totqty = com1list.Sum(x => x.od_qty);
+                salesmaster.sm_date = firstItem.so_date;
+                salesmaster.led_id = firstItem.led_id;
+                salesmaster.so_id = firstItem.so_id;
+                salesorder.so_refno = firstItem.so_refno;
+                salesorder.so_totqty = firstItem.so_totqty;
+                salesorder.so_status = "Fully Converted";
+                salesmaster.com_id = firstItem.com_id;
+                inventoryDataContext.usp_salesmasterInsert(ref id, salesmaster.sm_bookno, salesmaster.sm_refno, salesmaster.sm_date, salesmaster.led_id, salesmaster.sm_totqty, salesmaster.sm_totamount, salesmaster.sm_itemcount, salesmaster.sm_profit, salesmaster.sm_disamount, salesmaster.sm_taxamount, salesmaster.sm_taxpercentage, salesmaster.sm_packingcharge, salesmaster.sm_netamount, salesmaster.sm_received, salesmaster.sm_paidcommission, salesmaster.sm_paidpacking, salesmaster.sm_roundamount, false, false, global.ucode, global.sysdate, salesmaster.sm_desc, false, false, salesmaster.so_id, salesmaster.com_id);
+                inventoryDataContext.usp_salesorderUpdate(salesmaster.so_id, salesorder.so_refno, salesmaster.sm_date, salesmaster.led_id, salesorder.so_totqty, salesorder.so_status, global.ucode, global.sysdate, true);
+                salesdetail.sm_id = id;
+
+                foreach (var com1SOD in com1list)
+                {
+                    salesdetail.sd_odid = com1SOD.od_id;
+                    salesdetail.item_id = com1SOD.item_id;
+                    salesdetail.sd_qty = com1SOD.od_qty;
+                    salesdetail.sd_orderqty = com1SOD.od_qty;
+                    salesdetail.sd_unit = com1SOD.item_unit;
+                    salesdetail.sd_unitvalue = com1SOD.od_unitvalue;
+                    salesdetail.sd_itemunittype = com1SOD.item_unittype;
+                    salesdetail.sd_taxpercentage = com1SOD.item_taxpercentage;
+                    salesdetail.sd_perunitrate = com1SOD.od_rate;
+                    salesdetail.sd_rate = Convert.ToDecimal(com1SOD.od_rate * com1SOD.item_quantity);
+
+                    //decimal? stock = Convert.ToDecimal(item2.Cells["cStock"].Value);
+                    //salesdetail.sd_totfrieght = Convert.ToDecimal(txtFrieght.Text);
+                    inventoryDataContext.usp_salesdetailsInsert(id, salesdetail.item_id, salesdetail.sd_qty, salesdetail.sd_orderqty, salesdetail.sd_rate, salesdetail.sd_costrate, salesdetail.sd_totamount, salesdetail.sd_taxpercentage, salesdetail.sd_taxamount,
+                            salesdetail.sd_unit, salesdetail.sd_unitvalue, salesdetail.sd_itemunittype, salesdetail.sd_totfrieght, salesdetail.sd_perunitrate, salesdetail.sd_odid);
+
+                    inventoryDataContext.usp_salesorderdetailsUpdate(com1SOD.od_id, com1SOD.so_id, com1SOD.item_id, com1SOD.od_qty, com1SOD.od_unitvalue, 0, com1SOD.od_qty, com1SOD.od_rate);
+
+                    var catid = inventoryDataContext.items.Where(i => i.item_id == salesdetail.item_id).Select(i => i.cat_id).FirstOrDefault();
+                    if (catid == 39)
+                    {
+                        inventoryDataContext.usp_stockInsert(id, "SALES", salesdetail.item_id, com1SOD.com_id, 0m, salesdetail.sd_unitvalue, global.sysdate);
+                    }
+                    else
+                    {
+                        inventoryDataContext.usp_stockInsert(id, "SALES", salesdetail.item_id, com1SOD.com_id, 0m, salesdetail.sd_qty, global.sysdate);
+                    }
+                }
+                isConverted = true;
+            }
+
+            if (com1taxlist.Count > 0 && com1tax.com_id == 1)
+            {
+                var firstItem = com1taxlist.FirstOrDefault();
+
+                var lowStockItems = new List<string>();
+                foreach (var item in com1taxlist)
+                {
+                    var stock = inventoryDataContext.usp_stockSelect(item.item_id, null, null, null, null).FirstOrDefault()?.stock ?? 0;
+                    var itemName = inventoryDataContext.items.Where(i => i.item_id == item.item_id).Select(i => i.item_name).FirstOrDefault() ?? "Unknown Item";
+
+                    if (stock < item.od_qty)
+                    {
+                        lowStockItems.Add($"• {itemName} (Available: {stock}, Order: {item.od_qty}, Required: {item.od_qty - stock})");
+                    }
+                }
+
+                if (lowStockItems.Any())
+                {
+                    string message = "Insufficient stock for the following items:\n\n" + string.Join("\n", lowStockItems);
+                    MessageBox.Show(message, "Stock Alert", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return; // stop saving
+                }
+
+                long? no = 0L;
+                inventoryDataContext.usp_setYearNo("sal_no", global.sysdate, ref no, firstItem.com_id);
+                salesmaster.sm_refno = Convert.ToInt64(no);
+                salesmaster.sm_bookno = "S";
+                salesmaster.sm_totqty = com1taxlist.Sum(x => x.od_qty);
+                salesmaster.sm_date = firstItem.so_date;
+                salesmaster.led_id = firstItem.led_id;
+                salesmaster.so_id = firstItem.so_id;
+                salesorder.so_refno = firstItem.so_refno;
+                salesorder.so_totqty = firstItem.so_totqty;
+                salesorder.so_status = "Fully Converted";
+                salesmaster.com_id = firstItem.com_id;
+                inventoryDataContext.usp_salesmasterInsert(ref id, salesmaster.sm_bookno, salesmaster.sm_refno, salesmaster.sm_date, salesmaster.led_id, salesmaster.sm_totqty, salesmaster.sm_totamount, salesmaster.sm_itemcount, salesmaster.sm_profit, salesmaster.sm_disamount, salesmaster.sm_taxamount, salesmaster.sm_taxpercentage, salesmaster.sm_packingcharge, salesmaster.sm_netamount, salesmaster.sm_received, salesmaster.sm_paidcommission, salesmaster.sm_paidpacking, salesmaster.sm_roundamount, false, false, global.ucode, global.sysdate, salesmaster.sm_desc, false, false, salesmaster.so_id, salesmaster.com_id);
+                inventoryDataContext.usp_salesorderUpdate(salesmaster.so_id, salesorder.so_refno, salesmaster.sm_date, salesmaster.led_id, salesorder.so_totqty, salesorder.so_status, global.ucode, global.sysdate, true);
+                salesdetail.sm_id = id;
+
+                foreach (var com1SOD in com1taxlist)
+                {
+                    salesdetail.sd_odid = com1SOD.od_id;
+                    salesdetail.item_id = com1SOD.item_id;
+                    salesdetail.sd_qty = com1SOD.od_qty;
+                    salesdetail.sd_orderqty = com1SOD.od_qty;
+                    salesdetail.sd_unit = com1SOD.item_unit;
+                    salesdetail.sd_unitvalue = com1SOD.od_unitvalue;
+                    salesdetail.sd_itemunittype = com1SOD.item_unittype;
+                    salesdetail.sd_taxpercentage = com1SOD.item_taxpercentage;
+                    salesdetail.sd_perunitrate = com1SOD.od_rate;
+                    salesdetail.sd_rate = Convert.ToDecimal(com1SOD.od_rate * com1SOD.item_quantity);
+
+                    //decimal? stock = Convert.ToDecimal(item2.Cells["cStock"].Value);
+                    //salesdetail.sd_totfrieght = Convert.ToDecimal(txtFrieght.Text);
+                    inventoryDataContext.usp_salesdetailsInsert(id, salesdetail.item_id, salesdetail.sd_qty, salesdetail.sd_orderqty, salesdetail.sd_rate, salesdetail.sd_costrate, salesdetail.sd_totamount, salesdetail.sd_taxpercentage, salesdetail.sd_taxamount,
+                            salesdetail.sd_unit, salesdetail.sd_unitvalue, salesdetail.sd_itemunittype, salesdetail.sd_totfrieght, salesdetail.sd_perunitrate, salesdetail.sd_odid);
+
+                    inventoryDataContext.usp_salesorderdetailsUpdate(com1SOD.od_id, com1SOD.so_id, com1SOD.item_id, com1SOD.od_qty, com1SOD.od_unitvalue, 0, com1SOD.od_qty, com1SOD.od_rate);
+
+                    var catid = inventoryDataContext.items.Where(i => i.item_id == salesdetail.item_id).Select(i => i.cat_id).FirstOrDefault();
+                    if (catid == 39)
+                    {
+                        inventoryDataContext.usp_stockInsert(id, "SALES", salesdetail.item_id, com1SOD.com_id, 0m, salesdetail.sd_unitvalue, global.sysdate);
+                    }
+                    else
+                    {
+                        inventoryDataContext.usp_stockInsert(id, "SALES", salesdetail.item_id, com1SOD.com_id, 0m, salesdetail.sd_qty, global.sysdate);
+                    }
+
+                }
+                isConverted = true;
+            }
+
+            if (com2list.Count > 0 && com2.com_id == 2)
+            {
+                var secondItem = com2list.FirstOrDefault();
+
+                var lowStockItems = new List<string>();
+                foreach (var item in com2list)
+                {
+                    var stock = inventoryDataContext.usp_stockSelect(item.item_id, null, null, null, null).FirstOrDefault()?.stock ?? 0;
+                    var itemName = inventoryDataContext.items.Where(i => i.item_id == item.item_id).Select(i => i.item_name).FirstOrDefault() ?? "Unknown Item";
+
+                    if (stock < item.od_qty)
+                    {
+                        lowStockItems.Add($"• {itemName} (Available: {stock}, Order: {item.od_qty}, Required: {item.od_qty - stock})");
+                    }
+                }
+
+                if (lowStockItems.Any())
+                {
+                    string message = "Insufficient stock for the following items:\n\n" + string.Join("\n", lowStockItems);
+                    MessageBox.Show(message, "Stock Alert", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return; // stop saving
+                }
+
+                long? no = 0L;
+                inventoryDataContext.usp_setYearNo("sal_no", global.sysdate, ref no, secondItem.com_id);
+                salesmaster.sm_refno = Convert.ToInt64(no);
+                salesmaster.sm_bookno = "S";
+                salesmaster.sm_totqty = com2list.Sum(x => x.od_qty);
+                salesmaster.sm_date = secondItem.so_date;
+                salesmaster.led_id = secondItem.led_id;
+                salesmaster.so_id = secondItem.so_id;
+                salesorder.so_refno = secondItem.so_refno;
+                salesorder.so_totqty = secondItem.so_totqty;
+                salesorder.so_status = "Fully Converted";
+                salesmaster.com_id = secondItem.com_id;
+                inventoryDataContext.usp_salesmasterInsert(ref id, salesmaster.sm_bookno, salesmaster.sm_refno, salesmaster.sm_date, salesmaster.led_id, salesmaster.sm_totqty, salesmaster.sm_totamount, salesmaster.sm_itemcount, salesmaster.sm_profit, salesmaster.sm_disamount, salesmaster.sm_taxamount, salesmaster.sm_taxpercentage, salesmaster.sm_packingcharge, salesmaster.sm_netamount, salesmaster.sm_received, salesmaster.sm_paidcommission, salesmaster.sm_paidpacking, salesmaster.sm_roundamount, false, false, global.ucode, global.sysdate, salesmaster.sm_desc, false, false, salesmaster.so_id, salesmaster.com_id);
+                inventoryDataContext.usp_salesorderUpdate(salesmaster.so_id, salesorder.so_refno, salesmaster.sm_date, salesmaster.led_id, salesorder.so_totqty, salesorder.so_status, global.ucode, global.sysdate, true);
+                salesdetail.sm_id = id;
+                foreach (var com2SOD in com2list)
+                {
+                    salesdetail.item_id = com2SOD.item_id;
+                    salesdetail.sd_odid = com2SOD.od_id;
+                    salesdetail.sd_qty = com2SOD.od_qty;
+                    salesdetail.sd_orderqty = com2SOD.od_qty;
+                    salesdetail.sd_unit = com2SOD.item_unit;
+                    salesdetail.sd_unitvalue = com2SOD.od_unitvalue;
+                    salesdetail.sd_itemunittype = com2SOD.item_unittype;
+                    salesdetail.sd_taxpercentage = com2SOD.item_taxpercentage;
+                    salesdetail.sd_perunitrate = com2SOD.od_rate;
+                    salesdetail.sd_rate = Convert.ToDecimal(com2SOD.od_rate * com2SOD.item_quantity);
+
+                    //decimal? num = Convert.ToDecimal(item2.Cells["cStock"].Value);
+                    //salesdetail.sd_totfrieght = Convert.ToDecimal(txtFrieght.Text);
+                    inventoryDataContext.usp_salesdetailsInsert(id, salesdetail.item_id, salesdetail.sd_qty, salesdetail.sd_orderqty, salesdetail.sd_rate, salesdetail.sd_costrate, salesdetail.sd_totamount, salesdetail.sd_taxpercentage, salesdetail.sd_taxamount,
+                        salesdetail.sd_unit, salesdetail.sd_unitvalue, salesdetail.sd_itemunittype, salesdetail.sd_totfrieght, salesdetail.sd_perunitrate, salesdetail.sd_odid);
+
+                    inventoryDataContext.usp_salesorderdetailsUpdate(com2SOD.od_id, com2SOD.so_id, com2SOD.item_id, com2SOD.od_qty, com2SOD.od_unitvalue, 0, com2SOD.od_qty, com2SOD.od_rate);
+
+                    var catid = inventoryDataContext.items.Where(i => i.item_id == salesdetail.item_id).Select(i => i.cat_id).FirstOrDefault();
+                    if (catid == 39)
+                    {
+                        inventoryDataContext.usp_stockInsert(id, "SALES", salesdetail.item_id, com2SOD.com_id, 0m, salesdetail.sd_unitvalue, global.sysdate);
+                    }
+                    else
+                    {
+                        inventoryDataContext.usp_stockInsert(id, "SALES", salesdetail.item_id, com2SOD.com_id, 0m, salesdetail.sd_qty, global.sysdate);
+                    }
+                }
+                isConverted = true;
+            }
+            if (com2taxlist.Count > 0 && com2tax.com_id == 2)
+            {
+                var lowStockItems = new List<string>();
+                foreach (var item in com2taxlist)
+                {
+                    var stock = inventoryDataContext.usp_stockSelect(item.item_id, null, null, null, null).FirstOrDefault()?.stock ?? 0;
+                    var itemName = inventoryDataContext.items.Where(i => i.item_id == item.item_id).Select(i => i.item_name).FirstOrDefault() ?? "Unknown Item";
+
+                    if (stock < item.od_qty)
+                    {
+                        lowStockItems.Add($"• {itemName} (Available: {stock}, Order: {item.od_qty}, Required: {item.od_qty - stock})");
+                    }
+                }
+
+                if (lowStockItems.Any())
+                {
+                    string message = "Insufficient stock for the following items:\n\n" + string.Join("\n", lowStockItems);
+                    MessageBox.Show(message, "Stock Alert", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return; // stop saving
+                }
+
+                var secondItem = com2taxlist.FirstOrDefault();
+                long? no = 0L;
+                inventoryDataContext.usp_setYearNo("sal_no", global.sysdate, ref no, secondItem.com_id);
+                salesmaster.sm_refno = Convert.ToInt64(no);
+                salesmaster.sm_bookno = "S";
+                salesmaster.sm_totqty = com2taxlist.Sum(x => x.od_qty);
+                salesmaster.sm_date = secondItem.so_date;
+                salesmaster.led_id = secondItem.led_id;
+                salesmaster.so_id = secondItem.so_id;
+                salesorder.so_refno = secondItem.so_refno;
+                salesorder.so_totqty = secondItem.so_totqty;
+                salesorder.so_status = "Fully Converted";
+                salesmaster.com_id = secondItem.com_id;
+                inventoryDataContext.usp_salesmasterInsert(ref id, salesmaster.sm_bookno, salesmaster.sm_refno, salesmaster.sm_date, salesmaster.led_id, salesmaster.sm_totqty, salesmaster.sm_totamount, salesmaster.sm_itemcount, salesmaster.sm_profit, salesmaster.sm_disamount, salesmaster.sm_taxamount, salesmaster.sm_taxpercentage, salesmaster.sm_packingcharge, salesmaster.sm_netamount, salesmaster.sm_received, salesmaster.sm_paidcommission, salesmaster.sm_paidpacking, salesmaster.sm_roundamount, false, false, global.ucode, global.sysdate, salesmaster.sm_desc, false, false, salesmaster.so_id, salesmaster.com_id);
+                inventoryDataContext.usp_salesorderUpdate(salesmaster.so_id, salesorder.so_refno, salesmaster.sm_date, salesmaster.led_id, salesorder.so_totqty, salesorder.so_status, global.ucode, global.sysdate, true);
+                salesdetail.sm_id = id;
+                foreach (var com2SOD in com2taxlist)
+                {
+                    salesdetail.item_id = com2SOD.item_id;
+                    salesdetail.sd_odid = com2SOD.od_id;
+                    salesdetail.sd_qty = com2SOD.od_qty;
+                    salesdetail.sd_orderqty = com2SOD.od_qty;
+                    salesdetail.sd_unit = com2SOD.item_unit;
+                    salesdetail.sd_unitvalue = com2SOD.od_unitvalue;
+                    salesdetail.sd_itemunittype = com2SOD.item_unittype;
+                    salesdetail.sd_taxpercentage = com2SOD.item_taxpercentage;
+                    salesdetail.sd_perunitrate = com2SOD.od_rate;
+                    salesdetail.sd_rate = Convert.ToDecimal(com2SOD.od_rate * com2SOD.item_quantity);
+
+                    //decimal? num = Convert.ToDecimal(item2.Cells["cStock"].Value);
+                    //salesdetail.sd_totfrieght = Convert.ToDecimal(txtFrieght.Text);
+                    inventoryDataContext.usp_salesdetailsInsert(id, salesdetail.item_id, salesdetail.sd_qty, salesdetail.sd_orderqty, salesdetail.sd_rate, salesdetail.sd_costrate, salesdetail.sd_totamount, salesdetail.sd_taxpercentage, salesdetail.sd_taxamount,
+                        salesdetail.sd_unit, salesdetail.sd_unitvalue, salesdetail.sd_itemunittype, salesdetail.sd_totfrieght, salesdetail.sd_perunitrate, salesdetail.sd_odid);
+
+                    inventoryDataContext.usp_salesorderdetailsUpdate(com2SOD.od_id, com2SOD.so_id, com2SOD.item_id, com2SOD.od_qty, com2SOD.od_unitvalue, 0, com2SOD.od_qty, com2SOD.od_rate);
+
+                    var catid = inventoryDataContext.items.Where(i => i.item_id == salesdetail.item_id).Select(i => i.cat_id).FirstOrDefault();
+                    if (catid == 39)
+                    {
+                        inventoryDataContext.usp_stockInsert(id, "SALES", salesdetail.item_id, com2SOD.com_id, 0m, salesdetail.sd_unitvalue, global.sysdate);
+                    }
+                    else
+                    {
+                        inventoryDataContext.usp_stockInsert(id, "SALES", salesdetail.item_id, com2SOD.com_id, 0m, salesdetail.sd_qty, global.sysdate);
+                    }
+                }
+                isConverted = true;
+            }
+            if (isConverted && showMessage)
+            {
+                MessageBox.Show("Record Converted successfully...", "Information", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+            }
+            ClearData();
+            LoadData();
         }
 
         private void dglist_KeyDown(object sender, KeyEventArgs e)
@@ -1143,331 +1567,7 @@ namespace standard.trans
                 else if (e.ColumnIndex == cConvert.Index && e.RowIndex > -1)
                 {
                     var sdId = Convert.ToInt32(dglist.CurrentRow.Cells["soidDataGridViewTextBoxColumn"].Value);
-                    InventoryDataContext inventoryDataContext = new InventoryDataContext();
-                    ISingleResult<usp_salesorderdetailsSelectResult> salesOrderDetailsResult = inventoryDataContext.usp_salesorderdetailsSelect(sdId, null, null, null, null, null);
-                    ISingleResult<usp_salesorderSelectResult> salesOrderResult = inventoryDataContext.usp_salesorderSelect(sdId, null, null, null, null, null);
-                    salesmaster salesmaster = new salesmaster();
-                    salesdetail salesdetail = new salesdetail();
-                    salesorder salesorder = new salesorder();
-                    List<usp_salesorderdetailsSelectResult> com1list = new List<usp_salesorderdetailsSelectResult>();
-                    List<usp_salesorderdetailsSelectResult> com2list = new List<usp_salesorderdetailsSelectResult>();
-                    List<usp_salesorderdetailsSelectResult> com1taxlist = new List<usp_salesorderdetailsSelectResult>();
-                    List<usp_salesorderdetailsSelectResult> com2taxlist = new List<usp_salesorderdetailsSelectResult>();
-
-                    var result = salesOrderResult.FirstOrDefault();
-                    if (result.so_isclose == true)
-                    {
-                        MessageBox.Show("This Record Already Converted to Sales", "Information", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
-                        return;
-                    }
-                    //if (MessageBox.Show("Are you sure to Convert?", "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.No)
-
-                        foreach (usp_salesorderdetailsSelectResult sod in salesOrderDetailsResult)
-                        {
-
-                            if (sod.com_id == 1 && sod.item_istaxable == false)
-                            {
-                                com1list.Add(sod);
-                            }
-                            else if (sod.com_id == 1 && sod.item_istaxable == true)
-                            {
-                                com1taxlist.Add(sod);
-                            }
-                            else if (sod.com_id == 2 && sod.item_istaxable == false)
-                            {
-                                com2list.Add(sod);
-                            }
-                            else if (sod.com_id == 2 && sod.item_istaxable == true)
-                            {
-                                com2taxlist.Add(sod);
-                            }
-                        }
-
-                    var com1 = com1list.FirstOrDefault();
-                    var com2 = com2list.FirstOrDefault();
-                    var com1tax = com1taxlist.FirstOrDefault();
-                    var com2tax = com2taxlist.FirstOrDefault();
-                    bool isConverted = false;
-
-                    if (com1list.Count > 0 && com1.com_id == 1)
-                    {
-                        var firstItem = com1list.FirstOrDefault();
-
-                        var lowStockItems = new List<string>();
-                        foreach (var item in com1list)
-                        {
-                            var stock = inventoryDataContext.usp_stockSelect(item.item_id, null, null, null, null).FirstOrDefault()?.stock ?? 0;
-                            var itemName = inventoryDataContext.items.Where(i => i.item_id == item.item_id).Select(i => i.item_name).FirstOrDefault() ?? "Unknown Item";
-
-                            if (stock < item.od_qty)
-                            {
-                                lowStockItems.Add($"• {itemName} (Available: {stock}, Order: {item.od_qty}, Required: {item.od_qty - stock})");
-                            }
-                        }
-
-                        if (lowStockItems.Any())
-                        {
-                            string message = "Insufficient stock for the following items:\n\n" + string.Join("\n", lowStockItems);
-                            MessageBox.Show(message, "Stock Alert", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                            return; // stop saving
-                        }
-
-
-                        long? no = 0L;
-                        inventoryDataContext.usp_setYearNo("sal_no", global.sysdate, ref no, firstItem.com_id);
-                        salesmaster.sm_refno = Convert.ToInt64(no);
-                        salesmaster.sm_bookno = "S";
-                        salesmaster.sm_totqty = com1list.Sum(x => x.od_qty);
-                        salesmaster.sm_date = firstItem.so_date;
-                        salesmaster.led_id = firstItem.led_id;
-                        salesmaster.so_id = firstItem.so_id;
-                        salesorder.so_refno = firstItem.so_refno;
-                        salesorder.so_totqty = firstItem.so_totqty;
-                        salesorder.so_status = "Fully Converted";
-                        salesmaster.com_id = firstItem.com_id;
-                        inventoryDataContext.usp_salesmasterInsert(ref id, salesmaster.sm_bookno, salesmaster.sm_refno, salesmaster.sm_date, salesmaster.led_id, salesmaster.sm_totqty, salesmaster.sm_totamount, salesmaster.sm_itemcount, salesmaster.sm_profit, salesmaster.sm_disamount, salesmaster.sm_taxamount, salesmaster.sm_taxpercentage, salesmaster.sm_packingcharge, salesmaster.sm_netamount, salesmaster.sm_received, salesmaster.sm_paidcommission, salesmaster.sm_paidpacking, salesmaster.sm_roundamount, false, false, global.ucode, global.sysdate, salesmaster.sm_desc, false, false, salesmaster.so_id, salesmaster.com_id);
-                        inventoryDataContext.usp_salesorderUpdate(salesmaster.so_id, salesorder.so_refno, salesmaster.sm_date, salesmaster.led_id, salesorder.so_totqty, salesorder.so_status, global.ucode, global.sysdate, true);
-                        salesdetail.sm_id = id;
-
-                        foreach (var com1SOD in com1list)
-                        {
-                            salesdetail.sd_odid = com1SOD.od_id;
-                            salesdetail.item_id = com1SOD.item_id;
-                            salesdetail.sd_qty = com1SOD.od_qty;
-                            salesdetail.sd_orderqty = com1SOD.od_qty;
-                            salesdetail.sd_unit = com1SOD.item_unit;
-                            salesdetail.sd_unitvalue = com1SOD.od_unitvalue;
-                            salesdetail.sd_itemunittype = com1SOD.item_unittype;
-                            salesdetail.sd_taxpercentage = com1SOD.item_taxpercentage;
-                            salesdetail.sd_perunitrate = com1SOD.od_rate;
-                            salesdetail.sd_rate = Convert.ToDecimal(com1SOD.od_rate * com1SOD.item_quantity);
-
-                            //decimal? stock = Convert.ToDecimal(item2.Cells["cStock"].Value);
-                            //salesdetail.sd_totfrieght = Convert.ToDecimal(txtFrieght.Text);
-                            inventoryDataContext.usp_salesdetailsInsert(id, salesdetail.item_id, salesdetail.sd_qty, salesdetail.sd_orderqty, salesdetail.sd_rate, salesdetail.sd_costrate, salesdetail.sd_totamount, salesdetail.sd_taxpercentage, salesdetail.sd_taxamount,
-                                    salesdetail.sd_unit, salesdetail.sd_unitvalue, salesdetail.sd_itemunittype, salesdetail.sd_totfrieght, salesdetail.sd_perunitrate, salesdetail.sd_odid);
-                            var catid = inventoryDataContext.items.Where(i => i.item_id == salesdetail.item_id).Select(i => i.cat_id).FirstOrDefault();
-                            if (catid == 39)
-                            {
-                                inventoryDataContext.usp_stockInsert(id, "SALES", salesdetail.item_id, com1SOD.com_id, 0m, salesdetail.sd_unitvalue, global.sysdate);
-                            }
-                            else
-                            {
-                                inventoryDataContext.usp_stockInsert(id, "SALES", salesdetail.item_id, com1SOD.com_id, 0m, salesdetail.sd_qty, global.sysdate);
-                            }
-                        }
-                        isConverted = true;
-                    }
-
-                    if (com1taxlist.Count > 0 && com1tax.com_id == 1)
-                    {
-                        var firstItem = com1taxlist.FirstOrDefault();
-
-                        var lowStockItems = new List<string>();
-                        foreach (var item in com1taxlist)
-                        {
-                            var stock = inventoryDataContext.usp_stockSelect(item.item_id, null, null, null, null).FirstOrDefault()?.stock ?? 0;
-                            var itemName = inventoryDataContext.items.Where(i => i.item_id == item.item_id).Select(i => i.item_name).FirstOrDefault() ?? "Unknown Item";
-
-                            if (stock < item.od_qty)
-                            {
-                                lowStockItems.Add($"• {itemName} (Available: {stock}, Order: {item.od_qty}, Required: {item.od_qty - stock})");
-                            }
-                        }
-
-                        if (lowStockItems.Any())
-                        {
-                            string message = "Insufficient stock for the following items:\n\n" + string.Join("\n", lowStockItems);
-                            MessageBox.Show(message, "Stock Alert", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                            return; // stop saving
-                        }
-
-                        long? no = 0L;
-                        inventoryDataContext.usp_setYearNo("sal_no", global.sysdate, ref no, firstItem.com_id);
-                        salesmaster.sm_refno = Convert.ToInt64(no);
-                        salesmaster.sm_bookno = "S";
-                        salesmaster.sm_totqty = com1taxlist.Sum(x => x.od_qty);
-                        salesmaster.sm_date = firstItem.so_date;
-                        salesmaster.led_id = firstItem.led_id;
-                        salesmaster.so_id = firstItem.so_id;
-                        salesorder.so_refno = firstItem.so_refno;
-                        salesorder.so_totqty = firstItem.so_totqty;
-                        salesorder.so_status = "Fully Converted";
-                        salesmaster.com_id = firstItem.com_id;
-                        inventoryDataContext.usp_salesmasterInsert(ref id, salesmaster.sm_bookno, salesmaster.sm_refno, salesmaster.sm_date, salesmaster.led_id, salesmaster.sm_totqty, salesmaster.sm_totamount, salesmaster.sm_itemcount, salesmaster.sm_profit, salesmaster.sm_disamount, salesmaster.sm_taxamount, salesmaster.sm_taxpercentage, salesmaster.sm_packingcharge, salesmaster.sm_netamount, salesmaster.sm_received, salesmaster.sm_paidcommission, salesmaster.sm_paidpacking, salesmaster.sm_roundamount, false, false, global.ucode, global.sysdate, salesmaster.sm_desc, false, false, salesmaster.so_id, salesmaster.com_id);
-                        inventoryDataContext.usp_salesorderUpdate(salesmaster.so_id, salesorder.so_refno, salesmaster.sm_date, salesmaster.led_id, salesorder.so_totqty, salesorder.so_status, global.ucode, global.sysdate, true);
-                        salesdetail.sm_id = id;
-
-                        foreach (var com1SOD in com1taxlist)
-                        {
-                            salesdetail.sd_odid = com1SOD.od_id;
-                            salesdetail.item_id = com1SOD.item_id;
-                            salesdetail.sd_qty = com1SOD.od_qty;
-                            salesdetail.sd_orderqty = com1SOD.od_qty;
-                            salesdetail.sd_unit = com1SOD.item_unit;
-                            salesdetail.sd_unitvalue = com1SOD.od_unitvalue;
-                            salesdetail.sd_itemunittype = com1SOD.item_unittype;
-                            salesdetail.sd_taxpercentage = com1SOD.item_taxpercentage;
-                            salesdetail.sd_perunitrate = com1SOD.od_rate;
-                            salesdetail.sd_rate = Convert.ToDecimal(com1SOD.od_rate * com1SOD.item_quantity);
-
-                            //decimal? stock = Convert.ToDecimal(item2.Cells["cStock"].Value);
-                            //salesdetail.sd_totfrieght = Convert.ToDecimal(txtFrieght.Text);
-                            inventoryDataContext.usp_salesdetailsInsert(id, salesdetail.item_id, salesdetail.sd_qty, salesdetail.sd_orderqty, salesdetail.sd_rate, salesdetail.sd_costrate, salesdetail.sd_totamount, salesdetail.sd_taxpercentage, salesdetail.sd_taxamount,
-                                    salesdetail.sd_unit, salesdetail.sd_unitvalue, salesdetail.sd_itemunittype, salesdetail.sd_totfrieght, salesdetail.sd_perunitrate, salesdetail.sd_odid);
-                            var catid = inventoryDataContext.items.Where(i => i.item_id == salesdetail.item_id).Select(i => i.cat_id).FirstOrDefault();
-                            if (catid == 39)
-                            {
-                                inventoryDataContext.usp_stockInsert(id, "SALES", salesdetail.item_id, com1SOD.com_id, 0m, salesdetail.sd_unitvalue, global.sysdate);
-                            }
-                            else
-                            {
-                                inventoryDataContext.usp_stockInsert(id, "SALES", salesdetail.item_id, com1SOD.com_id, 0m, salesdetail.sd_qty, global.sysdate);
-                            }
-
-                        }
-                        isConverted = true;
-                    }
-
-                    if (com2list.Count > 0 && com2.com_id == 2)
-                    {
-                        var secondItem = com2list.FirstOrDefault();
-
-                        var lowStockItems = new List<string>();
-                        foreach (var item in com2list)
-                        {
-                            var stock = inventoryDataContext.usp_stockSelect(item.item_id, null, null, null, null).FirstOrDefault()?.stock ?? 0;
-                            var itemName = inventoryDataContext.items.Where(i => i.item_id == item.item_id).Select(i => i.item_name).FirstOrDefault() ?? "Unknown Item";
-
-                            if (stock < item.od_qty)
-                            {
-                                lowStockItems.Add($"• {itemName} (Available: {stock}, Order: {item.od_qty}, Required: {item.od_qty - stock})");
-                            }
-                        }
-
-                        if (lowStockItems.Any())
-                        {
-                            string message = "Insufficient stock for the following items:\n\n" + string.Join("\n", lowStockItems);
-                            MessageBox.Show(message, "Stock Alert", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                            return; // stop saving
-                        }
-
-                        long? no = 0L;
-                        inventoryDataContext.usp_setYearNo("sal_no", global.sysdate, ref no, secondItem.com_id);
-                        salesmaster.sm_refno = Convert.ToInt64(no);
-                        salesmaster.sm_bookno = "S";
-                        salesmaster.sm_totqty = com2list.Sum(x => x.od_qty);
-                        salesmaster.sm_date = secondItem.so_date;
-                        salesmaster.led_id = secondItem.led_id;
-                        salesmaster.so_id = secondItem.so_id;
-                        salesorder.so_refno = secondItem.so_refno;
-                        salesorder.so_totqty = secondItem.so_totqty;
-                        salesorder.so_status = "Fully Converted";
-                        salesmaster.com_id = secondItem.com_id;
-                        inventoryDataContext.usp_salesmasterInsert(ref id, salesmaster.sm_bookno, salesmaster.sm_refno, salesmaster.sm_date, salesmaster.led_id, salesmaster.sm_totqty, salesmaster.sm_totamount, salesmaster.sm_itemcount, salesmaster.sm_profit, salesmaster.sm_disamount, salesmaster.sm_taxamount, salesmaster.sm_taxpercentage, salesmaster.sm_packingcharge, salesmaster.sm_netamount, salesmaster.sm_received, salesmaster.sm_paidcommission, salesmaster.sm_paidpacking, salesmaster.sm_roundamount, false, false, global.ucode, global.sysdate, salesmaster.sm_desc, false, false, salesmaster.so_id, salesmaster.com_id);
-                        inventoryDataContext.usp_salesorderUpdate(salesmaster.so_id, salesorder.so_refno, salesmaster.sm_date, salesmaster.led_id, salesorder.so_totqty, salesorder.so_status, global.ucode, global.sysdate, true);
-                        salesdetail.sm_id = id;
-                        foreach (var com2SOD in com2list)
-                        {
-                            salesdetail.item_id = com2SOD.item_id;
-                            salesdetail.sd_odid = com2SOD.od_id;
-                            salesdetail.sd_qty = com2SOD.od_qty;
-                            salesdetail.sd_orderqty = com2SOD.od_qty;
-                            salesdetail.sd_unit = com2SOD.item_unit;
-                            salesdetail.sd_unitvalue = com2SOD.od_unitvalue;
-                            salesdetail.sd_itemunittype = com2SOD.item_unittype;
-                            salesdetail.sd_taxpercentage = com2SOD.item_taxpercentage;
-                            salesdetail.sd_perunitrate = com2SOD.od_rate;
-                            salesdetail.sd_rate = Convert.ToDecimal(com2SOD.od_rate * com2SOD.item_quantity);
-
-                            //decimal? num = Convert.ToDecimal(item2.Cells["cStock"].Value);
-                            //salesdetail.sd_totfrieght = Convert.ToDecimal(txtFrieght.Text);
-                            inventoryDataContext.usp_salesdetailsInsert(id, salesdetail.item_id, salesdetail.sd_qty, salesdetail.sd_orderqty, salesdetail.sd_rate, salesdetail.sd_costrate, salesdetail.sd_totamount, salesdetail.sd_taxpercentage, salesdetail.sd_taxamount,
-                                salesdetail.sd_unit, salesdetail.sd_unitvalue, salesdetail.sd_itemunittype, salesdetail.sd_totfrieght, salesdetail.sd_perunitrate, salesdetail.sd_odid);
-                            var catid = inventoryDataContext.items.Where(i => i.item_id == salesdetail.item_id).Select(i => i.cat_id).FirstOrDefault();
-                            if (catid == 39)
-                            {
-                                inventoryDataContext.usp_stockInsert(id, "SALES", salesdetail.item_id, com2SOD.com_id, 0m, salesdetail.sd_unitvalue, global.sysdate);
-                            }
-                            else
-                            {
-                                inventoryDataContext.usp_stockInsert(id, "SALES", salesdetail.item_id, com2SOD.com_id, 0m, salesdetail.sd_qty, global.sysdate);
-                            }
-                        }
-                        isConverted = true;
-                    }
-                    if (com2taxlist.Count > 0 && com2tax.com_id == 2)
-                    {
-                        var lowStockItems = new List<string>();
-                        foreach (var item in com2taxlist)
-                        {
-                            var stock = inventoryDataContext.usp_stockSelect(item.item_id, null, null, null, null).FirstOrDefault()?.stock ?? 0;
-                            var itemName = inventoryDataContext.items.Where(i => i.item_id == item.item_id).Select(i => i.item_name).FirstOrDefault() ?? "Unknown Item";
-
-                            if (stock < item.od_qty)
-                            {
-                                lowStockItems.Add($"• {itemName} (Available: {stock}, Order: {item.od_qty}, Required: {item.od_qty - stock})");
-                            }
-                        }
-
-                        if (lowStockItems.Any())
-                        {
-                            string message = "Insufficient stock for the following items:\n\n" + string.Join("\n", lowStockItems);
-                            MessageBox.Show(message, "Stock Alert", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                            return; // stop saving
-                        }
-
-                        var secondItem = com2taxlist.FirstOrDefault();
-                        long? no = 0L;
-                        inventoryDataContext.usp_setYearNo("sal_no", global.sysdate, ref no, secondItem.com_id);
-                        salesmaster.sm_refno = Convert.ToInt64(no);
-                        salesmaster.sm_bookno = "S";
-                        salesmaster.sm_totqty = com2taxlist.Sum(x => x.od_qty);
-                        salesmaster.sm_date = secondItem.so_date;
-                        salesmaster.led_id = secondItem.led_id;
-                        salesmaster.so_id = secondItem.so_id;
-                        salesorder.so_refno = secondItem.so_refno;
-                        salesorder.so_totqty = secondItem.so_totqty;
-                        salesorder.so_status = "Fully Converted";
-                        salesmaster.com_id = secondItem.com_id;
-                        inventoryDataContext.usp_salesmasterInsert(ref id, salesmaster.sm_bookno, salesmaster.sm_refno, salesmaster.sm_date, salesmaster.led_id, salesmaster.sm_totqty, salesmaster.sm_totamount, salesmaster.sm_itemcount, salesmaster.sm_profit, salesmaster.sm_disamount, salesmaster.sm_taxamount, salesmaster.sm_taxpercentage, salesmaster.sm_packingcharge, salesmaster.sm_netamount, salesmaster.sm_received, salesmaster.sm_paidcommission, salesmaster.sm_paidpacking, salesmaster.sm_roundamount, false, false, global.ucode, global.sysdate, salesmaster.sm_desc, false, false, salesmaster.so_id, salesmaster.com_id);
-                        inventoryDataContext.usp_salesorderUpdate(salesmaster.so_id, salesorder.so_refno, salesmaster.sm_date, salesmaster.led_id, salesorder.so_totqty, salesorder.so_status, global.ucode, global.sysdate, true);
-                        salesdetail.sm_id = id;
-                        foreach (var com2SOD in com2taxlist)
-                        {
-                            salesdetail.item_id = com2SOD.item_id;
-                            salesdetail.sd_odid = com2SOD.od_id;
-                            salesdetail.sd_qty = com2SOD.od_qty;
-                            salesdetail.sd_orderqty = com2SOD.od_qty;
-                            salesdetail.sd_unit = com2SOD.item_unit;
-                            salesdetail.sd_unitvalue = com2SOD.od_unitvalue;
-                            salesdetail.sd_itemunittype = com2SOD.item_unittype;
-                            salesdetail.sd_taxpercentage = com2SOD.item_taxpercentage;
-                            salesdetail.sd_perunitrate = com2SOD.od_rate;
-                            salesdetail.sd_rate = Convert.ToDecimal(com2SOD.od_rate * com2SOD.item_quantity);
-
-                            //decimal? num = Convert.ToDecimal(item2.Cells["cStock"].Value);
-                            //salesdetail.sd_totfrieght = Convert.ToDecimal(txtFrieght.Text);
-                            inventoryDataContext.usp_salesdetailsInsert(id, salesdetail.item_id, salesdetail.sd_qty, salesdetail.sd_orderqty, salesdetail.sd_rate, salesdetail.sd_costrate, salesdetail.sd_totamount, salesdetail.sd_taxpercentage, salesdetail.sd_taxamount,
-                                salesdetail.sd_unit, salesdetail.sd_unitvalue, salesdetail.sd_itemunittype, salesdetail.sd_totfrieght, salesdetail.sd_perunitrate, salesdetail.sd_odid);
-                            var catid = inventoryDataContext.items.Where(i => i.item_id == salesdetail.item_id).Select(i => i.cat_id).FirstOrDefault();
-                            if (catid == 39)
-                            {
-                                inventoryDataContext.usp_stockInsert(id, "SALES", salesdetail.item_id, com2SOD.com_id, 0m, salesdetail.sd_unitvalue, global.sysdate);
-                            }
-                            else
-                            {
-                                inventoryDataContext.usp_stockInsert(id, "SALES", salesdetail.item_id, com2SOD.com_id, 0m, salesdetail.sd_qty, global.sysdate);
-                            }
-                        }
-                        isConverted = true;
-                    }
-                    if (isConverted)
-                    {
-                        MessageBox.Show("Record Converted successfully...", "Information", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
-                    }
-                    ClearData();
-                    LoadData();
+                    ConvertSalesOrder(sdId);
                 }
             }
             catch (Exception ex)
@@ -2157,12 +2257,15 @@ namespace standard.trans
             this.ledgermasterViewBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.lblfdate = new System.Windows.Forms.Label();
             this.dtpfdate = new System.Windows.Forms.DateTimePicker();
+            this.cmdConvertAll = new mylib.lightbutton();
             this.lblhyp = new System.Windows.Forms.Label();
             this.cboCityView = new System.Windows.Forms.ComboBox();
             this.ledgermasteCityViewrBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.label5 = new System.Windows.Forms.Label();
             this.cmdList = new mylib.lightbutton();
             this.cmdexit = new mylib.lightbutton();
+            this.cmdCustomerVehicleList = new mylib.lightbutton();
+            this.cmdPendingSalesOrderList = new mylib.lightbutton();
             this.label6 = new System.Windows.Forms.Label();
             this.lblBillNo = new System.Windows.Forms.Label();
             this.txtSearchBillNo = new System.Windows.Forms.TextBox();
@@ -3052,16 +3155,20 @@ namespace standard.trans
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 153F));
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 120F));
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 120F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 500F));
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanel1.Controls.Add(this.dtptdate, 3, 0);
             this.tableLayoutPanel1.Controls.Add(this.cboCustomerView, 7, 0);
             this.tableLayoutPanel1.Controls.Add(this.lblfdate, 0, 0);
             this.tableLayoutPanel1.Controls.Add(this.dtpfdate, 1, 0);
+            this.tableLayoutPanel1.Controls.Add(this.cmdConvertAll, 1, 1);
             this.tableLayoutPanel1.Controls.Add(this.lblhyp, 2, 0);
             this.tableLayoutPanel1.Controls.Add(this.cboCityView, 5, 0);
             this.tableLayoutPanel1.Controls.Add(this.label5, 4, 0);
             this.tableLayoutPanel1.Controls.Add(this.cmdList, 7, 1);
             this.tableLayoutPanel1.Controls.Add(this.cmdexit, 8, 1);
+            this.tableLayoutPanel1.Controls.Add(this.cmdCustomerVehicleList, 10, 0);
+            this.tableLayoutPanel1.Controls.Add(this.cmdPendingSalesOrderList, 10, 1);
             this.tableLayoutPanel1.Controls.Add(this.label6, 6, 0);
             this.tableLayoutPanel1.Controls.Add(this.lblBillNo, 5, 1);
             this.tableLayoutPanel1.Controls.Add(this.txtSearchBillNo, 6, 1);
@@ -3135,6 +3242,22 @@ namespace standard.trans
             this.dtpfdate.Size = new System.Drawing.Size(168, 33);
             this.dtpfdate.TabIndex = 0;
             this.dtpfdate.KeyDown += new System.Windows.Forms.KeyEventHandler(this.dtpfdate_KeyDown);
+            // 
+            // cmdConvertAll
+            // 
+            this.cmdConvertAll.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.cmdConvertAll.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(191)))), ((int)(((byte)(219)))), ((int)(((byte)(254)))));
+            this.cmdConvertAll.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            this.cmdConvertAll.Font = new System.Drawing.Font("Tahoma", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cmdConvertAll.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(41)))), ((int)(((byte)(66)))), ((int)(((byte)(122)))));
+            this.cmdConvertAll.Location = new System.Drawing.Point(75, 53);
+            this.cmdConvertAll.Margin = new System.Windows.Forms.Padding(1);
+            this.cmdConvertAll.Name = "cmdConvertAll";
+            this.cmdConvertAll.Size = new System.Drawing.Size(174, 49);
+            this.cmdConvertAll.TabIndex = 9;
+            this.cmdConvertAll.Text = "&Convert All";
+            this.cmdConvertAll.UseVisualStyleBackColor = false;
+            this.cmdConvertAll.Click += new System.EventHandler(this.btnConvertToday_Click);
             // 
             // lblhyp
             // 
@@ -3214,6 +3337,38 @@ namespace standard.trans
             this.cmdexit.Text = "&Exit";
             this.cmdexit.UseVisualStyleBackColor = false;
             this.cmdexit.Click += new System.EventHandler(this.cmdexit_Click);
+            // 
+            // cmdCustomerVehicleList
+            // 
+            this.cmdCustomerVehicleList.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.cmdCustomerVehicleList.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(191)))), ((int)(((byte)(219)))), ((int)(((byte)(254)))));
+            this.cmdCustomerVehicleList.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            this.cmdCustomerVehicleList.Font = new System.Drawing.Font("Tahoma", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cmdCustomerVehicleList.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(41)))), ((int)(((byte)(66)))), ((int)(((byte)(122)))));
+            this.cmdCustomerVehicleList.Location = new System.Drawing.Point(1261, 1);
+            this.cmdCustomerVehicleList.Margin = new System.Windows.Forms.Padding(1);
+            this.cmdCustomerVehicleList.Name = "cmdCustomerVehicleList";
+            this.cmdCustomerVehicleList.Size = new System.Drawing.Size(250, 49);
+            this.cmdCustomerVehicleList.TabIndex = 9;
+            this.cmdCustomerVehicleList.Text = "&Load Vehicle List";
+            this.cmdCustomerVehicleList.UseVisualStyleBackColor = false;
+            this.cmdCustomerVehicleList.Click += new System.EventHandler(this.cmdCustomerVehicleList_Click);
+            // 
+            // cmdPendingSalesOrderList
+            // 
+            this.cmdPendingSalesOrderList.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.cmdPendingSalesOrderList.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(191)))), ((int)(((byte)(219)))), ((int)(((byte)(254)))));
+            this.cmdPendingSalesOrderList.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            this.cmdPendingSalesOrderList.Font = new System.Drawing.Font("Tahoma", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cmdPendingSalesOrderList.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(41)))), ((int)(((byte)(66)))), ((int)(((byte)(122)))));
+            this.cmdPendingSalesOrderList.Location = new System.Drawing.Point(1261, 53);
+            this.cmdPendingSalesOrderList.Margin = new System.Windows.Forms.Padding(1);
+            this.cmdPendingSalesOrderList.Name = "cmdPendingSalesOrderList";
+            this.cmdPendingSalesOrderList.Size = new System.Drawing.Size(200, 49);
+            this.cmdPendingSalesOrderList.TabIndex = 9;
+            this.cmdPendingSalesOrderList.Text = "&Pending List";
+            this.cmdPendingSalesOrderList.UseVisualStyleBackColor = false;
+            this.cmdPendingSalesOrderList.Click += new System.EventHandler(this.cmdPendingSalesOrderList_Click);
             // 
             // label6
             // 

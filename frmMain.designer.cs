@@ -30,6 +30,7 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmMain));
             this.ribbonatt = new System.Windows.Forms.Ribbon();
+            this.IsMdiContainer = true;
             this.ribbonOrbMenuItemabout = new System.Windows.Forms.RibbonOrbMenuItem();
             this.ribbonOrbMenuItemcalc = new System.Windows.Forms.RibbonOrbMenuItem();
             this.ribbonOrbhelp = new System.Windows.Forms.RibbonOrbMenuItem();
