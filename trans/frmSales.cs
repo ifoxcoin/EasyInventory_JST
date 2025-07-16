@@ -239,6 +239,7 @@ namespace standard.trans
         private ComboBox cboCom;
         private BindingSource companyBindingSource;
         private DataGridViewTextBoxColumn cSNo;
+        private DataGridViewTextBoxColumn cIsTaxable;
         private DataGridViewTextBoxColumn cCategory;
         private DataGridViewTextBoxColumn cItemName;
         private DataGridViewTextBoxColumn cQty;
@@ -259,6 +260,7 @@ namespace standard.trans
         private DataGridViewTextBoxColumn cSdID;
         private DataGridViewTextBoxColumn cItemID;
         private DataGridViewTextBoxColumn cCostAmount;
+        private DataGridViewTextBoxColumn cOdUnitValue;
         private decimalbox txtothercharges;
 
         public frmSales()
@@ -579,8 +581,8 @@ namespace standard.trans
                         if (!dr.IsNewRow)
                         {
                             item = source.FirstOrDefault(match => match.item_id == Convert.ToInt32(dr.Cells["cItemID"].Value));
-                            dr.Cells["cCatID"].Value = (item?.item_id ?? 0);
-                            if (Convert.ToInt32(dr.Cells["cCatID"].Value) == 0 || Convert.ToDecimal(dr.Cells["cAmount"].Value) == 0m || Convert.ToDecimal(dr.Cells["cQty"].Value) == 0m)
+                            dr.Cells["cItemID"].Value = (item?.item_id ?? 0);
+                            if (Convert.ToInt32(dr.Cells["cItemID"].Value) == 0 || Convert.ToDecimal(dr.Cells["cAmount"].Value) == 0m || Convert.ToDecimal(dr.Cells["cQty"].Value) == 0m)
                             {
                                 MessageBox.Show("Invalid data to save", "Information", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
                                 dgvSales.Focus();
@@ -615,6 +617,7 @@ namespace standard.trans
                                 break;
                             }
                         }
+                        salesmaster.sm_istaxable = (salesmaster.sm_taxamount > 0);
                         salesmaster.sm_bookno = "S";
                         salesmaster.sm_date = dtpsaldate.Value;
                         salesmaster.sm_itemcount = dgvSales.Rows.Count - 1;
@@ -626,7 +629,7 @@ namespace standard.trans
                             long? no = 0L;
                             inventoryDataContext.usp_setYearNo("sal_no", global.sysdate, ref no, salesmaster.com_id);
                             salesmaster.sm_refno = Convert.ToInt64(no);
-                            inventoryDataContext.usp_salesmasterInsert(ref id, salesmaster.sm_bookno, salesmaster.sm_refno, salesmaster.sm_date, salesmaster.led_id, salesmaster.sm_totqty, salesmaster.sm_totamount, salesmaster.sm_itemcount, salesmaster.sm_profit, salesmaster.sm_disamount, salesmaster.sm_taxamount, salesmaster.sm_taxpercentage, salesmaster.sm_packingcharge, salesmaster.sm_netamount, salesmaster.sm_received, salesmaster.sm_paidcommission, salesmaster.sm_paidpacking, salesmaster.sm_roundamount, false, false, global.ucode, global.sysdate, salesmaster.sm_desc, false, true, salesmaster.so_id, salesmaster.com_id);
+                            inventoryDataContext.usp_salesmasterInsert(ref id, salesmaster.sm_bookno, salesmaster.sm_refno, salesmaster.sm_date, salesmaster.led_id, salesmaster.sm_totqty, salesmaster.sm_totamount, salesmaster.sm_itemcount, salesmaster.sm_profit, salesmaster.sm_disamount, salesmaster.sm_taxamount, salesmaster.sm_taxpercentage, salesmaster.sm_packingcharge, salesmaster.sm_netamount, salesmaster.sm_received, salesmaster.sm_paidcommission, salesmaster.sm_paidpacking, salesmaster.sm_roundamount, false, false, global.ucode, global.sysdate, salesmaster.sm_desc, false, true, salesmaster.so_id, salesmaster.com_id, salesmaster.sm_istaxable);
                             salesdetail.sm_id = id;
                             foreach (DataGridViewRow item2 in (IEnumerable)dgvSales.Rows)
                             {
@@ -676,7 +679,122 @@ namespace standard.trans
                                 salesmaster.so_id = smRecord.so_id ?? 0;
                             }
                             salesmaster.com_id = Convert.ToUInt32(cboCom.SelectedValue.ToString());
-                            inventoryDataContext.usp_salesmasterUpdate(id, salesmaster.sm_bookno, salesmaster.sm_refno, salesmaster.sm_date, salesmaster.led_id, salesmaster.sm_totqty, salesmaster.sm_totamount, salesmaster.sm_itemcount, salesmaster.sm_profit, salesmaster.sm_disamount, salesmaster.sm_taxamount, salesmaster.sm_taxpercentage, salesmaster.sm_packingcharge, salesmaster.sm_netamount, salesmaster.sm_received, salesmaster.sm_paidcommission, salesmaster.sm_paidpacking, salesmaster.sm_roundamount, salesmaster.sm_iscommissionclose, salesmaster.sm_ispackingclose, global.ucode, global.sysdate, salesmaster.sm_desc, salesmaster.sm_isclose, true, salesmaster.so_id, salesmaster.com_id);
+                            inventoryDataContext.usp_salesmasterUpdate(id, salesmaster.sm_bookno, salesmaster.sm_refno, salesmaster.sm_date, salesmaster.led_id, salesmaster.sm_totqty, salesmaster.sm_totamount, salesmaster.sm_itemcount, salesmaster.sm_profit, salesmaster.sm_disamount, salesmaster.sm_taxamount, salesmaster.sm_taxpercentage, salesmaster.sm_packingcharge, salesmaster.sm_netamount, salesmaster.sm_received, salesmaster.sm_paidcommission, salesmaster.sm_paidpacking, salesmaster.sm_roundamount, salesmaster.sm_iscommissionclose, salesmaster.sm_ispackingclose, global.ucode, global.sysdate, salesmaster.sm_desc, salesmaster.sm_isclose, true, salesmaster.so_id, salesmaster.com_id, salesmaster.sm_istaxable);
+
+                            // Step 1: Collect current items and their IsTaxable info from the grid
+                            var currentItemIds = new HashSet<int>();
+                            var itemTaxableMap = new Dictionary<int, bool>();
+
+                            foreach (DataGridViewRow row in dgvSales.Rows)
+                            {
+                                if (!row.IsNewRow)
+                                {
+                                    int itemId = Convert.ToInt32(row.Cells["cItemID"].Value);
+                                    bool isTaxable = Convert.ToBoolean(row.Cells["cIsTaxable"].Value);
+
+                                    currentItemIds.Add(itemId);
+                                    itemTaxableMap[itemId] = isTaxable;
+                                }
+                            }
+
+                            // Step 2: Get existing order details from DB
+                            var existingOrderDetails = inventoryDataContext.salesorderdetails
+                                .Where(od => od.so_id == salesmaster.so_id && od.com_id == salesmaster.com_id && od.com_id == salesmaster.com_id && od.od_istaxable == salesmaster.sm_istaxable)
+                                .ToList();
+
+                            foreach (var orderDetail in existingOrderDetails)
+                            {
+                                if (!currentItemIds.Contains((int)orderDetail.item_id))
+                                {
+                                    bool isTaxable = orderDetail.od_istaxable;
+                                    inventoryDataContext.usp_salesorderdetailsDelete(orderDetail.so_id, isTaxable, salesmaster.com_id);
+                                }
+                            }
+
+
+
+                            foreach (DataGridViewRow salesorderItem in (IEnumerable)dgvSales.Rows)
+                            {
+                                if (!salesorderItem.IsNewRow)
+                                {
+                                    salesdetail.sd_id = Convert.ToInt32(salesorderItem.Cells["cSdID"].Value);
+                                    salesdetail.sd_costrate = Convert.ToDecimal(salesorderItem.Cells["cCostRate"].Value);
+                                    salesdetail.sd_rate = Convert.ToDecimal(salesorderItem.Cells["cRate"].Value);
+                                    salesdetail.sd_totamount = Convert.ToDecimal(salesorderItem.Cells["cAmount"].Value);
+                                    salesdetail.item_id = Convert.ToInt32(salesorderItem.Cells["cItemID"].Value);
+                                    decimal sd_qty = Convert.ToDecimal(salesorderItem.Cells["cQty"].Value);
+                                    salesdetail.sd_odid = Convert.ToInt32(salesorderItem.Cells["cOdID"].Value);
+                                    decimal sd_orderqty = Convert.ToDecimal(salesorderItem.Cells["cOrderQty"].Value);
+                                    salesdetail.sd_qty = Convert.ToInt32(sd_qty);
+                                    salesdetail.sd_unitvalue = Convert.ToDecimal(salesorderItem.Cells["cUnitValue"].Value);
+                                    salesdetail.sd_taxpercentage = Convert.ToDecimal(salesorderItem.Cells["cTaxPercentage"].Value);
+                                    salesdetail.sd_taxamount = Convert.ToDecimal(salesorderItem.Cells["cTaxAmount"].Value);
+                                    salesdetail.sd_unit = Convert.ToString(salesorderItem.Cells["cUnit"].Value);
+                                    salesdetail.sd_itemunittype = Convert.ToString(salesorderItem.Cells["cItemUnitType"].Value);
+                                    salesdetail.sd_perunitrate = Convert.ToDecimal(salesorderItem.Cells["cPerUnitRate"].Value);                                 
+                                    salesorderdetails.od_qty = Convert.ToDecimal(salesorderItem.Cells["cOrderQty"].Value);
+                                    salesorderdetails.od_istaxable = Convert.ToBoolean(salesorderItem.Cells["cIsTaxable"].Value);
+                                    salesorderdetails.com_id = (int)salesmaster.com_id;
+                                    salesorderdetails.od_pendingqty = salesorderdetails.od_qty - salesorderdetails.od_soldqty;
+                                    decimal? num = Convert.ToDecimal(salesorderItem.Cells["cQty"].Value);
+                                    salesdetail.sd_totfrieght = Convert.ToDecimal(salesorderItem.Cells["cFrieghtCharge"].Value);
+                                    salesorderdetails.od_unitvalue = Convert.ToDecimal(salesorderItem.Cells["cOdUnitValue"].Value);
+
+                                    int catID = Convert.ToInt32(salesorderItem.Cells["cCatID"].Value);
+
+                                    if (catID == 39)
+                                    {
+                                        salesdetail.sd_unitvalue = Convert.ToDecimal(salesorderItem.Cells["cOdUnitValue"].Value);
+                                    }
+                                    else
+                                    {
+                                        salesdetail.sd_unitvalue = Convert.ToDecimal(salesorderItem.Cells["cUnitValue"].Value);
+                                    }
+
+                                    if (catID == 39)
+                                    {
+                                        salesorderdetails.od_soldqty = Convert.ToDecimal(salesorderItem.Cells["cUnitValue"].Value);
+                                    }
+                                    else
+                                    {
+                                        salesorderdetails.od_soldqty = Convert.ToDecimal(salesdetail.sd_qty);
+                                    }
+
+                                    if (catID == 39)
+                                    {
+                                        salesorderdetails.od_pendingqty = salesorderdetails.od_unitvalue - salesorderdetails.od_soldqty;
+                                    }
+                                    else
+                                    {
+                                        salesorderdetails.od_pendingqty = salesorderdetails.od_qty - salesorderdetails.od_soldqty;
+                                    }
+
+                                    var existingOrderDetail = inventoryDataContext.salesorderdetails.Where(od => od.item_id == salesdetail.item_id && od.so_id == salesmaster.so_id && od.od_id == salesdetail.sd_odid).FirstOrDefault();
+                                    if (existingOrderDetail != null)
+                                    {
+                                        salesorderdetails.so_id = existingOrderDetail.so_id;
+                                        salesorderdetails.od_id = existingOrderDetail.od_id;
+                                        salesorderdetails.od_rate = existingOrderDetail.od_rate;
+                                        salesorderdetails.item_id = existingOrderDetail.item_id;
+                                        salesorderdetails.com_id = existingOrderDetail.com_id;
+                                        salesorderdetails.od_istaxable = existingOrderDetail.od_istaxable;
+
+                                        inventoryDataContext.usp_salesorderdetailsUpdate(salesorderdetails.od_id, salesorderdetails.so_id, salesdetail.item_id, salesorderdetails.od_qty, salesdetail.sd_unitvalue, salesorderdetails.od_soldqty, salesorderdetails.od_pendingqty, salesdetail.sd_perunitrate, salesorderdetails.com_id, salesorderdetails.od_istaxable);
+                                    }
+                                    else
+                                    {
+                                        salesorderdetails.so_id = salesmaster.so_id;
+                                        salesorderdetails.item_id = salesdetail.item_id;
+                                        salesorderdetails.od_rate = salesdetail.sd_perunitrate;
+
+                                        inventoryDataContext.usp_salesorderdetailsInsert(salesorderdetails.so_id, salesdetail.item_id, salesdetail.sd_qty, salesdetail.sd_unitvalue, salesdetail.sd_qty, 0, salesdetail.sd_perunitrate, salesorderdetails.com_id, salesorderdetails.od_istaxable);
+                                    }
+
+
+                                }
+                            }
+
+
                             inventoryDataContext.usp_salesdetailsDelete(id);
                             inventoryDataContext.usp_stockDelete(id, "SALES");
                             foreach (DataGridViewRow item3 in (IEnumerable)dgvSales.Rows)
@@ -690,19 +808,6 @@ namespace standard.trans
                                     salesdetail.item_id = Convert.ToInt32(item3.Cells["cItemID"].Value);
                                     decimal sd_qty = Convert.ToDecimal(item3.Cells["cQty"].Value);
                                     salesdetail.sd_odid = Convert.ToInt32(item3.Cells["cOdID"].Value);
-
-                                    var existingOrderDetail = inventoryDataContext.salesorderdetails.Where(od => od.item_id == salesdetail.item_id && od.so_id == salesmaster.so_id && od.od_id == salesdetail.sd_odid).FirstOrDefault();
-                                    if (existingOrderDetail != null)
-                                    {
-                                        salesorderdetails.so_id = existingOrderDetail.so_id;
-                                        salesorderdetails.od_id = existingOrderDetail.od_id;
-                                        salesorderdetails.od_rate = existingOrderDetail.od_rate;
-                                        salesorderdetails.item_id = existingOrderDetail.item_id;
-                                    }
-                                    else
-                                    {
-                                        salesorderdetails.od_id = 0; // or handle accordingly
-                                    }
 
                                     decimal sd_orderqty = Convert.ToDecimal(item3.Cells["cOrderQty"].Value);
                                     salesdetail.sd_qty = Convert.ToInt32(sd_qty);
@@ -718,11 +823,6 @@ namespace standard.trans
                                     salesorderdetails.od_pendingqty = salesorderdetails.od_qty - salesorderdetails.od_soldqty;
                                     decimal? num = Convert.ToDecimal(item3.Cells["cQty"].Value);
                                     salesdetail.sd_totfrieght = Convert.ToDecimal(item3.Cells["cFrieghtCharge"].Value);
-
-                                    if (isDraft == false)
-                                    {
-                                        inventoryDataContext.usp_salesorderdetailsUpdate(salesorderdetails.od_id, salesorderdetails.so_id, salesorderdetails.item_id, salesorderdetails.od_qty, salesdetail.sd_unitvalue, salesorderdetails.od_soldqty, salesorderdetails.od_pendingqty, salesorderdetails.od_rate);
-                                    }
                                     inventoryDataContext.usp_salesdetailsInsert(id, salesdetail.item_id, salesdetail.sd_qty, salesdetail.sd_orderqty, salesdetail.sd_rate, salesdetail.sd_costrate, salesdetail.sd_totamount, salesdetail.sd_taxpercentage, salesdetail.sd_taxamount, salesdetail.sd_unit, salesdetail.sd_unitvalue, salesdetail.sd_itemunittype, salesdetail.sd_totfrieght, salesdetail.sd_perunitrate, salesdetail.sd_odid);
                                     var catid = inventoryDataContext.items.Where(i => i.item_id == salesdetail.item_id).Select(i => i.cat_id).FirstOrDefault();
                                     var comid = inventoryDataContext.items.Where(i => i.item_id == salesdetail.item_id).Select(i => i.com_id).FirstOrDefault();
@@ -756,21 +856,21 @@ namespace standard.trans
                             }
 
 
-                            if (isDraft == false)
+                            var salesOrder = inventoryDataContext.salesorders.Where(so => so.so_id == salesmaster.so_id).FirstOrDefault();
+                            if (salesOrder != null)
                             {
-                                var salesOrder = inventoryDataContext.salesorders.Where(so => so.so_id == salesmaster.so_id).FirstOrDefault();
-                                if (salesOrder != null)
-                                {
-                                    salesorder.so_totqty = salesOrder.so_totqty;
-                                    salesorder.so_refno = salesOrder.so_refno;
-                                }
-                                else
-                                {
-                                    salesorderdetails.od_id = 0; // or handle accordingly
-                                }
-                                salesorder.so_status = orderHasPendingItems ? "Partially Converted" : "Fully Converted";
-                                inventoryDataContext.usp_salesorderUpdate(salesmaster.so_id, salesorder.so_refno, salesmaster.sm_date, salesmaster.led_id, salesorder.so_totqty, salesorder.so_status, global.ucode, global.sysdate, true);
+                                var salesOrderDetailsList = inventoryDataContext.salesorderdetails.Where(od => od.so_id == salesmaster.so_id).ToList();
+
+                                decimal totalQty = salesOrderDetailsList.Sum(od => od.od_qty);
+                                salesorder.so_totqty = totalQty;
+                                salesorder.so_refno = salesOrder.so_refno;
                             }
+                            else
+                            {
+                                salesorderdetails.od_id = 0; // or handle accordingly
+                            }
+                            salesorder.so_status = orderHasPendingItems ? "Partially Converted" : "Fully Converted";
+                            inventoryDataContext.usp_salesorderUpdate(salesmaster.so_id, salesorder.so_refno, salesmaster.sm_date, salesmaster.led_id, salesorder.so_totqty, salesorder.so_status, global.ucode, global.sysdate, true);
                         }
                     }
                 }
@@ -1440,6 +1540,7 @@ namespace standard.trans
                 dgvSales["cItemName", dgvSales.RowCount - 1].Value = item.item_name;
                 dgvSales["cCatID", dgvSales.RowCount - 1].Value = item.cat_id;
                 dgvSales["cItemID", dgvSales.RowCount - 1].Value = item.item_id;
+                dgvSales["cIsTaxable", dgvSales.RowCount - 1].Value = item.item_istaxable;
                 dgvSales["cOdID", dgvSales.RowCount - 1].Value = item.sd_odid;
                 dgvSales["cSdID", dgvSales.RowCount - 1].Value = item.sd_id;
                 dgvSales["cCategory", dgvSales.RowCount - 1].Value = item.cat_name;
@@ -1448,6 +1549,7 @@ namespace standard.trans
                 dgvSales["cStock", dgvSales.RowCount - 1].Value = "0";
                 dgvSales["cAmount", dgvSales.RowCount - 1].Value = item.sd_totamount;
                 dgvSales["cQty", dgvSales.RowCount - 1].Value = item.sd_qty;
+                dgvSales["cOdUnitValue", dgvSales.RowCount - 1].Value = item.sd_unitvalue.ToString("N2");
                 dgvSales["cOrderQty", dgvSales.RowCount - 1].Value = item.sd_orderqty;
                 dgvSales["cTaxPercentage", dgvSales.RowCount - 1].Value = item.sd_taxpercentage;
                 dgvSales["cTaxAmount", dgvSales.RowCount - 1].Value = item.sd_taxamount;
@@ -1833,6 +1935,7 @@ namespace standard.trans
                             {
                                 dgvSales["cCostRate", r].Value = item2.li.item_costrate;
                                 dgvSales["cItemID", r].Value = item2.li.item_id;
+                                dgvSales["cIsTaxable", r].Value = item2.li.item_istaxable;
                                 dgvSales["cCategory", r].Value = item2.cat.cat_name;
                                 dgvSales["cCatId", r].Value = item2.cat.cat_id;
                                 dgvSales["cTaxPercentage", r].Value = item2.li.item_taxpercentage;
@@ -1920,6 +2023,7 @@ namespace standard.trans
                         {
                             dgvSales["cCostRate", r].Value = item4.li.item_costrate;
                             dgvSales["cItemID", r].Value = item4.li.item_id;
+                            dgvSales["cIsTaxable", r].Value = item4.li.item_istaxable;
                             dgvSales["cCategory", r].Value = item4.cat.cat_name;
                             dgvSales["cCatId", r].Value = item4.cat.cat_id;
                             if (lblRateType.Text.ToUpper() == "MRP  (D)")
@@ -2359,25 +2463,25 @@ namespace standard.trans
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle19 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle28 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle20 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle21 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle22 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle23 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle24 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle25 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle26 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle27 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle29 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle10 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle11 = new System.Windows.Forms.DataGridViewCellStyle();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmSales));
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle30 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle31 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle32 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle33 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle34 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle35 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle36 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle12 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle13 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle14 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle15 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle16 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle17 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle18 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle7 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle8 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle9 = new System.Windows.Forms.DataGridViewCellStyle();
             this.tablemain = new System.Windows.Forms.TableLayoutPanel();
             this.tableentry = new System.Windows.Forms.TableLayoutPanel();
             this.lblopno = new System.Windows.Forms.Label();
@@ -2428,27 +2532,6 @@ namespace standard.trans
             this.txtProfit = new mylib.decimalbox(this.components);
             this.pnlentry = new System.Windows.Forms.Panel();
             this.dgvSales = new mylib.mygrid();
-            this.cSNo = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.cCategory = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.cItemName = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.cQty = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.cPerUnitRate = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.cItemUnitType = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.cStock = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.cRate = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.cTaxPercentage = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.cTaxAmount = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.cUnitValue = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.cUnit = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.cFrieghtCharge = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.cAmount = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.cOrderQty = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.cCostRate = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.cCatID = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.cOdID = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.cSdID = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.cItemID = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.cCostAmount = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.pnlview = new System.Windows.Forms.Panel();
             this.tableview = new System.Windows.Forms.TableLayoutPanel();
             this.lblsubtitle = new System.Windows.Forms.Label();
@@ -2465,7 +2548,6 @@ namespace standard.trans
             this.smdateDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.lednameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.companyDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.isTaxableDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.smtotqtyDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.smnetamountDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.smdisamountDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -2498,6 +2580,29 @@ namespace standard.trans
             this.label5 = new System.Windows.Forms.Label();
             this.smtotamountDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.smprofitDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.cSNo = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.cIsTaxable = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.cCategory = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.cItemName = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.cQty = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.cPerUnitRate = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.cItemUnitType = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.cStock = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.cRate = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.cTaxPercentage = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.cTaxAmount = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.cUnitValue = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.cUnit = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.cFrieghtCharge = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.cAmount = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.cOrderQty = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.cCostRate = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.cCatID = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.cOdID = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.cSdID = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.cItemID = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.cCostAmount = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.cOdUnitValue = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.tablemain.SuspendLayout();
             this.tableentry.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.ledgermasterCityBindingSource)).BeginInit();
@@ -3368,17 +3473,18 @@ namespace standard.trans
             this.dgvSales.AllowUserToDeleteRows = false;
             this.dgvSales.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.DisplayedCells;
             this.dgvSales.BackgroundColor = System.Drawing.Color.White;
-            dataGridViewCellStyle19.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle19.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle19.Font = new System.Drawing.Font("Tahoma", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle19.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle19.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle19.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle19.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dgvSales.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle19;
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("Tahoma", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dgvSales.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
             this.dgvSales.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvSales.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.cSNo,
+            this.cIsTaxable,
             this.cCategory,
             this.cItemName,
             this.cQty,
@@ -3398,7 +3504,8 @@ namespace standard.trans
             this.cOdID,
             this.cSdID,
             this.cItemID,
-            this.cCostAmount});
+            this.cCostAmount,
+            this.cOdUnitValue});
             this.dgvSales.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dgvSales.Location = new System.Drawing.Point(0, 0);
             this.dgvSales.Margin = new System.Windows.Forms.Padding(5, 7, 5, 7);
@@ -3406,8 +3513,8 @@ namespace standard.trans
             this.dgvSales.Name = "dgvSales";
             this.dgvSales.RowHeadersVisible = false;
             this.dgvSales.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.AutoSizeToAllHeaders;
-            dataGridViewCellStyle28.Font = new System.Drawing.Font("Tahoma", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.dgvSales.RowsDefaultCellStyle = dataGridViewCellStyle28;
+            dataGridViewCellStyle10.Font = new System.Drawing.Font("Tahoma", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.dgvSales.RowsDefaultCellStyle = dataGridViewCellStyle10;
             this.dgvSales.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect;
             this.dgvSales.ShowCellToolTips = false;
             this.dgvSales.Size = new System.Drawing.Size(1644, 380);
@@ -3417,185 +3524,6 @@ namespace standard.trans
             this.dgvSales.RowsAdded += new System.Windows.Forms.DataGridViewRowsAddedEventHandler(this.dgopen_RowsAdded);
             this.dgvSales.RowsRemoved += new System.Windows.Forms.DataGridViewRowsRemovedEventHandler(this.dgopen_RowsRemoved);
             this.dgvSales.KeyDown += new System.Windows.Forms.KeyEventHandler(this.dgopen_KeyDown);
-            // 
-            // cSNo
-            // 
-            this.cSNo.HeaderText = "SNO";
-            this.cSNo.Name = "cSNo";
-            this.cSNo.ReadOnly = true;
-            this.cSNo.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-            this.cSNo.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
-            this.cSNo.Width = 50;
-            // 
-            // cCategory
-            // 
-            dataGridViewCellStyle20.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            this.cCategory.DefaultCellStyle = dataGridViewCellStyle20;
-            this.cCategory.HeaderText = "CATEGORY";
-            this.cCategory.Name = "cCategory";
-            this.cCategory.Width = 120;
-            // 
-            // cItemName
-            // 
-            this.cItemName.HeaderText = "ITEM NAME";
-            this.cItemName.Name = "cItemName";
-            // 
-            // cQty
-            // 
-            dataGridViewCellStyle21.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle21.Format = "N0";
-            dataGridViewCellStyle21.NullValue = null;
-            this.cQty.DefaultCellStyle = dataGridViewCellStyle21;
-            this.cQty.HeaderText = "QTY";
-            this.cQty.MaxInputLength = 8;
-            this.cQty.Name = "cQty";
-            this.cQty.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-            this.cQty.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
-            // 
-            // cPerUnitRate
-            // 
-            this.cPerUnitRate.HeaderText = "PER UNIT RATE";
-            this.cPerUnitRate.Name = "cPerUnitRate";
-            // 
-            // cItemUnitType
-            // 
-            this.cItemUnitType.HeaderText = "ITEM UNIT TYPE";
-            this.cItemUnitType.Name = "cItemUnitType";
-            this.cItemUnitType.ReadOnly = true;
-            // 
-            // cStock
-            // 
-            dataGridViewCellStyle22.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle22.BackColor = System.Drawing.Color.Red;
-            dataGridViewCellStyle22.ForeColor = System.Drawing.Color.White;
-            dataGridViewCellStyle22.Format = "N0";
-            dataGridViewCellStyle22.NullValue = "0";
-            dataGridViewCellStyle22.SelectionForeColor = System.Drawing.Color.White;
-            this.cStock.DefaultCellStyle = dataGridViewCellStyle22;
-            this.cStock.HeaderText = "STOCK";
-            this.cStock.Name = "cStock";
-            this.cStock.ReadOnly = true;
-            this.cStock.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-            this.cStock.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
-            this.cStock.Visible = false;
-            // 
-            // cRate
-            // 
-            dataGridViewCellStyle23.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            dataGridViewCellStyle23.Format = "N2";
-            this.cRate.DefaultCellStyle = dataGridViewCellStyle23;
-            this.cRate.HeaderText = "RATE";
-            this.cRate.MaxInputLength = 10;
-            this.cRate.Name = "cRate";
-            this.cRate.ReadOnly = true;
-            this.cRate.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-            this.cRate.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
-            this.cRate.Width = 120;
-            // 
-            // cTaxPercentage
-            // 
-            dataGridViewCellStyle24.Format = "N2";
-            dataGridViewCellStyle24.NullValue = null;
-            this.cTaxPercentage.DefaultCellStyle = dataGridViewCellStyle24;
-            this.cTaxPercentage.HeaderText = "TAX %";
-            this.cTaxPercentage.Name = "cTaxPercentage";
-            this.cTaxPercentage.ReadOnly = true;
-            this.cTaxPercentage.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-            this.cTaxPercentage.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
-            this.cTaxPercentage.Width = 120;
-            // 
-            // cTaxAmount
-            // 
-            dataGridViewCellStyle25.Format = "N2";
-            dataGridViewCellStyle25.NullValue = null;
-            this.cTaxAmount.DefaultCellStyle = dataGridViewCellStyle25;
-            this.cTaxAmount.HeaderText = "TAX AMOUNT";
-            this.cTaxAmount.Name = "cTaxAmount";
-            this.cTaxAmount.ReadOnly = true;
-            this.cTaxAmount.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-            this.cTaxAmount.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
-            this.cTaxAmount.Width = 130;
-            // 
-            // cUnitValue
-            // 
-            this.cUnitValue.HeaderText = "UNIT VALUE";
-            this.cUnitValue.Name = "cUnitValue";
-            this.cUnitValue.ReadOnly = true;
-            // 
-            // cUnit
-            // 
-            this.cUnit.HeaderText = "UNIT";
-            this.cUnit.Name = "cUnit";
-            this.cUnit.ReadOnly = true;
-            // 
-            // cFrieghtCharge
-            // 
-            this.cFrieghtCharge.HeaderText = "FRIEGHT CHARGE";
-            this.cFrieghtCharge.Name = "cFrieghtCharge";
-            this.cFrieghtCharge.ReadOnly = true;
-            // 
-            // cAmount
-            // 
-            dataGridViewCellStyle26.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            dataGridViewCellStyle26.Format = "N2";
-            this.cAmount.DefaultCellStyle = dataGridViewCellStyle26;
-            this.cAmount.HeaderText = "AMOUNT";
-            this.cAmount.Name = "cAmount";
-            this.cAmount.ReadOnly = true;
-            this.cAmount.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-            this.cAmount.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
-            this.cAmount.Width = 130;
-            // 
-            // cOrderQty
-            // 
-            this.cOrderQty.HeaderText = "ORDER QTY";
-            this.cOrderQty.Name = "cOrderQty";
-            this.cOrderQty.Visible = false;
-            this.cOrderQty.Width = 50;
-            // 
-            // cCostRate
-            // 
-            dataGridViewCellStyle27.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            dataGridViewCellStyle27.Format = "N2";
-            this.cCostRate.DefaultCellStyle = dataGridViewCellStyle27;
-            this.cCostRate.HeaderText = "COST RATE";
-            this.cCostRate.Name = "cCostRate";
-            this.cCostRate.ReadOnly = true;
-            this.cCostRate.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-            this.cCostRate.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
-            this.cCostRate.Visible = false;
-            this.cCostRate.Width = 130;
-            // 
-            // cCatID
-            // 
-            this.cCatID.HeaderText = "CatID";
-            this.cCatID.Name = "cCatID";
-            this.cCatID.Visible = false;
-            // 
-            // cOdID
-            // 
-            this.cOdID.HeaderText = "OdID";
-            this.cOdID.Name = "cOdID";
-            this.cOdID.Visible = false;
-            // 
-            // cSdID
-            // 
-            this.cSdID.HeaderText = "SdID";
-            this.cSdID.Name = "cSdID";
-            this.cSdID.Visible = false;
-            // 
-            // cItemID
-            // 
-            this.cItemID.HeaderText = "ItemID";
-            this.cItemID.Name = "cItemID";
-            this.cItemID.Visible = false;
-            // 
-            // cCostAmount
-            // 
-            this.cCostAmount.HeaderText = "CostAmount";
-            this.cCostAmount.Name = "cCostAmount";
-            this.cCostAmount.Visible = false;
-            this.cCostAmount.Width = 130;
             // 
             // pnlview
             // 
@@ -3649,14 +3577,14 @@ namespace standard.trans
             this.dglist.AutoGenerateColumns = false;
             this.dglist.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.DisplayedCells;
             this.dglist.BackgroundColor = System.Drawing.Color.White;
-            dataGridViewCellStyle29.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle29.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle29.Font = new System.Drawing.Font("Tahoma", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle29.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle29.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle29.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle29.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dglist.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle29;
+            dataGridViewCellStyle11.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle11.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle11.Font = new System.Drawing.Font("Tahoma", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle11.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle11.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle11.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle11.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dglist.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle11;
             this.dglist.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dglist.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.ldelete,
@@ -3671,7 +3599,6 @@ namespace standard.trans
             this.smdateDataGridViewTextBoxColumn,
             this.lednameDataGridViewTextBoxColumn,
             this.companyDataGridViewTextBoxColumn,
-            this.isTaxableDataGridViewTextBoxColumn,
             this.smtotqtyDataGridViewTextBoxColumn,
             this.smnetamountDataGridViewTextBoxColumn,
             this.smdisamountDataGridViewTextBoxColumn,
@@ -3778,9 +3705,9 @@ namespace standard.trans
             // smdateDataGridViewTextBoxColumn
             // 
             this.smdateDataGridViewTextBoxColumn.DataPropertyName = "sm_date";
-            dataGridViewCellStyle30.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle30.Format = "dd-MM-yyyy";
-            this.smdateDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle30;
+            dataGridViewCellStyle12.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle12.Format = "dd-MM-yyyy";
+            this.smdateDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle12;
             this.smdateDataGridViewTextBoxColumn.HeaderText = "Bill Date";
             this.smdateDataGridViewTextBoxColumn.Name = "smdateDataGridViewTextBoxColumn";
             this.smdateDataGridViewTextBoxColumn.ReadOnly = true;
@@ -3802,20 +3729,12 @@ namespace standard.trans
             this.companyDataGridViewTextBoxColumn.ReadOnly = true;
             this.companyDataGridViewTextBoxColumn.Width = 200;
             // 
-            // isTaxableDataGridViewTextBoxColumn
-            // 
-            this.isTaxableDataGridViewTextBoxColumn.DataPropertyName = "item_istaxable";
-            this.isTaxableDataGridViewTextBoxColumn.HeaderText = "Taxable";
-            this.isTaxableDataGridViewTextBoxColumn.Name = "taxStatus";
-            this.isTaxableDataGridViewTextBoxColumn.ReadOnly = true;
-            this.isTaxableDataGridViewTextBoxColumn.Width = 200;
-            // 
             // smtotqtyDataGridViewTextBoxColumn
             // 
             this.smtotqtyDataGridViewTextBoxColumn.DataPropertyName = "sm_totqty";
-            dataGridViewCellStyle31.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle31.Format = "N0";
-            this.smtotqtyDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle31;
+            dataGridViewCellStyle13.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle13.Format = "N0";
+            this.smtotqtyDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle13;
             this.smtotqtyDataGridViewTextBoxColumn.HeaderText = "Total Qty";
             this.smtotqtyDataGridViewTextBoxColumn.Name = "smtotqtyDataGridViewTextBoxColumn";
             this.smtotqtyDataGridViewTextBoxColumn.ReadOnly = true;
@@ -3824,9 +3743,9 @@ namespace standard.trans
             // smnetamountDataGridViewTextBoxColumn
             // 
             this.smnetamountDataGridViewTextBoxColumn.DataPropertyName = "sm_netamount";
-            dataGridViewCellStyle32.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            dataGridViewCellStyle32.Format = "N2";
-            this.smnetamountDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle32;
+            dataGridViewCellStyle14.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            dataGridViewCellStyle14.Format = "N2";
+            this.smnetamountDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle14;
             this.smnetamountDataGridViewTextBoxColumn.HeaderText = "Net Amt";
             this.smnetamountDataGridViewTextBoxColumn.Name = "smnetamountDataGridViewTextBoxColumn";
             this.smnetamountDataGridViewTextBoxColumn.ReadOnly = true;
@@ -3835,9 +3754,9 @@ namespace standard.trans
             // smdisamountDataGridViewTextBoxColumn
             // 
             this.smdisamountDataGridViewTextBoxColumn.DataPropertyName = "sm_disamount";
-            dataGridViewCellStyle33.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            dataGridViewCellStyle33.Format = "N2";
-            this.smdisamountDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle33;
+            dataGridViewCellStyle15.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            dataGridViewCellStyle15.Format = "N2";
+            this.smdisamountDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle15;
             this.smdisamountDataGridViewTextBoxColumn.HeaderText = "Discount";
             this.smdisamountDataGridViewTextBoxColumn.Name = "smdisamountDataGridViewTextBoxColumn";
             this.smdisamountDataGridViewTextBoxColumn.ReadOnly = true;
@@ -3845,9 +3764,9 @@ namespace standard.trans
             // smpackingchargeDataGridViewTextBoxColumn
             // 
             this.smpackingchargeDataGridViewTextBoxColumn.DataPropertyName = "sm_packingcharge";
-            dataGridViewCellStyle34.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            dataGridViewCellStyle34.Format = "N2";
-            this.smpackingchargeDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle34;
+            dataGridViewCellStyle16.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            dataGridViewCellStyle16.Format = "N2";
+            this.smpackingchargeDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle16;
             this.smpackingchargeDataGridViewTextBoxColumn.HeaderText = "Other Charges";
             this.smpackingchargeDataGridViewTextBoxColumn.Name = "smpackingchargeDataGridViewTextBoxColumn";
             this.smpackingchargeDataGridViewTextBoxColumn.ReadOnly = true;
@@ -4152,9 +4071,9 @@ namespace standard.trans
             // smtotamountDataGridViewTextBoxColumn
             // 
             this.smtotamountDataGridViewTextBoxColumn.DataPropertyName = "sm_totamount";
-            dataGridViewCellStyle35.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            dataGridViewCellStyle35.Format = "N2";
-            this.smtotamountDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle35;
+            dataGridViewCellStyle17.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            dataGridViewCellStyle17.Format = "N2";
+            this.smtotamountDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle17;
             this.smtotamountDataGridViewTextBoxColumn.HeaderText = "Total Amount";
             this.smtotamountDataGridViewTextBoxColumn.Name = "smtotamountDataGridViewTextBoxColumn";
             this.smtotamountDataGridViewTextBoxColumn.ReadOnly = true;
@@ -4163,12 +4082,203 @@ namespace standard.trans
             // smprofitDataGridViewTextBoxColumn
             // 
             this.smprofitDataGridViewTextBoxColumn.DataPropertyName = "sm_profit";
-            dataGridViewCellStyle36.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            dataGridViewCellStyle36.Format = "N2";
-            this.smprofitDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle36;
+            dataGridViewCellStyle18.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            dataGridViewCellStyle18.Format = "N2";
+            this.smprofitDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle18;
             this.smprofitDataGridViewTextBoxColumn.HeaderText = "Profit";
             this.smprofitDataGridViewTextBoxColumn.Name = "smprofitDataGridViewTextBoxColumn";
             this.smprofitDataGridViewTextBoxColumn.Width = 130;
+            // 
+            // cSNo
+            // 
+            this.cSNo.HeaderText = "SNO";
+            this.cSNo.Name = "cSNo";
+            this.cSNo.ReadOnly = true;
+            this.cSNo.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.cSNo.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            this.cSNo.Width = 50;
+            // 
+            // cIsTaxable
+            // 
+            this.cIsTaxable.HeaderText = "IsTaxable";
+            this.cIsTaxable.Name = "cIsTaxable";
+            this.cIsTaxable.Visible = false;
+            // 
+            // cCategory
+            // 
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            this.cCategory.DefaultCellStyle = dataGridViewCellStyle2;
+            this.cCategory.HeaderText = "CATEGORY";
+            this.cCategory.Name = "cCategory";
+            this.cCategory.Width = 120;
+            // 
+            // cItemName
+            // 
+            this.cItemName.HeaderText = "ITEM NAME";
+            this.cItemName.Name = "cItemName";
+            // 
+            // cQty
+            // 
+            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle3.Format = "N0";
+            dataGridViewCellStyle3.NullValue = null;
+            this.cQty.DefaultCellStyle = dataGridViewCellStyle3;
+            this.cQty.HeaderText = "QTY";
+            this.cQty.MaxInputLength = 8;
+            this.cQty.Name = "cQty";
+            this.cQty.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.cQty.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            // 
+            // cPerUnitRate
+            // 
+            this.cPerUnitRate.HeaderText = "PER UNIT RATE";
+            this.cPerUnitRate.Name = "cPerUnitRate";
+            // 
+            // cItemUnitType
+            // 
+            this.cItemUnitType.HeaderText = "ITEM UNIT TYPE";
+            this.cItemUnitType.Name = "cItemUnitType";
+            this.cItemUnitType.ReadOnly = true;
+            // 
+            // cStock
+            // 
+            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle4.BackColor = System.Drawing.Color.Red;
+            dataGridViewCellStyle4.ForeColor = System.Drawing.Color.White;
+            dataGridViewCellStyle4.Format = "N0";
+            dataGridViewCellStyle4.NullValue = "0";
+            dataGridViewCellStyle4.SelectionForeColor = System.Drawing.Color.White;
+            this.cStock.DefaultCellStyle = dataGridViewCellStyle4;
+            this.cStock.HeaderText = "STOCK";
+            this.cStock.Name = "cStock";
+            this.cStock.ReadOnly = true;
+            this.cStock.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.cStock.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            this.cStock.Visible = false;
+            // 
+            // cRate
+            // 
+            dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            dataGridViewCellStyle5.Format = "N2";
+            this.cRate.DefaultCellStyle = dataGridViewCellStyle5;
+            this.cRate.HeaderText = "RATE";
+            this.cRate.MaxInputLength = 10;
+            this.cRate.Name = "cRate";
+            this.cRate.ReadOnly = true;
+            this.cRate.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.cRate.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            this.cRate.Width = 120;
+            // 
+            // cTaxPercentage
+            // 
+            dataGridViewCellStyle6.Format = "N2";
+            dataGridViewCellStyle6.NullValue = null;
+            this.cTaxPercentage.DefaultCellStyle = dataGridViewCellStyle6;
+            this.cTaxPercentage.HeaderText = "TAX %";
+            this.cTaxPercentage.Name = "cTaxPercentage";
+            this.cTaxPercentage.ReadOnly = true;
+            this.cTaxPercentage.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.cTaxPercentage.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            this.cTaxPercentage.Width = 120;
+            // 
+            // cTaxAmount
+            // 
+            dataGridViewCellStyle7.Format = "N2";
+            dataGridViewCellStyle7.NullValue = null;
+            this.cTaxAmount.DefaultCellStyle = dataGridViewCellStyle7;
+            this.cTaxAmount.HeaderText = "TAX AMOUNT";
+            this.cTaxAmount.Name = "cTaxAmount";
+            this.cTaxAmount.ReadOnly = true;
+            this.cTaxAmount.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.cTaxAmount.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            this.cTaxAmount.Width = 130;
+            // 
+            // cUnitValue
+            // 
+            this.cUnitValue.HeaderText = "UNIT VALUE";
+            this.cUnitValue.Name = "cUnitValue";
+            this.cUnitValue.ReadOnly = true;
+            // 
+            // cUnit
+            // 
+            this.cUnit.HeaderText = "UNIT";
+            this.cUnit.Name = "cUnit";
+            this.cUnit.ReadOnly = true;
+            // 
+            // cFrieghtCharge
+            // 
+            this.cFrieghtCharge.HeaderText = "FRIEGHT CHARGE";
+            this.cFrieghtCharge.Name = "cFrieghtCharge";
+            this.cFrieghtCharge.ReadOnly = true;
+            // 
+            // cAmount
+            // 
+            dataGridViewCellStyle8.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            dataGridViewCellStyle8.Format = "N2";
+            this.cAmount.DefaultCellStyle = dataGridViewCellStyle8;
+            this.cAmount.HeaderText = "AMOUNT";
+            this.cAmount.Name = "cAmount";
+            this.cAmount.ReadOnly = true;
+            this.cAmount.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.cAmount.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            this.cAmount.Width = 130;
+            // 
+            // cOrderQty
+            // 
+            this.cOrderQty.HeaderText = "ORDER QTY";
+            this.cOrderQty.Name = "cOrderQty";
+            this.cOrderQty.Visible = false;
+            this.cOrderQty.Width = 50;
+            // 
+            // cCostRate
+            // 
+            dataGridViewCellStyle9.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            dataGridViewCellStyle9.Format = "N2";
+            this.cCostRate.DefaultCellStyle = dataGridViewCellStyle9;
+            this.cCostRate.HeaderText = "COST RATE";
+            this.cCostRate.Name = "cCostRate";
+            this.cCostRate.ReadOnly = true;
+            this.cCostRate.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.cCostRate.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            this.cCostRate.Visible = false;
+            this.cCostRate.Width = 130;
+            // 
+            // cCatID
+            // 
+            this.cCatID.HeaderText = "CatID";
+            this.cCatID.Name = "cCatID";
+            this.cCatID.Visible = false;
+            // 
+            // cOdID
+            // 
+            this.cOdID.HeaderText = "OdID";
+            this.cOdID.Name = "cOdID";
+            this.cOdID.Visible = false;
+            // 
+            // cSdID
+            // 
+            this.cSdID.HeaderText = "SdID";
+            this.cSdID.Name = "cSdID";
+            this.cSdID.Visible = false;
+            // 
+            // cItemID
+            // 
+            this.cItemID.HeaderText = "ItemID";
+            this.cItemID.Name = "cItemID";
+            this.cItemID.Visible = false;
+            // 
+            // cCostAmount
+            // 
+            this.cCostAmount.HeaderText = "CostAmount";
+            this.cCostAmount.Name = "cCostAmount";
+            this.cCostAmount.Visible = false;
+            this.cCostAmount.Width = 130;
+            // 
+            // cOdUnitValue
+            // 
+            this.cOdUnitValue.HeaderText = "OdUnitValue";
+            this.cOdUnitValue.Name = "cOdUnitValue";
+            this.cOdUnitValue.Visible = false;
             // 
             // frmSales
             // 

@@ -354,25 +354,37 @@ namespace standard.report
 
 
                         var data = db.usp_getLoadwayBySalesOrder(vehicleId, dtpfdate.Value).ToList().OrderBy(x => x.led_deliveryorder);
+                        var summaryData = db.usp_getKgSummaryBySalesOrder(vehicleId, dtpfdate.Value).ToList();
                         List<ReportParameter> list = new List<ReportParameter>();
                         list.Add(new ReportParameter("BillDate", dtpfdate.Value.ToString("dd-MM-yyyy")));
                         reportViewer1.LocalReport.ReportEmbeddedResource = "standard.report.rptSalesLoadWayByOrder.rdlc";
                         ReportDataSource reportsource = new ReportDataSource("usp_getLoadwayBySalesOrder", data.ToList());
+                        ReportDataSource reportsource1 = new ReportDataSource("usp_getKgSummaryBySalesOrder", summaryData);
+                        reportViewer1.LocalReport.DataSources.Add(reportsource1);
                         reportViewer1.LocalReport.DataSources.Add(reportsource);
                         reportViewer1.LocalReport.SetParameters(list);
                     }
+
                     if (_ReportType == "WithOutRate" || _ReportType == "LOADWAY")
                     {
+                        var data = db.usp_getLoadwayBySalesOrder(vehicleId, dtpfdate.Value)
+                                     .ToList()
+                                     .OrderBy(x => x.led_deliveryorder);
 
+                        var summaryData = db.usp_getKgSummaryBySalesOrder(vehicleId, dtpfdate.Value).ToList();
 
-                        var data = db.usp_getLoadwayBySalesOrder(vehicleId, dtpfdate.Value).ToList().OrderBy(x => x.led_deliveryorder);
                         List<ReportParameter> list = new List<ReportParameter>();
                         list.Add(new ReportParameter("BillDate", dtpfdate.Value.ToString("dd-MM-yyyy")));
                         reportViewer1.LocalReport.ReportEmbeddedResource = "standard.report.rptSalesLoadWayToLoadMan.rdlc";
-                        ReportDataSource reportsource = new ReportDataSource("usp_getLoadwayBySalesOrder", data.ToList());
+                        reportViewer1.LocalReport.DataSources.Clear();
+                        ReportDataSource reportsource = new ReportDataSource("usp_getLoadwayBySalesOrder", data);
+                        ReportDataSource reportsource1 = new ReportDataSource("usp_getKgSummaryBySalesOrder", summaryData);
                         reportViewer1.LocalReport.DataSources.Add(reportsource);
+                        reportViewer1.LocalReport.DataSources.Add(reportsource1);
                         reportViewer1.LocalReport.SetParameters(list);
+                        reportViewer1.RefreshReport();
                     }
+
                     if (_ReportType == "KACHATHU")
                     {
                         var data = db.usp_getCutomerByRoute(vehicleId, dtpfdate.Value.Date).ToList().OrderBy(x => x.led_deliveryorder);

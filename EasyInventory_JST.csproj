@@ -457,6 +457,7 @@
     <None Include="Properties\DataSources\standard.classes.usp_GetCustomerVehicleDetailinSalesorderResult.datasource" />
     <None Include="Properties\DataSources\standard.classes.usp_getCutomerByRouteResult.datasource" />
     <None Include="Properties\DataSources\standard.classes.usp_getCutomerByRouteResult1.datasource" />
+    <None Include="Properties\DataSources\standard.classes.usp_getKgSummaryBySalesOrderResult.datasource" />
     <None Include="Properties\DataSources\standard.classes.usp_getLoadwayBySalesOrderResult.datasource" />
     <None Include="Properties\DataSources\standard.classes.usp_getPendingSaleorderListResult.datasource" />
     <None Include="Properties\DataSources\standard.classes.usp_itemSelectResult1.datasource" />
@@ -469,6 +470,7 @@
     <None Include="Properties\DataSources\standard.classes.usp_salesdetailsSelectResult.datasource" />
     <None Include="Properties\DataSources\standard.classes.usp_salesdetailsSelectResult1.datasource" />
     <None Include="Properties\DataSources\standard.classes.usp_salesmasterSelectResult1.datasource" />
+    <None Include="Properties\DataSources\standard.classes.usp_stockReportResult.datasource" />
     <None Include="Properties\DataSources\standard.classes.usp_stockSelectResult.datasource" />
     <None Include="Properties\DataSources\standard.classes.usp_SupplierOutstandingRptResult.datasource" />
     <None Include="Properties\DataSources\standard.classes.usp_vehicleSelectResult.datasource" />

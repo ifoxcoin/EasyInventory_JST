@@ -1037,7 +1037,16 @@ namespace standard.trans
                     InventoryDataContext inventoryDataContext = new InventoryDataContext();
                     if (MessageBox.Show("Are you sure to delete?", "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.No)
                     {
-                        inventoryDataContext.usp_salesorderdetailsDelete(num);
+                        foreach (DataGridViewRow row in dglist.Rows)
+                        {
+                            if (row.IsNewRow) continue; // Skip new row placeholder
+
+                            int soid = Convert.ToInt32(row.Cells["soidDataGridViewTextBoxColumn"].Value);
+                            int com_id = Convert.ToInt32(row.Cells["comidDataGridViewTextBoxColumn"].Value); // Change column name as needed
+                            bool is_taxable = Convert.ToBoolean(row.Cells["istaxableDataGridViewCheckBoxColumn"].Value); // Change column name as needed
+
+                            inventoryDataContext.usp_salesorderdetailsDelete(soid, is_taxable, com_id);
+                        }
                         inventoryDataContext.usp_stockDelete(num, "SALES");
                         inventoryDataContext.usp_salesorderDelete(num);
                         cmdprint_Click(this, null);
@@ -1115,7 +1124,9 @@ namespace standard.trans
                         salesorder.so_totqty = firstItem.so_totqty;
                         salesorder.so_status = "Fully Converted";
                         salesmaster.com_id = firstItem.com_id;
-                        inventoryDataContext.usp_salesmasterInsert(ref id, salesmaster.sm_bookno, salesmaster.sm_refno, salesmaster.sm_date, salesmaster.led_id, salesmaster.sm_totqty, salesmaster.sm_totamount, salesmaster.sm_itemcount, salesmaster.sm_profit, salesmaster.sm_disamount, salesmaster.sm_taxamount, salesmaster.sm_taxpercentage, salesmaster.sm_packingcharge, salesmaster.sm_netamount, salesmaster.sm_received, salesmaster.sm_paidcommission, salesmaster.sm_paidpacking, salesmaster.sm_roundamount, false, false, global.ucode, global.sysdate, salesmaster.sm_desc, false, false, salesmaster.so_id, salesmaster.com_id);
+                        salesmaster.sm_istaxable = firstItem.item_istaxable;
+                        inventoryDataContext.usp_salesmasterInsert(ref id, salesmaster.sm_bookno, salesmaster.sm_refno, salesmaster.sm_date, salesmaster.led_id, salesmaster.sm_totqty, salesmaster.sm_totamount, salesmaster.sm_itemcount, salesmaster.sm_profit, salesmaster.sm_disamount, salesmaster.sm_taxamount, salesmaster.sm_taxpercentage, salesmaster.sm_packingcharge, salesmaster.sm_netamount, salesmaster.sm_received, salesmaster.sm_paidcommission, salesmaster.sm_paidpacking, salesmaster.sm_roundamount, false, false, global.ucode, global.sysdate, salesmaster.sm_desc, false, false, salesmaster.so_id, salesmaster.com_id, salesmaster.sm_istaxable);
+
                         inventoryDataContext.usp_salesorderUpdate(salesmaster.so_id, salesorder.so_refno, salesmaster.sm_date, salesmaster.led_id, salesorder.so_totqty, salesorder.so_status, global.ucode, global.sysdate, true);
                         salesdetail.sm_id = id;
 
@@ -1155,7 +1166,9 @@ namespace standard.trans
                         salesorder.so_totqty = secondItem.so_totqty;
                         salesorder.so_status = "Fully Converted";
                         salesmaster.com_id = secondItem.com_id;
-                        inventoryDataContext.usp_salesmasterInsert(ref id, salesmaster.sm_bookno, salesmaster.sm_refno, salesmaster.sm_date, salesmaster.led_id, salesmaster.sm_totqty, salesmaster.sm_totamount, salesmaster.sm_itemcount, salesmaster.sm_profit, salesmaster.sm_disamount, salesmaster.sm_taxamount, salesmaster.sm_taxpercentage, salesmaster.sm_packingcharge, salesmaster.sm_netamount, salesmaster.sm_received, salesmaster.sm_paidcommission, salesmaster.sm_paidpacking, salesmaster.sm_roundamount, false, false, global.ucode, global.sysdate, salesmaster.sm_desc, false, false, salesmaster.so_id, salesmaster.com_id);
+                        salesmaster.sm_istaxable = secondItem.item_istaxable;
+                        inventoryDataContext.usp_salesmasterInsert(ref id, salesmaster.sm_bookno, salesmaster.sm_refno, salesmaster.sm_date, salesmaster.led_id, salesmaster.sm_totqty, salesmaster.sm_totamount, salesmaster.sm_itemcount, salesmaster.sm_profit, salesmaster.sm_disamount, salesmaster.sm_taxamount, salesmaster.sm_taxpercentage, salesmaster.sm_packingcharge, salesmaster.sm_netamount, salesmaster.sm_received, salesmaster.sm_paidcommission, salesmaster.sm_paidpacking, salesmaster.sm_roundamount, false, false, global.ucode, global.sysdate, salesmaster.sm_desc, false, false, salesmaster.so_id, salesmaster.com_id, salesmaster.sm_istaxable);
+
                         inventoryDataContext.usp_salesorderUpdate(salesmaster.so_id, salesorder.so_refno, salesmaster.sm_date, salesmaster.led_id, salesorder.so_totqty, salesorder.so_status, global.ucode, global.sysdate, true);
                         salesdetail.sm_id = id;
                         foreach (var com2SOD in com2list)
