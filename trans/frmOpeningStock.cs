@@ -1042,10 +1042,11 @@ namespace standard.trans
                             if (row.IsNewRow) continue; // Skip new row placeholder
 
                             int soid = Convert.ToInt32(row.Cells["soidDataGridViewTextBoxColumn"].Value);
+                            int odid = Convert.ToInt32(row.Cells["soidDataGridViewTextBoxColumn"].Value);
                             int com_id = Convert.ToInt32(row.Cells["comidDataGridViewTextBoxColumn"].Value); // Change column name as needed
                             bool is_taxable = Convert.ToBoolean(row.Cells["istaxableDataGridViewCheckBoxColumn"].Value); // Change column name as needed
 
-                            inventoryDataContext.usp_salesorderdetailsDelete(soid, is_taxable, com_id);
+                            inventoryDataContext.usp_salesorderdetailsDelete(soid, is_taxable, com_id,odid);
                         }
                         inventoryDataContext.usp_stockDelete(num, "SALES");
                         inventoryDataContext.usp_salesorderDelete(num);

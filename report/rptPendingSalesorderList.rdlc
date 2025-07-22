@@ -56,9 +56,25 @@
           <DataField>item_name</DataField>
           <rd:TypeName>System.String</rd:TypeName>
         </Field>
+        <Field Name="item_perunitrate">
+          <DataField>item_perunitrate</DataField>
+          <rd:TypeName>System.Decimal</rd:TypeName>
+        </Field>
+        <Field Name="item_perunitrateb">
+          <DataField>item_perunitrateb</DataField>
+          <rd:TypeName>System.Decimal</rd:TypeName>
+        </Field>
+        <Field Name="item_perunitratec">
+          <DataField>item_perunitratec</DataField>
+          <rd:TypeName>System.Decimal</rd:TypeName>
+        </Field>
         <Field Name="item_quantity">
           <DataField>item_quantity</DataField>
           <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="item_tamilname">
+          <DataField>item_tamilname</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
         </Field>
         <Field Name="item_unit">
           <DataField>item_unit</DataField>
@@ -72,8 +88,16 @@
           <DataField>led_id</DataField>
           <rd:TypeName>System.Int64</rd:TypeName>
         </Field>
+        <Field Name="led_isfreight">
+          <DataField>led_isfreight</DataField>
+          <rd:TypeName>System.Boolean</rd:TypeName>
+        </Field>
         <Field Name="led_name">
           <DataField>led_name</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="led_ratetype">
+          <DataField>led_ratetype</DataField>
           <rd:TypeName>System.String</rd:TypeName>
         </Field>
         <Field Name="od_id">
@@ -122,10 +146,10 @@
                   <Width>1.64163cm</Width>
                 </TablixColumn>
                 <TablixColumn>
-                  <Width>4.15599cm</Width>
+                  <Width>3.3887cm</Width>
                 </TablixColumn>
                 <TablixColumn>
-                  <Width>1.64161cm</Width>
+                  <Width>2.46304cm</Width>
                 </TablixColumn>
               </TablixColumns>
               <TablixRows>
@@ -252,7 +276,16 @@
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>=Format(Fields!od_rate.Value,"N2")</Value>
+                                  <Value>=FormatNumber(
+    IIf(IsNothing(Fields!led_isfreight.Value), 
+        Fields!od_rate.Value, 
+        IIf(Fields!led_isfreight.Value = True, 
+            Fields!od_rate.Value + 1, 
+            Fields!od_rate.Value
+        )
+    ),
+    2
+)</Value>
                                   <Style>
                                     <FontFamily>tahoma</FontFamily>
                                     <FontSize>12pt</FontSize>
@@ -287,7 +320,7 @@
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>=Format(Fields!od_unitvalue.Value,"N2") &amp; Fields!item_unit.Value &amp; " " &amp; Fields!item_name.Value</Value>
+                                  <Value>=Format(Fields!od_unitvalue.Value,"N2") &amp; Fields!item_unit.Value &amp; " " &amp; Fields!item_tamilname.Value</Value>
                                   <Style>
                                     <FontFamily>nirmala UI</FontFamily>
                                     <FontSize>12pt</FontSize>
@@ -308,7 +341,10 @@
                           </Paragraphs>
                           <rd:DefaultName>Textbox24</rd:DefaultName>
                           <Style>
-                            <Border />
+                            <Border>
+                              <Color>LightGrey</Color>
+                              <Style>Solid</Style>
+                            </Border>
                             <PaddingLeft>2pt</PaddingLeft>
                             <PaddingRight>2pt</PaddingRight>
                             <PaddingTop>2pt</PaddingTop>
@@ -372,10 +408,13 @@
                                   <Style>
                                     <FontFamily>tahoma</FontFamily>
                                     <FontSize>12pt</FontSize>
+                                    <FontWeight>Bold</FontWeight>
                                   </Style>
                                 </TextRun>
                               </TextRuns>
-                              <Style />
+                              <Style>
+                                <TextAlign>Right</TextAlign>
+                              </Style>
                             </Paragraph>
                           </Paragraphs>
                           <rd:DefaultName>Textbox16</rd:DefaultName>
@@ -401,7 +440,7 @@
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value />
+                                  <Value>Bags   :</Value>
                                   <Style>
                                     <FontFamily>tahoma</FontFamily>
                                     <FontSize>12pt</FontSize>
@@ -409,7 +448,9 @@
                                   </Style>
                                 </TextRun>
                               </TextRuns>
-                              <Style />
+                              <Style>
+                                <TextAlign>Right</TextAlign>
+                              </Style>
                             </Paragraph>
                           </Paragraphs>
                           <rd:DefaultName>Textbox26</rd:DefaultName>
@@ -430,7 +471,47 @@
                     <TablixCell />
                     <TablixCell>
                       <CellContents>
-                        <Textbox Name="Textbox70">
+                        <Textbox Name="Textbox20">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>=FormatNumber(Sum(Fields!od_pendingqty.Value), 0)</Value>
+                                  <Style>
+                                    <FontFamily>tahoma</FontFamily>
+                                    <FontSize>12pt</FontSize>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style>
+                                <TextAlign>Right</TextAlign>
+                              </Style>
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>Textbox20</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Color>LightGrey</Color>
+                              <Style>Solid</Style>
+                            </Border>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                  </TablixCells>
+                </TablixRow>
+                <TablixRow>
+                  <Height>0.635cm</Height>
+                  <TablixCells>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="Textbox6">
                           <CanGrow>true</CanGrow>
                           <KeepTogether>true</KeepTogether>
                           <Paragraphs>
@@ -450,7 +531,80 @@
                               </Style>
                             </Paragraph>
                           </Paragraphs>
-                          <rd:DefaultName>Textbox70</rd:DefaultName>
+                          <rd:DefaultName>Textbox6</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Color>LightGrey</Color>
+                              <Style>Solid</Style>
+                            </Border>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="Textbox7">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>Sub Total   :</Value>
+                                  <Style>
+                                    <FontFamily>tahoma</FontFamily>
+                                    <FontSize>12pt</FontSize>
+                                    <FontWeight>Bold</FontWeight>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style>
+                                <TextAlign>Right</TextAlign>
+                              </Style>
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>Textbox7</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Color>LightGrey</Color>
+                              <Style>Solid</Style>
+                            </Border>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                        <ColSpan>2</ColSpan>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell />
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="Textbox14">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>=FormatNumber(Sum(Fields!od_pendingqty.Value * Fields!od_unitvalue.Value), 0)</Value>
+                                  <Style>
+                                    <FontFamily>tahoma</FontFamily>
+                                    <FontSize>12pt</FontSize>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style>
+                                <TextAlign>Right</TextAlign>
+                              </Style>
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>Textbox14</rd:DefaultName>
                           <Style>
                             <Border>
                               <Color>LightGrey</Color>
@@ -499,6 +653,7 @@
                       </TablixMembers>
                     </TablixMember>
                     <TablixMember />
+                    <TablixMember />
                   </TablixMembers>
                 </TablixMember>
               </TablixMembers>
@@ -507,8 +662,8 @@
             <DataSetName>DataSet1</DataSetName>
             <Top>1.45202cm</Top>
             <Left>0.48154cm</Left>
-            <Height>1.77217cm</Height>
-            <Width>10.7022cm</Width>
+            <Height>2.40717cm</Height>
+            <Width>10.75634cm</Width>
             <Style>
               <Border>
                 <Style>None</Style>
@@ -551,7 +706,7 @@
             </Style>
           </Textbox>
         </ReportItems>
-        <Height>1.56819in</Height>
+        <Height>2.01611in</Height>
         <Style />
       </Body>
       <Width>4.42436in</Width>

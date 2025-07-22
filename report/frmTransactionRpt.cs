@@ -82,7 +82,7 @@ namespace standard.report
                                  it.item_id, it.item_name,
                                  it.item_quantity,
                                  it.item_unit,
-                                 itemName = it.item_name + " - " + it.item_quantity + " " + it.item_unit,
+                                 itemName = it.item_tamilname + " - " + it.item_quantity + " " + it.item_unit,
                              });
 
                 ledgermasterBindingSource.DataSource = cus.OrderBy(x => x.led_name);
@@ -151,9 +151,9 @@ namespace standard.report
             {
                 btnSend.Visible = true;
             }
-            if(_ReportName == "Sales Report")
+            if (_ReportName == "Sales Report")
             {
-                if(_ReportType == "Summary")
+                if (_ReportType == "Summary")
                 {
                     label1.Visible = false;
                     cboItemName.Visible = false;
@@ -207,6 +207,11 @@ namespace standard.report
                 cboName.Visible = true;
                 lblLedger.Visible = true;
 
+            }
+            else if (_ReportName == "Sales Order Report")
+            {
+                chkIsSummary.Checked = false;
+                chkIsSummary.Enabled = false;
             }
             else
             {
@@ -341,6 +346,16 @@ namespace standard.report
                         reportViewer1.LocalReport.DataSources.Add(reportsource);
 
                     }
+                }
+                else if (_ReportName == "Sales Order Report")
+                {
+
+                    long? itemId = cboItemName.SelectedValue != null ? Convert.ToInt64(cboItemName.SelectedValue) : (long?)null;
+                    var data = db.usp_salesorderdetailsSelect(null, dtpfdate.Value, dtptdate.Value, ledid, itemId, null);
+                    reportViewer1.LocalReport.ReportEmbeddedResource = "standard.report.rptSalesOrderDetail.rdlc";
+                    ReportDataSource reportsource = new ReportDataSource("DataSet1", data.ToList());
+                    reportViewer1.LocalReport.DataSources.Add(reportsource);
+
                 }
                 else if (_ReportName == "Receipt Report")
                 {

@@ -68,6 +68,18 @@
           <DataField>item_name</DataField>
           <rd:TypeName>System.String</rd:TypeName>
         </Field>
+        <Field Name="item_perunitrate">
+          <DataField>item_perunitrate</DataField>
+          <rd:TypeName>System.Decimal</rd:TypeName>
+        </Field>
+        <Field Name="item_perunitrateb">
+          <DataField>item_perunitrateb</DataField>
+          <rd:TypeName>System.Decimal</rd:TypeName>
+        </Field>
+        <Field Name="item_perunitratec">
+          <DataField>item_perunitratec</DataField>
+          <rd:TypeName>System.Decimal</rd:TypeName>
+        </Field>
         <Field Name="item_tamilname">
           <DataField>item_tamilname</DataField>
           <rd:TypeName>System.String</rd:TypeName>
@@ -92,8 +104,16 @@
           <DataField>led_id</DataField>
           <rd:TypeName>System.Int64</rd:TypeName>
         </Field>
+        <Field Name="led_isfreight">
+          <DataField>led_isfreight</DataField>
+          <rd:TypeName>System.Boolean</rd:TypeName>
+        </Field>
         <Field Name="led_name">
           <DataField>led_name</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="led_ratetype">
+          <DataField>led_ratetype</DataField>
           <rd:TypeName>System.String</rd:TypeName>
         </Field>
         <Field Name="led_state">
@@ -108,6 +128,10 @@
           <DataField>od_rate</DataField>
           <rd:TypeName>System.Decimal</rd:TypeName>
         </Field>
+        <Field Name="od_soldqty">
+          <DataField>od_soldqty</DataField>
+          <rd:TypeName>System.Decimal</rd:TypeName>
+        </Field>
         <Field Name="od_unitvalue">
           <DataField>od_unitvalue</DataField>
           <rd:TypeName>System.Decimal</rd:TypeName>
@@ -119,6 +143,10 @@
         <Field Name="rt_vehicleno">
           <DataField>rt_vehicleno</DataField>
           <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="sm_isdraft">
+          <DataField>sm_isdraft</DataField>
+          <rd:TypeName>System.Nullable`1[[System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]</rd:TypeName>
         </Field>
         <Field Name="so_date">
           <DataField>so_date</DataField>
@@ -305,7 +333,16 @@
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>=Format(Fields!od_rate.Value,"N2")</Value>
+                                  <Value>=FormatNumber(
+    IIf(IsNothing(Fields!led_isfreight.Value), 
+        Fields!od_rate.Value, 
+        IIf(Fields!led_isfreight.Value = True, 
+            Fields!od_rate.Value + 1, 
+            Fields!od_rate.Value
+        )
+    ),
+    2
+)</Value>
                                   <Style>
                                     <FontFamily>tahoma</FontFamily>
                                     <FontSize>12pt</FontSize>
@@ -392,7 +429,7 @@
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>=FormatNumber(Fields!od_qty.Value, 0)</Value>
+                                  <Value>=FormatNumber(IIf(Fields!sm_isdraft.Value = 0, Fields!od_qty.Value, Fields!od_soldqty.Value), 0)</Value>
                                   <Style>
                                     <FontFamily>tahoma</FontFamily>
                                     <FontSize>12pt</FontSize>
@@ -501,7 +538,10 @@
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>=Format(Sum(Fields!od_qty.Value), 0)</Value>
+                                  <Value>=Format(
+    Sum(IIf(Fields!sm_isdraft.Value = 0, Fields!od_qty.Value, Fields!od_soldqty.Value)),
+    0
+)</Value>
                                   <Style>
                                     <FontFamily>tahoma</FontFamily>
                                     <FontSize>12pt</FontSize>
@@ -612,7 +652,13 @@
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>=FormatNumber(sum(Fields!od_unitvalue.Value * Fields!od_qty.Value), 0)</Value>
+                                  <Value>=Format(
+    Sum(
+        Fields!od_unitvalue.Value * 
+        IIf(Fields!sm_isdraft.Value = 0, Fields!od_qty.Value, Fields!od_soldqty.Value)
+    ),
+"0"
+)</Value>
                                   <Style>
                                     <FontFamily>tahoma</FontFamily>
                                     <FontSize>12pt</FontSize>
@@ -1028,7 +1074,14 @@
                     </Style>
                   </TextRun>
                   <TextRun>
-                    <Value>=Format(RunningValue(Fields!od_qty.Value, Sum, "usp_getLoadwayBySalesOrder"), "N2")</Value>
+                    <Value>=Format(
+    RunningValue(
+        IIf(Fields!sm_isdraft.Value = 0, Fields!od_qty.Value, Fields!od_soldqty.Value),
+        Sum,
+        "usp_getLoadwayBySalesOrder"
+    ),
+    "N2"
+)</Value>
                     <Style>
                       <FontFamily>tahoma</FontFamily>
                       <FontWeight>Bold</FontWeight>
@@ -1073,7 +1126,14 @@
                     </Style>
                   </TextRun>
                   <TextRun>
-                    <Value>=Format(RunningValue(Fields!od_unitvalue.Value * Fields!od_qty.Value, Sum, "usp_getLoadwayBySalesOrder"), "N2")</Value>
+                    <Value>=Format(
+    RunningValue(
+        Fields!od_unitvalue.Value * IIf(Fields!sm_isdraft.Value = 0, Fields!od_qty.Value, Fields!od_soldqty.Value),
+        Sum,
+        "usp_getLoadwayBySalesOrder"
+    ),
+    "N2"
+)</Value>
                     <Style>
                       <FontFamily>tahoma</FontFamily>
                       <FontWeight>Bold</FontWeight>

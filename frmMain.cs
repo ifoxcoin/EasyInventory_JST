@@ -658,6 +658,30 @@ namespace standard
             frm.Show();
         }
 
+        private void btnSalesOrderDetail_Click(object sender, EventArgs e)
+        {
+            HighlightActiveButton((RibbonButton)sender);
+            frmTransactionRpt frm = new frmTransactionRpt();
+            frm._ReportName = "Sales Order Report";
+            frm._LedgerType = "CUSTOMER";
+            if (!bu.CheckRights(Convert.ToString(frm.Tag), frm.Text))
+            {
+                frm.Close();
+                MessageBox.Show("Rights failed...");
+                return;
+            }
+            //foreach (Form F in this.MdiChildren)
+            //    if (frm.Name == F.Name)
+            //    { MessageBox.Show("Already Opened.."); return; }
+            frm.MdiParent = this;
+            frm.WindowState = FormWindowState.Maximized;
+            frm.FormClosed += (s, args) =>
+            {
+                btnSalesOrderDetail.Checked = false;
+            };
+            frm.Show();
+        }
+
         private void btnReceiptReport_Click(object sender, EventArgs e)
         {
             HighlightActiveButton((RibbonButton)sender);

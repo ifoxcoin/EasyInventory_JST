@@ -80,7 +80,9 @@
             this.ribbonPanel2 = new System.Windows.Forms.RibbonPanel();
             this.btnPurchaseReport = new System.Windows.Forms.RibbonButton();
             this.ribbonPanel3 = new System.Windows.Forms.RibbonPanel();
+            this.ribbonPanelSalesOrderDetail = new System.Windows.Forms.RibbonPanel();
             this.btnSalesReport = new System.Windows.Forms.RibbonButton();
+            this.btnSalesOrderDetail = new System.Windows.Forms.RibbonButton();
             this.ribbonPanel4 = new System.Windows.Forms.RibbonPanel();
             this.btnReceiptReport = new System.Windows.Forms.RibbonButton();
             this.ribbonPanel1 = new System.Windows.Forms.RibbonPanel();
@@ -430,6 +432,7 @@
             //this.ribbonreport.Panels.Add(this.ribbonPanel8);
             this.ribbonreport.Panels.Add(this.ribbonPanel2);
             this.ribbonreport.Panels.Add(this.ribbonPanel3);
+            this.ribbonreport.Panels.Add(this.ribbonPanelSalesOrderDetail);
             this.ribbonreport.Panels.Add(this.ribbonPanel4);
             this.ribbonreport.Panels.Add(this.ribbonPanel1);
             this.ribbonreport.Panels.Add(this.ribbonPanel9);
@@ -473,11 +476,22 @@
             this.ribbonPanel3.Items.Add(this.btnSalesReport);
             this.ribbonPanel3.Text = "Sales Report";
             // 
+            // ribbonPanelSalesOrderDetail
+            // 
+            this.ribbonPanelSalesOrderDetail.Items.Add(this.btnSalesOrderDetail);
+            this.ribbonPanelSalesOrderDetail.Text = "Sales Order Report";
+            // 
             // btnSalesReport
             // 
             this.btnSalesReport.Image = ((System.Drawing.Image)(resources.GetObject("btnSalesReport.Image")));
             this.btnSalesReport.SmallImage = ((System.Drawing.Image)(resources.GetObject("btnSalesReport.SmallImage")));
             this.btnSalesReport.Click += new System.EventHandler(this.btnSalesReport_Click);
+            // 
+            // btnSalesOrderDetail
+            // 
+            this.btnSalesOrderDetail.Image = global::standard.Properties.Resources.salesorder;
+            this.btnSalesOrderDetail.SmallImage = global::standard.Properties.Resources.salesorder;
+            this.btnSalesOrderDetail.Click += new System.EventHandler(this.btnSalesOrderDetail_Click);
             // 
             // ribbonPanel4
             // 
@@ -709,6 +723,7 @@
         private System.Windows.Forms.RibbonPanel ribbonPanel1;
         private System.Windows.Forms.RibbonPanel ribbonPanel2;
         private System.Windows.Forms.RibbonPanel ribbonPanel3;
+        private System.Windows.Forms.RibbonPanel ribbonPanelSalesOrderDetail;
         private System.Windows.Forms.RibbonPanel ribbonPanel4;
         private System.Windows.Forms.RibbonPanel ribbonPanel5;
         private System.Windows.Forms.RibbonButton btnPurchase;
@@ -723,6 +738,7 @@
         private System.Windows.Forms.RibbonButton btnStock;
         private System.Windows.Forms.RibbonButton btnPurchaseReport;
         private System.Windows.Forms.RibbonButton btnSalesReport;
+        private System.Windows.Forms.RibbonButton btnSalesOrderDetail;
         private System.Windows.Forms.RibbonButton btnReceiptReport;
         private System.Windows.Forms.RibbonPanel ribbonPanel9;
         private System.Windows.Forms.RibbonPanel ribbonPanelSupplierOS;

@@ -448,9 +448,9 @@ namespace standard.trans
 
         private void LoadData()
         {
-            dtpsaldate.MinDate = global.fdate;
-            dtpsaldate.MaxDate = global.sysdate;
-            dtpsaldate.Value = global.sysdate;
+            dtpsaldate.MinDate = DateTimePicker.MinimumDateTime;
+            dtpsaldate.MaxDate = DateTime.MaxValue; // Or DateTime.Today.AddYears(1)
+            dtpsaldate.Value = DateTime.Today;
             TimeSpan value = new TimeSpan(30, 0, 0, 0, 0);
             dtpfdate.Value = dtpfdate.Value.Subtract(value);
             InventoryDataContext inventoryDataContext = new InventoryDataContext();
@@ -582,7 +582,7 @@ namespace standard.trans
                         {
                             item = source.FirstOrDefault(match => match.item_id == Convert.ToInt32(dr.Cells["cItemID"].Value));
                             dr.Cells["cItemID"].Value = (item?.item_id ?? 0);
-                            if (Convert.ToInt32(dr.Cells["cItemID"].Value) == 0 || Convert.ToDecimal(dr.Cells["cAmount"].Value) == 0m || Convert.ToDecimal(dr.Cells["cQty"].Value) == 0m)
+                            if (Convert.ToInt32(dr.Cells["cItemID"].Value) == 0)
                             {
                                 MessageBox.Show("Invalid data to save", "Information", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
                                 dgvSales.Focus();
@@ -604,7 +604,7 @@ namespace standard.trans
                     {
                         salesmaster.sm_totamount = txttotamt.Value;
                         salesmaster.sm_packingcharge = txtothercharges.Value;
-                        salesmaster.sm_totqty = Convert.ToDecimal(txttotqty.Text);
+                        salesmaster.sm_totqty = decimal.TryParse(txttotqty.Text, out var totQty) ? totQty : 0;
                         salesmaster.sm_netamount = txtFinalnetamount.Value;
                         salesmaster.sm_roundamount = Convert.ToDecimal(txtRoundOff.Text);
                         salesmaster.sm_disamount = txtDiscount.Value;
@@ -707,7 +707,8 @@ namespace standard.trans
                                 if (!currentItemIds.Contains((int)orderDetail.item_id))
                                 {
                                     bool isTaxable = orderDetail.od_istaxable;
-                                    inventoryDataContext.usp_salesorderdetailsDelete(orderDetail.so_id, isTaxable, salesmaster.com_id);
+                                    int odID = (int)orderDetail.od_id;
+                                    inventoryDataContext.usp_salesorderdetailsDelete(orderDetail.so_id, isTaxable, salesmaster.com_id, odID);
                                 }
                             }
 
@@ -731,7 +732,7 @@ namespace standard.trans
                                     salesdetail.sd_taxamount = Convert.ToDecimal(salesorderItem.Cells["cTaxAmount"].Value);
                                     salesdetail.sd_unit = Convert.ToString(salesorderItem.Cells["cUnit"].Value);
                                     salesdetail.sd_itemunittype = Convert.ToString(salesorderItem.Cells["cItemUnitType"].Value);
-                                    salesdetail.sd_perunitrate = Convert.ToDecimal(salesorderItem.Cells["cPerUnitRate"].Value);                                 
+                                    salesdetail.sd_perunitrate = Convert.ToDecimal(salesorderItem.Cells["cPerUnitRate"].Value);
                                     salesorderdetails.od_qty = Convert.ToDecimal(salesorderItem.Cells["cOrderQty"].Value);
                                     salesorderdetails.od_istaxable = Convert.ToBoolean(salesorderItem.Cells["cIsTaxable"].Value);
                                     salesorderdetails.com_id = (int)salesmaster.com_id;
@@ -744,7 +745,7 @@ namespace standard.trans
 
                                     if (catID == 39)
                                     {
-                                        salesdetail.sd_unitvalue = Convert.ToDecimal(salesorderItem.Cells["cOdUnitValue"].Value);
+                                        salesdetail.sd_unitvalue = Convert.ToDecimal(salesorderItem.Cells["cUnitValue"].Value);
                                     }
                                     else
                                     {
@@ -769,7 +770,7 @@ namespace standard.trans
                                         salesorderdetails.od_pendingqty = salesorderdetails.od_qty - salesorderdetails.od_soldqty;
                                     }
 
-                                    var existingOrderDetail = inventoryDataContext.salesorderdetails.Where(od => od.item_id == salesdetail.item_id && od.so_id == salesmaster.so_id && od.od_id == salesdetail.sd_odid).FirstOrDefault();
+                                    var existingOrderDetail = inventoryDataContext.salesorderdetails.Where(od => od.so_id == salesmaster.so_id && od.od_id == salesdetail.sd_odid).FirstOrDefault();
                                     if (existingOrderDetail != null)
                                     {
                                         salesorderdetails.so_id = existingOrderDetail.so_id;
@@ -1667,15 +1668,49 @@ namespace standard.trans
                 {
                     int num = Convert.ToInt32(dglist["smidDataGridViewTextBoxColumn", e.RowIndex].Value);
                     InventoryDataContext inventoryDataContext = new InventoryDataContext();
+                    salesorder salesorder = new salesorder();
                     var soid = inventoryDataContext.salesmasters.Where(sm => sm.sm_id == num).Select(sm => sm.so_id).FirstOrDefault();
-                    var odid = inventoryDataContext.salesdetails.Where(sd => sd.sm_id == num).Select(sd => sd.sd_odid).FirstOrDefault();
+                    var joinedList = (from sd in inventoryDataContext.salesdetails
+                                      join od in inventoryDataContext.salesorderdetails
+                                          on sd.sd_odid equals od.od_id
+                                      where sd.sm_id == num
+                                      select new
+                                      {
+                                          sd.sd_odid,
+                                          is_taxable = od.od_istaxable,
+                                          od.com_id
+                                      }).ToList();
 
 
                     if (MessageBox.Show("Are you sure to delete?", "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.No)
                     {
                         inventoryDataContext.usp_salesdetailsDelete(num);
                         inventoryDataContext.usp_salesmasterDelete(num);
+                        foreach (var detail in joinedList)
+                        {
+                            inventoryDataContext.usp_salesorderdetailsDelete(soid, detail.is_taxable, detail.com_id, detail.sd_odid);
+                        }
                         inventoryDataContext.usp_stockDelete(num, "SALES");
+
+                        var soIdsToUpdate = joinedList.Select(j => j.sd_odid)
+                    .Distinct()
+                    .ToList();
+
+                        var totalQty = inventoryDataContext.salesorderdetails
+                            .Where(od => od.so_id == soid)
+                            .Sum(od => (decimal?)od.od_qty) ?? 0;
+
+                        var existingOrder = inventoryDataContext.salesorders.FirstOrDefault(so => so.so_id == soid);
+                        salesorder.so_refno = existingOrder.so_refno;
+                        salesorder.so_date = existingOrder.so_date;
+                        salesorder.led_id = existingOrder.led_id;
+                        salesorder.so_status = existingOrder.so_status;
+                        salesorder.so_isclose = existingOrder.so_isclose;
+                        salesorder.so_udate = existingOrder.so_udate;
+                        salesorder.users_uid = existingOrder.users_uid;
+
+                        inventoryDataContext.usp_salesorderUpdate(soid, salesorder.so_refno, salesorder.so_date, salesorder.led_id, totalQty, salesorder.so_status, salesorder.users_uid, salesorder.so_udate, salesorder.so_isclose);
+
                         cmdprint_Click(this, null);
                         MessageBox.Show("Record deleted successfully...", "Information", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
                     }
@@ -2549,6 +2584,7 @@ namespace standard.trans
             this.lednameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.companyDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.smtotqtyDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.isTaxableDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.smnetamountDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.smdisamountDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.smpackingchargeDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -2894,6 +2930,7 @@ namespace standard.trans
             this.dtpsaldate.Margin = new System.Windows.Forms.Padding(5, 7, 5, 7);
             this.dtpsaldate.Name = "dtpsaldate";
             this.dtpsaldate.Size = new System.Drawing.Size(190, 42);
+            this.dtpsaldate.MaxDate = DateTime.MaxValue;
             this.dtpsaldate.TabIndex = 1;
             this.dtpsaldate.KeyDown += new System.Windows.Forms.KeyEventHandler(this.dtpsaldate_KeyDown);
             // 
@@ -3598,6 +3635,7 @@ namespace standard.trans
             this.smrefnoDataGridViewTextBoxColumn,
             this.smdateDataGridViewTextBoxColumn,
             this.lednameDataGridViewTextBoxColumn,
+            this.isTaxableDataGridViewTextBoxColumn,
             this.companyDataGridViewTextBoxColumn,
             this.smtotqtyDataGridViewTextBoxColumn,
             this.smnetamountDataGridViewTextBoxColumn,
@@ -3728,6 +3766,14 @@ namespace standard.trans
             this.companyDataGridViewTextBoxColumn.Name = "companyDataGridViewTextBoxColumn";
             this.companyDataGridViewTextBoxColumn.ReadOnly = true;
             this.companyDataGridViewTextBoxColumn.Width = 200;
+            // 
+            // isTaxableDataGridViewTextBoxColumn
+            // 
+            this.isTaxableDataGridViewTextBoxColumn.DataPropertyName = "item_istaxable";
+            this.isTaxableDataGridViewTextBoxColumn.HeaderText = "Taxable";
+            this.isTaxableDataGridViewTextBoxColumn.Name = "taxStatus";
+            this.isTaxableDataGridViewTextBoxColumn.ReadOnly = true;
+            this.isTaxableDataGridViewTextBoxColumn.Width = 200;
             // 
             // smtotqtyDataGridViewTextBoxColumn
             // 
