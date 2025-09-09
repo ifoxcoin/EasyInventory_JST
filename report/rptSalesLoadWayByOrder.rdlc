@@ -381,6 +381,7 @@
                                   <Style>
                                     <FontFamily>nirmala UI</FontFamily>
                                     <FontSize>12pt</FontSize>
+                                    <FontWeight>Bold</FontWeight>
                                   </Style>
                                 </TextRun>
                                 <TextRun>
@@ -1443,8 +1444,9 @@
             </Border>
           </Style>
         </PageFooter>
-        <PageHeight>11.68999in</PageHeight>
-        <PageWidth>8.26999in</PageWidth>
+        <PageHeight>11.69in</PageHeight>
+        <PageWidth>8.27in</PageWidth>
+        <LeftMargin>0.1in</LeftMargin>
         <BottomMargin>0.5in</BottomMargin>
         <ColumnSpacing>0.05118in</ColumnSpacing>
         <Style />

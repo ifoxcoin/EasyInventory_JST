@@ -1,4 +1,4 @@
-using Microsoft.Reporting.WinForms;
+ï»¿using Microsoft.Reporting.WinForms;
 using mylib;
 using standard.classes;
 using standard.report;
@@ -452,6 +452,7 @@ namespace standard.trans
             cboissueto.SelectedIndex = -1;
             chkIsFrieght.Checked = false;
             dgvSales.Rows.Clear();
+            dgvSales.ReadOnly = false;
             dglist.Rows.Clear();
             txttotqty.Value = 0m;
             txtSearchBillNo.Text = string.Empty;
@@ -564,12 +565,12 @@ namespace standard.trans
                                     if (pendingDetail != null)
                                     {
                                         // Calculate new pending quantity
-                                        int newPendingQty = Convert.ToInt32(pendingDetail.sod.od_pendingqty - salesorderdetail.od_qty);
-                                        int newSoldQty = Convert.ToInt32(pendingDetail.sod.od_soldqty + pendingDetail.sod.od_pendingqty);
+                                        int newPendingQty = 0;
+                                        int newSoldQty = Convert.ToInt32(pendingDetail.sod.od_soldqty);
                                         var catID = pendingDetail.cat_id;
                                         if ((int)catID == 39)
                                         {
-                                            newPendingQty = Convert.ToInt32(pendingDetail.sod.od_pendingqty - salesorderdetail.od_unitvalue);
+                                            newPendingQty = 0;
                                         }
 
                                         // Update salesorderdetails using stored procedure
@@ -605,50 +606,88 @@ namespace standard.trans
                         {
                             var oldrecord = inventoryDataContext.salesorders.Where(x => x.so_id == id).FirstOrDefault();
 
-                            var salesMasterList = inventoryDataContext.salesmasters.Where(sm => sm.so_id == id).ToList();
-
-                            foreach (var salesmasters in salesMasterList)
+                            if (oldrecord != null && oldrecord.so_isclose == true)
                             {
-                                inventoryDataContext.usp_salesmasterUpdate(salesmasters.sm_id, salesmasters.sm_bookno, salesmasters.sm_refno, salesorder.so_date, salesmasters.led_id, salesmasters.sm_totqty, salesmasters.sm_totamount, salesmasters.sm_itemcount, salesmasters.sm_profit, salesmasters.sm_disamount, salesmasters.sm_taxamount, salesmasters.sm_taxpercentage, salesmasters.sm_packingcharge, salesmasters.sm_netamount, salesmasters.sm_received, salesmasters.sm_paidcommission, salesmasters.sm_paidpacking, salesmasters.sm_roundamount, salesmasters.sm_iscommissionclose, salesmasters.sm_ispackingclose, global.ucode, global.sysdate, salesmasters.sm_desc, salesmasters.sm_isclose, salesmasters.sm_isdraft, salesmasters.so_id, salesmasters.com_id, salesmasters.sm_istaxable);
-                            }
+                                var salesMasterList = inventoryDataContext.salesmasters.Where(sm => sm.so_id == id).ToList();
 
-                            salesorder.so_status = oldrecord.so_status;
-                            salesorder.so_isclose = oldrecord.so_isclose;
-                            salesorder.so_refno = Convert.ToInt64(txtopno.Value);
-                            inventoryDataContext.usp_salesorderUpdate(id, salesorder.so_refno, salesorder.so_date, salesorder.led_id, salesorder.so_totqty, salesorder.so_status, global.ucode, global.sysdate, salesorder.so_isclose);
-
-                            
-
-
-                            var recordsToDelete = inventoryDataContext.salesorderdetails.Where(x => x.so_id == id).Select(x => new
-                            {
-                                x.od_id,
-                                x.com_id,
-                                x.od_istaxable
-                            }).ToList();
-
-                            // Step 2: Loop and delete each using your existing SP
-                            foreach (var row in recordsToDelete)
-                            {
-                                inventoryDataContext.usp_salesorderdetailsDelete(id, row.od_istaxable, row.com_id, row.od_id);
-                            }
-                            inventoryDataContext.usp_stockDelete(id, "SALES");
-                            foreach (DataGridViewRow item3 in (IEnumerable)dgvSales.Rows)
-                            {
-                                if (!item3.IsNewRow)
+                                foreach (var salesmasters in salesMasterList)
                                 {
-                                    salesorderdetail.item_id = Convert.ToInt32(item3.Cells["cCatID"].Value);
-                                    salesorderdetail.od_qty = Convert.ToInt32(item3.Cells["cQty"].Value);
-                                    salesorderdetail.od_unitvalue = Convert.ToDecimal(item3.Cells["cUnitValue"].Value);
-                                    salesorderdetail.od_soldqty = Convert.ToInt32(item3.Cells["cSoldQty"].Value);
-                                    salesorderdetail.od_pendingqty = Convert.ToInt32(item3.Cells["cPendingQty"].Value);
-                                    salesorderdetail.com_id = Convert.ToInt32(item3.Cells["cComID"].Value);
-                                    salesorderdetail.od_istaxable = Convert.ToBoolean(item3.Cells["cIsTaxable"].Value);
-                                    salesorderdetail.od_rate = Convert.ToDecimal(item3.Cells["cRate"].Value);
-                                    decimal? num = Convert.ToDecimal(item3.Cells["cQty"].Value);
-                                    inventoryDataContext.usp_salesorderdetailsInsert(id, salesorderdetail.item_id, salesorderdetail.od_qty, salesorderdetail.od_unitvalue, salesorderdetail.od_soldqty, salesorderdetail.od_pendingqty, salesorderdetail.od_rate, salesorderdetail.com_id, salesorderdetail.od_istaxable);
+                                    inventoryDataContext.usp_salesmasterUpdate(
+                                        salesmasters.sm_id, salesmasters.sm_bookno, salesmasters.sm_refno, salesorder.so_date,
+                                        salesmasters.led_id, salesmasters.sm_totqty, salesmasters.sm_totamount, salesmasters.sm_itemcount,
+                                        salesmasters.sm_profit, salesmasters.sm_disamount, salesmasters.sm_taxamount, salesmasters.sm_taxpercentage,
+                                        salesmasters.sm_packingcharge, salesmasters.sm_netamount, salesmasters.sm_received,
+                                        salesmasters.sm_paidcommission, salesmasters.sm_paidpacking, salesmasters.sm_roundamount,
+                                        salesmasters.sm_iscommissionclose, salesmasters.sm_ispackingclose, global.ucode, global.sysdate,
+                                        salesmasters.sm_desc, salesmasters.sm_isclose, salesmasters.sm_isdraft, salesmasters.so_id,
+                                        salesmasters.com_id, salesmasters.sm_istaxable, false, salesmasters.sm_guid
+                                    );
+                                }
+
+                                salesorder.so_status = oldrecord.so_status;
+                                salesorder.so_isclose = oldrecord.so_isclose;
+                                salesorder.so_refno = Convert.ToInt64(txtopno.Value);
+
+                                inventoryDataContext.usp_salesorderUpdate(
+                                    id, salesorder.so_refno, salesorder.so_date, salesorder.led_id, salesorder.so_totqty,
+                                    salesorder.so_status, global.ucode, global.sysdate, salesorder.so_isclose
+                                );
+
+                                // ðŸ” Call update for each detail also
+                                foreach (DataGridViewRow item3 in (IEnumerable)dgvSales.Rows)
+                                {
+                                    if (!item3.IsNewRow)
+                                    {
+                                        salesorderdetail.item_id = Convert.ToInt32(item3.Cells["cCatID"].Value);
+                                        salesorderdetail.od_id = Convert.ToInt32(item3.Cells["cOdID"].Value);
+                                        salesorderdetail.od_qty = Convert.ToInt32(item3.Cells["cQty"].Value);
+                                        salesorderdetail.od_unitvalue = Convert.ToDecimal(item3.Cells["cUnitValue"].Value);
+                                        salesorderdetail.od_soldqty = Convert.ToInt32(item3.Cells["cSoldQty"].Value);
+                                        salesorderdetail.od_pendingqty = Convert.ToInt32(item3.Cells["cPendingQty"].Value);
+                                        salesorderdetail.com_id = Convert.ToInt32(item3.Cells["cComID"].Value);
+                                        salesorderdetail.od_istaxable = Convert.ToBoolean(item3.Cells["cIsTaxable"].Value);
+                                        salesorderdetail.od_rate = Convert.ToDecimal(item3.Cells["cRate"].Value);
+
+                                        inventoryDataContext.usp_salesorderdetailsUpdate(salesorderdetail.od_id,
+                                            id, salesorderdetail.item_id, salesorderdetail.od_qty, salesorderdetail.od_unitvalue,
+                                            salesorderdetail.od_soldqty, salesorderdetail.od_pendingqty, salesorderdetail.od_rate,
+                                            salesorderdetail.com_id, salesorderdetail.od_istaxable
+                                        );
+                                    }
                                 }
                             }
+                            else
+                            {
+                                var recordsToDelete = inventoryDataContext.salesorderdetails.Where(x => x.so_id == id).Select(x => new
+                                {
+                                    x.od_id,
+                                    x.com_id,
+                                    x.od_istaxable
+                                }).ToList();
+
+                                // Step 2: Loop and delete each using your existing SP
+                                foreach (var row in recordsToDelete)
+                                {
+                                    inventoryDataContext.usp_salesorderdetailsDelete(id, row.od_istaxable, row.com_id, row.od_id);
+                                }
+                                inventoryDataContext.usp_stockDelete(id, "SALES");
+                                foreach (DataGridViewRow item3 in (IEnumerable)dgvSales.Rows)
+                                {
+                                    if (!item3.IsNewRow)
+                                    {
+                                        salesorderdetail.item_id = Convert.ToInt32(item3.Cells["cCatID"].Value);
+                                        salesorderdetail.od_qty = Convert.ToInt32(item3.Cells["cQty"].Value);
+                                        salesorderdetail.od_unitvalue = Convert.ToDecimal(item3.Cells["cUnitValue"].Value);
+                                        salesorderdetail.od_soldqty = Convert.ToInt32(item3.Cells["cSoldQty"].Value);
+                                        salesorderdetail.od_pendingqty = Convert.ToInt32(item3.Cells["cPendingQty"].Value);
+                                        salesorderdetail.com_id = Convert.ToInt32(item3.Cells["cComID"].Value);
+                                        salesorderdetail.od_istaxable = Convert.ToBoolean(item3.Cells["cIsTaxable"].Value);
+                                        salesorderdetail.od_rate = Convert.ToDecimal(item3.Cells["cRate"].Value);
+                                        decimal? num = Convert.ToDecimal(item3.Cells["cQty"].Value);
+                                        inventoryDataContext.usp_salesorderdetailsInsert(id, salesorderdetail.item_id, salesorderdetail.od_qty, salesorderdetail.od_unitvalue, salesorderdetail.od_soldqty, salesorderdetail.od_pendingqty, salesorderdetail.od_rate, salesorderdetail.com_id, salesorderdetail.od_istaxable);
+                                    }
+                                }
+                            }                           
                         }
 
 
@@ -1039,7 +1078,7 @@ namespace standard.trans
                     ISingleResult<usp_salesorderSelectResult> dataSourceValue = inventoryDataContext.usp_salesorderSelect(smid, null, null, null, null, null);
                     ISingleResult<usp_salesorderdetailsSelectResult> dataSourceValue2 = inventoryDataContext.usp_salesorderdetailsSelect(smid, null, null, null, null, null);
                     ISingleResult<usp_companySelectResult> dataSourceValue3 = inventoryDataContext.usp_companySelect(null);
-                    ISingleResult<usp_ledgermasterSelectResult> dataSourceValue4 = inventoryDataContext.usp_ledgermasterSelect(ledid, null, null, null, null, null);
+                    ISingleResult<usp_ledgermasterSelectResult> dataSourceValue4 = inventoryDataContext.usp_ledgermasterSelect(ledid, null, null, null, null, null, null);
                     frmRpt.reportview.RefreshReport();
                     frmRpt.reportview.LocalReport.ReportEmbeddedResource = "standard.report.rptSalesInvoice.rdlc";
                     //frmRpt.reportview.LocalReport.ReportEmbeddedResource = "standard.report.rptSalesEstimate.rdlc";
@@ -1130,7 +1169,7 @@ namespace standard.trans
                 ConvertSalesOrder((int)order.so_id, false); // Don't show success message per record
             }
 
-            MessageBox.Show("All today’s orders are converted.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            MessageBox.Show("All todayâ€™s orders are converted.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
 
@@ -1197,7 +1236,7 @@ namespace standard.trans
 
                     if (stock < item.od_qty)
                     {
-                        lowStockItems.Add($"• {itemName} (Available: {stock}, Order: {item.od_qty}, Required: {item.od_qty - stock})");
+                        lowStockItems.Add($"â€¢ {itemName} (Available: {stock}, Order: {item.od_qty}, Required: {item.od_qty - stock})");
                     }
                 }
 
@@ -1222,7 +1261,7 @@ namespace standard.trans
                 salesorder.so_status = "Fully Converted";
                 salesmaster.com_id = firstItem.com_id;
                 salesmaster.sm_istaxable = firstItem.item_istaxable;
-                inventoryDataContext.usp_salesmasterInsert(ref id, salesmaster.sm_bookno, salesmaster.sm_refno, salesmaster.sm_date, salesmaster.led_id, salesmaster.sm_totqty, salesmaster.sm_totamount, salesmaster.sm_itemcount, salesmaster.sm_profit, salesmaster.sm_disamount, salesmaster.sm_taxamount, salesmaster.sm_taxpercentage, salesmaster.sm_packingcharge, salesmaster.sm_netamount, salesmaster.sm_received, salesmaster.sm_paidcommission, salesmaster.sm_paidpacking, salesmaster.sm_roundamount, false, false, global.ucode, global.sysdate, salesmaster.sm_desc, false, false, salesmaster.so_id, salesmaster.com_id, salesmaster.sm_istaxable);
+                inventoryDataContext.usp_salesmasterInsert(ref id, salesmaster.sm_bookno, salesmaster.sm_refno, salesmaster.sm_date, salesmaster.led_id, salesmaster.sm_totqty, salesmaster.sm_totamount, salesmaster.sm_itemcount, salesmaster.sm_profit, salesmaster.sm_disamount, salesmaster.sm_taxamount, salesmaster.sm_taxpercentage, salesmaster.sm_packingcharge, salesmaster.sm_netamount, salesmaster.sm_received, salesmaster.sm_paidcommission, salesmaster.sm_paidpacking, salesmaster.sm_roundamount, false, false, global.ucode, global.sysdate, salesmaster.sm_desc, false, false, salesmaster.so_id, salesmaster.com_id, salesmaster.sm_istaxable, false);
 
                 inventoryDataContext.usp_salesorderUpdate(salesmaster.so_id, salesorder.so_refno, salesmaster.sm_date, salesmaster.led_id, salesorder.so_totqty, salesorder.so_status, global.ucode, global.sysdate, true);
                 salesdetail.sm_id = id;
@@ -1282,7 +1321,7 @@ namespace standard.trans
 
                     if (stock < item.od_qty)
                     {
-                        lowStockItems.Add($"• {itemName} (Available: {stock}, Order: {item.od_qty}, Required: {item.od_qty - stock})");
+                        lowStockItems.Add($"â€¢ {itemName} (Available: {stock}, Order: {item.od_qty}, Required: {item.od_qty - stock})");
                     }
                 }
 
@@ -1306,7 +1345,7 @@ namespace standard.trans
                 salesorder.so_status = "Fully Converted";
                 salesmaster.com_id = firstItem.com_id;
                 salesmaster.sm_istaxable = true;
-                inventoryDataContext.usp_salesmasterInsert(ref id, salesmaster.sm_bookno, salesmaster.sm_refno, salesmaster.sm_date, salesmaster.led_id, salesmaster.sm_totqty, salesmaster.sm_totamount, salesmaster.sm_itemcount, salesmaster.sm_profit, salesmaster.sm_disamount, salesmaster.sm_taxamount, salesmaster.sm_taxpercentage, salesmaster.sm_packingcharge, salesmaster.sm_netamount, salesmaster.sm_received, salesmaster.sm_paidcommission, salesmaster.sm_paidpacking, salesmaster.sm_roundamount, false, false, global.ucode, global.sysdate, salesmaster.sm_desc, false, false, salesmaster.so_id, salesmaster.com_id, salesmaster.sm_istaxable);
+                inventoryDataContext.usp_salesmasterInsert(ref id, salesmaster.sm_bookno, salesmaster.sm_refno, salesmaster.sm_date, salesmaster.led_id, salesmaster.sm_totqty, salesmaster.sm_totamount, salesmaster.sm_itemcount, salesmaster.sm_profit, salesmaster.sm_disamount, salesmaster.sm_taxamount, salesmaster.sm_taxpercentage, salesmaster.sm_packingcharge, salesmaster.sm_netamount, salesmaster.sm_received, salesmaster.sm_paidcommission, salesmaster.sm_paidpacking, salesmaster.sm_roundamount, false, false, global.ucode, global.sysdate, salesmaster.sm_desc, false, false, salesmaster.so_id, salesmaster.com_id, salesmaster.sm_istaxable, false);
                 inventoryDataContext.usp_salesorderUpdate(salesmaster.so_id, salesorder.so_refno, salesmaster.sm_date, salesmaster.led_id, salesorder.so_totqty, salesorder.so_status, global.ucode, global.sysdate, true);
                 salesdetail.sm_id = id;
 
@@ -1366,7 +1405,7 @@ namespace standard.trans
 
                     if (stock < item.od_qty)
                     {
-                        lowStockItems.Add($"• {itemName} (Available: {stock}, Order: {item.od_qty}, Required: {item.od_qty - stock})");
+                        lowStockItems.Add($"â€¢ {itemName} (Available: {stock}, Order: {item.od_qty}, Required: {item.od_qty - stock})");
                     }
                 }
 
@@ -1390,7 +1429,7 @@ namespace standard.trans
                 salesorder.so_status = "Fully Converted";
                 salesmaster.com_id = secondItem.com_id;
                 salesmaster.sm_istaxable = false;
-                inventoryDataContext.usp_salesmasterInsert(ref id, salesmaster.sm_bookno, salesmaster.sm_refno, salesmaster.sm_date, salesmaster.led_id, salesmaster.sm_totqty, salesmaster.sm_totamount, salesmaster.sm_itemcount, salesmaster.sm_profit, salesmaster.sm_disamount, salesmaster.sm_taxamount, salesmaster.sm_taxpercentage, salesmaster.sm_packingcharge, salesmaster.sm_netamount, salesmaster.sm_received, salesmaster.sm_paidcommission, salesmaster.sm_paidpacking, salesmaster.sm_roundamount, false, false, global.ucode, global.sysdate, salesmaster.sm_desc, false, false, salesmaster.so_id, salesmaster.com_id, salesmaster.sm_istaxable);
+                inventoryDataContext.usp_salesmasterInsert(ref id, salesmaster.sm_bookno, salesmaster.sm_refno, salesmaster.sm_date, salesmaster.led_id, salesmaster.sm_totqty, salesmaster.sm_totamount, salesmaster.sm_itemcount, salesmaster.sm_profit, salesmaster.sm_disamount, salesmaster.sm_taxamount, salesmaster.sm_taxpercentage, salesmaster.sm_packingcharge, salesmaster.sm_netamount, salesmaster.sm_received, salesmaster.sm_paidcommission, salesmaster.sm_paidpacking, salesmaster.sm_roundamount, false, false, global.ucode, global.sysdate, salesmaster.sm_desc, false, false, salesmaster.so_id, salesmaster.com_id, salesmaster.sm_istaxable, false);
                 inventoryDataContext.usp_salesorderUpdate(salesmaster.so_id, salesorder.so_refno, salesmaster.sm_date, salesmaster.led_id, salesorder.so_totqty, salesorder.so_status, global.ucode, global.sysdate, true);
                 salesdetail.sm_id = id;
                 foreach (var com2SOD in com2list)
@@ -1446,7 +1485,7 @@ namespace standard.trans
 
                     if (stock < item.od_qty)
                     {
-                        lowStockItems.Add($"• {itemName} (Available: {stock}, Order: {item.od_qty}, Required: {item.od_qty - stock})");
+                        lowStockItems.Add($"â€¢ {itemName} (Available: {stock}, Order: {item.od_qty}, Required: {item.od_qty - stock})");
                     }
                 }
 
@@ -1471,7 +1510,7 @@ namespace standard.trans
                 salesorder.so_status = "Fully Converted";
                 salesmaster.com_id = secondItem.com_id;
                 salesmaster.sm_istaxable = true;
-                inventoryDataContext.usp_salesmasterInsert(ref id, salesmaster.sm_bookno, salesmaster.sm_refno, salesmaster.sm_date, salesmaster.led_id, salesmaster.sm_totqty, salesmaster.sm_totamount, salesmaster.sm_itemcount, salesmaster.sm_profit, salesmaster.sm_disamount, salesmaster.sm_taxamount, salesmaster.sm_taxpercentage, salesmaster.sm_packingcharge, salesmaster.sm_netamount, salesmaster.sm_received, salesmaster.sm_paidcommission, salesmaster.sm_paidpacking, salesmaster.sm_roundamount, false, false, global.ucode, global.sysdate, salesmaster.sm_desc, false, false, salesmaster.so_id, salesmaster.com_id, salesmaster.sm_istaxable);
+                inventoryDataContext.usp_salesmasterInsert(ref id, salesmaster.sm_bookno, salesmaster.sm_refno, salesmaster.sm_date, salesmaster.led_id, salesmaster.sm_totqty, salesmaster.sm_totamount, salesmaster.sm_itemcount, salesmaster.sm_profit, salesmaster.sm_disamount, salesmaster.sm_taxamount, salesmaster.sm_taxpercentage, salesmaster.sm_packingcharge, salesmaster.sm_netamount, salesmaster.sm_received, salesmaster.sm_paidcommission, salesmaster.sm_paidpacking, salesmaster.sm_roundamount, false, false, global.ucode, global.sysdate, salesmaster.sm_desc, false, false, salesmaster.so_id, salesmaster.com_id, salesmaster.sm_istaxable, false);
                 inventoryDataContext.usp_salesorderUpdate(salesmaster.so_id, salesorder.so_refno, salesmaster.sm_date, salesmaster.led_id, salesorder.so_totqty, salesorder.so_status, global.ucode, global.sysdate, true);
                 salesdetail.sm_id = id;
                 foreach (var com2SOD in com2taxlist)
@@ -1656,13 +1695,17 @@ namespace standard.trans
                 {
                     int num = Convert.ToInt32(dglist["soidDataGridViewTextBoxColumn", e.RowIndex].Value);
                     InventoryDataContext inventoryDataContext = new InventoryDataContext();
-                    var sm = inventoryDataContext.salesmasters.Where(s => s.so_id == num).OrderByDescending(s => s.sm_id).FirstOrDefault();
-                    var details = inventoryDataContext.salesdetails.Where(d => d.sm_id == sm.sm_id).ToList();
+                    var salesMasterList = inventoryDataContext.salesmasters.Where(s => s.so_id == num).ToList();
+
                     if (MessageBox.Show("Are you sure to delete?", "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.No)
                     {
-                        inventoryDataContext.usp_salesdetailsDelete(sm.sm_id);
-                        inventoryDataContext.usp_salesmasterDelete(sm.sm_id);
-                        inventoryDataContext.usp_stockDelete(num, "SALES");
+                        foreach (var sm in salesMasterList)
+                        {
+                            inventoryDataContext.usp_salesdetailsDelete(sm.sm_id);
+                            inventoryDataContext.usp_salesmasterDelete(sm.sm_id);
+                            inventoryDataContext.usp_stockDelete(sm.sm_id, "SALES");
+                        }
+                        
                         inventoryDataContext.usp_salesorderDelete(num);
                         cmdprint_Click(this, null);
                         MessageBox.Show("Record deleted successfully...", "Information", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);

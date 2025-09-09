@@ -176,6 +176,7 @@ namespace standard.trans
                             ledgermaster.led_accountcode,
                             ledgermaster.led_accounttype,
                             ledgermaster.led_name,
+                            ledgermaster.led_stlname,
                             ledgermaster.led_address,
                             ledgermaster.led_address1,
                             ledgermaster.led_shippingaddress1,

@@ -149,6 +149,8 @@ namespace standard.master
         private TextBox txtUnitPerRateB;
         private TextBox txtUnitPerRateC;
         private Label label16;
+        private TextBox txtTallyName;
+        private Label label18;
         private BindingSource searchcategoryBindingSource;
 
         public frmItems()
@@ -185,7 +187,7 @@ namespace standard.master
             //txtItemCode.Text = string.Empty;
             txtSerial.Text = string.Empty;
             txtItemName.Text = string.Empty;
-            txtItemFullName.Text = string.Empty;
+            txtTallyName.Text = string.Empty;
             txtItemTamilName.Text = string.Empty;
             txtTaxPercentage.Text = "0";
             chkIsUnitPerRate.Checked = false;
@@ -241,7 +243,7 @@ namespace standard.master
                     txtItemCode.Text = item.item_code;
                     txtSerial.Text = item.item_serial.ToString();
                     txtItemName.Text = item.item_name;
-                    txtItemFullName.Text = item.item_fullname;
+                    txtTallyName.Text = item.item_fullname;
                     txtItemTamilName.Text = item.item_tamilname;
                     txtTaxPercentage.Text = item.item_taxpercentage.ToString("N2");
                     txtCGST.Text = item.item_cgst.ToString("N2");
@@ -310,7 +312,7 @@ namespace standard.master
                     it.item_serial = Convert.ToInt32(txtSerial.Text.Trim());
                 }
                 it.item_name = txtItemName.Text.Trim();
-                it.item_fullname = txtItemFullName.Text.Trim();
+                it.item_fullname = txtTallyName.Text.Trim();
                 it.item_tamilname = txtItemTamilName.Text.Trim();
                 it.item_taxpercentage = Convert.ToDecimal(txtTaxPercentage.Text.Trim());
                 it.item_cgst = Convert.ToDecimal(txtCGST.Text.Trim());
@@ -457,11 +459,11 @@ namespace standard.master
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle36 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle37 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle38 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle39 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle40 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
             this.a1Paneltitle = new mylib.a1panel();
             this.lbltitle = new System.Windows.Forms.Label();
             this.tblMain = new System.Windows.Forms.TableLayoutPanel();
@@ -502,9 +504,9 @@ namespace standard.master
             this.itemudateDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.uspitemSelectResultBindingSource2 = new System.Windows.Forms.BindingSource(this.components);
             this.tblEntry = new System.Windows.Forms.TableLayoutPanel();
-            this.chkTaxable = new System.Windows.Forms.CheckBox();
-            this.lblPurUnitRate = new System.Windows.Forms.Label();
-            this.txtPurUnitRate = new System.Windows.Forms.TextBox();
+            this.txtTallyName = new System.Windows.Forms.TextBox();
+            this.label18 = new System.Windows.Forms.Label();
+            this.label17 = new System.Windows.Forms.Label();
             this.txtItemName = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.txtItemTamilName = new System.Windows.Forms.TextBox();
@@ -513,45 +515,51 @@ namespace standard.master
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.cboItemUnit = new System.Windows.Forms.ComboBox();
             this.txtItemQuantity = new System.Windows.Forms.TextBox();
-            this.chkIsUnitPerRate = new System.Windows.Forms.CheckBox();
             this.txtUnitPerRateA = new System.Windows.Forms.TextBox();
             this.lblSalesPerRate = new System.Windows.Forms.Label();
             this.lblItemTamilName = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.lblItemUnit = new System.Windows.Forms.Label();
-            this.txtPRate = new System.Windows.Forms.TextBox();
-            this.txtWholeSaleRate = new System.Windows.Forms.TextBox();
-            this.txtSpecialRate = new System.Windows.Forms.TextBox();
-            this.txtSuperSplRate = new System.Windows.Forms.TextBox();
             this.cboCompany = new System.Windows.Forms.ComboBox();
             this.companyBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.label4 = new System.Windows.Forms.Label();
-            this.label7 = new System.Windows.Forms.Label();
-            this.label8 = new System.Windows.Forms.Label();
-            this.label9 = new System.Windows.Forms.Label();
             this.lblCompany = new System.Windows.Forms.Label();
             this.cboItemUnitType = new System.Windows.Forms.ComboBox();
             this.lbItemUnitType = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
-            this.txtItemCode = new System.Windows.Forms.TextBox();
             this.lblItemFullName = new System.Windows.Forms.Label();
-            this.txtCostRate = new System.Windows.Forms.TextBox();
-            this.txtItemFullName = new System.Windows.Forms.TextBox();
-            this.txtMRP = new System.Windows.Forms.TextBox();
-            this.txtCGST = new System.Windows.Forms.TextBox();
-            this.label15 = new System.Windows.Forms.Label();
-            this.txtSGST = new System.Windows.Forms.TextBox();
-            this.progressBar1 = new System.Windows.Forms.ProgressBar();
-            this.lblProgress = new System.Windows.Forms.Label();
-            this.lblTamil = new System.Windows.Forms.Label();
-            this.label14 = new System.Windows.Forms.Label();
             this.label12 = new System.Windows.Forms.Label();
             this.txtSerial = new System.Windows.Forms.TextBox();
             this.txtHSNCode = new System.Windows.Forms.TextBox();
             this.label5 = new System.Windows.Forms.Label();
             this.txtTaxPercentage = new System.Windows.Forms.TextBox();
             this.lblTaxPercentage = new System.Windows.Forms.Label();
+            this.chkTaxable = new System.Windows.Forms.CheckBox();
+            this.label7 = new System.Windows.Forms.Label();
+            this.txtSpecialRate = new System.Windows.Forms.TextBox();
+            this.txtSuperSplRate = new System.Windows.Forms.TextBox();
+            this.label8 = new System.Windows.Forms.Label();
+            this.label9 = new System.Windows.Forms.Label();
+            this.label4 = new System.Windows.Forms.Label();
+            this.txtPurUnitRate = new System.Windows.Forms.TextBox();
+            this.lblPurUnitRate = new System.Windows.Forms.Label();
+            this.chkIsUnitPerRate = new System.Windows.Forms.CheckBox();
+            this.txtUnitPerRateB = new System.Windows.Forms.TextBox();
+            this.txtUnitPerRateC = new System.Windows.Forms.TextBox();
+            this.label16 = new System.Windows.Forms.Label();
+            this.txtWholeSaleRate = new System.Windows.Forms.TextBox();
+            this.txtPRate = new System.Windows.Forms.TextBox();
+            this.progressBar1 = new System.Windows.Forms.ProgressBar();
+            this.lblTamil = new System.Windows.Forms.Label();
+            this.lblProgress = new System.Windows.Forms.Label();
+            this.txtSGST = new System.Windows.Forms.TextBox();
+            this.label15 = new System.Windows.Forms.Label();
+            this.txtCGST = new System.Windows.Forms.TextBox();
+            this.label14 = new System.Windows.Forms.Label();
+            this.txtMRP = new System.Windows.Forms.TextBox();
+            this.txtItemFullName = new System.Windows.Forms.TextBox();
+            this.txtCostRate = new System.Windows.Forms.TextBox();
+            this.txtItemCode = new System.Windows.Forms.TextBox();
             this.tblCommand = new System.Windows.Forms.TableLayoutPanel();
             this.cmdclose = new mylib.lightbutton();
             this.btnClear = new mylib.lightbutton();
@@ -560,10 +568,6 @@ namespace standard.master
             this.uspcategorySelectResultBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.uspitemSelectResultBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.uspitemSelectResultBindingSource1 = new System.Windows.Forms.BindingSource(this.components);
-            this.txtUnitPerRateB = new System.Windows.Forms.TextBox();
-            this.txtUnitPerRateC = new System.Windows.Forms.TextBox();
-            this.label16 = new System.Windows.Forms.Label();
-            this.label17 = new System.Windows.Forms.Label();
             this.a1Paneltitle.SuspendLayout();
             this.tblMain.SuspendLayout();
             this.tblSearch.SuspendLayout();
@@ -796,19 +800,19 @@ namespace standard.master
             this.dgview.AllowUserToAddRows = false;
             this.dgview.AllowUserToDeleteRows = false;
             this.dgview.AllowUserToResizeRows = false;
-            dataGridViewCellStyle36.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
-            this.dgview.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle36;
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
+            this.dgview.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
             this.dgview.AutoGenerateColumns = false;
             this.dgview.BackgroundColor = System.Drawing.Color.White;
             this.dgview.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            dataGridViewCellStyle37.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle37.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle37.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Bold);
-            dataGridViewCellStyle37.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            dataGridViewCellStyle37.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle37.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle37.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dgview.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle37;
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Bold);
+            dataGridViewCellStyle2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
+            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dgview.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle2;
             this.dgview.ColumnHeadersHeight = 28;
             this.dgview.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.item_serial,
@@ -836,14 +840,14 @@ namespace standard.master
             this.itemudateDataGridViewTextBoxColumn});
             this.dgview.Cursor = System.Windows.Forms.Cursors.Default;
             this.dgview.DataSource = this.uspitemSelectResultBindingSource2;
-            dataGridViewCellStyle38.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle38.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle38.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Bold);
-            dataGridViewCellStyle38.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            dataGridViewCellStyle38.SelectionBackColor = System.Drawing.Color.Orange;
-            dataGridViewCellStyle38.SelectionForeColor = System.Drawing.Color.White;
-            dataGridViewCellStyle38.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dgview.DefaultCellStyle = dataGridViewCellStyle38;
+            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle3.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Bold);
+            dataGridViewCellStyle3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
+            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.Color.Orange;
+            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.Color.White;
+            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dgview.DefaultCellStyle = dataGridViewCellStyle3;
             this.dgview.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dgview.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Bold);
             this.dgview.ImeMode = System.Windows.Forms.ImeMode.NoControl;
@@ -852,17 +856,17 @@ namespace standard.master
             this.dgview.Name = "dgview";
             this.dgview.ReadOnly = true;
             this.dgview.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            dataGridViewCellStyle39.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle39.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle39.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
-            dataGridViewCellStyle39.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle39.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle39.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle39.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dgview.RowHeadersDefaultCellStyle = dataGridViewCellStyle39;
+            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle4.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle4.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
+            dataGridViewCellStyle4.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle4.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle4.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dgview.RowHeadersDefaultCellStyle = dataGridViewCellStyle4;
             this.dgview.RowHeadersVisible = false;
-            dataGridViewCellStyle40.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
-            this.dgview.RowsDefaultCellStyle = dataGridViewCellStyle40;
+            dataGridViewCellStyle5.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
+            this.dgview.RowsDefaultCellStyle = dataGridViewCellStyle5;
             this.dgview.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dgview.Size = new System.Drawing.Size(1306, 237);
             this.dgview.TabIndex = 0;
@@ -1065,6 +1069,8 @@ namespace standard.master
             this.tblEntry.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 200F));
             this.tblEntry.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 200F));
             this.tblEntry.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tblEntry.Controls.Add(this.txtTallyName, 5, 3);
+            this.tblEntry.Controls.Add(this.label18, 4, 3);
             this.tblEntry.Controls.Add(this.label17, 0, 7);
             this.tblEntry.Controls.Add(this.txtItemName, 1, 0);
             this.tblEntry.Controls.Add(this.label1, 0, 0);
@@ -1082,18 +1088,7 @@ namespace standard.master
             this.tblEntry.Controls.Add(this.lbItemUnitType, 2, 0);
             this.tblEntry.Controls.Add(this.label6, 6, 0);
             this.tblEntry.Controls.Add(this.label2, 6, 1);
-            this.tblEntry.Controls.Add(this.txtItemCode, 6, 3);
             this.tblEntry.Controls.Add(this.lblItemFullName, 6, 2);
-            this.tblEntry.Controls.Add(this.txtCostRate, 6, 4);
-            this.tblEntry.Controls.Add(this.txtItemFullName, 6, 5);
-            this.tblEntry.Controls.Add(this.txtMRP, 6, 6);
-            this.tblEntry.Controls.Add(this.txtCGST, 5, 3);
-            this.tblEntry.Controls.Add(this.label15, 5, 4);
-            this.tblEntry.Controls.Add(this.txtSGST, 5, 5);
-            this.tblEntry.Controls.Add(this.progressBar1, 5, 6);
-            this.tblEntry.Controls.Add(this.lblProgress, 4, 6);
-            this.tblEntry.Controls.Add(this.lblTamil, 4, 4);
-            this.tblEntry.Controls.Add(this.label14, 4, 3);
             this.tblEntry.Controls.Add(this.label12, 4, 2);
             this.tblEntry.Controls.Add(this.txtSerial, 5, 2);
             this.tblEntry.Controls.Add(this.txtHSNCode, 5, 1);
@@ -1115,6 +1110,17 @@ namespace standard.master
             this.tblEntry.Controls.Add(this.label16, 0, 6);
             this.tblEntry.Controls.Add(this.txtWholeSaleRate, 3, 7);
             this.tblEntry.Controls.Add(this.txtPRate, 3, 4);
+            this.tblEntry.Controls.Add(this.progressBar1, 5, 7);
+            this.tblEntry.Controls.Add(this.lblTamil, 4, 5);
+            this.tblEntry.Controls.Add(this.lblProgress, 4, 7);
+            this.tblEntry.Controls.Add(this.txtSGST, 5, 6);
+            this.tblEntry.Controls.Add(this.label15, 5, 5);
+            this.tblEntry.Controls.Add(this.txtCGST, 5, 4);
+            this.tblEntry.Controls.Add(this.label14, 4, 4);
+            this.tblEntry.Controls.Add(this.txtMRP, 6, 7);
+            this.tblEntry.Controls.Add(this.txtItemFullName, 6, 6);
+            this.tblEntry.Controls.Add(this.txtCostRate, 6, 5);
+            this.tblEntry.Controls.Add(this.txtItemCode, 6, 4);
             this.tblEntry.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tblEntry.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.tblEntry.Location = new System.Drawing.Point(4, 40);
@@ -1131,42 +1137,41 @@ namespace standard.master
             this.tblEntry.Size = new System.Drawing.Size(1306, 237);
             this.tblEntry.TabIndex = 2;
             // 
-            // chkTaxable
+            // txtTallyName
             // 
-            this.chkTaxable.AutoSize = true;
-            this.chkTaxable.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.chkTaxable.Location = new System.Drawing.Point(602, 60);
-            this.chkTaxable.Margin = new System.Windows.Forms.Padding(2);
-            this.chkTaxable.Name = "chkTaxable";
-            this.chkTaxable.Size = new System.Drawing.Size(105, 22);
-            this.chkTaxable.TabIndex = 13;
-            this.chkTaxable.Text = "Is Taxable";
-            this.chkTaxable.UseVisualStyleBackColor = true;
-            this.chkTaxable.KeyDown += new System.Windows.Forms.KeyEventHandler(this.chkTaxable_KeyDown);
+            this.txtTallyName.BackColor = System.Drawing.Color.White;
+            this.txtTallyName.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.txtTallyName.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtTallyName.Location = new System.Drawing.Point(1003, 90);
+            this.txtTallyName.MaxLength = 50;
+            this.txtTallyName.Name = "txtTallyName";
+            this.txtTallyName.Size = new System.Drawing.Size(194, 26);
+            this.txtTallyName.TabIndex = 4;
             // 
-            // lblPurUnitRate
+            // label18
             // 
-            this.lblPurUnitRate.AutoSize = true;
-            this.lblPurUnitRate.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.lblPurUnitRate.Location = new System.Drawing.Point(402, 87);
-            this.lblPurUnitRate.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.lblPurUnitRate.Name = "lblPurUnitRate";
-            this.lblPurUnitRate.Size = new System.Drawing.Size(151, 18);
-            this.lblPurUnitRate.TabIndex = 22;
-            this.lblPurUnitRate.Text = "Purchase Unit Rate";
+            this.label18.AutoSize = true;
+            this.label18.BackColor = System.Drawing.Color.Transparent;
+            this.label18.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label18.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
+            this.label18.Location = new System.Drawing.Point(803, 87);
+            this.label18.Name = "label18";
+            this.label18.Size = new System.Drawing.Size(131, 18);
+            this.label18.TabIndex = 4;
+            this.label18.Text = "Tally Item Name";
+            this.label18.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
-            // txtPurUnitRate
+            // label17
             // 
-            this.txtPurUnitRate.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.txtPurUnitRate.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.txtPurUnitRate.Enabled = false;
-            this.txtPurUnitRate.Location = new System.Drawing.Point(602, 89);
-            this.txtPurUnitRate.Margin = new System.Windows.Forms.Padding(2);
-            this.txtPurUnitRate.Name = "txtPurUnitRate";
-            this.txtPurUnitRate.Size = new System.Drawing.Size(196, 26);
-            this.txtPurUnitRate.TabIndex = 14;
-            this.txtPurUnitRate.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtPurUnitRate_KeyDown);
-            this.txtPurUnitRate.Leave += new System.EventHandler(this.txtPurUnitRate_Leave);
+            this.label17.AutoSize = true;
+            this.label17.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
+            this.label17.Location = new System.Drawing.Point(2, 203);
+            this.label17.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label17.Name = "label17";
+            this.label17.Size = new System.Drawing.Size(151, 18);
+            this.label17.TabIndex = 56;
+            this.label17.Text = "Sales Unit Rate (C)";
+            this.label17.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // txtItemName
             // 
@@ -1242,7 +1247,7 @@ namespace standard.master
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 1;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 21F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 25F));
             this.tableLayoutPanel1.Size = new System.Drawing.Size(196, 25);
             this.tableLayoutPanel1.TabIndex = 43;
             // 
@@ -1275,20 +1280,6 @@ namespace standard.master
             this.txtItemQuantity.KeyDown += new System.Windows.Forms.KeyEventHandler(this.inputControl_KeyDown);
             this.txtItemQuantity.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtItemQuantity_KeyPress);
             this.txtItemQuantity.Leave += new System.EventHandler(this.txtItemQuantity_Leave);
-            // 
-            // chkIsUnitPerRate
-            // 
-            this.chkIsUnitPerRate.AutoSize = true;
-            this.chkIsUnitPerRate.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.chkIsUnitPerRate.Location = new System.Drawing.Point(202, 118);
-            this.chkIsUnitPerRate.Margin = new System.Windows.Forms.Padding(2);
-            this.chkIsUnitPerRate.Name = "chkIsUnitPerRate";
-            this.chkIsUnitPerRate.Size = new System.Drawing.Size(146, 22);
-            this.chkIsUnitPerRate.TabIndex = 7;
-            this.chkIsUnitPerRate.Text = "Is Unit Per Rate";
-            this.chkIsUnitPerRate.UseVisualStyleBackColor = true;
-            this.chkIsUnitPerRate.CheckedChanged += new System.EventHandler(this.chkIsUnitPerRate_CheckedChanged);
-            this.chkIsUnitPerRate.KeyDown += new System.Windows.Forms.KeyEventHandler(this.chkIsUnitPerRate_KeyDown);
             // 
             // txtUnitPerRateA
             // 
@@ -1353,62 +1344,6 @@ namespace standard.master
             this.lblItemUnit.Text = "Unit";
             this.lblItemUnit.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
-            // txtPRate
-            // 
-            this.txtPRate.BackColor = System.Drawing.Color.White;
-            this.txtPRate.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.txtPRate.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.txtPRate.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtPRate.Location = new System.Drawing.Point(603, 119);
-            this.txtPRate.MaxLength = 50;
-            this.txtPRate.Name = "txtPRate";
-            this.txtPRate.Size = new System.Drawing.Size(194, 26);
-            this.txtPRate.TabIndex = 15;
-            this.txtPRate.Text = "0";
-            this.txtPRate.KeyDown += new System.Windows.Forms.KeyEventHandler(this.inputControl_KeyDown);
-            // 
-            // txtWholeSaleRate
-            // 
-            this.txtWholeSaleRate.BackColor = System.Drawing.Color.White;
-            this.txtWholeSaleRate.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.txtWholeSaleRate.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.txtWholeSaleRate.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtWholeSaleRate.Location = new System.Drawing.Point(603, 206);
-            this.txtWholeSaleRate.MaxLength = 50;
-            this.txtWholeSaleRate.Name = "txtWholeSaleRate";
-            this.txtWholeSaleRate.Size = new System.Drawing.Size(194, 26);
-            this.txtWholeSaleRate.TabIndex = 18;
-            this.txtWholeSaleRate.Text = "0";
-            this.txtWholeSaleRate.KeyDown += new System.Windows.Forms.KeyEventHandler(this.inputControl_KeyDown);
-            // 
-            // txtSpecialRate
-            // 
-            this.txtSpecialRate.BackColor = System.Drawing.Color.White;
-            this.txtSpecialRate.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.txtSpecialRate.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.txtSpecialRate.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtSpecialRate.Location = new System.Drawing.Point(603, 177);
-            this.txtSpecialRate.MaxLength = 50;
-            this.txtSpecialRate.Name = "txtSpecialRate";
-            this.txtSpecialRate.Size = new System.Drawing.Size(194, 26);
-            this.txtSpecialRate.TabIndex = 17;
-            this.txtSpecialRate.Text = "0";
-            this.txtSpecialRate.KeyDown += new System.Windows.Forms.KeyEventHandler(this.inputControl_KeyDown);
-            // 
-            // txtSuperSplRate
-            // 
-            this.txtSuperSplRate.BackColor = System.Drawing.Color.White;
-            this.txtSuperSplRate.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.txtSuperSplRate.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.txtSuperSplRate.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtSuperSplRate.Location = new System.Drawing.Point(603, 148);
-            this.txtSuperSplRate.MaxLength = 50;
-            this.txtSuperSplRate.Name = "txtSuperSplRate";
-            this.txtSuperSplRate.Size = new System.Drawing.Size(194, 26);
-            this.txtSuperSplRate.TabIndex = 16;
-            this.txtSuperSplRate.Text = "0";
-            this.txtSuperSplRate.KeyDown += new System.Windows.Forms.KeyEventHandler(this.inputControl_KeyDown);
-            // 
             // cboCompany
             // 
             this.cboCompany.DataSource = this.companyBindingSource;
@@ -1426,58 +1361,6 @@ namespace standard.master
             // companyBindingSource
             // 
             this.companyBindingSource.DataSource = typeof(standard.classes.company);
-            // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.BackColor = System.Drawing.Color.Transparent;
-            this.label4.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.label4.Location = new System.Drawing.Point(403, 116);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(116, 18);
-            this.label4.TabIndex = 6;
-            this.label4.Text = "Purchase Rate";
-            this.label4.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // label7
-            // 
-            this.label7.AutoSize = true;
-            this.label7.BackColor = System.Drawing.Color.Transparent;
-            this.label7.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label7.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.label7.Location = new System.Drawing.Point(403, 203);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(159, 18);
-            this.label7.TabIndex = 12;
-            this.label7.Text = "Whole Sale Rate (C)";
-            this.label7.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // label8
-            // 
-            this.label8.AutoSize = true;
-            this.label8.BackColor = System.Drawing.Color.Transparent;
-            this.label8.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label8.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.label8.Location = new System.Drawing.Point(403, 174);
-            this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(130, 18);
-            this.label8.TabIndex = 14;
-            this.label8.Text = "Special Rate (B)";
-            this.label8.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // label9
-            // 
-            this.label9.AutoSize = true;
-            this.label9.BackColor = System.Drawing.Color.Transparent;
-            this.label9.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label9.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.label9.Location = new System.Drawing.Point(403, 145);
-            this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(178, 18);
-            this.label9.TabIndex = 16;
-            this.label9.Text = "Super Special Rate (A)";
-            this.label9.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // lblCompany
             // 
@@ -1551,22 +1434,6 @@ namespace standard.master
             this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.label2.Visible = false;
             // 
-            // txtItemCode
-            // 
-            this.txtItemCode.BackColor = System.Drawing.Color.White;
-            this.txtItemCode.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.txtItemCode.Enabled = false;
-            this.txtItemCode.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtItemCode.Location = new System.Drawing.Point(1203, 90);
-            this.txtItemCode.MaxLength = 50;
-            this.txtItemCode.Name = "txtItemCode";
-            this.txtItemCode.Size = new System.Drawing.Size(69, 26);
-            this.txtItemCode.TabIndex = 41;
-            this.txtItemCode.Visible = false;
-            this.txtItemCode.TextChanged += new System.EventHandler(this.txtSearch_TextChanged);
-            this.txtItemCode.KeyDown += new System.Windows.Forms.KeyEventHandler(this.inputControl_KeyDown);
-            this.txtItemCode.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtSerial_KeyPress);
-            // 
             // lblItemFullName
             // 
             this.lblItemFullName.Anchor = System.Windows.Forms.AnchorStyles.Left;
@@ -1579,132 +1446,6 @@ namespace standard.master
             this.lblItemFullName.TabIndex = 18;
             this.lblItemFullName.Text = "Item Full Name";
             this.lblItemFullName.Visible = false;
-            // 
-            // txtCostRate
-            // 
-            this.txtCostRate.BackColor = System.Drawing.Color.White;
-            this.txtCostRate.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.txtCostRate.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtCostRate.Location = new System.Drawing.Point(1203, 119);
-            this.txtCostRate.MaxLength = 50;
-            this.txtCostRate.Name = "txtCostRate";
-            this.txtCostRate.Size = new System.Drawing.Size(69, 26);
-            this.txtCostRate.TabIndex = 41;
-            this.txtCostRate.Text = "0";
-            this.txtCostRate.Visible = false;
-            this.txtCostRate.KeyDown += new System.Windows.Forms.KeyEventHandler(this.inputControl_KeyDown);
-            // 
-            // txtItemFullName
-            // 
-            this.txtItemFullName.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.txtItemFullName.Location = new System.Drawing.Point(1202, 147);
-            this.txtItemFullName.Margin = new System.Windows.Forms.Padding(2);
-            this.txtItemFullName.Name = "txtItemFullName";
-            this.txtItemFullName.Size = new System.Drawing.Size(71, 26);
-            this.txtItemFullName.TabIndex = 42;
-            this.txtItemFullName.Visible = false;
-            this.txtItemFullName.KeyDown += new System.Windows.Forms.KeyEventHandler(this.inputControl_KeyDown);
-            // 
-            // txtMRP
-            // 
-            this.txtMRP.BackColor = System.Drawing.Color.White;
-            this.txtMRP.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.txtMRP.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtMRP.Location = new System.Drawing.Point(1203, 177);
-            this.txtMRP.MaxLength = 50;
-            this.txtMRP.Name = "txtMRP";
-            this.txtMRP.Size = new System.Drawing.Size(69, 26);
-            this.txtMRP.TabIndex = 50;
-            this.txtMRP.Text = "0";
-            this.txtMRP.Visible = false;
-            this.txtMRP.KeyDown += new System.Windows.Forms.KeyEventHandler(this.inputControl_KeyDown);
-            // 
-            // txtCGST
-            // 
-            this.txtCGST.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.txtCGST.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.txtCGST.Location = new System.Drawing.Point(1002, 89);
-            this.txtCGST.Margin = new System.Windows.Forms.Padding(2);
-            this.txtCGST.Name = "txtCGST";
-            this.txtCGST.Size = new System.Drawing.Size(195, 26);
-            this.txtCGST.TabIndex = 37;
-            this.txtCGST.Text = "0";
-            this.txtCGST.Visible = false;
-            // 
-            // label15
-            // 
-            this.label15.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.label15.AutoSize = true;
-            this.label15.BackColor = System.Drawing.Color.Transparent;
-            this.label15.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label15.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.label15.Location = new System.Drawing.Point(1003, 121);
-            this.label15.Name = "label15";
-            this.label15.Size = new System.Drawing.Size(48, 18);
-            this.label15.TabIndex = 18;
-            this.label15.Text = "SGST";
-            this.label15.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.label15.Visible = false;
-            // 
-            // txtSGST
-            // 
-            this.txtSGST.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.txtSGST.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.txtSGST.Location = new System.Drawing.Point(1002, 147);
-            this.txtSGST.Margin = new System.Windows.Forms.Padding(2);
-            this.txtSGST.Name = "txtSGST";
-            this.txtSGST.Size = new System.Drawing.Size(195, 26);
-            this.txtSGST.TabIndex = 37;
-            this.txtSGST.Text = "0";
-            this.txtSGST.Visible = false;
-            // 
-            // progressBar1
-            // 
-            this.progressBar1.Location = new System.Drawing.Point(1002, 176);
-            this.progressBar1.Margin = new System.Windows.Forms.Padding(2);
-            this.progressBar1.Name = "progressBar1";
-            this.progressBar1.Size = new System.Drawing.Size(131, 18);
-            this.progressBar1.TabIndex = 51;
-            this.progressBar1.Visible = false;
-            // 
-            // lblProgress
-            // 
-            this.lblProgress.AutoSize = true;
-            this.lblProgress.Dock = System.Windows.Forms.DockStyle.Right;
-            this.lblProgress.Location = new System.Drawing.Point(986, 174);
-            this.lblProgress.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.lblProgress.Name = "lblProgress";
-            this.lblProgress.Size = new System.Drawing.Size(12, 29);
-            this.lblProgress.TabIndex = 52;
-            this.lblProgress.Text = " ";
-            this.lblProgress.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // lblTamil
-            // 
-            this.lblTamil.BackColor = System.Drawing.Color.White;
-            this.lblTamil.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.lblTamil.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
-            this.lblTamil.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.lblTamil.Location = new System.Drawing.Point(803, 116);
-            this.lblTamil.Name = "lblTamil";
-            this.tblEntry.SetRowSpan(this.lblTamil, 2);
-            this.lblTamil.Size = new System.Drawing.Size(194, 44);
-            this.lblTamil.TabIndex = 27;
-            // 
-            // label14
-            // 
-            this.label14.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.label14.AutoSize = true;
-            this.label14.BackColor = System.Drawing.Color.Transparent;
-            this.label14.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label14.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.label14.Location = new System.Drawing.Point(803, 92);
-            this.label14.Name = "label14";
-            this.label14.Size = new System.Drawing.Size(48, 18);
-            this.label14.TabIndex = 18;
-            this.label14.Text = "CGST";
-            this.label14.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.label14.Visible = false;
             // 
             // label12
             // 
@@ -1783,6 +1524,345 @@ namespace standard.master
             this.lblTaxPercentage.Size = new System.Drawing.Size(57, 18);
             this.lblTaxPercentage.TabIndex = 24;
             this.lblTaxPercentage.Text = "Tax %";
+            // 
+            // chkTaxable
+            // 
+            this.chkTaxable.AutoSize = true;
+            this.chkTaxable.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
+            this.chkTaxable.Location = new System.Drawing.Point(602, 60);
+            this.chkTaxable.Margin = new System.Windows.Forms.Padding(2);
+            this.chkTaxable.Name = "chkTaxable";
+            this.chkTaxable.Size = new System.Drawing.Size(105, 22);
+            this.chkTaxable.TabIndex = 13;
+            this.chkTaxable.Text = "Is Taxable";
+            this.chkTaxable.UseVisualStyleBackColor = true;
+            this.chkTaxable.KeyDown += new System.Windows.Forms.KeyEventHandler(this.chkTaxable_KeyDown);
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.BackColor = System.Drawing.Color.Transparent;
+            this.label7.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label7.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
+            this.label7.Location = new System.Drawing.Point(403, 203);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(159, 18);
+            this.label7.TabIndex = 12;
+            this.label7.Text = "Whole Sale Rate (C)";
+            this.label7.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // txtSpecialRate
+            // 
+            this.txtSpecialRate.BackColor = System.Drawing.Color.White;
+            this.txtSpecialRate.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.txtSpecialRate.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.txtSpecialRate.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtSpecialRate.Location = new System.Drawing.Point(603, 177);
+            this.txtSpecialRate.MaxLength = 50;
+            this.txtSpecialRate.Name = "txtSpecialRate";
+            this.txtSpecialRate.Size = new System.Drawing.Size(194, 26);
+            this.txtSpecialRate.TabIndex = 17;
+            this.txtSpecialRate.Text = "0";
+            this.txtSpecialRate.KeyDown += new System.Windows.Forms.KeyEventHandler(this.inputControl_KeyDown);
+            // 
+            // txtSuperSplRate
+            // 
+            this.txtSuperSplRate.BackColor = System.Drawing.Color.White;
+            this.txtSuperSplRate.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.txtSuperSplRate.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.txtSuperSplRate.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtSuperSplRate.Location = new System.Drawing.Point(603, 148);
+            this.txtSuperSplRate.MaxLength = 50;
+            this.txtSuperSplRate.Name = "txtSuperSplRate";
+            this.txtSuperSplRate.Size = new System.Drawing.Size(194, 26);
+            this.txtSuperSplRate.TabIndex = 16;
+            this.txtSuperSplRate.Text = "0";
+            this.txtSuperSplRate.KeyDown += new System.Windows.Forms.KeyEventHandler(this.inputControl_KeyDown);
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.BackColor = System.Drawing.Color.Transparent;
+            this.label8.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label8.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
+            this.label8.Location = new System.Drawing.Point(403, 174);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(130, 18);
+            this.label8.TabIndex = 14;
+            this.label8.Text = "Special Rate (B)";
+            this.label8.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.BackColor = System.Drawing.Color.Transparent;
+            this.label9.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label9.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
+            this.label9.Location = new System.Drawing.Point(403, 145);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(178, 18);
+            this.label9.TabIndex = 16;
+            this.label9.Text = "Super Special Rate (A)";
+            this.label9.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.BackColor = System.Drawing.Color.Transparent;
+            this.label4.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
+            this.label4.Location = new System.Drawing.Point(403, 116);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(116, 18);
+            this.label4.TabIndex = 6;
+            this.label4.Text = "Purchase Rate";
+            this.label4.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // txtPurUnitRate
+            // 
+            this.txtPurUnitRate.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.txtPurUnitRate.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.txtPurUnitRate.Enabled = false;
+            this.txtPurUnitRate.Location = new System.Drawing.Point(602, 89);
+            this.txtPurUnitRate.Margin = new System.Windows.Forms.Padding(2);
+            this.txtPurUnitRate.Name = "txtPurUnitRate";
+            this.txtPurUnitRate.Size = new System.Drawing.Size(196, 26);
+            this.txtPurUnitRate.TabIndex = 14;
+            this.txtPurUnitRate.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtPurUnitRate_KeyDown);
+            this.txtPurUnitRate.Leave += new System.EventHandler(this.txtPurUnitRate_Leave);
+            // 
+            // lblPurUnitRate
+            // 
+            this.lblPurUnitRate.AutoSize = true;
+            this.lblPurUnitRate.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
+            this.lblPurUnitRate.Location = new System.Drawing.Point(402, 87);
+            this.lblPurUnitRate.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.lblPurUnitRate.Name = "lblPurUnitRate";
+            this.lblPurUnitRate.Size = new System.Drawing.Size(151, 18);
+            this.lblPurUnitRate.TabIndex = 22;
+            this.lblPurUnitRate.Text = "Purchase Unit Rate";
+            // 
+            // chkIsUnitPerRate
+            // 
+            this.chkIsUnitPerRate.AutoSize = true;
+            this.chkIsUnitPerRate.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
+            this.chkIsUnitPerRate.Location = new System.Drawing.Point(202, 118);
+            this.chkIsUnitPerRate.Margin = new System.Windows.Forms.Padding(2);
+            this.chkIsUnitPerRate.Name = "chkIsUnitPerRate";
+            this.chkIsUnitPerRate.Size = new System.Drawing.Size(146, 22);
+            this.chkIsUnitPerRate.TabIndex = 7;
+            this.chkIsUnitPerRate.Text = "Is Unit Per Rate";
+            this.chkIsUnitPerRate.UseVisualStyleBackColor = true;
+            this.chkIsUnitPerRate.CheckedChanged += new System.EventHandler(this.chkIsUnitPerRate_CheckedChanged);
+            this.chkIsUnitPerRate.KeyDown += new System.Windows.Forms.KeyEventHandler(this.chkIsUnitPerRate_KeyDown);
+            // 
+            // txtUnitPerRateB
+            // 
+            this.txtUnitPerRateB.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.txtUnitPerRateB.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.txtUnitPerRateB.Enabled = false;
+            this.txtUnitPerRateB.Location = new System.Drawing.Point(202, 176);
+            this.txtUnitPerRateB.Margin = new System.Windows.Forms.Padding(2);
+            this.txtUnitPerRateB.Name = "txtUnitPerRateB";
+            this.txtUnitPerRateB.Size = new System.Drawing.Size(196, 26);
+            this.txtUnitPerRateB.TabIndex = 9;
+            this.txtUnitPerRateB.KeyDown += new System.Windows.Forms.KeyEventHandler(this.inputControl_KeyDown);
+            this.txtUnitPerRateB.Leave += new System.EventHandler(this.txtItemQuantity_Leave);
+            // 
+            // txtUnitPerRateC
+            // 
+            this.txtUnitPerRateC.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.txtUnitPerRateC.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.txtUnitPerRateC.Enabled = false;
+            this.txtUnitPerRateC.Location = new System.Drawing.Point(202, 205);
+            this.txtUnitPerRateC.Margin = new System.Windows.Forms.Padding(2);
+            this.txtUnitPerRateC.Name = "txtUnitPerRateC";
+            this.txtUnitPerRateC.Size = new System.Drawing.Size(196, 26);
+            this.txtUnitPerRateC.TabIndex = 10;
+            this.txtUnitPerRateC.KeyDown += new System.Windows.Forms.KeyEventHandler(this.inputControl_KeyDown);
+            this.txtUnitPerRateC.Leave += new System.EventHandler(this.txtItemQuantity_Leave);
+            // 
+            // label16
+            // 
+            this.label16.AutoSize = true;
+            this.label16.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
+            this.label16.Location = new System.Drawing.Point(2, 174);
+            this.label16.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label16.Name = "label16";
+            this.label16.Size = new System.Drawing.Size(151, 18);
+            this.label16.TabIndex = 55;
+            this.label16.Text = "Sales Unit Rate (B)";
+            this.label16.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // txtWholeSaleRate
+            // 
+            this.txtWholeSaleRate.BackColor = System.Drawing.Color.White;
+            this.txtWholeSaleRate.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.txtWholeSaleRate.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.txtWholeSaleRate.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtWholeSaleRate.Location = new System.Drawing.Point(603, 206);
+            this.txtWholeSaleRate.MaxLength = 50;
+            this.txtWholeSaleRate.Name = "txtWholeSaleRate";
+            this.txtWholeSaleRate.Size = new System.Drawing.Size(194, 26);
+            this.txtWholeSaleRate.TabIndex = 18;
+            this.txtWholeSaleRate.Text = "0";
+            this.txtWholeSaleRate.KeyDown += new System.Windows.Forms.KeyEventHandler(this.inputControl_KeyDown);
+            // 
+            // txtPRate
+            // 
+            this.txtPRate.BackColor = System.Drawing.Color.White;
+            this.txtPRate.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.txtPRate.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.txtPRate.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtPRate.Location = new System.Drawing.Point(603, 119);
+            this.txtPRate.MaxLength = 50;
+            this.txtPRate.Name = "txtPRate";
+            this.txtPRate.Size = new System.Drawing.Size(194, 26);
+            this.txtPRate.TabIndex = 15;
+            this.txtPRate.Text = "0";
+            this.txtPRate.KeyDown += new System.Windows.Forms.KeyEventHandler(this.inputControl_KeyDown);
+            // 
+            // progressBar1
+            // 
+            this.progressBar1.Location = new System.Drawing.Point(1002, 205);
+            this.progressBar1.Margin = new System.Windows.Forms.Padding(2);
+            this.progressBar1.Name = "progressBar1";
+            this.progressBar1.Size = new System.Drawing.Size(131, 18);
+            this.progressBar1.TabIndex = 51;
+            this.progressBar1.Visible = false;
+            // 
+            // lblTamil
+            // 
+            this.lblTamil.BackColor = System.Drawing.Color.White;
+            this.lblTamil.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.lblTamil.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
+            this.lblTamil.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
+            this.lblTamil.Location = new System.Drawing.Point(803, 145);
+            this.lblTamil.Name = "lblTamil";
+            this.tblEntry.SetRowSpan(this.lblTamil, 2);
+            this.lblTamil.Size = new System.Drawing.Size(194, 44);
+            this.lblTamil.TabIndex = 27;
+            // 
+            // lblProgress
+            // 
+            this.lblProgress.AutoSize = true;
+            this.lblProgress.Dock = System.Windows.Forms.DockStyle.Right;
+            this.lblProgress.Location = new System.Drawing.Point(986, 203);
+            this.lblProgress.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.lblProgress.Name = "lblProgress";
+            this.lblProgress.Size = new System.Drawing.Size(12, 34);
+            this.lblProgress.TabIndex = 52;
+            this.lblProgress.Text = " ";
+            this.lblProgress.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // txtSGST
+            // 
+            this.txtSGST.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.txtSGST.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.txtSGST.Location = new System.Drawing.Point(1002, 176);
+            this.txtSGST.Margin = new System.Windows.Forms.Padding(2);
+            this.txtSGST.Name = "txtSGST";
+            this.txtSGST.Size = new System.Drawing.Size(195, 26);
+            this.txtSGST.TabIndex = 37;
+            this.txtSGST.Text = "0";
+            this.txtSGST.Visible = false;
+            // 
+            // label15
+            // 
+            this.label15.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.label15.AutoSize = true;
+            this.label15.BackColor = System.Drawing.Color.Transparent;
+            this.label15.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label15.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
+            this.label15.Location = new System.Drawing.Point(1003, 150);
+            this.label15.Name = "label15";
+            this.label15.Size = new System.Drawing.Size(48, 18);
+            this.label15.TabIndex = 18;
+            this.label15.Text = "SGST";
+            this.label15.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.label15.Visible = false;
+            // 
+            // txtCGST
+            // 
+            this.txtCGST.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.txtCGST.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.txtCGST.Location = new System.Drawing.Point(1002, 118);
+            this.txtCGST.Margin = new System.Windows.Forms.Padding(2);
+            this.txtCGST.Name = "txtCGST";
+            this.txtCGST.Size = new System.Drawing.Size(195, 26);
+            this.txtCGST.TabIndex = 37;
+            this.txtCGST.Text = "0";
+            this.txtCGST.Visible = false;
+            // 
+            // label14
+            // 
+            this.label14.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.label14.AutoSize = true;
+            this.label14.BackColor = System.Drawing.Color.Transparent;
+            this.label14.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label14.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
+            this.label14.Location = new System.Drawing.Point(803, 121);
+            this.label14.Name = "label14";
+            this.label14.Size = new System.Drawing.Size(48, 18);
+            this.label14.TabIndex = 18;
+            this.label14.Text = "CGST";
+            this.label14.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.label14.Visible = false;
+            // 
+            // txtMRP
+            // 
+            this.txtMRP.BackColor = System.Drawing.Color.White;
+            this.txtMRP.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.txtMRP.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtMRP.Location = new System.Drawing.Point(1203, 206);
+            this.txtMRP.MaxLength = 50;
+            this.txtMRP.Name = "txtMRP";
+            this.txtMRP.Size = new System.Drawing.Size(69, 26);
+            this.txtMRP.TabIndex = 50;
+            this.txtMRP.Text = "0";
+            this.txtMRP.Visible = false;
+            this.txtMRP.KeyDown += new System.Windows.Forms.KeyEventHandler(this.inputControl_KeyDown);
+            // 
+            // txtItemFullName
+            // 
+            this.txtItemFullName.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.txtItemFullName.Location = new System.Drawing.Point(1202, 176);
+            this.txtItemFullName.Margin = new System.Windows.Forms.Padding(2);
+            this.txtItemFullName.Name = "txtItemFullName";
+            this.txtItemFullName.Size = new System.Drawing.Size(71, 26);
+            this.txtItemFullName.TabIndex = 42;
+            this.txtItemFullName.Visible = false;
+            this.txtItemFullName.KeyDown += new System.Windows.Forms.KeyEventHandler(this.inputControl_KeyDown);
+            // 
+            // txtCostRate
+            // 
+            this.txtCostRate.BackColor = System.Drawing.Color.White;
+            this.txtCostRate.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.txtCostRate.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtCostRate.Location = new System.Drawing.Point(1203, 148);
+            this.txtCostRate.MaxLength = 50;
+            this.txtCostRate.Name = "txtCostRate";
+            this.txtCostRate.Size = new System.Drawing.Size(69, 26);
+            this.txtCostRate.TabIndex = 41;
+            this.txtCostRate.Text = "0";
+            this.txtCostRate.Visible = false;
+            this.txtCostRate.KeyDown += new System.Windows.Forms.KeyEventHandler(this.inputControl_KeyDown);
+            // 
+            // txtItemCode
+            // 
+            this.txtItemCode.BackColor = System.Drawing.Color.White;
+            this.txtItemCode.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.txtItemCode.Enabled = false;
+            this.txtItemCode.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtItemCode.Location = new System.Drawing.Point(1203, 119);
+            this.txtItemCode.MaxLength = 50;
+            this.txtItemCode.Name = "txtItemCode";
+            this.txtItemCode.Size = new System.Drawing.Size(69, 26);
+            this.txtItemCode.TabIndex = 41;
+            this.txtItemCode.Visible = false;
+            this.txtItemCode.TextChanged += new System.EventHandler(this.txtSearch_TextChanged);
+            this.txtItemCode.KeyDown += new System.Windows.Forms.KeyEventHandler(this.inputControl_KeyDown);
+            this.txtItemCode.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtSerial_KeyPress);
             // 
             // tblCommand
             // 
@@ -1875,56 +1955,6 @@ namespace standard.master
             // uspitemSelectResultBindingSource1
             // 
             this.uspitemSelectResultBindingSource1.DataSource = typeof(standard.classes.usp_itemSelectResult);
-            // 
-            // txtUnitPerRateB
-            // 
-            this.txtUnitPerRateB.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.txtUnitPerRateB.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.txtUnitPerRateB.Enabled = false;
-            this.txtUnitPerRateB.Location = new System.Drawing.Point(202, 176);
-            this.txtUnitPerRateB.Margin = new System.Windows.Forms.Padding(2);
-            this.txtUnitPerRateB.Name = "txtUnitPerRateB";
-            this.txtUnitPerRateB.Size = new System.Drawing.Size(196, 26);
-            this.txtUnitPerRateB.TabIndex = 9;
-            this.txtUnitPerRateB.KeyDown += new System.Windows.Forms.KeyEventHandler(this.inputControl_KeyDown);
-            this.txtUnitPerRateB.Leave += new System.EventHandler(this.txtItemQuantity_Leave);
-            // 
-            // txtUnitPerRateC
-            // 
-            this.txtUnitPerRateC.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.txtUnitPerRateC.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.txtUnitPerRateC.Enabled = false;
-            this.txtUnitPerRateC.Location = new System.Drawing.Point(202, 205);
-            this.txtUnitPerRateC.Margin = new System.Windows.Forms.Padding(2);
-            this.txtUnitPerRateC.Name = "txtUnitPerRateC";
-            this.txtUnitPerRateC.Size = new System.Drawing.Size(196, 26);
-            this.txtUnitPerRateC.TabIndex = 10;
-            this.txtUnitPerRateC.KeyDown += new System.Windows.Forms.KeyEventHandler(this.inputControl_KeyDown);
-            this.txtUnitPerRateC.Leave += new System.EventHandler(this.txtItemQuantity_Leave);
-            // 
-            // label16
-            // 
-            this.label16.AutoSize = true;
-            this.label16.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.label16.Location = new System.Drawing.Point(2, 174);
-            this.label16.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.label16.Name = "label16";
-            this.label16.Size = new System.Drawing.Size(151, 18);
-            this.label16.TabIndex = 55;
-            this.label16.Text = "Sales Unit Rate (B)";
-            this.label16.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // label17
-            // 
-            this.label17.AutoSize = true;
-            this.label17.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.label17.Location = new System.Drawing.Point(2, 203);
-            this.label17.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.label17.Name = "label17";
-            this.label17.Size = new System.Drawing.Size(151, 18);
-            this.label17.TabIndex = 56;
-            this.label17.Text = "Sales Unit Rate (C)";
-            this.label17.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // frmItems
             // 
@@ -2360,6 +2390,7 @@ namespace standard.master
                 worksheet.Cells[1, 14] = "Tax Percentage";
                 worksheet.Cells[1, 15] = "HSN/SAC Code";
                 worksheet.Cells[1, 16] = "Company";
+                worksheet.Cells[1, 17] = "Tally Item Name";
 
                 // Fill data
                 int row = 2;
@@ -2381,6 +2412,7 @@ namespace standard.master
                     worksheet.Cells[row, 14] = item.item_taxpercentage;
                     worksheet.Cells[row, 15] = item.item_hsncode;
                     worksheet.Cells[row, 16] = item.com_id;
+                    worksheet.Cells[row, 17] = item.item_fullname;
                     row++;
                 }
                 worksheet.Columns.AutoFit();
@@ -2551,6 +2583,7 @@ namespace standard.master
                             existingItem.item_taxpercentage = Convert.ToDecimal((range.Cells[row, 14] as Excel.Range)?.Value2);
                             existingItem.item_hsncode = Convert.ToString((range.Cells[row, 15] as Excel.Range)?.Value2) ?? "";
                             existingItem.com_id = Convert.ToInt32((range.Cells[row, 16] as Excel.Range)?.Value2);
+                            existingItem.item_fullname = Convert.ToString((range.Cells[row, 17] as Excel.Range)?.Value2) ?? "";
                             existingItem.item_supersepecialrate = superSplRate;
                             existingItem.item_specialrate = splRate;
                             existingItem.item_wholesalerate = wholesaleRate;
@@ -2576,6 +2609,7 @@ namespace standard.master
                                 item_taxpercentage = Convert.ToDecimal((range.Cells[row, 14] as Excel.Range)?.Value2),
                                 item_hsncode = Convert.ToString((range.Cells[row, 15] as Excel.Range)?.Value2) ?? "",
                                 com_id = Convert.ToInt32((range.Cells[row, 16] as Excel.Range)?.Value2),
+                                item_fullname = Convert.ToString((range.Cells[row, 17] as Excel.Range)?.Value2) ?? "",
                                 item_isunitperrate = isUnitPerRate,
                                 item_perunitrate = perUnitRateA,
                                 item_perunitrateb = perUnitRateB,
@@ -2589,7 +2623,6 @@ namespace standard.master
                                 item_sgst = tax / 2,
                                 item_mrp = mrp,
                                 item_code = "",
-                                item_fullname = "",
                                 users_uid = 1,
                                 item_udate = DateTime.Now.Date
                             };

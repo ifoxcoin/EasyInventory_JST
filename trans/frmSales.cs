@@ -10,8 +10,11 @@ using System.Data.Common;
 using System.Data.Linq;
 using System.Diagnostics;
 using System.Drawing;
+using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Net;
+using System.Text;
 using System.Threading;
 using System.Windows.Forms;
 
@@ -137,9 +140,13 @@ namespace standard.trans
 
         private DateTimePicker dtptdate;
 
+        private DateTimePicker importDate;
+
         private lightbutton cmdList;
 
         private lightbutton cmdexit;
+
+        private Button importButton;
 
         private Label lblhyp;
 
@@ -161,17 +168,23 @@ namespace standard.trans
 
         private Label lblCompany;
 
+        private Label lblImportDate;
+
         private Label lblBillNo;
 
         private TextBox txtSearchBillNo;
 
         private DataGridViewImageColumn ldelete;
 
+        private DataGridViewImageColumn lImport;
+
         private DataGridViewImageColumn ledit;
 
         private DataGridViewImageColumn lprint;
 
         private DataGridViewTextBoxColumn isDraft;
+
+        private DataGridViewTextBoxColumn isImport;
 
         private DataGridViewImageColumn lEstimateprint;
 
@@ -629,7 +642,7 @@ namespace standard.trans
                             long? no = 0L;
                             inventoryDataContext.usp_setYearNo("sal_no", global.sysdate, ref no, salesmaster.com_id);
                             salesmaster.sm_refno = Convert.ToInt64(no);
-                            inventoryDataContext.usp_salesmasterInsert(ref id, salesmaster.sm_bookno, salesmaster.sm_refno, salesmaster.sm_date, salesmaster.led_id, salesmaster.sm_totqty, salesmaster.sm_totamount, salesmaster.sm_itemcount, salesmaster.sm_profit, salesmaster.sm_disamount, salesmaster.sm_taxamount, salesmaster.sm_taxpercentage, salesmaster.sm_packingcharge, salesmaster.sm_netamount, salesmaster.sm_received, salesmaster.sm_paidcommission, salesmaster.sm_paidpacking, salesmaster.sm_roundamount, false, false, global.ucode, global.sysdate, salesmaster.sm_desc, false, true, salesmaster.so_id, salesmaster.com_id, salesmaster.sm_istaxable);
+                            inventoryDataContext.usp_salesmasterInsert(ref id, salesmaster.sm_bookno, salesmaster.sm_refno, salesmaster.sm_date, salesmaster.led_id, salesmaster.sm_totqty, salesmaster.sm_totamount, salesmaster.sm_itemcount, salesmaster.sm_profit, salesmaster.sm_disamount, salesmaster.sm_taxamount, salesmaster.sm_taxpercentage, salesmaster.sm_packingcharge, salesmaster.sm_netamount, salesmaster.sm_received, salesmaster.sm_paidcommission, salesmaster.sm_paidpacking, salesmaster.sm_roundamount, false, false, global.ucode, global.sysdate, salesmaster.sm_desc, false, true, salesmaster.so_id, salesmaster.com_id, salesmaster.sm_istaxable, false);
                             salesdetail.sm_id = id;
                             foreach (DataGridViewRow item2 in (IEnumerable)dgvSales.Rows)
                             {
@@ -672,14 +685,16 @@ namespace standard.trans
                             salesmaster.sm_desc = "";
                             salesmaster.sm_isclose = false;
                             bool? isDraft = null;
-                            var smRecord = inventoryDataContext.salesmasters.Where(s => s.sm_id == id).Select(s => new { s.sm_isdraft, s.so_id }).FirstOrDefault();
+                            var smRecord = inventoryDataContext.salesmasters.Where(s => s.sm_id == id).Select(s => new { s.sm_isdraft, s.so_id, s.sm_guid, s.sm_isimport }).FirstOrDefault();
                             if (smRecord != null)
                             {
                                 isDraft = smRecord.sm_isdraft;
                                 salesmaster.so_id = smRecord.so_id ?? 0;
+                                salesmaster.sm_guid = smRecord.sm_guid;
+                                salesmaster.sm_isimport = smRecord.sm_isimport;
                             }
                             salesmaster.com_id = Convert.ToUInt32(cboCom.SelectedValue.ToString());
-                            inventoryDataContext.usp_salesmasterUpdate(id, salesmaster.sm_bookno, salesmaster.sm_refno, salesmaster.sm_date, salesmaster.led_id, salesmaster.sm_totqty, salesmaster.sm_totamount, salesmaster.sm_itemcount, salesmaster.sm_profit, salesmaster.sm_disamount, salesmaster.sm_taxamount, salesmaster.sm_taxpercentage, salesmaster.sm_packingcharge, salesmaster.sm_netamount, salesmaster.sm_received, salesmaster.sm_paidcommission, salesmaster.sm_paidpacking, salesmaster.sm_roundamount, salesmaster.sm_iscommissionclose, salesmaster.sm_ispackingclose, global.ucode, global.sysdate, salesmaster.sm_desc, salesmaster.sm_isclose, true, salesmaster.so_id, salesmaster.com_id, salesmaster.sm_istaxable);
+                            inventoryDataContext.usp_salesmasterUpdate(id, salesmaster.sm_bookno, salesmaster.sm_refno, salesmaster.sm_date, salesmaster.led_id, salesmaster.sm_totqty, salesmaster.sm_totamount, salesmaster.sm_itemcount, salesmaster.sm_profit, salesmaster.sm_disamount, salesmaster.sm_taxamount, salesmaster.sm_taxpercentage, salesmaster.sm_packingcharge, salesmaster.sm_netamount, salesmaster.sm_received, salesmaster.sm_paidcommission, salesmaster.sm_paidpacking, salesmaster.sm_roundamount, salesmaster.sm_iscommissionclose, salesmaster.sm_ispackingclose, global.ucode, global.sysdate, salesmaster.sm_desc, salesmaster.sm_isclose, true, salesmaster.so_id, salesmaster.com_id, salesmaster.sm_istaxable, salesmaster.sm_isimport, salesmaster.sm_guid);
 
                             // Step 1: Collect current items and their IsTaxable info from the grid
                             var currentItemIds = new HashSet<int>();
@@ -763,12 +778,24 @@ namespace standard.trans
 
                                     if (catID == 39)
                                     {
-                                        salesorderdetails.od_pendingqty = salesorderdetails.od_unitvalue - salesorderdetails.od_soldqty;
+                                        salesorderdetails.od_pendingqty = Math.Max(0, salesorderdetails.od_unitvalue - salesorderdetails.od_soldqty);
                                     }
                                     else
                                     {
-                                        salesorderdetails.od_pendingqty = salesorderdetails.od_qty - salesorderdetails.od_soldqty;
+                                        salesorderdetails.od_pendingqty = Math.Max(0, salesorderdetails.od_qty - salesorderdetails.od_soldqty);
                                     }
+
+                                    if (salesdetail.sd_qty > salesorderdetails.od_qty)
+                                    {
+                                        // Take from sales detail
+                                        salesdetail.sd_qty = salesdetail.sd_qty;
+                                    }
+                                    else
+                                    {
+                                        // Take from order qty
+                                        salesdetail.sd_qty = Convert.ToInt32(salesorderdetails.od_qty);
+                                    }
+
 
                                     var existingOrderDetail = inventoryDataContext.salesorderdetails.Where(od => od.so_id == salesmaster.so_id && od.od_id == salesdetail.sd_odid).FirstOrDefault();
                                     if (existingOrderDetail != null)
@@ -780,7 +807,7 @@ namespace standard.trans
                                         salesorderdetails.com_id = existingOrderDetail.com_id;
                                         salesorderdetails.od_istaxable = existingOrderDetail.od_istaxable;
 
-                                        inventoryDataContext.usp_salesorderdetailsUpdate(salesorderdetails.od_id, salesorderdetails.so_id, salesdetail.item_id, salesorderdetails.od_qty, salesdetail.sd_unitvalue, salesorderdetails.od_soldqty, salesorderdetails.od_pendingqty, salesdetail.sd_perunitrate, salesorderdetails.com_id, salesorderdetails.od_istaxable);
+                                        inventoryDataContext.usp_salesorderdetailsUpdate(salesorderdetails.od_id, salesorderdetails.so_id, salesdetail.item_id, salesdetail.sd_qty, salesdetail.sd_unitvalue, salesorderdetails.od_soldqty, salesorderdetails.od_pendingqty, salesdetail.sd_perunitrate, salesorderdetails.com_id, salesorderdetails.od_istaxable);
                                     }
                                     else
                                     {
@@ -861,10 +888,14 @@ namespace standard.trans
                             if (salesOrder != null)
                             {
                                 var salesOrderDetailsList = inventoryDataContext.salesorderdetails.Where(od => od.so_id == salesmaster.so_id).ToList();
-
-                                decimal totalQty = salesOrderDetailsList.Sum(od => od.od_qty);
-                                salesorder.so_totqty = totalQty;
-                                salesorder.so_refno = salesOrder.so_refno;
+                                using (var freshContext = new InventoryDataContext())
+                                {
+                                    decimal totalQty = freshContext.salesorderdetails
+                                        .Where(od => od.so_id == salesmaster.so_id)
+                                        .Sum(od => od.od_qty);
+                                    salesorder.so_totqty = totalQty;
+                                    salesorder.so_refno = salesOrder.so_refno;
+                                }                                
                             }
                             else
                             {
@@ -961,7 +992,8 @@ namespace standard.trans
             txtDiscount.Text = string.Format("{0:0.00}", d3.ToString("N2"));
             txtProfit.Text = $"{txttotamt.Value + d2 - (d + d3):0.00}";
             txtTaxAmt.Text = d5.ToString();
-            txtnetamt.Text = $"{txttotamt.Value + d2 + txtothercharges.Value - d3:0.00}";
+            decimal total = txttotamt.Value + d2 + txtothercharges.Value - d3;
+            txtnetamt.Text = $"{Math.Round(total, 0, MidpointRounding.AwayFromZero):0.00}";
             decimal value2 = txtTaxPer.Value;
             decimal d4 = (txtnetamt.Value - txtothercharges.Value) * value2 / 100m;
             //txtnetamt.Text = $"{d4 + txtnetamt.Value:0.00}";
@@ -1106,6 +1138,15 @@ namespace standard.trans
                 {
                     e.Value = isDraft ? "Invoice" : "Under Preview";
                     e.CellStyle.ForeColor = isDraft ? Color.Green : Color.Red;
+                    e.FormattingApplied = true;
+                }
+            }
+            if (dglist.Columns[e.ColumnIndex].Name == "isImport")
+            {
+                if (e.Value is bool isImport)
+                {
+                    e.Value = isImport ? "Imported" : "Not Import";
+                    e.CellStyle.ForeColor = isImport ? Color.Green : Color.Red;
                     e.FormattingApplied = true;
                 }
             }
@@ -1347,7 +1388,7 @@ namespace standard.trans
                         ISingleResult<usp_salesmasterSelectResult> dataSourceValue = inventoryDataContext.usp_salesmasterSelect(smid, null, null, null, null, null, null);
                         ISingleResult<usp_salesdetailsSelectResult> dataSourceValue2 = inventoryDataContext.usp_salesdetailsSelect(smid, null, null, null, null, null, null);
                         ISingleResult<usp_companySelectResult> dataSourceValue3 = inventoryDataContext.usp_companySelect(comId);
-                        ISingleResult<usp_ledgermasterSelectResult> dataSourceValue4 = inventoryDataContext.usp_ledgermasterSelect(ledid, null, null, null, null, null);
+                        ISingleResult<usp_ledgermasterSelectResult> dataSourceValue4 = inventoryDataContext.usp_ledgermasterSelect(ledid, null, null, null, null, null, null);
 
                         // 🧾 Assign report viewer
                         frmRpt.reportview.LocalReport.ReportEmbeddedResource = "standard.report.rptSalesInvoice1.rdlc";
@@ -1744,6 +1785,16 @@ namespace standard.trans
                     }
                     loadEstimateReport(Convert.ToInt32(dglist.CurrentRow.Cells["smidDataGridViewTextBoxColumn"].Value));
                 }
+                else if (e.ColumnIndex == lImport.Index && e.RowIndex > -1)
+                {
+                    int smid = Convert.ToInt32(dglist.Rows[e.RowIndex].Cells["smidDataGridViewTextBoxColumn"].Value);
+
+                    DialogResult result = MessageBox.Show("Are you sure to import to Tally?", "Confirm", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                    if (result == DialogResult.Yes)
+                    {
+                        ImportSalesToTally(smid);
+                    }
+                }
             }
             catch (Exception ex)
             {
@@ -1774,6 +1825,847 @@ namespace standard.trans
                 txtDisPer.Focus();
             }
         }
+
+        public static class TallyHelper
+        {
+            public static string BuildSalesVoucherXml(usp_salesmasterSelectResult master, List<usp_salesdetailsSelectResult> details)
+            {
+                string date = Convert.ToDateTime(master.sm_date).ToString("yyyyMMdd", CultureInfo.InvariantCulture);
+                string voucherNumber = Convert.ToString(master.sm_refno);
+                Guid guid;
+                if (master.sm_guid != null)
+                {
+                    guid = master.sm_guid ?? Guid.NewGuid();
+                }
+                else
+                {
+                    guid = Guid.NewGuid();
+                    InventoryDataContext inventoryDataContext = new InventoryDataContext();
+                    salesmaster salesmaster = inventoryDataContext.salesmasters.FirstOrDefault(x => x.sm_id == master.sm_id);
+                    inventoryDataContext.usp_salesmasterUpdate(salesmaster.sm_id, salesmaster.sm_bookno, salesmaster.sm_refno, salesmaster.sm_date, salesmaster.led_id, salesmaster.sm_totqty, salesmaster.sm_totamount, salesmaster.sm_itemcount, salesmaster.sm_profit, salesmaster.sm_disamount, salesmaster.sm_taxamount, salesmaster.sm_taxpercentage, salesmaster.sm_packingcharge, salesmaster.sm_netamount, salesmaster.sm_received, salesmaster.sm_paidcommission, salesmaster.sm_paidpacking, salesmaster.sm_roundamount, salesmaster.sm_iscommissionclose, salesmaster.sm_ispackingclose, global.ucode, global.sysdate, salesmaster.sm_desc, salesmaster.sm_isclose, salesmaster.sm_isdraft, salesmaster.so_id, salesmaster.com_id, salesmaster.sm_istaxable, false, guid);
+                }
+                string companyName = master.com_id == 2 ? "Jeyakkodi Traders" : master.com_id == 1 ? "Jeyakkodi Traders" : "Unknown Company";
+                string partyLedger = master.com_id == 2 ? master.led_name : master.com_id == 1 ? master.led_stlname : null;
+                string action = string.IsNullOrEmpty(guid.ToString()) ? "Create" : "Alter";
+                string partyGSTIN = master.led_tin ?? "";
+                string partyAddressLine1 = master.led_address;
+                string partyAddressLine2 = master.led_address1;
+                string partyAddressLine3 = master.led_address2;
+                string partyAddressLine4 = master.led_pincode;
+                string RegistrationType;
+                if (!string.IsNullOrEmpty(partyGSTIN))
+                {
+                    RegistrationType = "Regular";
+                }
+                else
+                {
+                    RegistrationType = "Unregistered/Consumer";
+                }
+
+                string state = master.led_state ?? "Tamil Nadu";
+                string salesLedger = "Sales GST";
+                decimal gstAmount = master.sm_taxamount;
+                string igstLedger = "IGST";
+                string cgstLedger = "CGST";
+                string sgstLedger = "SGST";
+                string godown = "Main Location";
+
+                StringBuilder xml = new StringBuilder();
+
+                if (master.com_id == 1 & master.sm_istaxable == false)
+                {
+                    xml.AppendLine("<ENVELOPE>");
+                    xml.AppendLine("  <HEADER><TALLYREQUEST>Import Data</TALLYREQUEST></HEADER>");
+                    xml.AppendLine("  <BODY>");
+                    xml.AppendLine("    <IMPORTDATA>");
+                    xml.AppendLine("      <REQUESTDESC>");
+                    xml.AppendLine("        <REPORTNAME>Vouchers</REPORTNAME>");
+                    xml.AppendLine("        <STATICVARIABLES>");
+                    xml.AppendLine($"          <SVCURRENTCOMPANY>{companyName}</SVCURRENTCOMPANY>");
+                    xml.AppendLine("        </STATICVARIABLES>");
+                    xml.AppendLine("      </REQUESTDESC>");
+                    xml.AppendLine("      <REQUESTDATA>");
+                    xml.AppendLine("        <TALLYMESSAGE xmlns:UDF=\"TallyUDF\">");
+                    xml.AppendLine($"          <VOUCHER REMOTEID=\"{guid}\" VCHTYPE=\"GST SALES N\" ACTION=\"{action}\" GUID=\"{guid}\" OBJVIEW=\"Invoice Voucher View\">");
+
+                    xml.AppendLine($"            <DATE>20250401</DATE>");
+                    xml.AppendLine($"            <GUID>{guid}</GUID>");
+                    xml.AppendLine($"            <VOUCHERNUMBER>{voucherNumber}</VOUCHERNUMBER>");
+                    xml.AppendLine($"            <PARTYLEDGERNAME>{partyLedger}</PARTYLEDGERNAME>");
+                    xml.AppendLine("            <VOUCHERTYPENAME>GST SALES N</VOUCHERTYPENAME>");
+                    xml.AppendLine("            <CLASSNAME>SALES</CLASSNAME>");
+                    xml.AppendLine($"            <BASICBUYERNAME>{partyLedger}</BASICBUYERNAME>");
+                    xml.AppendLine($"            <BASICBASEPARTYNAME>{partyLedger}</BASICBASEPARTYNAME>");
+                    xml.AppendLine($"            <PARTYGSTIN>{partyGSTIN}</PARTYGSTIN>");
+                    xml.AppendLine($"            <PLACEOFSUPPLY>{state}</PLACEOFSUPPLY>");
+                    xml.AppendLine($"            <STATENAME>{state}</STATENAME>");
+                    xml.AppendLine("            <COUNTRYOFRESIDENCE>India</COUNTRYOFRESIDENCE>");
+                    xml.AppendLine($"            <GSTREGISTRATIONTYPE>{RegistrationType}</GSTREGISTRATIONTYPE>");
+                    // Buyer (Bill To) Address
+                    xml.AppendLine("            <BASICBUYERADDRESS.LIST TYPE=\"String\">");
+                    xml.AppendLine($"              <BASICBUYERADDRESS>{partyAddressLine1}</BASICBUYERADDRESS>");
+                    xml.AppendLine($"              <BASICBUYERADDRESS>{partyAddressLine2}</BASICBUYERADDRESS>");
+                    xml.AppendLine($"              <BASICBUYERADDRESS>{partyAddressLine3}</BASICBUYERADDRESS>");
+                    xml.AppendLine($"              <BASICBUYERADDRESS>{partyAddressLine4}</BASICBUYERADDRESS>");
+                    xml.AppendLine($"              <BASICBUYERADDRESS>{state}</BASICBUYERADDRESS>");
+                    xml.AppendLine("            </BASICBUYERADDRESS.LIST>");
+
+                    // Consignee (Ship To) Address
+                    xml.AppendLine("            <BASICSHIPADDRESS.LIST TYPE=\"String\">");
+                    xml.AppendLine($"              <BASICSHIPADDRESS>{partyAddressLine1}</BASICSHIPADDRESS>");
+                    xml.AppendLine($"              <BASICSHIPADDRESS>{partyAddressLine2}</BASICSHIPADDRESS>");
+                    xml.AppendLine($"              <BASICSHIPADDRESS>{partyAddressLine3}</BASICSHIPADDRESS>");
+                    xml.AppendLine($"              <BASICBUYERADDRESS>{partyAddressLine4}</BASICBUYERADDRESS>");
+                    xml.AppendLine($"              <BASICBUYERADDRESS>{state}</BASICBUYERADDRESS>");
+                    xml.AppendLine("            </BASICSHIPADDRESS.LIST>");
+
+                    xml.AppendLine("            <ISINVOICE>Yes</ISINVOICE>");
+                    xml.AppendLine("            <PERSISTEDVIEW>Invoice Voucher View</PERSISTEDVIEW>");
+
+                    // Ledger Entry (Customer) - Cr
+                    xml.AppendLine("            <LEDGERENTRIES.LIST>");
+                    xml.AppendLine($"              <LEDGERNAME>{partyLedger}</LEDGERNAME>");
+                    xml.AppendLine("              <ISDEEMEDPOSITIVE>Yes</ISDEEMEDPOSITIVE>");
+                    xml.AppendLine("              <ISPARTYLEDGER>Yes</ISPARTYLEDGER>");
+                    xml.AppendLine($"              <AMOUNT>-{master.sm_netamount:0.00}</AMOUNT>");
+                    xml.AppendLine("            </LEDGERENTRIES.LIST>");
+
+                    // Item-wise Inventory Entries
+                    foreach (var item in details.Where(d => d.sd_qty > 0))
+                    {
+                        string itemName = $"{item.cat_name} {item.item_quantity}{item.item_unit} Bags";
+                        string qtyStr = $"{item.sd_qty} {item.sd_unit}";
+                        string rateStr = $"{item.sd_rate:0.00}/{item.sd_unit}";
+                        decimal totalAmount = item.sd_qty * item.sd_rate;
+
+                        xml.AppendLine("            <ALLINVENTORYENTRIES.LIST>");
+                        xml.AppendLine($"              <STOCKITEMNAME>{item.item_fullname}</STOCKITEMNAME>");
+                        xml.AppendLine($"              <HSNCODE>{item.item_hsncode}</HSNCODE>");
+                        xml.AppendLine("              <ISDEEMEDPOSITIVE>No</ISDEEMEDPOSITIVE>");
+                        xml.AppendLine($"              <RATE>{item.sd_rate:0.00}/Bag</RATE>");
+                        xml.AppendLine($"              <ACTUALQTY>{item.sd_qty} Bag</ACTUALQTY>");
+                        xml.AppendLine($"              <BILLEDQTY>{item.sd_qty} Bag</BILLEDQTY>");
+                        xml.AppendLine($"              <AMOUNT>{totalAmount:0.00}</AMOUNT>");
+                        xml.AppendLine("              <ISSUPPORTQTY>No</ISSUPPORTQTY>");
+                        xml.AppendLine("              <BATCHALLOCATIONS.LIST>");
+                        xml.AppendLine("                <GODOWNNAME>Main Location</GODOWNNAME>");
+                        xml.AppendLine("                <BATCHNAME>Primary Batch</BATCHNAME>");
+                        xml.AppendLine("                <DESTINATIONGODOWN>Main Location</DESTINATIONGODOWN>");
+                        xml.AppendLine($"                <AMOUNT>{totalAmount:0.00}</AMOUNT>");
+                        xml.AppendLine($"                <ACTUALQTY>{item.sd_qty} Bag</ACTUALQTY>");
+                        xml.AppendLine($"                <BILLEDQTY>{item.sd_qty} Bag</BILLEDQTY>");
+                        xml.AppendLine($"                <RATE>{item.sd_rate:0.00}/Bag</RATE>");
+                        xml.AppendLine("              </BATCHALLOCATIONS.LIST>");
+                        xml.AppendLine("              <GSTDETAILS.LIST>");
+                        xml.AppendLine("              <HSNCODE>" + item.item_hsncode + "</HSNCODE>");
+                        xml.AppendLine("              <TAXABILITY>Exempt</TAXABILITY>"); // Change to "Taxable" if needed
+                        xml.AppendLine("              </GSTDETAILS.LIST>");
+                        xml.AppendLine("              <ACCOUNTINGALLOCATIONS.LIST>");
+                        xml.AppendLine($"                <LEDGERNAME>{salesLedger}</LEDGERNAME>");
+                        xml.AppendLine("                 <ISDEEMEDPOSITIVE>No</ISDEEMEDPOSITIVE>");
+                        xml.AppendLine($"                <AMOUNT>{totalAmount:0.00}</AMOUNT>");
+                        xml.AppendLine("              </ACCOUNTINGALLOCATIONS.LIST>");
+                        xml.AppendLine("            </ALLINVENTORYENTRIES.LIST>");
+
+                    }
+
+                    decimal itemTotal = details.Sum(i => Math.Round((i.item_fullname == "CHILLIES IN KGS" ? i.sd_unitvalue * i.sd_rate : i.sd_qty * i.sd_rate), 2));
+                    decimal roundOff = Math.Round((itemTotal + gstAmount), 0, MidpointRounding.AwayFromZero) - (itemTotal + gstAmount);
+                    if (roundOff != 0)
+                    {
+                        xml.AppendLine("      <LEDGERENTRIES.LIST>");
+                        xml.AppendLine("        <LEDGERNAME>Round Off</LEDGERNAME>");
+                        xml.AppendLine("        <ISDEEMEDPOSITIVE>No</ISDEEMEDPOSITIVE>");
+                        xml.AppendLine($"        <AMOUNT>{roundOff:0.00}</AMOUNT>");
+                        xml.AppendLine("      </LEDGERENTRIES.LIST>");
+                    }
+
+                    xml.AppendLine("          </VOUCHER>");
+                    xml.AppendLine("        </TALLYMESSAGE>");
+                    xml.AppendLine("      </REQUESTDATA>");
+                    xml.AppendLine("    </IMPORTDATA>");
+                    xml.AppendLine("  </BODY>");
+                    xml.AppendLine("</ENVELOPE>");
+
+                    return xml.ToString();
+                }
+
+                if (master.com_id == 1 & master.sm_istaxable == true)
+                {
+
+                    xml.AppendLine("<ENVELOPE>");
+                    xml.AppendLine("  <HEADER><TALLYREQUEST>Import Data</TALLYREQUEST></HEADER>");
+                    xml.AppendLine("  <BODY>");
+                    xml.AppendLine("    <IMPORTDATA>");
+                    xml.AppendLine("      <REQUESTDESC>");
+                    xml.AppendLine("        <REPORTNAME>Vouchers</REPORTNAME>");
+                    xml.AppendLine("        <STATICVARIABLES>");
+                    xml.AppendLine($"          <SVCURRENTCOMPANY>{companyName}</SVCURRENTCOMPANY>");
+                    xml.AppendLine("        </STATICVARIABLES>");
+                    xml.AppendLine("      </REQUESTDESC>");
+                    xml.AppendLine("      <REQUESTDATA>");
+                    xml.AppendLine("        <TALLYMESSAGE xmlns:UDF=\"TallyUDF\">");
+                    xml.AppendLine($"          <VOUCHER REMOTEID=\"{guid}\" VCHTYPE=\"GST SALES T\"ACTION=\"{action}\" GUID=\"{guid}\" OBJVIEW=\"Invoice Voucher View\">");
+
+                    xml.AppendLine($"            <DATE>{date}</DATE>");
+                    xml.AppendLine($"            <GUID>{guid}</GUID>");
+                    xml.AppendLine($"            <VOUCHERNUMBER>{voucherNumber}</VOUCHERNUMBER>");
+                    xml.AppendLine($"            <ISMANUALVCHNO>No</ISMANUALVCHNO>");
+                    xml.AppendLine($"            <AUTONUMBERING>No</AUTONUMBERING>");
+                    xml.AppendLine($"            <PARTYLEDGERNAME>{partyLedger}</PARTYLEDGERNAME>");
+                    xml.AppendLine("            <VOUCHERTYPENAME>GST SALES T</VOUCHERTYPENAME>");
+                    xml.AppendLine("            <CLASSNAME>Sales Gst</CLASSNAME>");
+                    xml.AppendLine($"            <BASICBUYERNAME>{partyLedger}</BASICBUYERNAME>");
+                    xml.AppendLine($"            <BASICBASEPARTYNAME>{partyLedger}</BASICBASEPARTYNAME>");
+                    xml.AppendLine($"            <PARTYGSTIN>{partyGSTIN}</PARTYGSTIN>");
+                    xml.AppendLine($"            <PLACEOFSUPPLY>{state}</PLACEOFSUPPLY>");
+                    xml.AppendLine($"            <STATENAME>{state}</STATENAME>");
+                    xml.AppendLine("            <COUNTRYOFRESIDENCE>India</COUNTRYOFRESIDENCE>");
+                    xml.AppendLine($"            <GSTREGISTRATIONTYPE>{RegistrationType}</GSTREGISTRATIONTYPE>");
+                    // Buyer (Bill To) Address
+                    xml.AppendLine("            <BASICBUYERADDRESS.LIST TYPE=\"String\">");
+                    xml.AppendLine($"              <BASICBUYERADDRESS>{partyAddressLine1}</BASICBUYERADDRESS>");
+                    xml.AppendLine($"              <BASICBUYERADDRESS>{partyAddressLine2}</BASICBUYERADDRESS>");
+                    xml.AppendLine($"              <BASICBUYERADDRESS>{partyAddressLine3}</BASICBUYERADDRESS>");
+                    xml.AppendLine("            </BASICBUYERADDRESS.LIST>");
+
+                    // Consignee (Ship To) Address
+                    xml.AppendLine("            <BASICSHIPADDRESS.LIST TYPE=\"String\">");
+                    xml.AppendLine($"              <BASICSHIPADDRESS>{partyAddressLine1}</BASICSHIPADDRESS>");
+                    xml.AppendLine($"              <BASICSHIPADDRESS>{partyAddressLine2}</BASICSHIPADDRESS>");
+                    xml.AppendLine($"              <BASICSHIPADDRESS>{partyAddressLine3}</BASICSHIPADDRESS>");
+                    xml.AppendLine("            </BASICSHIPADDRESS.LIST>");
+                    xml.AppendLine("            <ISINVOICE>Yes</ISINVOICE>");
+                    xml.AppendLine("            <PERSISTEDVIEW>Invoice Voucher View</PERSISTEDVIEW>");
+
+                    xml.AppendLine("            <UDF:ISEINVAPPLICABLE.LIST TYPE=\"Logical\">");
+                    xml.AppendLine("                <UDF:ISEINVAPPLICABLE>Yes</UDF:ISEINVAPPLICABLE>");
+                    xml.AppendLine("            </UDF:ISEINVAPPLICABLE.LIST>");
+
+                    // Ledger Entry (Customer) - Cr
+                    xml.AppendLine("            <LEDGERENTRIES.LIST>");
+                    xml.AppendLine($"              <LEDGERNAME>{partyLedger}</LEDGERNAME>");
+                    xml.AppendLine("              <ISDEEMEDPOSITIVE>Yes</ISDEEMEDPOSITIVE>");
+                    xml.AppendLine("              <ISPARTYLEDGER>Yes</ISPARTYLEDGER>");
+                    xml.AppendLine($"              <AMOUNT>-{master.sm_netamount:0.00}</AMOUNT>");
+                    xml.AppendLine("            </LEDGERENTRIES.LIST>");
+
+                    if (state == "Tamil Nadu")
+                    {
+
+                        // CGST Ledger Entry
+                        xml.AppendLine("      <LEDGERENTRIES.LIST>");
+                        xml.AppendLine($"        <LEDGERNAME>{cgstLedger}</LEDGERNAME>");
+                        xml.AppendLine("        <ISDEEMEDPOSITIVE>No</ISDEEMEDPOSITIVE>");
+                        xml.AppendLine($"        <AMOUNT>{gstAmount / 2:0.00}</AMOUNT>");
+                        xml.AppendLine("      </LEDGERENTRIES.LIST>");
+
+                        // SGST Ledger Entry
+                        xml.AppendLine("      <LEDGERENTRIES.LIST>");
+                        xml.AppendLine($"        <LEDGERNAME>{sgstLedger}</LEDGERNAME>");
+                        xml.AppendLine("        <ISDEEMEDPOSITIVE>No</ISDEEMEDPOSITIVE>");
+                        xml.AppendLine($"        <AMOUNT>{gstAmount / 2:0.00}</AMOUNT>");
+                        xml.AppendLine("      </LEDGERENTRIES.LIST>");
+
+                    }
+                    else
+                    {
+
+                        xml.AppendLine("      <LEDGERENTRIES.LIST>");
+                        xml.AppendLine($"        <LEDGERNAME>{igstLedger}</LEDGERNAME>");
+                        xml.AppendLine("        <ISDEEMEDPOSITIVE>No</ISDEEMEDPOSITIVE>");
+                        xml.AppendLine($"        <AMOUNT>{gstAmount:0.00}</AMOUNT>");
+                        xml.AppendLine("      </LEDGERENTRIES.LIST>");
+
+
+
+                    }
+
+                    // Item-wise Inventory Entries
+                    foreach (var item in details.Where(d => d.sd_qty > 0 && (d.item_fullname == "CHILLIES IN KGS" ? d.sd_unitvalue >= 0 : true)))
+                    {
+                        string itemName = $"{item.cat_name} {item.item_quantity}{item.item_unit} Bags";
+                        string qtyStr = $"{item.sd_qty} {item.sd_unit}";
+                        string rateStr = $"{item.sd_rate:0.00}/{item.sd_unit}";
+                        decimal totalAmount = item.sd_qty * item.sd_rate;
+
+                        xml.AppendLine("            <ALLINVENTORYENTRIES.LIST>");
+                        xml.AppendLine($"              <STOCKITEMNAME>{item.item_fullname}</STOCKITEMNAME>");
+
+                        if (item.item_fullname == "CHILLIES IN KGS")
+                        {
+                            xml.AppendLine($"              <HSNCODE>{item.item_hsncode}</HSNCODE>");
+                            xml.AppendLine("              <ISDEEMEDPOSITIVE>No</ISDEEMEDPOSITIVE>");
+                            xml.AppendLine($"              <RATE>{item.sd_perunitrate:0.00}/kg</RATE>");
+                            xml.AppendLine($"              <ACTUALQTY>{item.sd_unitvalue} kg</ACTUALQTY>");
+                            xml.AppendLine($"              <BILLEDQTY>{item.sd_unitvalue} Kg</BILLEDQTY>");
+                            xml.AppendLine($"              <AMOUNT>{totalAmount:0.00}</AMOUNT>");
+                            xml.AppendLine("              <ISSUPPORTQTY>No</ISSUPPORTQTY>");
+                            xml.AppendLine("              <BATCHALLOCATIONS.LIST>");
+                            xml.AppendLine("                <GODOWNNAME>Main Location</GODOWNNAME>");
+                            xml.AppendLine("                <BATCHNAME>Primary Batch</BATCHNAME>");
+                            xml.AppendLine("                <DESTINATIONGODOWN>Main Location</DESTINATIONGODOWN>");
+                            xml.AppendLine($"                <AMOUNT>{totalAmount:0.00}</AMOUNT>");
+                            xml.AppendLine($"                <ACTUALQTY>{item.sd_unitvalue} Kg</ACTUALQTY>");
+                            xml.AppendLine($"                <BILLEDQTY>{item.sd_unitvalue} Kg</BILLEDQTY>");
+                            xml.AppendLine($"                <RATE>{item.sd_perunitrate:0.00}/Kg</RATE>");
+                            xml.AppendLine("              </BATCHALLOCATIONS.LIST>");
+                            xml.AppendLine("             <GSTDETAILS.LIST>");
+                            xml.AppendLine("              <HSNCODE>" + item.item_hsncode + "</HSNCODE>");
+                            xml.AppendLine("              <TAXABILITY>Taxable</TAXABILITY>"); // Change to "Taxable" if needed
+                            xml.AppendLine("              <ISREVERSECHARGEAPPLICABLE>No</ISREVERSECHARGEAPPLICABLE>");
+                            xml.AppendLine("              <ISNONGSTGOODS>No</ISNONGSTGOODS>");
+                            xml.AppendLine("              <GSTINELIGIBLEITC>No</GSTINELIGIBLEITC>");
+                            xml.AppendLine("              <ISGSTINVOICE>Yes</ISGSTINVOICE>");
+                            xml.AppendLine("              </GSTDETAILS.LIST>");
+                            xml.AppendLine("              <ACCOUNTINGALLOCATIONS.LIST>");
+                            xml.AppendLine($"                <LEDGERNAME>{salesLedger}</LEDGERNAME>");
+                            xml.AppendLine("                <ISDEEMEDPOSITIVE>No</ISDEEMEDPOSITIVE>");
+                            xml.AppendLine($"                <AMOUNT>{totalAmount:0.00}</AMOUNT>");
+                            xml.AppendLine("              </ACCOUNTINGALLOCATIONS.LIST>");
+                            xml.AppendLine("            </ALLINVENTORYENTRIES.LIST>");
+                        }
+                        else
+                        {
+                            xml.AppendLine($"              <HSNCODE>{item.item_hsncode}</HSNCODE>");
+                            xml.AppendLine("              <ISDEEMEDPOSITIVE>No</ISDEEMEDPOSITIVE>");
+                            xml.AppendLine($"              <RATE>{item.sd_rate:0.00}/Bag</RATE>");
+                            xml.AppendLine($"              <ACTUALQTY>{item.sd_qty} Bag</ACTUALQTY>");
+                            xml.AppendLine($"              <BILLEDQTY>{item.sd_qty} Bag</BILLEDQTY>");
+                            xml.AppendLine($"              <AMOUNT>{totalAmount:0.00}</AMOUNT>");
+                            xml.AppendLine("              <ISSUPPORTQTY>No</ISSUPPORTQTY>");
+                            xml.AppendLine("              <BATCHALLOCATIONS.LIST>");
+                            xml.AppendLine("                <GODOWNNAME>Main Location</GODOWNNAME>");
+                            xml.AppendLine("                <BATCHNAME>Primary Batch</BATCHNAME>");
+                            xml.AppendLine("                <DESTINATIONGODOWN>Main Location</DESTINATIONGODOWN>");
+                            xml.AppendLine($"                <AMOUNT>{totalAmount:0.00}</AMOUNT>");
+                            xml.AppendLine($"                <ACTUALQTY>{item.sd_qty} Bag</ACTUALQTY>");
+                            xml.AppendLine($"                <BILLEDQTY>{item.sd_qty} Bag</BILLEDQTY>");
+                            xml.AppendLine($"                <RATE>{item.sd_rate:0.00}/Bag</RATE>");
+                            xml.AppendLine("              </BATCHALLOCATIONS.LIST>");
+                            xml.AppendLine("              <GSTDETAILS.LIST>");
+                            xml.AppendLine("              <HSNCODE>" + item.item_hsncode + "</HSNCODE>");
+                            xml.AppendLine("              <TAXABILITY>Taxable</TAXABILITY>"); // Change to "Taxable" if needed
+                            xml.AppendLine("              <ISREVERSECHARGEAPPLICABLE>No</ISREVERSECHARGEAPPLICABLE>");
+                            xml.AppendLine("              <ISNONGSTGOODS>No</ISNONGSTGOODS>");
+                            xml.AppendLine("              <GSTINELIGIBLEITC>No</GSTINELIGIBLEITC>");
+                            xml.AppendLine("              <ISGSTINVOICE>Yes</ISGSTINVOICE>");
+                            xml.AppendLine("              </GSTDETAILS.LIST>");
+                            xml.AppendLine("              <ACCOUNTINGALLOCATIONS.LIST>");
+                            xml.AppendLine($"                <LEDGERNAME>{salesLedger}</LEDGERNAME>");
+                            xml.AppendLine("                <ISDEEMEDPOSITIVE>No</ISDEEMEDPOSITIVE>");
+                            xml.AppendLine($"                <AMOUNT>{totalAmount:0.00}</AMOUNT>");
+                            xml.AppendLine("              </ACCOUNTINGALLOCATIONS.LIST>");
+                            xml.AppendLine("            </ALLINVENTORYENTRIES.LIST>");
+                        }
+
+                    }
+
+                    decimal itemTotal = details.Sum(i => Math.Round((i.item_fullname == "CHILLIES IN KGS" ? i.sd_unitvalue * i.sd_rate : i.sd_qty * i.sd_rate), 2));
+                    decimal roundOff = Math.Round((itemTotal + gstAmount), 0, MidpointRounding.AwayFromZero) - (itemTotal + gstAmount);
+                    if (roundOff != 0)
+                    {
+                        xml.AppendLine("      <LEDGERENTRIES.LIST>");
+                        xml.AppendLine("        <LEDGERNAME>Round Off</LEDGERNAME>");
+                        xml.AppendLine("        <ISDEEMEDPOSITIVE>No</ISDEEMEDPOSITIVE>");
+                        xml.AppendLine($"        <AMOUNT>{roundOff:0.00}</AMOUNT>");
+                        xml.AppendLine("      </LEDGERENTRIES.LIST>");
+                    }
+
+                    xml.AppendLine("          </VOUCHER>");
+                    xml.AppendLine("        </TALLYMESSAGE>");
+                    xml.AppendLine("      </REQUESTDATA>");
+                    xml.AppendLine("    </IMPORTDATA>");
+                    xml.AppendLine("  </BODY>");
+                    xml.AppendLine("</ENVELOPE>");
+
+                    return xml.ToString();
+                }
+
+                if (master.com_id == 2 & master.sm_istaxable == false)
+                {
+                    xml.AppendLine("<ENVELOPE>");
+                    xml.AppendLine("  <HEADER><TALLYREQUEST>Import Data</TALLYREQUEST></HEADER>");
+                    xml.AppendLine("  <BODY>");
+                    xml.AppendLine("    <IMPORTDATA>");
+                    xml.AppendLine("      <REQUESTDESC>");
+                    xml.AppendLine("        <REPORTNAME>Vouchers</REPORTNAME>");
+                    xml.AppendLine("        <STATICVARIABLES>");
+                    xml.AppendLine($"          <SVCURRENTCOMPANY>{companyName}</SVCURRENTCOMPANY>");
+                    xml.AppendLine("        </STATICVARIABLES>");
+                    xml.AppendLine("      </REQUESTDESC>");
+                    xml.AppendLine("      <REQUESTDATA>");
+                    xml.AppendLine("        <TALLYMESSAGE xmlns:UDF=\"TallyUDF\">");
+                    xml.AppendLine($"          <VOUCHER REMOTEID=\"{guid}\" VCHTYPE=\"GST SALES N\" ACTION=\"{action}\" GUID=\"{guid}\" OBJVIEW=\"Invoice Voucher View\">");
+
+                    xml.AppendLine($"            <DATE>{date}</DATE>");
+                    xml.AppendLine($"            <GUID>{guid}</GUID>");
+                    xml.AppendLine($"            <VOUCHERNUMBER>{voucherNumber}</VOUCHERNUMBER>");
+                    xml.AppendLine($"            <ISMANUALVCHNO>No</ISMANUALVCHNO>");
+                    xml.AppendLine($"            <AUTONUMBERING>Yes</AUTONUMBERING>");
+                    xml.AppendLine($"            <PARTYLEDGERNAME>{partyLedger}</PARTYLEDGERNAME>");
+                    xml.AppendLine("            <VOUCHERTYPENAME>GST SALES N</VOUCHERTYPENAME>");
+                    xml.AppendLine("            <CLASSNAME>SALES</CLASSNAME>");
+                    xml.AppendLine($"            <BASICBUYERNAME>{partyLedger}</BASICBUYERNAME>");
+                    xml.AppendLine($"            <BASICBASEPARTYNAME>{partyLedger}</BASICBASEPARTYNAME>");
+                    xml.AppendLine($"            <PARTYGSTIN>{partyGSTIN}</PARTYGSTIN>");
+                    xml.AppendLine($"            <PLACEOFSUPPLY>{state}</PLACEOFSUPPLY>");
+                    xml.AppendLine($"            <STATENAME>{state}</STATENAME>");
+                    xml.AppendLine("            <COUNTRYOFRESIDENCE>India</COUNTRYOFRESIDENCE>");
+                    xml.AppendLine($"           <GSTREGISTRATIONTYPE>{RegistrationType}</GSTREGISTRATIONTYPE>");
+                    // Buyer (Bill To) Address
+                    xml.AppendLine("            <BASICBUYERADDRESS.LIST TYPE=\"String\">");
+                    xml.AppendLine($"              <BASICBUYERADDRESS>{partyAddressLine1}</BASICBUYERADDRESS>");
+                    xml.AppendLine($"              <BASICBUYERADDRESS>{partyAddressLine2}</BASICBUYERADDRESS>");
+                    xml.AppendLine($"              <BASICBUYERADDRESS>{partyAddressLine3}</BASICBUYERADDRESS>");
+                    xml.AppendLine("            </BASICBUYERADDRESS.LIST>");
+
+                    // Consignee (Ship To) Address
+                    xml.AppendLine("            <BASICSHIPADDRESS.LIST TYPE=\"String\">");
+                    xml.AppendLine($"              <BASICSHIPADDRESS>{partyAddressLine1}</BASICSHIPADDRESS>");
+                    xml.AppendLine($"              <BASICSHIPADDRESS>{partyAddressLine2}</BASICSHIPADDRESS>");
+                    xml.AppendLine($"              <BASICSHIPADDRESS>{partyAddressLine3}</BASICSHIPADDRESS>");
+                    xml.AppendLine("            </BASICSHIPADDRESS.LIST>");
+                    xml.AppendLine("            <ISINVOICE>Yes</ISINVOICE>");
+                    xml.AppendLine("            <PERSISTEDVIEW>Invoice Voucher View</PERSISTEDVIEW>");
+
+                    // Ledger Entry (Customer) - Cr
+                    xml.AppendLine("            <LEDGERENTRIES.LIST>");
+                    xml.AppendLine($"              <LEDGERNAME>{partyLedger}</LEDGERNAME>");
+                    xml.AppendLine("              <ISDEEMEDPOSITIVE>Yes</ISDEEMEDPOSITIVE>");
+                    xml.AppendLine("              <ISPARTYLEDGER>Yes</ISPARTYLEDGER>");
+                    xml.AppendLine($"              <AMOUNT>-{master.sm_netamount:0.00}</AMOUNT>");
+                    xml.AppendLine("            </LEDGERENTRIES.LIST>");
+
+                    // Item-wise Inventory Entries
+                    foreach (var item in details.Where(d => d.sd_qty > 0))
+                    {
+                        string itemName = $"{item.cat_name} {item.item_quantity}{item.item_unit} Bags";
+                        string qtyStr = $"{item.sd_qty} {item.sd_unit}";
+                        string rateStr = $"{item.sd_rate:0.00}/{item.sd_unit}";
+                        decimal totalAmount = item.sd_qty * item.sd_rate;
+
+                        xml.AppendLine("            <ALLINVENTORYENTRIES.LIST>");
+                        xml.AppendLine($"              <STOCKITEMNAME>{item.item_fullname}</STOCKITEMNAME>");
+                        xml.AppendLine($"              <HSNCODE>{item.item_hsncode}</HSNCODE>");
+                        xml.AppendLine("              <ISDEEMEDPOSITIVE>No</ISDEEMEDPOSITIVE>");
+                        xml.AppendLine($"              <RATE>{item.sd_rate:0.00}/Bag</RATE>");
+                        xml.AppendLine($"              <ACTUALQTY>{item.sd_qty} Bag</ACTUALQTY>");
+                        xml.AppendLine($"              <BILLEDQTY>{item.sd_qty} Bag</BILLEDQTY>");
+                        xml.AppendLine($"              <AMOUNT>{totalAmount:0.00}</AMOUNT>");
+                        xml.AppendLine("              <ISSUPPORTQTY>No</ISSUPPORTQTY>");
+                        xml.AppendLine("              <BATCHALLOCATIONS.LIST>");
+                        xml.AppendLine("                <GODOWNNAME>Main Location</GODOWNNAME>");
+                        xml.AppendLine("                <BATCHNAME>Primary Batch</BATCHNAME>");
+                        xml.AppendLine("                <DESTINATIONGODOWN>Main Location</DESTINATIONGODOWN>");
+                        xml.AppendLine($"                <AMOUNT>{totalAmount:0.00}</AMOUNT>");
+                        xml.AppendLine($"                <ACTUALQTY>{item.sd_qty} Bag</ACTUALQTY>");
+                        xml.AppendLine($"                <BILLEDQTY>{item.sd_qty} Bag</BILLEDQTY>");
+                        xml.AppendLine($"                <RATE>{item.sd_rate:0.00}/Bag</RATE>");
+                        xml.AppendLine("              </BATCHALLOCATIONS.LIST>");
+                        xml.AppendLine("              <GSTDETAILS.LIST>");
+                        xml.AppendLine("              <HSNCODE>" + item.item_hsncode + "</HSNCODE>");
+                        xml.AppendLine("              <TAXABILITY>Exempt</TAXABILITY>"); // Change to "Taxable" if needed
+                        xml.AppendLine("              </GSTDETAILS.LIST>");
+                        xml.AppendLine("              <ACCOUNTINGALLOCATIONS.LIST>");
+                        xml.AppendLine($"                <LEDGERNAME>{salesLedger}</LEDGERNAME>");
+                        xml.AppendLine("                <ISDEEMEDPOSITIVE>No</ISDEEMEDPOSITIVE>");
+                        xml.AppendLine($"                <AMOUNT>{totalAmount:0.00}</AMOUNT>");
+                        xml.AppendLine("              </ACCOUNTINGALLOCATIONS.LIST>");
+                        xml.AppendLine("            </ALLINVENTORYENTRIES.LIST>");
+
+                    }
+
+                    decimal itemTotal = details.Sum(i => Math.Round((i.item_fullname == "CHILLIES IN KGS" ? i.sd_unitvalue * i.sd_rate : i.sd_qty * i.sd_rate), 2));
+                    decimal roundOff = Math.Round((itemTotal + gstAmount), 0, MidpointRounding.AwayFromZero) - (itemTotal + gstAmount);
+                    if (roundOff != 0)
+                    {
+                        xml.AppendLine("      <LEDGERENTRIES.LIST>");
+                        xml.AppendLine("        <LEDGERNAME>Round Off</LEDGERNAME>");
+                        xml.AppendLine("        <ISDEEMEDPOSITIVE>No</ISDEEMEDPOSITIVE>");
+                        xml.AppendLine($"        <AMOUNT>{roundOff:0.00}</AMOUNT>");
+                        xml.AppendLine("      </LEDGERENTRIES.LIST>");
+                    }
+
+                    xml.AppendLine("          </VOUCHER>");
+                    xml.AppendLine("        </TALLYMESSAGE>");
+                    xml.AppendLine("      </REQUESTDATA>");
+                    xml.AppendLine("    </IMPORTDATA>");
+                    xml.AppendLine("  </BODY>");
+                    xml.AppendLine("</ENVELOPE>");
+
+                    return xml.ToString();
+                }
+
+                if (master.com_id == 2 & master.sm_istaxable == true)
+                {
+                    xml.AppendLine("<ENVELOPE>");
+                    xml.AppendLine("  <HEADER><TALLYREQUEST>Import Data</TALLYREQUEST></HEADER>");
+                    xml.AppendLine("  <BODY>");
+                    xml.AppendLine("    <IMPORTDATA>");
+                    xml.AppendLine("      <REQUESTDESC>");
+                    xml.AppendLine("        <REPORTNAME>Vouchers</REPORTNAME>");
+                    xml.AppendLine("        <STATICVARIABLES>");
+                    xml.AppendLine($"          <SVCURRENTCOMPANY>{companyName}</SVCURRENTCOMPANY>");
+                    xml.AppendLine("        </STATICVARIABLES>");
+                    xml.AppendLine("      </REQUESTDESC>");
+                    xml.AppendLine("      <REQUESTDATA>");
+                    xml.AppendLine("        <TALLYMESSAGE xmlns:UDF=\"TallyUDF\">");
+                    xml.AppendLine($"          <VOUCHER REMOTEID=\"{guid}\" VCHTYPE=\"TAXABLE SALES (GST)\" ACTION=\"{action}\" GUID=\"{guid}\" OBJVIEW=\"Invoice Voucher View\">");
+
+                    xml.AppendLine($"            <DATE>{date}</DATE>");
+                    xml.AppendLine($"            <GUID>{guid}</GUID>");
+                    xml.AppendLine($"            <VOUCHERNUMBER>{voucherNumber}</VOUCHERNUMBER>");
+                    xml.AppendLine($"            <PARTYLEDGERNAME>{partyLedger}</PARTYLEDGERNAME>");
+                    xml.AppendLine("            <VOUCHERTYPENAME>TAXABLE SALES (GST)</VOUCHERTYPENAME>");
+                    xml.AppendLine("            <CLASSNAME>Taxable Sales Gst</CLASSNAME>");
+                    xml.AppendLine($"            <BASICBUYERNAME>{partyLedger}</BASICBUYERNAME>");
+                    xml.AppendLine($"            <BASICBASEPARTYNAME>{partyLedger}</BASICBASEPARTYNAME>");
+                    xml.AppendLine($"            <PARTYGSTIN>{partyGSTIN}</PARTYGSTIN>");
+                    xml.AppendLine($"            <PLACEOFSUPPLY>{state}</PLACEOFSUPPLY>");
+                    xml.AppendLine($"            <STATENAME>{state}</STATENAME>");
+                    xml.AppendLine("            <COUNTRYOFRESIDENCE>India</COUNTRYOFRESIDENCE>");
+                    xml.AppendLine($"            <GSTREGISTRATIONTYPE>{RegistrationType}</GSTREGISTRATIONTYPE>");
+                    // Buyer (Bill To) Address
+                    xml.AppendLine("            <BASICBUYERADDRESS.LIST TYPE=\"String\">");
+                    xml.AppendLine($"              <BASICBUYERADDRESS>{partyAddressLine1}</BASICBUYERADDRESS>");
+                    xml.AppendLine($"              <BASICBUYERADDRESS>{partyAddressLine2}</BASICBUYERADDRESS>");
+                    xml.AppendLine($"              <BASICBUYERADDRESS>{partyAddressLine3}</BASICBUYERADDRESS>");
+                    xml.AppendLine("            </BASICBUYERADDRESS.LIST>");
+
+                    // Consignee (Ship To) Address
+                    xml.AppendLine("            <BASICSHIPADDRESS.LIST TYPE=\"String\">");
+                    xml.AppendLine($"              <BASICSHIPADDRESS>{partyAddressLine1}</BASICSHIPADDRESS>");
+                    xml.AppendLine($"              <BASICSHIPADDRESS>{partyAddressLine2}</BASICSHIPADDRESS>");
+                    xml.AppendLine($"              <BASICSHIPADDRESS>{partyAddressLine3}</BASICSHIPADDRESS>");
+                    xml.AppendLine("            </BASICSHIPADDRESS.LIST>");
+                    xml.AppendLine("            <ISINVOICE>Yes</ISINVOICE>");
+                    xml.AppendLine("            <PERSISTEDVIEW>Invoice Voucher View</PERSISTEDVIEW>");
+
+                    xml.AppendLine("            <UDF:ISEINVAPPLICABLE.LIST TYPE=\"Logical\">");
+                    xml.AppendLine("                <UDF:ISEINVAPPLICABLE>Yes</UDF:ISEINVAPPLICABLE>");
+                    xml.AppendLine("            </UDF:ISEINVAPPLICABLE.LIST>");
+                    // Ledger Entry (Customer) - Cr
+                    xml.AppendLine("            <LEDGERENTRIES.LIST>");
+                    xml.AppendLine($"              <LEDGERNAME>{partyLedger}</LEDGERNAME>");
+                    xml.AppendLine("              <ISDEEMEDPOSITIVE>Yes</ISDEEMEDPOSITIVE>");
+                    xml.AppendLine("              <ISPARTYLEDGER>Yes</ISPARTYLEDGER>");
+                    xml.AppendLine($"              <AMOUNT>-{master.sm_netamount:0.00}</AMOUNT>");
+                    xml.AppendLine("            </LEDGERENTRIES.LIST>");
+
+                    if (state == "Tamil Nadu")
+                    {
+
+                        // CGST Ledger Entry
+                        xml.AppendLine("      <LEDGERENTRIES.LIST>");
+                        xml.AppendLine($"        <LEDGERNAME>{cgstLedger}</LEDGERNAME>");
+                        xml.AppendLine("        <ISDEEMEDPOSITIVE>No</ISDEEMEDPOSITIVE>");
+                        xml.AppendLine($"        <AMOUNT>{gstAmount / 2:0.00}</AMOUNT>");
+                        xml.AppendLine("      </LEDGERENTRIES.LIST>");
+
+                        // SGST Ledger Entry
+                        xml.AppendLine("      <LEDGERENTRIES.LIST>");
+                        xml.AppendLine($"        <LEDGERNAME>{sgstLedger}</LEDGERNAME>");
+                        xml.AppendLine("        <ISDEEMEDPOSITIVE>No</ISDEEMEDPOSITIVE>");
+                        xml.AppendLine($"        <AMOUNT>{gstAmount / 2:0.00}</AMOUNT>");
+                        xml.AppendLine("      </LEDGERENTRIES.LIST>");
+
+                    }
+                    else
+                    {
+
+                        xml.AppendLine("      <LEDGERENTRIES.LIST>");
+                        xml.AppendLine($"        <LEDGERNAME>{igstLedger}</LEDGERNAME>");
+                        xml.AppendLine("        <ISDEEMEDPOSITIVE>No</ISDEEMEDPOSITIVE>");
+                        xml.AppendLine($"        <AMOUNT>{gstAmount:0.00}</AMOUNT>");
+                        xml.AppendLine("      </LEDGERENTRIES.LIST>");
+
+                    }
+
+                    // Item-wise Inventory Entries
+                    foreach (var item in details.Where(d => d.sd_qty > 0))
+                    {
+                        string itemName = $"{item.cat_name} {item.item_quantity}{item.item_unit} Bags";
+                        string qtyStr = $"{item.sd_qty} {item.sd_unit}";
+                        string rateStr = $"{item.sd_rate:0.00}/{item.sd_unit}";
+                        decimal totalAmount = item.sd_qty * item.sd_rate;
+
+                        xml.AppendLine("            <ALLINVENTORYENTRIES.LIST>");
+                        xml.AppendLine($"              <STOCKITEMNAME>{item.item_fullname}</STOCKITEMNAME>");
+                        xml.AppendLine($"              <HSNCODE>{item.item_hsncode}</HSNCODE>");
+                        xml.AppendLine("              <ISDEEMEDPOSITIVE>No</ISDEEMEDPOSITIVE>");
+                        xml.AppendLine($"              <RATE>{item.sd_rate:0.00}/Bag</RATE>");
+                        xml.AppendLine($"              <ACTUALQTY>{item.sd_qty} Bag</ACTUALQTY>");
+                        xml.AppendLine($"              <BILLEDQTY>{item.sd_qty} Bag</BILLEDQTY>");
+                        xml.AppendLine($"              <AMOUNT>{totalAmount:0.00}</AMOUNT>");
+                        xml.AppendLine("              <ISSUPPORTQTY>No</ISSUPPORTQTY>");
+                        xml.AppendLine("              <BATCHALLOCATIONS.LIST>");
+                        xml.AppendLine("                <GODOWNNAME>Main Location</GODOWNNAME>");
+                        xml.AppendLine("                <BATCHNAME>Primary Batch</BATCHNAME>");
+                        xml.AppendLine("                <DESTINATIONGODOWN>Main Location</DESTINATIONGODOWN>");
+                        xml.AppendLine($"                <AMOUNT>{totalAmount:0.00}</AMOUNT>");
+                        xml.AppendLine($"                <ACTUALQTY>{item.sd_qty} Bag</ACTUALQTY>");
+                        xml.AppendLine($"                <BILLEDQTY>{item.sd_qty} Bag</BILLEDQTY>");
+                        xml.AppendLine($"                <RATE>{item.sd_rate:0.00}/Bag</RATE>");
+                        xml.AppendLine("              </BATCHALLOCATIONS.LIST>");
+                        xml.AppendLine("              <GSTDETAILS.LIST>");
+                        xml.AppendLine("              <HSNCODE>" + item.item_hsncode + "</HSNCODE>");
+                        xml.AppendLine("              <TAXABILITY>Taxable</TAXABILITY>"); // Change to "Taxable" if needed
+                        xml.AppendLine("              <ISREVERSECHARGEAPPLICABLE>No</ISREVERSECHARGEAPPLICABLE>");
+                        xml.AppendLine("              <ISNONGSTGOODS>No</ISNONGSTGOODS>");
+                        xml.AppendLine("              <GSTINELIGIBLEITC>No</GSTINELIGIBLEITC>");
+                        xml.AppendLine("              <ISGSTINVOICE>Yes</ISGSTINVOICE>");
+                        xml.AppendLine("              </GSTDETAILS.LIST>");
+                        xml.AppendLine("              <ACCOUNTINGALLOCATIONS.LIST>");
+                        xml.AppendLine($"                <LEDGERNAME>{salesLedger}</LEDGERNAME>");
+                        xml.AppendLine("                <ISDEEMEDPOSITIVE>No</ISDEEMEDPOSITIVE>");
+                        xml.AppendLine($"                <AMOUNT>{totalAmount:0.00}</AMOUNT>");
+                        xml.AppendLine("              </ACCOUNTINGALLOCATIONS.LIST>");
+                        xml.AppendLine("            </ALLINVENTORYENTRIES.LIST>");
+
+                    }
+
+                    decimal itemTotal = details.Sum(i => Math.Round((i.item_fullname == "CHILLIES IN KGS" ? i.sd_unitvalue * i.sd_rate : i.sd_qty * i.sd_rate), 2));
+                    decimal roundOff = Math.Round((itemTotal + gstAmount), 0, MidpointRounding.AwayFromZero) - (itemTotal + gstAmount);
+                    if (roundOff != 0)
+                    {
+                        xml.AppendLine("      <LEDGERENTRIES.LIST>");
+                        xml.AppendLine("        <LEDGERNAME>Round Off</LEDGERNAME>");
+                        xml.AppendLine("        <ISDEEMEDPOSITIVE>No</ISDEEMEDPOSITIVE>");
+                        xml.AppendLine($"        <AMOUNT>{roundOff:0.00}</AMOUNT>");
+                        xml.AppendLine("      </LEDGERENTRIES.LIST>");
+                    }
+
+                    xml.AppendLine("          </VOUCHER>");
+                    xml.AppendLine("        </TALLYMESSAGE>");
+                    xml.AppendLine("      </REQUESTDATA>");
+                    xml.AppendLine("    </IMPORTDATA>");
+                    xml.AppendLine("  </BODY>");
+                    xml.AppendLine("</ENVELOPE>");
+
+                    return xml.ToString();
+                }
+
+                return string.Empty;
+            }
+
+            public static bool SendToTally(string xmlPayload, int smid)
+            {
+                try
+                {
+                    HttpWebRequest request = (HttpWebRequest)WebRequest.Create("http://localhost:9000");
+                    byte[] bytes = Encoding.UTF8.GetBytes(xmlPayload);
+
+                    request.Method = "POST";
+                    request.ContentType = "application/xml";
+                    request.ContentLength = bytes.Length;
+
+                    using (Stream stream = request.GetRequestStream())
+                    {
+                        stream.Write(bytes, 0, bytes.Length);
+                    }
+
+                    using (WebResponse response = request.GetResponse())
+                    using (StreamReader reader = new StreamReader(response.GetResponseStream()))
+                    {
+                        string result = reader.ReadToEnd();
+
+                        if (result.Contains("<CREATED>1</CREATED>") || result.Contains("<ALTERED>1</ALTERED>"))
+                        {
+                            using (InventoryDataContext inventoryDataContext = new InventoryDataContext())
+                            {
+                                var salesmaster = inventoryDataContext.salesmasters.FirstOrDefault(x => x.sm_id == smid);
+                                if (salesmaster != null)
+                                {
+                                    inventoryDataContext.usp_salesmasterUpdate(
+                                        salesmaster.sm_id, salesmaster.sm_bookno, salesmaster.sm_refno, salesmaster.sm_date,
+                                        salesmaster.led_id, salesmaster.sm_totqty, salesmaster.sm_totamount, salesmaster.sm_itemcount,
+                                        salesmaster.sm_profit, salesmaster.sm_disamount, salesmaster.sm_taxamount,
+                                        salesmaster.sm_taxpercentage, salesmaster.sm_packingcharge, salesmaster.sm_netamount,
+                                        salesmaster.sm_received, salesmaster.sm_paidcommission, salesmaster.sm_paidpacking,
+                                        salesmaster.sm_roundamount, salesmaster.sm_iscommissionclose, salesmaster.sm_ispackingclose,
+                                        global.ucode, global.sysdate, salesmaster.sm_desc, salesmaster.sm_isclose,
+                                        salesmaster.sm_isdraft, salesmaster.so_id, salesmaster.com_id,
+                                        salesmaster.sm_istaxable, true, salesmaster.sm_guid
+                                    );
+                                }
+                            }
+                        }
+
+                        MessageBox.Show("Tally Response:\n" + result,
+                            "Tally Reply", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        return result.Contains("<LINEERROR>") == false;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Error sending to Tally: " + ex.Message,
+                        "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return false;
+                }
+            }
+
+            public static string SendToTallySilent(string xmlPayload)
+            {
+                try
+                {
+                    HttpWebRequest request = (HttpWebRequest)WebRequest.Create("http://localhost:9000");
+                    byte[] bytes = Encoding.UTF8.GetBytes(xmlPayload);
+
+                    request.Method = "POST";
+                    request.ContentType = "application/xml";
+                    request.ContentLength = bytes.Length;
+
+                    using (Stream stream = request.GetRequestStream())
+                    {
+                        stream.Write(bytes, 0, bytes.Length);
+                    }
+
+                    using (WebResponse response = request.GetResponse())
+                    using (StreamReader reader = new StreamReader(response.GetResponseStream()))
+                    {
+                        return reader.ReadToEnd(); // just return response
+                    }
+                }
+                catch (Exception ex)
+                {
+                    return "ERROR: " + ex.Message;
+                }
+            }
+        }
+
+        private void ImportSalesToTally(int smid)
+        {
+            using (var db = new InventoryDataContext())
+            {
+                var salesMaster = db.usp_salesmasterSelect(smid, null, null, null, null, null, null).Where(x => x.sm_isdraft == true).FirstOrDefault();
+                var salesDetails = db.usp_salesdetailsSelect(smid, null, null, null, null, null, null).ToList();
+                if (salesMaster == null)
+                {
+                    MessageBox.Show("Sales record not found! (or) Record not convert to invoice", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+                string tallyXml = TallyHelper.BuildSalesVoucherXml(salesMaster, salesDetails);
+                //string xmlPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "tally_test.xml"); 
+                //File.WriteAllText(xmlPath, tallyXml); 
+                //Process.Start("notepad.exe", xmlPath); 
+
+               bool success = TallyHelper.SendToTally(tallyXml, (int)salesMaster.sm_id);
+
+                MessageBox.Show(success ? "Imported to Tally successfully!" : "Failed to import to Tally.", "Status", MessageBoxButtons.OK, success ? MessageBoxIcon.Information : MessageBoxIcon.Error);
+                ClearData();
+                LoadData();
+            }
+        }
+
+
+        private void ImportTodaysSalesToTally(object sender, EventArgs e)
+        {
+            using (var db = new InventoryDataContext())
+            {
+                DateTime Date = importDate.Value.Date;
+
+                var salesMasters = db.usp_salesmasterSelect(
+                    null, null, Date, Date, null, null, null
+                ).Where(x => x.sm_isdraft == true).ToList();
+
+                if (salesMasters == null || salesMasters.Count == 0)
+                {
+                    MessageBox.Show("No sales records found for today!",
+                        "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+
+                DialogResult result = MessageBox.Show($"Are you sure to Import Sales on {importDate.Value:dd-MM-yyyy} to Tally?", "Confirm", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                if (result != DialogResult.Yes)
+                {
+                    return; // User cancelled
+                }
+
+                int created = 0, altered = 0, failed = 0;
+                List<string> errorMessages = new List<string>();
+
+                foreach (var master in salesMasters)
+                {
+                    var salesDetails = db.usp_salesdetailsSelect(
+                        master.sm_id, null, null, null, null, null, null
+                    ).ToList();
+
+                    if (salesDetails.Count == 0)
+                        continue;
+
+                    string tallyXml = TallyHelper.BuildSalesVoucherXml(master, salesDetails);
+                    string response = TallyHelper.SendToTallySilent(tallyXml);
+
+                    if (response.StartsWith("ERROR:"))
+                    {
+                        failed++;
+                        errorMessages.Add(response);
+                    }
+                    else if (response.Contains("<CREATED>1</CREATED>"))
+                    {
+                        created++;
+                        var salesmaster = db.salesmasters.FirstOrDefault(x => x.sm_id == master.sm_id);
+                        if (salesmaster != null)
+                        {
+                            db.usp_salesmasterUpdate(
+                                salesmaster.sm_id, salesmaster.sm_bookno, salesmaster.sm_refno, salesmaster.sm_date,
+                                salesmaster.led_id, salesmaster.sm_totqty, salesmaster.sm_totamount, salesmaster.sm_itemcount,
+                                salesmaster.sm_profit, salesmaster.sm_disamount, salesmaster.sm_taxamount,
+                                salesmaster.sm_taxpercentage, salesmaster.sm_packingcharge, salesmaster.sm_netamount,
+                                salesmaster.sm_received, salesmaster.sm_paidcommission, salesmaster.sm_paidpacking,
+                                salesmaster.sm_roundamount, salesmaster.sm_iscommissionclose, salesmaster.sm_ispackingclose,
+                                global.ucode, global.sysdate, salesmaster.sm_desc, salesmaster.sm_isclose,
+                                salesmaster.sm_isdraft, salesmaster.so_id, salesmaster.com_id,
+                                salesmaster.sm_istaxable, true, salesmaster.sm_guid
+                            );
+                        }
+                    }
+                    else if (response.Contains("<ALTERED>1</ALTERED>"))
+                    {
+                        altered++;
+                        var salesmaster = db.salesmasters.FirstOrDefault(x => x.sm_id == master.sm_id);
+                        if (salesmaster != null)
+                        {
+                            db.usp_salesmasterUpdate(
+                                salesmaster.sm_id, salesmaster.sm_bookno, salesmaster.sm_refno, salesmaster.sm_date,
+                                salesmaster.led_id, salesmaster.sm_totqty, salesmaster.sm_totamount, salesmaster.sm_itemcount,
+                                salesmaster.sm_profit, salesmaster.sm_disamount, salesmaster.sm_taxamount,
+                                salesmaster.sm_taxpercentage, salesmaster.sm_packingcharge, salesmaster.sm_netamount,
+                                salesmaster.sm_received, salesmaster.sm_paidcommission, salesmaster.sm_paidpacking,
+                                salesmaster.sm_roundamount, salesmaster.sm_iscommissionclose, salesmaster.sm_ispackingclose,
+                                global.ucode, global.sysdate, salesmaster.sm_desc, salesmaster.sm_isclose,
+                                salesmaster.sm_isdraft, salesmaster.so_id, salesmaster.com_id,
+                                salesmaster.sm_istaxable, true, salesmaster.sm_guid
+                            );
+                        }
+                    }
+                    else if (response.Contains("<LINEERROR>"))
+                    {
+                        failed++;
+                        errorMessages.Add(response);
+                    }
+                }
+
+                string summary = $"Today's Sales Import Completed!\n\n" +
+                                 $"Created: {created}\n" +
+                                 $"Altered: {altered}\n" +
+                                 $"Failed: {failed}";
+
+                if (errorMessages.Count > 0)
+                {
+                    summary += "\n\nErrors:\n" + string.Join("\n", errorMessages.Take(3)); // show first 3 errors
+                }
+
+                MessageBox.Show(summary, "Tally Import Status",
+                    MessageBoxButtons.OK, failed > 0 ? MessageBoxIcon.Warning : MessageBoxIcon.Information);
+                ClearData();
+                LoadData();
+            }
+        }
+
+
 
         private void txtothers_TextChanged(object sender, EventArgs e)
         {
@@ -2500,6 +3392,14 @@ namespace standard.trans
             this.components = new System.ComponentModel.Container();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle10 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle7 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle8 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle9 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle11 = new System.Windows.Forms.DataGridViewCellStyle();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmSales));
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle12 = new System.Windows.Forms.DataGridViewCellStyle();
@@ -2509,14 +3409,6 @@ namespace standard.trans
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle16 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle17 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle18 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle7 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle8 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle9 = new System.Windows.Forms.DataGridViewCellStyle();
             this.tablemain = new System.Windows.Forms.TableLayoutPanel();
             this.tableentry = new System.Windows.Forms.TableLayoutPanel();
             this.lblopno = new System.Windows.Forms.Label();
@@ -2567,55 +3459,6 @@ namespace standard.trans
             this.txtProfit = new mylib.decimalbox(this.components);
             this.pnlentry = new System.Windows.Forms.Panel();
             this.dgvSales = new mylib.mygrid();
-            this.pnlview = new System.Windows.Forms.Panel();
-            this.tableview = new System.Windows.Forms.TableLayoutPanel();
-            this.lblsubtitle = new System.Windows.Forms.Label();
-            this.dglist = new mylib.mygrid();
-            this.ldelete = new System.Windows.Forms.DataGridViewImageColumn();
-            this.ledit = new System.Windows.Forms.DataGridViewImageColumn();
-            this.lprint = new System.Windows.Forms.DataGridViewImageColumn();
-            this.lEstimateprint = new System.Windows.Forms.DataGridViewImageColumn();
-            this.isDraft = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.ldc = new System.Windows.Forms.DataGridViewImageColumn();
-            this.smidDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.smbooknoDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.smrefnoDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.smdateDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.lednameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.companyDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.smtotqtyDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.isTaxableDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.smnetamountDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.smdisamountDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.smpackingchargeDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.ledidDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.smitemcountDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.usersuidDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.usersnameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.smudateDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.smdescDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.uspsalesmasterSelectResultBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
-            this.dtptdate = new System.Windows.Forms.DateTimePicker();
-            this.cboCustomerView = new System.Windows.Forms.ComboBox();
-            this.ledgermasterViewBindingSource1 = new System.Windows.Forms.BindingSource(this.components);
-            this.lblfdate = new System.Windows.Forms.Label();
-            this.dtpfdate = new System.Windows.Forms.DateTimePicker();
-            this.lblhyp = new System.Windows.Forms.Label();
-            this.cmdList = new mylib.lightbutton();
-            this.cmdexit = new mylib.lightbutton();
-            this.label6 = new System.Windows.Forms.Label();
-            this.lblCompany = new System.Windows.Forms.Label();
-            this.cboCompany = new System.Windows.Forms.ComboBox();
-            this.companyViewBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.lblBillNo = new System.Windows.Forms.Label();
-            this.txtSearchBillNo = new System.Windows.Forms.TextBox();
-            this.ledgermasterViewBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.cboCityView = new System.Windows.Forms.ComboBox();
-            this.ledgermasteCityViewrBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.label5 = new System.Windows.Forms.Label();
-            this.smtotamountDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.smprofitDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.cSNo = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.cIsTaxable = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.cCategory = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -2639,6 +3482,60 @@ namespace standard.trans
             this.cItemID = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.cCostAmount = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.cOdUnitValue = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.pnlview = new System.Windows.Forms.Panel();
+            this.tableview = new System.Windows.Forms.TableLayoutPanel();
+            this.lblsubtitle = new System.Windows.Forms.Label();
+            this.dglist = new mylib.mygrid();
+            this.ldelete = new System.Windows.Forms.DataGridViewImageColumn();
+            this.ledit = new System.Windows.Forms.DataGridViewImageColumn();
+            this.lprint = new System.Windows.Forms.DataGridViewImageColumn();
+            this.lEstimateprint = new System.Windows.Forms.DataGridViewImageColumn();
+            this.isDraft = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.isImport = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.ldc = new System.Windows.Forms.DataGridViewImageColumn();
+            this.smidDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.smbooknoDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.smrefnoDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.smdateDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.lednameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.companyDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.smtotqtyDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.isTaxableDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.smnetamountDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.smdisamountDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.smpackingchargeDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.ledidDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.smitemcountDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.usersuidDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.usersnameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.smudateDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.lImport = new System.Windows.Forms.DataGridViewImageColumn();
+            this.smdescDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.uspsalesmasterSelectResultBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
+            this.dtptdate = new System.Windows.Forms.DateTimePicker();
+            this.cboCustomerView = new System.Windows.Forms.ComboBox();
+            this.ledgermasterViewBindingSource1 = new System.Windows.Forms.BindingSource(this.components);
+            this.lblfdate = new System.Windows.Forms.Label();
+            this.dtpfdate = new System.Windows.Forms.DateTimePicker();
+            this.importDate = new System.Windows.Forms.DateTimePicker();
+            this.lblhyp = new System.Windows.Forms.Label();
+            this.cmdList = new mylib.lightbutton();
+            this.cmdexit = new mylib.lightbutton();
+            this.importButton = new System.Windows.Forms.Button();
+            this.label6 = new System.Windows.Forms.Label();
+            this.lblCompany = new System.Windows.Forms.Label();
+            this.lblImportDate = new System.Windows.Forms.Label();
+            this.cboCompany = new System.Windows.Forms.ComboBox();
+            this.companyViewBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.lblBillNo = new System.Windows.Forms.Label();
+            this.txtSearchBillNo = new System.Windows.Forms.TextBox();
+            this.ledgermasterViewBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.cboCityView = new System.Windows.Forms.ComboBox();
+            this.ledgermasteCityViewrBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.label5 = new System.Windows.Forms.Label();
+            this.smtotamountDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.smprofitDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.tablemain.SuspendLayout();
             this.tableentry.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.ledgermasterCityBindingSource)).BeginInit();
@@ -2725,10 +3622,10 @@ namespace standard.trans
             this.lblopno.AutoSize = true;
             this.lblopno.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblopno.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.lblopno.Location = new System.Drawing.Point(5, 5);
+            this.lblopno.Location = new System.Drawing.Point(5, 11);
             this.lblopno.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.lblopno.Name = "lblopno";
-            this.lblopno.Size = new System.Drawing.Size(111, 35);
+            this.lblopno.Size = new System.Drawing.Size(74, 23);
             this.lblopno.TabIndex = 1;
             this.lblopno.Text = "Bill No";
             // 
@@ -2745,7 +3642,7 @@ namespace standard.trans
             this.txtopno.Name = "txtopno";
             this.txtopno.ReadOnly = true;
             this.txtopno.RightAlign = true;
-            this.txtopno.Size = new System.Drawing.Size(193, 42);
+            this.txtopno.Size = new System.Drawing.Size(193, 30);
             this.txtopno.TabIndex = 0;
             this.txtopno.TabStop = false;
             this.txtopno.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
@@ -2763,7 +3660,7 @@ namespace standard.trans
             this.chkIsFrieght.ForeColor = System.Drawing.Color.Red;
             this.chkIsFrieght.Location = new System.Drawing.Point(905, 48);
             this.chkIsFrieght.Name = "chkIsFrieght";
-            this.chkIsFrieght.Size = new System.Drawing.Size(456, 39);
+            this.chkIsFrieght.Size = new System.Drawing.Size(298, 29);
             this.chkIsFrieght.TabIndex = 11;
             this.chkIsFrieght.Text = "Frieght Charge Applicable";
             this.chkIsFrieght.UseVisualStyleBackColor = true;
@@ -2776,10 +3673,10 @@ namespace standard.trans
             this.tableentry.SetColumnSpan(this.lblAddress, 2);
             this.lblAddress.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold);
             this.lblAddress.ForeColor = System.Drawing.Color.Red;
-            this.lblAddress.Location = new System.Drawing.Point(5, 95);
+            this.lblAddress.Location = new System.Drawing.Point(5, 101);
             this.lblAddress.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.lblAddress.Name = "lblAddress";
-            this.lblAddress.Size = new System.Drawing.Size(24, 35);
+            this.lblAddress.Size = new System.Drawing.Size(16, 23);
             this.lblAddress.TabIndex = 10;
             this.lblAddress.Text = ".";
             this.lblAddress.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -2791,10 +3688,10 @@ namespace standard.trans
             this.tableentry.SetColumnSpan(this.lblRateType, 2);
             this.lblRateType.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold);
             this.lblRateType.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(192)))), ((int)(((byte)(0)))));
-            this.lblRateType.Location = new System.Drawing.Point(335, 95);
+            this.lblRateType.Location = new System.Drawing.Point(335, 101);
             this.lblRateType.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.lblRateType.Name = "lblRateType";
-            this.lblRateType.Size = new System.Drawing.Size(24, 35);
+            this.lblRateType.Size = new System.Drawing.Size(16, 23);
             this.lblRateType.TabIndex = 10;
             this.lblRateType.Text = ".";
             this.lblRateType.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -2812,7 +3709,7 @@ namespace standard.trans
             this.cboCity.Location = new System.Drawing.Point(745, 97);
             this.cboCity.Margin = new System.Windows.Forms.Padding(5, 7, 5, 7);
             this.cboCity.Name = "cboCity";
-            this.cboCity.Size = new System.Drawing.Size(236, 43);
+            this.cboCity.Size = new System.Drawing.Size(236, 31);
             this.cboCity.TabIndex = 2;
             this.cboCity.ValueMember = "led_id";
             this.cboCity.Visible = false;
@@ -2828,10 +3725,10 @@ namespace standard.trans
             this.lblfrom.AutoSize = true;
             this.lblfrom.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblfrom.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.lblfrom.Location = new System.Drawing.Point(335, 0);
+            this.lblfrom.Location = new System.Drawing.Point(335, 11);
             this.lblfrom.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.lblfrom.Name = "lblfrom";
-            this.lblfrom.Size = new System.Drawing.Size(143, 45);
+            this.lblfrom.Size = new System.Drawing.Size(102, 23);
             this.lblfrom.TabIndex = 10;
             this.lblfrom.Text = "Customer";
             // 
@@ -2847,7 +3744,7 @@ namespace standard.trans
             this.cboissueto.Location = new System.Drawing.Point(545, 7);
             this.cboissueto.Margin = new System.Windows.Forms.Padding(5, 7, 5, 7);
             this.cboissueto.Name = "cboissueto";
-            this.cboissueto.Size = new System.Drawing.Size(190, 43);
+            this.cboissueto.Size = new System.Drawing.Size(190, 31);
             this.cboissueto.TabIndex = 3;
             this.cboissueto.ValueMember = "led_id";
             this.cboissueto.SelectedValueChanged += new System.EventHandler(this.cbopurfrom_SelectedValueChanged);
@@ -2863,10 +3760,10 @@ namespace standard.trans
             this.lblCom.AutoSize = true;
             this.lblCom.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblCom.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.lblCom.Location = new System.Drawing.Point(745, 5);
+            this.lblCom.Location = new System.Drawing.Point(745, 11);
             this.lblCom.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.lblCom.Name = "lblCom";
-            this.lblCom.Size = new System.Drawing.Size(151, 35);
+            this.lblCom.Size = new System.Drawing.Size(99, 23);
             this.lblCom.TabIndex = 12;
             this.lblCom.Text = "Company";
             // 
@@ -2883,7 +3780,7 @@ namespace standard.trans
             this.cboCom.Location = new System.Drawing.Point(907, 7);
             this.cboCom.Margin = new System.Windows.Forms.Padding(5, 7, 5, 7);
             this.cboCom.Name = "cboCom";
-            this.cboCom.Size = new System.Drawing.Size(236, 43);
+            this.cboCom.Size = new System.Drawing.Size(236, 31);
             this.cboCom.TabIndex = 13;
             this.cboCom.ValueMember = "com_id";
             this.cboCom.SelectedValueChanged += new System.EventHandler(this.cboCom_SelectedValueChanged);
@@ -2899,10 +3796,10 @@ namespace standard.trans
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold);
             this.label2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.label2.Location = new System.Drawing.Point(545, 95);
+            this.label2.Location = new System.Drawing.Point(545, 101);
             this.label2.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(72, 35);
+            this.label2.Size = new System.Drawing.Size(48, 23);
             this.label2.TabIndex = 10;
             this.label2.Text = "City";
             this.label2.Visible = false;
@@ -2913,10 +3810,10 @@ namespace standard.trans
             this.lbldate.AutoSize = true;
             this.lbldate.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lbldate.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.lbldate.Location = new System.Drawing.Point(5, 45);
+            this.lbldate.Location = new System.Drawing.Point(5, 56);
             this.lbldate.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.lbldate.Name = "lbldate";
-            this.lbldate.Size = new System.Drawing.Size(83, 45);
+            this.lbldate.Size = new System.Drawing.Size(91, 23);
             this.lbldate.TabIndex = 2;
             this.lbldate.Text = "Bill Date";
             // 
@@ -2929,8 +3826,7 @@ namespace standard.trans
             this.dtpsaldate.Location = new System.Drawing.Point(132, 52);
             this.dtpsaldate.Margin = new System.Windows.Forms.Padding(5, 7, 5, 7);
             this.dtpsaldate.Name = "dtpsaldate";
-            this.dtpsaldate.Size = new System.Drawing.Size(190, 42);
-            this.dtpsaldate.MaxDate = DateTime.MaxValue;
+            this.dtpsaldate.Size = new System.Drawing.Size(190, 30);
             this.dtpsaldate.TabIndex = 1;
             this.dtpsaldate.KeyDown += new System.Windows.Forms.KeyEventHandler(this.dtpsaldate_KeyDown);
             // 
@@ -2940,10 +3836,10 @@ namespace standard.trans
             this.lbltitle.AutoSize = true;
             this.lbltitle.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lbltitle.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.lbltitle.Location = new System.Drawing.Point(776, 2);
+            this.lbltitle.Location = new System.Drawing.Point(794, 7);
             this.lbltitle.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.lbltitle.Name = "lbltitle";
-            this.lbltitle.Size = new System.Drawing.Size(106, 33);
+            this.lbltitle.Size = new System.Drawing.Size(70, 23);
             this.lbltitle.TabIndex = 3;
             this.lbltitle.Text = "SALES";
             // 
@@ -2976,10 +3872,10 @@ namespace standard.trans
             this.lblGSTIN.AutoSize = true;
             this.lblGSTIN.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold);
             this.lblGSTIN.ForeColor = System.Drawing.Color.Red;
-            this.lblGSTIN.Location = new System.Drawing.Point(5, 5);
+            this.lblGSTIN.Location = new System.Drawing.Point(5, 11);
             this.lblGSTIN.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.lblGSTIN.Name = "lblGSTIN";
-            this.lblGSTIN.Size = new System.Drawing.Size(24, 35);
+            this.lblGSTIN.Size = new System.Drawing.Size(16, 23);
             this.lblGSTIN.TabIndex = 11;
             this.lblGSTIN.Text = ".";
             // 
@@ -3091,10 +3987,10 @@ namespace standard.trans
             this.lbltotqty.AutoSize = true;
             this.lbltotqty.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lbltotqty.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.lbltotqty.Location = new System.Drawing.Point(5, 0);
+            this.lbltotqty.Location = new System.Drawing.Point(5, 10);
             this.lbltotqty.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.lbltotqty.Name = "lbltotqty";
-            this.lbltotqty.Size = new System.Drawing.Size(63, 43);
+            this.lbltotqty.Size = new System.Drawing.Size(59, 23);
             this.lbltotqty.TabIndex = 2;
             this.lbltotqty.Text = "Total";
             // 
@@ -3111,7 +4007,7 @@ namespace standard.trans
             this.txttotqty.Name = "txttotqty";
             this.txttotqty.ReadOnly = true;
             this.txttotqty.RightAlign = true;
-            this.txttotqty.Size = new System.Drawing.Size(100, 42);
+            this.txttotqty.Size = new System.Drawing.Size(100, 30);
             this.txttotqty.TabIndex = 5;
             this.txttotqty.TabStop = false;
             this.txttotqty.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
@@ -3127,10 +4023,10 @@ namespace standard.trans
             this.lblPacking.AutoSize = true;
             this.lblPacking.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblPacking.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.lblPacking.Location = new System.Drawing.Point(270, 0);
+            this.lblPacking.Location = new System.Drawing.Point(270, 10);
             this.lblPacking.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.lblPacking.Name = "lblPacking";
-            this.lblPacking.Size = new System.Drawing.Size(132, 43);
+            this.lblPacking.Size = new System.Drawing.Size(123, 23);
             this.lblPacking.TabIndex = 10;
             this.lblPacking.Text = "Discount %";
             // 
@@ -3147,7 +4043,7 @@ namespace standard.trans
             this.txtDisPer.Name = "txtDisPer";
             this.txtDisPer.ReadOnly = true;
             this.txtDisPer.RightAlign = true;
-            this.txtDisPer.Size = new System.Drawing.Size(100, 42);
+            this.txtDisPer.Size = new System.Drawing.Size(100, 30);
             this.txtDisPer.TabIndex = 1;
             this.txtDisPer.TabStop = false;
             this.txtDisPer.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
@@ -3165,10 +4061,10 @@ namespace standard.trans
             this.label3.AutoSize = true;
             this.label3.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.label3.Location = new System.Drawing.Point(5, 43);
+            this.label3.Location = new System.Drawing.Point(5, 53);
             this.label3.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(68, 43);
+            this.label3.Size = new System.Drawing.Size(74, 23);
             this.label3.TabIndex = 10;
             this.label3.Text = "Others";
             // 
@@ -3178,10 +4074,10 @@ namespace standard.trans
             this.lblTaxAmt.AutoSize = true;
             this.lblTaxAmt.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblTaxAmt.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.lblTaxAmt.Location = new System.Drawing.Point(600, 43);
+            this.lblTaxAmt.Location = new System.Drawing.Point(600, 53);
             this.lblTaxAmt.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.lblTaxAmt.Name = "lblTaxAmt";
-            this.lblTaxAmt.Size = new System.Drawing.Size(77, 43);
+            this.lblTaxAmt.Size = new System.Drawing.Size(89, 23);
             this.lblTaxAmt.TabIndex = 10;
             this.lblTaxAmt.Text = "Tax Amt";
             // 
@@ -3198,7 +4094,7 @@ namespace standard.trans
             this.txtTaxAmt.Name = "txtTaxAmt";
             this.txtTaxAmt.ReadOnly = true;
             this.txtTaxAmt.RightAlign = true;
-            this.txtTaxAmt.Size = new System.Drawing.Size(140, 42);
+            this.txtTaxAmt.Size = new System.Drawing.Size(140, 30);
             this.txtTaxAmt.TabIndex = 2;
             this.txtTaxAmt.TabStop = false;
             this.txtTaxAmt.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
@@ -3237,7 +4133,7 @@ namespace standard.trans
             this.txttotamt.Name = "txttotamt";
             this.txttotamt.ReadOnly = true;
             this.txttotamt.RightAlign = true;
-            this.txttotamt.Size = new System.Drawing.Size(18, 42);
+            this.txttotamt.Size = new System.Drawing.Size(18, 30);
             this.txttotamt.TabIndex = 6;
             this.txttotamt.TabStop = false;
             this.txttotamt.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
@@ -3260,7 +4156,7 @@ namespace standard.trans
             this.txtnetamt.Margin = new System.Windows.Forms.Padding(5, 7, 5, 7);
             this.txtnetamt.Name = "txtnetamt";
             this.txtnetamt.RightAlign = true;
-            this.txtnetamt.Size = new System.Drawing.Size(106, 42);
+            this.txtnetamt.Size = new System.Drawing.Size(106, 30);
             this.txtnetamt.TabIndex = 6;
             this.txtnetamt.TabStop = false;
             this.txtnetamt.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
@@ -3283,7 +4179,7 @@ namespace standard.trans
             this.txtDiscount.Margin = new System.Windows.Forms.Padding(5, 7, 5, 7);
             this.txtDiscount.Name = "txtDiscount";
             this.txtDiscount.RightAlign = true;
-            this.txtDiscount.Size = new System.Drawing.Size(100, 42);
+            this.txtDiscount.Size = new System.Drawing.Size(100, 30);
             this.txtDiscount.TabIndex = 2;
             this.txtDiscount.TabStop = false;
             this.txtDiscount.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
@@ -3301,10 +4197,10 @@ namespace standard.trans
             this.label7.AutoSize = true;
             this.label7.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label7.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.label7.Location = new System.Drawing.Point(270, 43);
+            this.label7.Location = new System.Drawing.Point(270, 53);
             this.label7.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(132, 43);
+            this.label7.Size = new System.Drawing.Size(139, 23);
             this.label7.TabIndex = 10;
             this.label7.Text = "Discount Amt";
             // 
@@ -3320,7 +4216,7 @@ namespace standard.trans
             this.txtothercharges.Margin = new System.Windows.Forms.Padding(5, 7, 5, 7);
             this.txtothercharges.Name = "txtothercharges";
             this.txtothercharges.RightAlign = true;
-            this.txtothercharges.Size = new System.Drawing.Size(100, 42);
+            this.txtothercharges.Size = new System.Drawing.Size(100, 30);
             this.txtothercharges.TabIndex = 2;
             this.txtothercharges.TabStop = false;
             this.txtothercharges.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
@@ -3338,10 +4234,10 @@ namespace standard.trans
             this.txtRoundOff.AutoSize = true;
             this.txtRoundOff.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold);
             this.txtRoundOff.ForeColor = System.Drawing.Color.Red;
-            this.txtRoundOff.Location = new System.Drawing.Point(1205, 47);
+            this.txtRoundOff.Location = new System.Drawing.Point(1205, 53);
             this.txtRoundOff.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.txtRoundOff.Name = "txtRoundOff";
-            this.txtRoundOff.Size = new System.Drawing.Size(24, 35);
+            this.txtRoundOff.Size = new System.Drawing.Size(16, 23);
             this.txtRoundOff.TabIndex = 12;
             this.txtRoundOff.Text = ".";
             this.txtRoundOff.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -3373,7 +4269,7 @@ namespace standard.trans
             this.txtTaxPer.Margin = new System.Windows.Forms.Padding(5, 7, 5, 7);
             this.txtTaxPer.Name = "txtTaxPer";
             this.txtTaxPer.RightAlign = true;
-            this.txtTaxPer.Size = new System.Drawing.Size(60, 42);
+            this.txtTaxPer.Size = new System.Drawing.Size(60, 30);
             this.txtTaxPer.TabIndex = 1;
             this.txtTaxPer.TabStop = false;
             this.txtTaxPer.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
@@ -3391,10 +4287,10 @@ namespace standard.trans
             this.lblFrieght.AutoSize = true;
             this.lblFrieght.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblFrieght.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.lblFrieght.Location = new System.Drawing.Point(600, 0);
+            this.lblFrieght.Location = new System.Drawing.Point(600, 10);
             this.lblFrieght.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.lblFrieght.Name = "lblFrieght";
-            this.lblFrieght.Size = new System.Drawing.Size(89, 43);
+            this.lblFrieght.Size = new System.Drawing.Size(78, 23);
             this.lblFrieght.TabIndex = 13;
             this.lblFrieght.Text = "Frieght";
             // 
@@ -3411,7 +4307,7 @@ namespace standard.trans
             this.txtFrieght.Name = "txtFrieght";
             this.txtFrieght.ReadOnly = true;
             this.txtFrieght.RightAlign = true;
-            this.txtFrieght.Size = new System.Drawing.Size(140, 42);
+            this.txtFrieght.Size = new System.Drawing.Size(140, 30);
             this.txtFrieght.TabIndex = 14;
             this.txtFrieght.TabStop = false;
             this.txtFrieght.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
@@ -3427,10 +4323,10 @@ namespace standard.trans
             this.lblnetamt.AutoSize = true;
             this.lblnetamt.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold);
             this.lblnetamt.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.lblnetamt.Location = new System.Drawing.Point(920, 0);
+            this.lblnetamt.Location = new System.Drawing.Point(920, 10);
             this.lblnetamt.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.lblnetamt.Name = "lblnetamt";
-            this.lblnetamt.Size = new System.Drawing.Size(119, 43);
+            this.lblnetamt.Size = new System.Drawing.Size(125, 23);
             this.lblnetamt.TabIndex = 8;
             this.lblnetamt.Text = "Net Amount";
             // 
@@ -3447,7 +4343,7 @@ namespace standard.trans
             this.txtFinalnetamount.Name = "txtFinalnetamount";
             this.txtFinalnetamount.ReadOnly = true;
             this.txtFinalnetamount.RightAlign = true;
-            this.txtFinalnetamount.Size = new System.Drawing.Size(140, 42);
+            this.txtFinalnetamount.Size = new System.Drawing.Size(140, 30);
             this.txtFinalnetamount.TabIndex = 6;
             this.txtFinalnetamount.TabStop = false;
             this.txtFinalnetamount.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
@@ -3463,10 +4359,10 @@ namespace standard.trans
             this.label4.AutoSize = true;
             this.label4.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.label4.Location = new System.Drawing.Point(920, 47);
+            this.label4.Location = new System.Drawing.Point(920, 53);
             this.label4.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(97, 35);
+            this.label4.Size = new System.Drawing.Size(63, 23);
             this.label4.TabIndex = 10;
             this.label4.Text = "Profit";
             this.label4.Visible = false;
@@ -3484,7 +4380,7 @@ namespace standard.trans
             this.txtProfit.Name = "txtProfit";
             this.txtProfit.ReadOnly = true;
             this.txtProfit.RightAlign = true;
-            this.txtProfit.Size = new System.Drawing.Size(140, 42);
+            this.txtProfit.Size = new System.Drawing.Size(140, 30);
             this.txtProfit.TabIndex = 6;
             this.txtProfit.TabStop = false;
             this.txtProfit.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
@@ -3561,579 +4457,6 @@ namespace standard.trans
             this.dgvSales.RowsAdded += new System.Windows.Forms.DataGridViewRowsAddedEventHandler(this.dgopen_RowsAdded);
             this.dgvSales.RowsRemoved += new System.Windows.Forms.DataGridViewRowsRemovedEventHandler(this.dgopen_RowsRemoved);
             this.dgvSales.KeyDown += new System.Windows.Forms.KeyEventHandler(this.dgopen_KeyDown);
-            // 
-            // pnlview
-            // 
-            this.pnlview.Controls.Add(this.tableview);
-            this.pnlview.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pnlview.Enabled = false;
-            this.pnlview.Location = new System.Drawing.Point(0, 0);
-            this.pnlview.Margin = new System.Windows.Forms.Padding(5, 7, 5, 7);
-            this.pnlview.Name = "pnlview";
-            this.pnlview.Size = new System.Drawing.Size(1658, 749);
-            this.pnlview.TabIndex = 12;
-            // 
-            // tableview
-            // 
-            this.tableview.CellBorderStyle = System.Windows.Forms.TableLayoutPanelCellBorderStyle.Inset;
-            this.tableview.ColumnCount = 1;
-            this.tableview.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableview.Controls.Add(this.lblsubtitle, 0, 0);
-            this.tableview.Controls.Add(this.dglist, 0, 2);
-            this.tableview.Controls.Add(this.tableLayoutPanel1, 0, 1);
-            this.tableview.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableview.Location = new System.Drawing.Point(0, 0);
-            this.tableview.Margin = new System.Windows.Forms.Padding(5, 7, 5, 7);
-            this.tableview.Name = "tableview";
-            this.tableview.RowCount = 4;
-            this.tableview.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 36F));
-            this.tableview.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 110F));
-            this.tableview.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableview.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 10F));
-            this.tableview.Size = new System.Drawing.Size(1658, 749);
-            this.tableview.TabIndex = 0;
-            // 
-            // lblsubtitle
-            // 
-            this.lblsubtitle.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.lblsubtitle.AutoSize = true;
-            this.lblsubtitle.Font = new System.Drawing.Font("Tahoma", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblsubtitle.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.lblsubtitle.Location = new System.Drawing.Point(729, 2);
-            this.lblsubtitle.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
-            this.lblsubtitle.Name = "lblsubtitle";
-            this.lblsubtitle.Size = new System.Drawing.Size(199, 36);
-            this.lblsubtitle.TabIndex = 4;
-            this.lblsubtitle.Text = "SALES LIST";
-            // 
-            // dglist
-            // 
-            this.dglist.AllowUserToAddRows = false;
-            this.dglist.AllowUserToDeleteRows = false;
-            this.dglist.AllowUserToResizeRows = false;
-            this.dglist.AutoGenerateColumns = false;
-            this.dglist.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.DisplayedCells;
-            this.dglist.BackgroundColor = System.Drawing.Color.White;
-            dataGridViewCellStyle11.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle11.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle11.Font = new System.Drawing.Font("Tahoma", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle11.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle11.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle11.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle11.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dglist.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle11;
-            this.dglist.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dglist.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.ldelete,
-            this.ledit,
-            this.lprint,
-            this.lEstimateprint,
-            this.isDraft,
-            this.ldc,
-            this.smidDataGridViewTextBoxColumn,
-            this.smbooknoDataGridViewTextBoxColumn,
-            this.smrefnoDataGridViewTextBoxColumn,
-            this.smdateDataGridViewTextBoxColumn,
-            this.lednameDataGridViewTextBoxColumn,
-            this.isTaxableDataGridViewTextBoxColumn,
-            this.companyDataGridViewTextBoxColumn,
-            this.smtotqtyDataGridViewTextBoxColumn,
-            this.smnetamountDataGridViewTextBoxColumn,
-            this.smdisamountDataGridViewTextBoxColumn,
-            this.smpackingchargeDataGridViewTextBoxColumn,
-            this.ledidDataGridViewTextBoxColumn,
-            this.smitemcountDataGridViewTextBoxColumn,
-            this.usersuidDataGridViewTextBoxColumn,
-            this.usersnameDataGridViewTextBoxColumn,
-            this.smudateDataGridViewTextBoxColumn,
-            this.smdescDataGridViewTextBoxColumn});
-            this.dglist.DataSource = this.uspsalesmasterSelectResultBindingSource;
-            this.dglist.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.dglist.Location = new System.Drawing.Point(7, 159);
-            this.dglist.Margin = new System.Windows.Forms.Padding(5, 7, 5, 7);
-            this.dglist.MultiSelect = false;
-            this.dglist.Name = "dglist";
-            this.dglist.ReadOnly = true;
-            this.dglist.RowHeadersVisible = false;
-            this.dglist.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect;
-            this.dglist.ShowCellToolTips = false;
-            this.dglist.Size = new System.Drawing.Size(1644, 569);
-            this.dglist.TabIndex = 1;
-            this.dglist.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dglist_CellContentClick);
-            this.dglist.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dglist_CellDoubleClick);
-            this.dglist.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.dglist_CellFormatting);
-            this.dglist.KeyDown += new System.Windows.Forms.KeyEventHandler(this.dglist_KeyDown);
-            // 
-            // ldelete
-            // 
-            this.ldelete.HeaderText = "DELETE";
-            this.ldelete.Image = ((System.Drawing.Image)(resources.GetObject("ldelete.Image")));
-            this.ldelete.Name = "ldelete";
-            this.ldelete.ReadOnly = true;
-            this.ldelete.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-            this.ldelete.Width = 75;
-            // 
-            // ledit
-            // 
-            this.ledit.HeaderText = "EDIT";
-            this.ledit.Image = global::standard.Properties.Resources.edit;
-            this.ledit.Name = "ledit";
-            this.ledit.ReadOnly = true;
-            this.ledit.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-            this.ledit.Width = 75;
-            // 
-            // lprint
-            // 
-            this.lprint.HeaderText = "PRINT";
-            this.lprint.Image = global::standard.Properties.Resources.print;
-            this.lprint.Name = "lprint";
-            this.lprint.ReadOnly = true;
-            this.lprint.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-            this.lprint.Width = 75;
-            // 
-            // lEstimateprint
-            // 
-            this.lEstimateprint.HeaderText = "ESTIMATE PRINT";
-            this.lEstimateprint.Image = global::standard.Properties.Resources.print;
-            this.lEstimateprint.Name = "lEstimateprint";
-            this.lEstimateprint.ReadOnly = true;
-            this.lEstimateprint.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-            this.lEstimateprint.Width = 150;
-            // 
-            // isDraft
-            // 
-            this.isDraft.DataPropertyName = "sm_isdraft";
-            this.isDraft.HeaderText = "IS DRAFT";
-            this.isDraft.Name = "isDraft";
-            this.isDraft.ReadOnly = true;
-            this.isDraft.Width = 120;
-            // 
-            // ldc
-            // 
-            this.ldc.HeaderText = "ldc";
-            this.ldc.Name = "ldc";
-            this.ldc.ReadOnly = true;
-            this.ldc.Visible = false;
-            this.ldc.Width = 60;
-            // 
-            // smidDataGridViewTextBoxColumn
-            // 
-            this.smidDataGridViewTextBoxColumn.DataPropertyName = "sm_id";
-            this.smidDataGridViewTextBoxColumn.HeaderText = "sm_id";
-            this.smidDataGridViewTextBoxColumn.Name = "smidDataGridViewTextBoxColumn";
-            this.smidDataGridViewTextBoxColumn.ReadOnly = true;
-            this.smidDataGridViewTextBoxColumn.Visible = false;
-            // 
-            // smbooknoDataGridViewTextBoxColumn
-            // 
-            this.smbooknoDataGridViewTextBoxColumn.DataPropertyName = "sm_bookno";
-            this.smbooknoDataGridViewTextBoxColumn.HeaderText = "sm_bookno";
-            this.smbooknoDataGridViewTextBoxColumn.Name = "smbooknoDataGridViewTextBoxColumn";
-            this.smbooknoDataGridViewTextBoxColumn.ReadOnly = true;
-            this.smbooknoDataGridViewTextBoxColumn.Visible = false;
-            // 
-            // smrefnoDataGridViewTextBoxColumn
-            // 
-            this.smrefnoDataGridViewTextBoxColumn.DataPropertyName = "sm_refno";
-            this.smrefnoDataGridViewTextBoxColumn.HeaderText = "Bill No";
-            this.smrefnoDataGridViewTextBoxColumn.Name = "smrefnoDataGridViewTextBoxColumn";
-            this.smrefnoDataGridViewTextBoxColumn.ReadOnly = true;
-            this.smrefnoDataGridViewTextBoxColumn.Width = 85;
-            // 
-            // smdateDataGridViewTextBoxColumn
-            // 
-            this.smdateDataGridViewTextBoxColumn.DataPropertyName = "sm_date";
-            dataGridViewCellStyle12.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle12.Format = "dd-MM-yyyy";
-            this.smdateDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle12;
-            this.smdateDataGridViewTextBoxColumn.HeaderText = "Bill Date";
-            this.smdateDataGridViewTextBoxColumn.Name = "smdateDataGridViewTextBoxColumn";
-            this.smdateDataGridViewTextBoxColumn.ReadOnly = true;
-            this.smdateDataGridViewTextBoxColumn.Width = 150;
-            // 
-            // lednameDataGridViewTextBoxColumn
-            // 
-            this.lednameDataGridViewTextBoxColumn.DataPropertyName = "led_name";
-            this.lednameDataGridViewTextBoxColumn.HeaderText = "Customer";
-            this.lednameDataGridViewTextBoxColumn.Name = "lednameDataGridViewTextBoxColumn";
-            this.lednameDataGridViewTextBoxColumn.ReadOnly = true;
-            this.lednameDataGridViewTextBoxColumn.Width = 200;
-            // 
-            // companyDataGridViewTextBoxColumn
-            // 
-            this.companyDataGridViewTextBoxColumn.DataPropertyName = "com_name";
-            this.companyDataGridViewTextBoxColumn.HeaderText = "Company";
-            this.companyDataGridViewTextBoxColumn.Name = "companyDataGridViewTextBoxColumn";
-            this.companyDataGridViewTextBoxColumn.ReadOnly = true;
-            this.companyDataGridViewTextBoxColumn.Width = 200;
-            // 
-            // isTaxableDataGridViewTextBoxColumn
-            // 
-            this.isTaxableDataGridViewTextBoxColumn.DataPropertyName = "item_istaxable";
-            this.isTaxableDataGridViewTextBoxColumn.HeaderText = "Taxable";
-            this.isTaxableDataGridViewTextBoxColumn.Name = "taxStatus";
-            this.isTaxableDataGridViewTextBoxColumn.ReadOnly = true;
-            this.isTaxableDataGridViewTextBoxColumn.Width = 200;
-            // 
-            // smtotqtyDataGridViewTextBoxColumn
-            // 
-            this.smtotqtyDataGridViewTextBoxColumn.DataPropertyName = "sm_totqty";
-            dataGridViewCellStyle13.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle13.Format = "N0";
-            this.smtotqtyDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle13;
-            this.smtotqtyDataGridViewTextBoxColumn.HeaderText = "Total Qty";
-            this.smtotqtyDataGridViewTextBoxColumn.Name = "smtotqtyDataGridViewTextBoxColumn";
-            this.smtotqtyDataGridViewTextBoxColumn.ReadOnly = true;
-            this.smtotqtyDataGridViewTextBoxColumn.Width = 80;
-            // 
-            // smnetamountDataGridViewTextBoxColumn
-            // 
-            this.smnetamountDataGridViewTextBoxColumn.DataPropertyName = "sm_netamount";
-            dataGridViewCellStyle14.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            dataGridViewCellStyle14.Format = "N2";
-            this.smnetamountDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle14;
-            this.smnetamountDataGridViewTextBoxColumn.HeaderText = "Net Amt";
-            this.smnetamountDataGridViewTextBoxColumn.Name = "smnetamountDataGridViewTextBoxColumn";
-            this.smnetamountDataGridViewTextBoxColumn.ReadOnly = true;
-            this.smnetamountDataGridViewTextBoxColumn.Width = 130;
-            // 
-            // smdisamountDataGridViewTextBoxColumn
-            // 
-            this.smdisamountDataGridViewTextBoxColumn.DataPropertyName = "sm_disamount";
-            dataGridViewCellStyle15.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            dataGridViewCellStyle15.Format = "N2";
-            this.smdisamountDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle15;
-            this.smdisamountDataGridViewTextBoxColumn.HeaderText = "Discount";
-            this.smdisamountDataGridViewTextBoxColumn.Name = "smdisamountDataGridViewTextBoxColumn";
-            this.smdisamountDataGridViewTextBoxColumn.ReadOnly = true;
-            // 
-            // smpackingchargeDataGridViewTextBoxColumn
-            // 
-            this.smpackingchargeDataGridViewTextBoxColumn.DataPropertyName = "sm_packingcharge";
-            dataGridViewCellStyle16.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            dataGridViewCellStyle16.Format = "N2";
-            this.smpackingchargeDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle16;
-            this.smpackingchargeDataGridViewTextBoxColumn.HeaderText = "Other Charges";
-            this.smpackingchargeDataGridViewTextBoxColumn.Name = "smpackingchargeDataGridViewTextBoxColumn";
-            this.smpackingchargeDataGridViewTextBoxColumn.ReadOnly = true;
-            // 
-            // ledidDataGridViewTextBoxColumn
-            // 
-            this.ledidDataGridViewTextBoxColumn.DataPropertyName = "led_id";
-            this.ledidDataGridViewTextBoxColumn.HeaderText = "led_id";
-            this.ledidDataGridViewTextBoxColumn.Name = "ledidDataGridViewTextBoxColumn";
-            this.ledidDataGridViewTextBoxColumn.ReadOnly = true;
-            this.ledidDataGridViewTextBoxColumn.Visible = false;
-            // 
-            // smitemcountDataGridViewTextBoxColumn
-            // 
-            this.smitemcountDataGridViewTextBoxColumn.DataPropertyName = "sm_itemcount";
-            this.smitemcountDataGridViewTextBoxColumn.HeaderText = "sm_itemcount";
-            this.smitemcountDataGridViewTextBoxColumn.Name = "smitemcountDataGridViewTextBoxColumn";
-            this.smitemcountDataGridViewTextBoxColumn.ReadOnly = true;
-            this.smitemcountDataGridViewTextBoxColumn.Visible = false;
-            // 
-            // usersuidDataGridViewTextBoxColumn
-            // 
-            this.usersuidDataGridViewTextBoxColumn.DataPropertyName = "users_uid";
-            this.usersuidDataGridViewTextBoxColumn.HeaderText = "users_uid";
-            this.usersuidDataGridViewTextBoxColumn.Name = "usersuidDataGridViewTextBoxColumn";
-            this.usersuidDataGridViewTextBoxColumn.ReadOnly = true;
-            this.usersuidDataGridViewTextBoxColumn.Visible = false;
-            // 
-            // usersnameDataGridViewTextBoxColumn
-            // 
-            this.usersnameDataGridViewTextBoxColumn.DataPropertyName = "users_name";
-            this.usersnameDataGridViewTextBoxColumn.HeaderText = "users_name";
-            this.usersnameDataGridViewTextBoxColumn.Name = "usersnameDataGridViewTextBoxColumn";
-            this.usersnameDataGridViewTextBoxColumn.ReadOnly = true;
-            this.usersnameDataGridViewTextBoxColumn.Visible = false;
-            // 
-            // smudateDataGridViewTextBoxColumn
-            // 
-            this.smudateDataGridViewTextBoxColumn.DataPropertyName = "sm_udate";
-            this.smudateDataGridViewTextBoxColumn.HeaderText = "sm_udate";
-            this.smudateDataGridViewTextBoxColumn.Name = "smudateDataGridViewTextBoxColumn";
-            this.smudateDataGridViewTextBoxColumn.ReadOnly = true;
-            this.smudateDataGridViewTextBoxColumn.Visible = false;
-            // 
-            // smdescDataGridViewTextBoxColumn
-            // 
-            this.smdescDataGridViewTextBoxColumn.DataPropertyName = "sm_desc";
-            this.smdescDataGridViewTextBoxColumn.HeaderText = "sm_desc";
-            this.smdescDataGridViewTextBoxColumn.Name = "smdescDataGridViewTextBoxColumn";
-            this.smdescDataGridViewTextBoxColumn.ReadOnly = true;
-            this.smdescDataGridViewTextBoxColumn.Visible = false;
-            // 
-            // uspsalesmasterSelectResultBindingSource
-            // 
-            this.uspsalesmasterSelectResultBindingSource.DataSource = typeof(standard.classes.usp_salesmasterSelectResult);
-            // 
-            // tableLayoutPanel1
-            // 
-            this.tableLayoutPanel1.ColumnCount = 11;
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 90F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 176F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 167F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 140F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 100F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 129F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 153F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 120F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 120F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel1.Controls.Add(this.dtptdate, 3, 0);
-            this.tableLayoutPanel1.Controls.Add(this.cboCustomerView, 5, 0);
-            this.tableLayoutPanel1.Controls.Add(this.lblfdate, 0, 0);
-            this.tableLayoutPanel1.Controls.Add(this.dtpfdate, 1, 0);
-            this.tableLayoutPanel1.Controls.Add(this.lblhyp, 2, 0);
-            this.tableLayoutPanel1.Controls.Add(this.cmdList, 7, 1);
-            this.tableLayoutPanel1.Controls.Add(this.cmdexit, 8, 1);
-            this.tableLayoutPanel1.Controls.Add(this.label6, 4, 0);
-            this.tableLayoutPanel1.Controls.Add(this.lblCompany, 6, 0);
-            this.tableLayoutPanel1.Controls.Add(this.cboCompany, 7, 0);
-            this.tableLayoutPanel1.Controls.Add(this.lblBillNo, 4, 1);
-            this.tableLayoutPanel1.Controls.Add(this.txtSearchBillNo, 5, 1);
-            this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel1.Location = new System.Drawing.Point(5, 43);
-            this.tableLayoutPanel1.Name = "tableLayoutPanel1";
-            this.tableLayoutPanel1.RowCount = 2;
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(1648, 104);
-            this.tableLayoutPanel1.TabIndex = 0;
-            // 
-            // dtptdate
-            // 
-            this.dtptdate.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.dtptdate.CustomFormat = "dd-MM-yyyy";
-            this.dtptdate.Font = new System.Drawing.Font("Tahoma", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.dtptdate.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-            this.dtptdate.Location = new System.Drawing.Point(290, 5);
-            this.dtptdate.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.dtptdate.Name = "dtptdate";
-            this.dtptdate.Size = new System.Drawing.Size(159, 46);
-            this.dtptdate.TabIndex = 1;
-            this.dtptdate.KeyDown += new System.Windows.Forms.KeyEventHandler(this.dtptdate_KeyDown);
-            // 
-            // cboCustomerView
-            // 
-            this.cboCustomerView.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.cboCustomerView.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
-            this.cboCustomerView.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
-            this.tableLayoutPanel1.SetColumnSpan(this.cboCustomerView, 2);
-            this.cboCustomerView.DataSource = this.ledgermasterViewBindingSource1;
-            this.cboCustomerView.DisplayMember = "led_name";
-            this.cboCustomerView.Font = new System.Drawing.Font("Tahoma", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cboCustomerView.FormattingEnabled = true;
-            this.cboCustomerView.Location = new System.Drawing.Point(597, 5);
-            this.cboCustomerView.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.cboCustomerView.Name = "cboCustomerView";
-            this.cboCustomerView.Size = new System.Drawing.Size(221, 47);
-            this.cboCustomerView.TabIndex = 5;
-            this.cboCustomerView.ValueMember = "led_id";
-            this.cboCustomerView.KeyDown += new System.Windows.Forms.KeyEventHandler(this.cboCustomerView_KeyDown);
-            // 
-            // ledgermasterViewBindingSource1
-            // 
-            this.ledgermasterViewBindingSource1.DataSource = typeof(standard.classes.ledgermaster);
-            // 
-            // lblfdate
-            // 
-            this.lblfdate.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.lblfdate.AutoSize = true;
-            this.lblfdate.Font = new System.Drawing.Font("Tahoma", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblfdate.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.lblfdate.Location = new System.Drawing.Point(4, 0);
-            this.lblfdate.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.lblfdate.Name = "lblfdate";
-            this.lblfdate.Size = new System.Drawing.Size(73, 52);
-            this.lblfdate.TabIndex = 0;
-            this.lblfdate.Text = "Date";
-            // 
-            // dtpfdate
-            // 
-            this.dtpfdate.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.dtpfdate.CalendarFont = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.dtpfdate.CustomFormat = "dd-MM-yyyy";
-            this.dtpfdate.Font = new System.Drawing.Font("Tahoma", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.dtpfdate.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-            this.dtpfdate.Location = new System.Drawing.Point(94, 5);
-            this.dtpfdate.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.dtpfdate.Name = "dtpfdate";
-            this.dtpfdate.Size = new System.Drawing.Size(168, 46);
-            this.dtpfdate.TabIndex = 0;
-            this.dtpfdate.KeyDown += new System.Windows.Forms.KeyEventHandler(this.dtpfdate_KeyDown);
-            // 
-            // lblhyp
-            // 
-            this.lblhyp.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.lblhyp.AutoSize = true;
-            this.lblhyp.Font = new System.Drawing.Font("Tahoma", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblhyp.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.lblhyp.Location = new System.Drawing.Point(270, 6);
-            this.lblhyp.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.lblhyp.Name = "lblhyp";
-            this.lblhyp.Size = new System.Drawing.Size(12, 39);
-            this.lblhyp.TabIndex = 4;
-            this.lblhyp.Text = "-";
-            // 
-            // cmdList
-            // 
-            this.cmdList.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-            this.cmdList.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(191)))), ((int)(((byte)(219)))), ((int)(((byte)(254)))));
-            this.cmdList.Font = new System.Drawing.Font("Tahoma", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cmdList.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(41)))), ((int)(((byte)(66)))), ((int)(((byte)(122)))));
-            this.cmdList.Location = new System.Drawing.Point(839, 54);
-            this.cmdList.Margin = new System.Windows.Forms.Padding(1);
-            this.cmdList.Name = "cmdList";
-            this.cmdList.Size = new System.Drawing.Size(118, 49);
-            this.cmdList.TabIndex = 6;
-            this.cmdList.Text = "&View";
-            this.cmdList.UseVisualStyleBackColor = false;
-            this.cmdList.Click += new System.EventHandler(this.cmdprint_Click);
-            // 
-            // cmdexit
-            // 
-            this.cmdexit.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-            this.cmdexit.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(191)))), ((int)(((byte)(219)))), ((int)(((byte)(254)))));
-            this.cmdexit.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.cmdexit.Font = new System.Drawing.Font("Tahoma", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cmdexit.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(41)))), ((int)(((byte)(66)))), ((int)(((byte)(122)))));
-            this.cmdexit.Location = new System.Drawing.Point(976, 54);
-            this.cmdexit.Margin = new System.Windows.Forms.Padding(1);
-            this.cmdexit.Name = "cmdexit";
-            this.cmdexit.Size = new System.Drawing.Size(118, 49);
-            this.cmdexit.TabIndex = 8;
-            this.cmdexit.Text = "&Exit";
-            this.cmdexit.UseVisualStyleBackColor = false;
-            this.cmdexit.Click += new System.EventHandler(this.cmdexit_Click);
-            // 
-            // label6
-            // 
-            this.label6.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.label6.AutoSize = true;
-            this.label6.Font = new System.Drawing.Font("Tahoma", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label6.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.label6.Location = new System.Drawing.Point(457, 0);
-            this.label6.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(107, 52);
-            this.label6.TabIndex = 4;
-            this.label6.Text = "Customer";
-            // 
-            // lblCompany
-            // 
-            this.lblCompany.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.lblCompany.AutoSize = true;
-            this.lblCompany.Font = new System.Drawing.Font("Tahoma", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblCompany.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.lblCompany.Location = new System.Drawing.Point(826, 0);
-            this.lblCompany.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.lblCompany.Name = "lblCompany";
-            this.lblCompany.Size = new System.Drawing.Size(128, 52);
-            this.lblCompany.TabIndex = 30;
-            this.lblCompany.Text = "Company";
-            // 
-            // cboCompany
-            // 
-            this.cboCompany.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.cboCompany.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
-            this.cboCompany.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
-            this.tableLayoutPanel1.SetColumnSpan(this.cboCompany, 2);
-            this.cboCompany.DataSource = this.companyViewBindingSource;
-            this.cboCompany.DisplayMember = "com_name";
-            this.cboCompany.Font = new System.Drawing.Font("Tahoma", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cboCompany.FormattingEnabled = true;
-            this.cboCompany.Location = new System.Drawing.Point(979, 5);
-            this.cboCompany.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.cboCompany.Name = "cboCompany";
-            this.cboCompany.Size = new System.Drawing.Size(230, 47);
-            this.cboCompany.TabIndex = 3;
-            this.cboCompany.ValueMember = "com_id";
-            // 
-            // companyViewBindingSource
-            // 
-            this.companyViewBindingSource.DataSource = typeof(standard.classes.company);
-            // 
-            // lblBillNo
-            // 
-            this.lblBillNo.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.lblBillNo.AutoSize = true;
-            this.lblBillNo.Font = new System.Drawing.Font("Tahoma", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblBillNo.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.lblBillNo.Location = new System.Drawing.Point(457, 58);
-            this.lblBillNo.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.lblBillNo.Name = "lblBillNo";
-            this.lblBillNo.Size = new System.Drawing.Size(114, 39);
-            this.lblBillNo.TabIndex = 31;
-            this.lblBillNo.Text = "BillNo";
-            // 
-            // txtSearchBillNo
-            // 
-            this.txtSearchBillNo.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.txtSearchBillNo.Location = new System.Drawing.Point(596, 55);
-            this.txtSearchBillNo.Name = "txtSearchBillNo";
-            this.txtSearchBillNo.Size = new System.Drawing.Size(94, 46);
-            this.txtSearchBillNo.TabIndex = 7;
-            this.txtSearchBillNo.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtSearchBillNo_KeyDown_1);
-            // 
-            // cboCityView
-            // 
-            this.cboCityView.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.cboCityView.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
-            this.cboCityView.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
-            this.cboCityView.DataSource = this.ledgermasteCityViewrBindingSource;
-            this.cboCityView.DisplayMember = "led_address2";
-            this.cboCityView.Font = new System.Drawing.Font("Tahoma", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cboCityView.FormattingEnabled = true;
-            this.cboCityView.Location = new System.Drawing.Point(520, 5);
-            this.cboCityView.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.cboCityView.Name = "cboCityView";
-            this.cboCityView.Size = new System.Drawing.Size(230, 47);
-            this.cboCityView.TabIndex = 3;
-            this.cboCityView.ValueMember = "led_id";
-            this.cboCityView.Visible = false;
-            // 
-            // ledgermasteCityViewrBindingSource
-            // 
-            this.ledgermasteCityViewrBindingSource.DataSource = typeof(standard.classes.ledgermaster);
-            // 
-            // label5
-            // 
-            this.label5.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.label5.AutoSize = true;
-            this.label5.Font = new System.Drawing.Font("Tahoma", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label5.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.label5.Location = new System.Drawing.Point(457, 0);
-            this.label5.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(48, 52);
-            this.label5.TabIndex = 2;
-            this.label5.Text = "City";
-            this.label5.Visible = false;
-            // 
-            // smtotamountDataGridViewTextBoxColumn
-            // 
-            this.smtotamountDataGridViewTextBoxColumn.DataPropertyName = "sm_totamount";
-            dataGridViewCellStyle17.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            dataGridViewCellStyle17.Format = "N2";
-            this.smtotamountDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle17;
-            this.smtotamountDataGridViewTextBoxColumn.HeaderText = "Total Amount";
-            this.smtotamountDataGridViewTextBoxColumn.Name = "smtotamountDataGridViewTextBoxColumn";
-            this.smtotamountDataGridViewTextBoxColumn.ReadOnly = true;
-            this.smtotamountDataGridViewTextBoxColumn.Width = 130;
-            // 
-            // smprofitDataGridViewTextBoxColumn
-            // 
-            this.smprofitDataGridViewTextBoxColumn.DataPropertyName = "sm_profit";
-            dataGridViewCellStyle18.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            dataGridViewCellStyle18.Format = "N2";
-            this.smprofitDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle18;
-            this.smprofitDataGridViewTextBoxColumn.HeaderText = "Profit";
-            this.smprofitDataGridViewTextBoxColumn.Name = "smprofitDataGridViewTextBoxColumn";
-            this.smprofitDataGridViewTextBoxColumn.Width = 130;
             // 
             // cSNo
             // 
@@ -4326,9 +4649,646 @@ namespace standard.trans
             this.cOdUnitValue.Name = "cOdUnitValue";
             this.cOdUnitValue.Visible = false;
             // 
+            // pnlview
+            // 
+            this.pnlview.Controls.Add(this.tableview);
+            this.pnlview.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pnlview.Enabled = false;
+            this.pnlview.Location = new System.Drawing.Point(0, 0);
+            this.pnlview.Margin = new System.Windows.Forms.Padding(5, 7, 5, 7);
+            this.pnlview.Name = "pnlview";
+            this.pnlview.Size = new System.Drawing.Size(1658, 749);
+            this.pnlview.TabIndex = 12;
+            // 
+            // tableview
+            // 
+            this.tableview.CellBorderStyle = System.Windows.Forms.TableLayoutPanelCellBorderStyle.Inset;
+            this.tableview.ColumnCount = 1;
+            this.tableview.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableview.Controls.Add(this.lblsubtitle, 0, 0);
+            this.tableview.Controls.Add(this.dglist, 0, 2);
+            this.tableview.Controls.Add(this.tableLayoutPanel1, 0, 1);
+            this.tableview.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tableview.Location = new System.Drawing.Point(0, 0);
+            this.tableview.Margin = new System.Windows.Forms.Padding(5, 7, 5, 7);
+            this.tableview.Name = "tableview";
+            this.tableview.RowCount = 4;
+            this.tableview.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 36F));
+            this.tableview.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 110F));
+            this.tableview.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableview.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 10F));
+            this.tableview.Size = new System.Drawing.Size(1658, 749);
+            this.tableview.TabIndex = 0;
+            // 
+            // lblsubtitle
+            // 
+            this.lblsubtitle.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.lblsubtitle.AutoSize = true;
+            this.lblsubtitle.Font = new System.Drawing.Font("Tahoma", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblsubtitle.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
+            this.lblsubtitle.Location = new System.Drawing.Point(763, 7);
+            this.lblsubtitle.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
+            this.lblsubtitle.Name = "lblsubtitle";
+            this.lblsubtitle.Size = new System.Drawing.Size(131, 25);
+            this.lblsubtitle.TabIndex = 4;
+            this.lblsubtitle.Text = "SALES LIST";
+            // 
+            // dglist
+            // 
+            this.dglist.AllowUserToAddRows = false;
+            this.dglist.AllowUserToDeleteRows = false;
+            this.dglist.AllowUserToResizeRows = false;
+            this.dglist.AutoGenerateColumns = false;
+            this.dglist.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.DisplayedCells;
+            this.dglist.BackgroundColor = System.Drawing.Color.White;
+            dataGridViewCellStyle11.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle11.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle11.Font = new System.Drawing.Font("Tahoma", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle11.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle11.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle11.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle11.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dglist.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle11;
+            this.dglist.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dglist.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.ldelete,
+            this.ledit,
+            this.lprint,
+            this.lEstimateprint,
+            this.isDraft,
+            this.ldc,
+            this.smidDataGridViewTextBoxColumn,
+            this.smbooknoDataGridViewTextBoxColumn,
+            this.smrefnoDataGridViewTextBoxColumn,
+            this.smdateDataGridViewTextBoxColumn,
+            this.lednameDataGridViewTextBoxColumn,
+            this.isTaxableDataGridViewTextBoxColumn,
+            this.companyDataGridViewTextBoxColumn,
+            this.smtotqtyDataGridViewTextBoxColumn,
+            this.smnetamountDataGridViewTextBoxColumn,
+            this.smdisamountDataGridViewTextBoxColumn,
+            this.smpackingchargeDataGridViewTextBoxColumn,
+            this.ledidDataGridViewTextBoxColumn,
+            this.smitemcountDataGridViewTextBoxColumn,
+            this.usersuidDataGridViewTextBoxColumn,
+            this.usersnameDataGridViewTextBoxColumn,
+            this.smudateDataGridViewTextBoxColumn,
+            this.lImport,
+            this.isImport,
+            this.smdescDataGridViewTextBoxColumn});
+            this.dglist.DataSource = this.uspsalesmasterSelectResultBindingSource;
+            this.dglist.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.dglist.Location = new System.Drawing.Point(7, 159);
+            this.dglist.Margin = new System.Windows.Forms.Padding(5, 7, 5, 7);
+            this.dglist.MultiSelect = false;
+            this.dglist.Name = "dglist";
+            this.dglist.ReadOnly = true;
+            this.dglist.RowHeadersVisible = false;
+            this.dglist.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect;
+            this.dglist.ShowCellToolTips = false;
+            this.dglist.Size = new System.Drawing.Size(1644, 569);
+            this.dglist.TabIndex = 1;
+            this.dglist.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dglist_CellContentClick);
+            this.dglist.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dglist_CellDoubleClick);
+            this.dglist.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.dglist_CellFormatting);
+            this.dglist.KeyDown += new System.Windows.Forms.KeyEventHandler(this.dglist_KeyDown);
+            // 
+            // ldelete
+            // 
+            this.ldelete.HeaderText = "DELETE";
+            this.ldelete.Image = ((System.Drawing.Image)(resources.GetObject("ldelete.Image")));
+            this.ldelete.Name = "ldelete";
+            this.ldelete.ReadOnly = true;
+            this.ldelete.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.ldelete.Width = 75;
+            // 
+            // ledit
+            // 
+            this.ledit.HeaderText = "EDIT";
+            this.ledit.Image = global::standard.Properties.Resources.edit;
+            this.ledit.Name = "ledit";
+            this.ledit.ReadOnly = true;
+            this.ledit.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.ledit.Width = 75;
+            // 
+            // lprint
+            // 
+            this.lprint.HeaderText = "PRINT";
+            this.lprint.Image = global::standard.Properties.Resources.print;
+            this.lprint.Name = "lprint";
+            this.lprint.ReadOnly = true;
+            this.lprint.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.lprint.Width = 75;
+            // 
+            // lEstimateprint
+            // 
+            this.lEstimateprint.HeaderText = "ESTIMATE PRINT";
+            this.lEstimateprint.Image = global::standard.Properties.Resources.print;
+            this.lEstimateprint.Name = "lEstimateprint";
+            this.lEstimateprint.ReadOnly = true;
+            this.lEstimateprint.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.lEstimateprint.Width = 150;
+            // 
+            // isDraft
+            // 
+            this.isDraft.DataPropertyName = "sm_isdraft";
+            this.isDraft.HeaderText = "IS DRAFT";
+            this.isDraft.Name = "isDraft";
+            this.isDraft.ReadOnly = true;
+            this.isDraft.Width = 120;
+            // 
+            // isImport
+            // 
+            this.isImport.DataPropertyName = "sm_isimport";
+            this.isImport.HeaderText = "IMPORT STATUS";
+            this.isImport.Name = "isImport";
+            this.isImport.ReadOnly = true;
+            this.isImport.Width = 160;
+            // 
+            // ldc
+            // 
+            this.ldc.HeaderText = "ldc";
+            this.ldc.Name = "ldc";
+            this.ldc.ReadOnly = true;
+            this.ldc.Visible = false;
+            this.ldc.Width = 60;
+            // 
+            // smidDataGridViewTextBoxColumn
+            // 
+            this.smidDataGridViewTextBoxColumn.DataPropertyName = "sm_id";
+            this.smidDataGridViewTextBoxColumn.HeaderText = "sm_id";
+            this.smidDataGridViewTextBoxColumn.Name = "smidDataGridViewTextBoxColumn";
+            this.smidDataGridViewTextBoxColumn.ReadOnly = true;
+            this.smidDataGridViewTextBoxColumn.Visible = false;
+            // 
+            // smbooknoDataGridViewTextBoxColumn
+            // 
+            this.smbooknoDataGridViewTextBoxColumn.DataPropertyName = "sm_bookno";
+            this.smbooknoDataGridViewTextBoxColumn.HeaderText = "sm_bookno";
+            this.smbooknoDataGridViewTextBoxColumn.Name = "smbooknoDataGridViewTextBoxColumn";
+            this.smbooknoDataGridViewTextBoxColumn.ReadOnly = true;
+            this.smbooknoDataGridViewTextBoxColumn.Visible = false;
+            // 
+            // smrefnoDataGridViewTextBoxColumn
+            // 
+            this.smrefnoDataGridViewTextBoxColumn.DataPropertyName = "sm_refno";
+            this.smrefnoDataGridViewTextBoxColumn.HeaderText = "Bill No";
+            this.smrefnoDataGridViewTextBoxColumn.Name = "smrefnoDataGridViewTextBoxColumn";
+            this.smrefnoDataGridViewTextBoxColumn.ReadOnly = true;
+            this.smrefnoDataGridViewTextBoxColumn.Width = 85;
+            // 
+            // smdateDataGridViewTextBoxColumn
+            // 
+            this.smdateDataGridViewTextBoxColumn.DataPropertyName = "sm_date";
+            dataGridViewCellStyle12.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle12.Format = "dd-MM-yyyy";
+            this.smdateDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle12;
+            this.smdateDataGridViewTextBoxColumn.HeaderText = "Bill Date";
+            this.smdateDataGridViewTextBoxColumn.Name = "smdateDataGridViewTextBoxColumn";
+            this.smdateDataGridViewTextBoxColumn.ReadOnly = true;
+            this.smdateDataGridViewTextBoxColumn.Width = 150;
+            // 
+            // lednameDataGridViewTextBoxColumn
+            // 
+            this.lednameDataGridViewTextBoxColumn.DataPropertyName = "led_name";
+            this.lednameDataGridViewTextBoxColumn.HeaderText = "Customer";
+            this.lednameDataGridViewTextBoxColumn.Name = "lednameDataGridViewTextBoxColumn";
+            this.lednameDataGridViewTextBoxColumn.ReadOnly = true;
+            this.lednameDataGridViewTextBoxColumn.Width = 200;
+            // 
+            // companyDataGridViewTextBoxColumn
+            // 
+            this.companyDataGridViewTextBoxColumn.DataPropertyName = "com_name";
+            this.companyDataGridViewTextBoxColumn.HeaderText = "Company";
+            this.companyDataGridViewTextBoxColumn.Name = "companyDataGridViewTextBoxColumn";
+            this.companyDataGridViewTextBoxColumn.ReadOnly = true;
+            this.companyDataGridViewTextBoxColumn.Width = 200;
+            // 
+            // isTaxableDataGridViewTextBoxColumn
+            // 
+            this.isTaxableDataGridViewTextBoxColumn.DataPropertyName = "item_istaxable";
+            this.isTaxableDataGridViewTextBoxColumn.HeaderText = "Taxable";
+            this.isTaxableDataGridViewTextBoxColumn.Name = "taxStatus";
+            this.isTaxableDataGridViewTextBoxColumn.ReadOnly = true;
+            this.isTaxableDataGridViewTextBoxColumn.Width = 200;
+            // 
+            // smtotqtyDataGridViewTextBoxColumn
+            // 
+            this.smtotqtyDataGridViewTextBoxColumn.DataPropertyName = "sm_totqty";
+            dataGridViewCellStyle13.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle13.Format = "N0";
+            this.smtotqtyDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle13;
+            this.smtotqtyDataGridViewTextBoxColumn.HeaderText = "Total Qty";
+            this.smtotqtyDataGridViewTextBoxColumn.Name = "smtotqtyDataGridViewTextBoxColumn";
+            this.smtotqtyDataGridViewTextBoxColumn.ReadOnly = true;
+            this.smtotqtyDataGridViewTextBoxColumn.Width = 80;
+            // 
+            // smnetamountDataGridViewTextBoxColumn
+            // 
+            this.smnetamountDataGridViewTextBoxColumn.DataPropertyName = "sm_netamount";
+            dataGridViewCellStyle14.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            dataGridViewCellStyle14.Format = "N2";
+            this.smnetamountDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle14;
+            this.smnetamountDataGridViewTextBoxColumn.HeaderText = "Net Amt";
+            this.smnetamountDataGridViewTextBoxColumn.Name = "smnetamountDataGridViewTextBoxColumn";
+            this.smnetamountDataGridViewTextBoxColumn.ReadOnly = true;
+            this.smnetamountDataGridViewTextBoxColumn.Width = 130;
+            // 
+            // smdisamountDataGridViewTextBoxColumn
+            // 
+            this.smdisamountDataGridViewTextBoxColumn.DataPropertyName = "sm_disamount";
+            dataGridViewCellStyle15.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            dataGridViewCellStyle15.Format = "N2";
+            this.smdisamountDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle15;
+            this.smdisamountDataGridViewTextBoxColumn.HeaderText = "Discount";
+            this.smdisamountDataGridViewTextBoxColumn.Name = "smdisamountDataGridViewTextBoxColumn";
+            this.smdisamountDataGridViewTextBoxColumn.ReadOnly = true;
+            // 
+            // smpackingchargeDataGridViewTextBoxColumn
+            // 
+            this.smpackingchargeDataGridViewTextBoxColumn.DataPropertyName = "sm_packingcharge";
+            dataGridViewCellStyle16.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            dataGridViewCellStyle16.Format = "N2";
+            this.smpackingchargeDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle16;
+            this.smpackingchargeDataGridViewTextBoxColumn.HeaderText = "Other Charges";
+            this.smpackingchargeDataGridViewTextBoxColumn.Name = "smpackingchargeDataGridViewTextBoxColumn";
+            this.smpackingchargeDataGridViewTextBoxColumn.ReadOnly = true;
+            // 
+            // ledidDataGridViewTextBoxColumn
+            // 
+            this.ledidDataGridViewTextBoxColumn.DataPropertyName = "led_id";
+            this.ledidDataGridViewTextBoxColumn.HeaderText = "led_id";
+            this.ledidDataGridViewTextBoxColumn.Name = "ledidDataGridViewTextBoxColumn";
+            this.ledidDataGridViewTextBoxColumn.ReadOnly = true;
+            this.ledidDataGridViewTextBoxColumn.Visible = false;
+            // 
+            // smitemcountDataGridViewTextBoxColumn
+            // 
+            this.smitemcountDataGridViewTextBoxColumn.DataPropertyName = "sm_itemcount";
+            this.smitemcountDataGridViewTextBoxColumn.HeaderText = "sm_itemcount";
+            this.smitemcountDataGridViewTextBoxColumn.Name = "smitemcountDataGridViewTextBoxColumn";
+            this.smitemcountDataGridViewTextBoxColumn.ReadOnly = true;
+            this.smitemcountDataGridViewTextBoxColumn.Visible = false;
+            // 
+            // usersuidDataGridViewTextBoxColumn
+            // 
+            this.usersuidDataGridViewTextBoxColumn.DataPropertyName = "users_uid";
+            this.usersuidDataGridViewTextBoxColumn.HeaderText = "users_uid";
+            this.usersuidDataGridViewTextBoxColumn.Name = "usersuidDataGridViewTextBoxColumn";
+            this.usersuidDataGridViewTextBoxColumn.ReadOnly = true;
+            this.usersuidDataGridViewTextBoxColumn.Visible = false;
+            // 
+            // usersnameDataGridViewTextBoxColumn
+            // 
+            this.usersnameDataGridViewTextBoxColumn.DataPropertyName = "users_name";
+            this.usersnameDataGridViewTextBoxColumn.HeaderText = "users_name";
+            this.usersnameDataGridViewTextBoxColumn.Name = "usersnameDataGridViewTextBoxColumn";
+            this.usersnameDataGridViewTextBoxColumn.ReadOnly = true;
+            this.usersnameDataGridViewTextBoxColumn.Visible = false;
+            // 
+            // smudateDataGridViewTextBoxColumn
+            // 
+            this.smudateDataGridViewTextBoxColumn.DataPropertyName = "sm_udate";
+            this.smudateDataGridViewTextBoxColumn.HeaderText = "sm_udate";
+            this.smudateDataGridViewTextBoxColumn.Name = "smudateDataGridViewTextBoxColumn";
+            this.smudateDataGridViewTextBoxColumn.ReadOnly = true;
+            this.smudateDataGridViewTextBoxColumn.Visible = false;
+            // 
+            // lImport
+            // 
+            this.lImport.HeaderText = "IMPORT";
+            this.lImport.Image = global::standard.Properties.Resources.Export;
+            this.lImport.Name = "lImport";
+            this.lImport.ReadOnly = true;
+            this.lImport.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.lImport.Width = 150;
+            // 
+            // smdescDataGridViewTextBoxColumn
+            // 
+            this.smdescDataGridViewTextBoxColumn.DataPropertyName = "sm_desc";
+            this.smdescDataGridViewTextBoxColumn.HeaderText = "sm_desc";
+            this.smdescDataGridViewTextBoxColumn.Name = "smdescDataGridViewTextBoxColumn";
+            this.smdescDataGridViewTextBoxColumn.ReadOnly = true;
+            this.smdescDataGridViewTextBoxColumn.Visible = false;
+            // 
+            // uspsalesmasterSelectResultBindingSource
+            // 
+            this.uspsalesmasterSelectResultBindingSource.DataSource = typeof(standard.classes.usp_salesmasterSelectResult);
+            // 
+            // tableLayoutPanel1
+            // 
+            this.tableLayoutPanel1.ColumnCount = 13;
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 90F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 176F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 167F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 140F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 100F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 129F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 153F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 120F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 176F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 176F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 176F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel1.Controls.Add(this.dtptdate, 3, 0);
+            this.tableLayoutPanel1.Controls.Add(this.cboCustomerView, 5, 0);
+            this.tableLayoutPanel1.Controls.Add(this.lblfdate, 0, 0);
+            this.tableLayoutPanel1.Controls.Add(this.dtpfdate, 1, 0);
+            this.tableLayoutPanel1.Controls.Add(this.lblhyp, 2, 0);
+            this.tableLayoutPanel1.Controls.Add(this.cmdList, 7, 1);
+            this.tableLayoutPanel1.Controls.Add(this.cmdexit, 8, 1);
+            this.tableLayoutPanel1.Controls.Add(this.label6, 4, 0);
+            this.tableLayoutPanel1.Controls.Add(this.lblCompany, 6, 0);
+            this.tableLayoutPanel1.Controls.Add(this.cboCompany, 7, 0);
+            this.tableLayoutPanel1.Controls.Add(this.lblBillNo, 4, 1);
+            this.tableLayoutPanel1.Controls.Add(this.txtSearchBillNo, 5, 1);
+            this.tableLayoutPanel1.Controls.Add(this.lblImportDate, 9, 0);
+            this.tableLayoutPanel1.Controls.Add(this.importDate, 10, 0);
+            this.tableLayoutPanel1.Controls.Add(this.importButton, 11, 0);
+            this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tableLayoutPanel1.Location = new System.Drawing.Point(5, 43);
+            this.tableLayoutPanel1.Name = "tableLayoutPanel1";
+            this.tableLayoutPanel1.RowCount = 2;
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(1648, 104);
+            this.tableLayoutPanel1.TabIndex = 0;
+            // 
+            // importButton
+            // 
+            this.importButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.importButton.BackColor = System.Drawing.Color.Red;
+            this.importButton.ForeColor = System.Drawing.Color.White;
+            this.importButton.Location = new System.Drawing.Point(1024, 50);
+            this.importButton.Name = "importButton";
+            this.importButton.Size = new System.Drawing.Size(217, 40);
+            this.importButton.TabIndex = 16;
+            this.importButton.Text = "Tally Import";
+            this.importButton.UseVisualStyleBackColor = false;
+            this.importButton.Click += new System.EventHandler(this.ImportTodaysSalesToTally);
+            // 
+            // dtptdate
+            // 
+            this.dtptdate.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.dtptdate.CustomFormat = "dd-MM-yyyy";
+            this.dtptdate.Font = new System.Drawing.Font("Tahoma", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.dtptdate.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
+            this.dtptdate.Location = new System.Drawing.Point(290, 9);
+            this.dtptdate.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.dtptdate.Name = "dtptdate";
+            this.dtptdate.Size = new System.Drawing.Size(159, 33);
+            this.dtptdate.TabIndex = 1;
+            this.dtptdate.KeyDown += new System.Windows.Forms.KeyEventHandler(this.dtptdate_KeyDown);
+            // 
+            // cboCustomerView
+            // 
+            this.cboCustomerView.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.cboCustomerView.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
+            this.cboCustomerView.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
+            this.tableLayoutPanel1.SetColumnSpan(this.cboCustomerView, 2);
+            this.cboCustomerView.DataSource = this.ledgermasterViewBindingSource1;
+            this.cboCustomerView.DisplayMember = "led_name";
+            this.cboCustomerView.Font = new System.Drawing.Font("Tahoma", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cboCustomerView.FormattingEnabled = true;
+            this.cboCustomerView.Location = new System.Drawing.Point(597, 9);
+            this.cboCustomerView.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.cboCustomerView.Name = "cboCustomerView";
+            this.cboCustomerView.Size = new System.Drawing.Size(221, 33);
+            this.cboCustomerView.TabIndex = 5;
+            this.cboCustomerView.ValueMember = "led_id";
+            this.cboCustomerView.KeyDown += new System.Windows.Forms.KeyEventHandler(this.cboCustomerView_KeyDown);
+            // 
+            // ledgermasterViewBindingSource1
+            // 
+            this.ledgermasterViewBindingSource1.DataSource = typeof(standard.classes.ledgermaster);
+            // 
+            // lblfdate
+            // 
+            this.lblfdate.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblfdate.AutoSize = true;
+            this.lblfdate.Font = new System.Drawing.Font("Tahoma", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblfdate.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
+            this.lblfdate.Location = new System.Drawing.Point(4, 13);
+            this.lblfdate.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblfdate.Name = "lblfdate";
+            this.lblfdate.Size = new System.Drawing.Size(62, 25);
+            this.lblfdate.TabIndex = 0;
+            this.lblfdate.Text = "Date";
+            // 
+            // dtpfdate
+            // 
+            this.dtpfdate.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.dtpfdate.CalendarFont = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.dtpfdate.CustomFormat = "dd-MM-yyyy";
+            this.dtpfdate.Font = new System.Drawing.Font("Tahoma", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.dtpfdate.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
+            this.dtpfdate.Location = new System.Drawing.Point(94, 9);
+            this.dtpfdate.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.dtpfdate.Name = "dtpfdate";
+            this.dtpfdate.Size = new System.Drawing.Size(168, 33);
+            this.dtpfdate.TabIndex = 0;
+            this.dtpfdate.KeyDown += new System.Windows.Forms.KeyEventHandler(this.dtpfdate_KeyDown);
+            // 
+            // lblhyp
+            // 
+            this.lblhyp.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.lblhyp.AutoSize = true;
+            this.lblhyp.Font = new System.Drawing.Font("Tahoma", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblhyp.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
+            this.lblhyp.Location = new System.Drawing.Point(270, 13);
+            this.lblhyp.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblhyp.Name = "lblhyp";
+            this.lblhyp.Size = new System.Drawing.Size(12, 25);
+            this.lblhyp.TabIndex = 4;
+            this.lblhyp.Text = "-";
+            // 
+            // cmdList
+            // 
+            this.cmdList.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
+            this.cmdList.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(191)))), ((int)(((byte)(219)))), ((int)(((byte)(254)))));
+            this.cmdList.Font = new System.Drawing.Font("Tahoma", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cmdList.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(41)))), ((int)(((byte)(66)))), ((int)(((byte)(122)))));
+            this.cmdList.Location = new System.Drawing.Point(839, 54);
+            this.cmdList.Margin = new System.Windows.Forms.Padding(1);
+            this.cmdList.Name = "cmdList";
+            this.cmdList.Size = new System.Drawing.Size(118, 49);
+            this.cmdList.TabIndex = 6;
+            this.cmdList.Text = "&View";
+            this.cmdList.UseVisualStyleBackColor = false;
+            this.cmdList.Click += new System.EventHandler(this.cmdprint_Click);
+            // 
+            // cmdexit
+            // 
+            this.cmdexit.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
+            this.cmdexit.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(191)))), ((int)(((byte)(219)))), ((int)(((byte)(254)))));
+            this.cmdexit.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            this.cmdexit.Font = new System.Drawing.Font("Tahoma", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cmdexit.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(41)))), ((int)(((byte)(66)))), ((int)(((byte)(122)))));
+            this.cmdexit.Location = new System.Drawing.Point(976, 54);
+            this.cmdexit.Margin = new System.Windows.Forms.Padding(1);
+            this.cmdexit.Name = "cmdexit";
+            this.cmdexit.Size = new System.Drawing.Size(118, 49);
+            this.cmdexit.TabIndex = 8;
+            this.cmdexit.Text = "&Exit";
+            this.cmdexit.UseVisualStyleBackColor = false;
+            this.cmdexit.Click += new System.EventHandler(this.cmdexit_Click);
+            // 
+            // label6
+            // 
+            this.label6.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.label6.AutoSize = true;
+            this.label6.Font = new System.Drawing.Font("Tahoma", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label6.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
+            this.label6.Location = new System.Drawing.Point(457, 13);
+            this.label6.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(113, 25);
+            this.label6.TabIndex = 4;
+            this.label6.Text = "Customer";
+            // 
+            // lblCompany
+            // 
+            this.lblCompany.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblCompany.AutoSize = true;
+            this.lblCompany.Font = new System.Drawing.Font("Tahoma", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblCompany.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
+            this.lblCompany.Location = new System.Drawing.Point(826, 13);
+            this.lblCompany.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblCompany.Name = "lblCompany";
+            this.lblCompany.Size = new System.Drawing.Size(110, 25);
+            this.lblCompany.TabIndex = 30;
+            this.lblCompany.Text = "Company";
+            // 
+            // cboCompany
+            // 
+            this.cboCompany.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.cboCompany.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
+            this.cboCompany.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
+            this.tableLayoutPanel1.SetColumnSpan(this.cboCompany, 2);
+            this.cboCompany.DataSource = this.companyViewBindingSource;
+            this.cboCompany.DisplayMember = "com_name";
+            this.cboCompany.Font = new System.Drawing.Font("Tahoma", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cboCompany.FormattingEnabled = true;
+            this.cboCompany.Location = new System.Drawing.Point(979, 9);
+            this.cboCompany.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.cboCompany.Name = "cboCompany";
+            this.cboCompany.Size = new System.Drawing.Size(230, 33);
+            this.cboCompany.TabIndex = 3;
+            this.cboCompany.ValueMember = "com_id";
+            // 
+            // companyViewBindingSource
+            // 
+            this.companyViewBindingSource.DataSource = typeof(standard.classes.company);
+            // 
+            // lblBillNo
+            // 
+            this.lblBillNo.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblBillNo.AutoSize = true;
+            this.lblBillNo.Font = new System.Drawing.Font("Tahoma", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblBillNo.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
+            this.lblBillNo.Location = new System.Drawing.Point(457, 65);
+            this.lblBillNo.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.lblBillNo.Name = "lblBillNo";
+            this.lblBillNo.Size = new System.Drawing.Size(73, 25);
+            this.lblBillNo.TabIndex = 31;
+            this.lblBillNo.Text = "BillNo";
+            // 
+            // txtSearchBillNo
+            // 
+            this.txtSearchBillNo.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.txtSearchBillNo.Location = new System.Drawing.Point(596, 61);
+            this.txtSearchBillNo.Name = "txtSearchBillNo";
+            this.txtSearchBillNo.Size = new System.Drawing.Size(94, 33);
+            this.txtSearchBillNo.TabIndex = 7;
+            this.txtSearchBillNo.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtSearchBillNo_KeyDown_1);
+            // 
+            // cboCityView
+            // 
+            this.cboCityView.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.cboCityView.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
+            this.cboCityView.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
+            this.cboCityView.DataSource = this.ledgermasteCityViewrBindingSource;
+            this.cboCityView.DisplayMember = "led_address2";
+            this.cboCityView.Font = new System.Drawing.Font("Tahoma", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cboCityView.FormattingEnabled = true;
+            this.cboCityView.Location = new System.Drawing.Point(520, 5);
+            this.cboCityView.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.cboCityView.Name = "cboCityView";
+            this.cboCityView.Size = new System.Drawing.Size(230, 33);
+            this.cboCityView.TabIndex = 3;
+            this.cboCityView.ValueMember = "led_id";
+            this.cboCityView.Visible = false;
+            // 
+            // ledgermasteCityViewrBindingSource
+            // 
+            this.ledgermasteCityViewrBindingSource.DataSource = typeof(standard.classes.ledgermaster);
+            // 
+            // label5
+            // 
+            this.label5.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.label5.AutoSize = true;
+            this.label5.Font = new System.Drawing.Font("Tahoma", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label5.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
+            this.label5.Location = new System.Drawing.Point(457, 0);
+            this.label5.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(48, 52);
+            this.label5.TabIndex = 2;
+            this.label5.Text = "City";
+            this.label5.Visible = false;
+            // 
+            // smtotamountDataGridViewTextBoxColumn
+            // 
+            this.smtotamountDataGridViewTextBoxColumn.DataPropertyName = "sm_totamount";
+            dataGridViewCellStyle17.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            dataGridViewCellStyle17.Format = "N2";
+            this.smtotamountDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle17;
+            this.smtotamountDataGridViewTextBoxColumn.HeaderText = "Total Amount";
+            this.smtotamountDataGridViewTextBoxColumn.Name = "smtotamountDataGridViewTextBoxColumn";
+            this.smtotamountDataGridViewTextBoxColumn.ReadOnly = true;
+            this.smtotamountDataGridViewTextBoxColumn.Width = 130;
+            // 
+            // smprofitDataGridViewTextBoxColumn
+            // 
+            this.smprofitDataGridViewTextBoxColumn.DataPropertyName = "sm_profit";
+            dataGridViewCellStyle18.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            dataGridViewCellStyle18.Format = "N2";
+            this.smprofitDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle18;
+            this.smprofitDataGridViewTextBoxColumn.HeaderText = "Profit";
+            this.smprofitDataGridViewTextBoxColumn.Name = "smprofitDataGridViewTextBoxColumn";
+            this.smprofitDataGridViewTextBoxColumn.Width = 130;
+            // 
+            // lblImportDate
+            // 
+            this.lblImportDate.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblImportDate.AutoSize = true;
+            this.lblImportDate.Font = new System.Drawing.Font("Tahoma", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblImportDate.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
+            this.lblImportDate.Location = new System.Drawing.Point(826, 13);
+            this.lblImportDate.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblImportDate.Name = "lblImportDate";
+            this.lblImportDate.Size = new System.Drawing.Size(110, 25);
+            this.lblImportDate.TabIndex = 30;
+            this.lblImportDate.Text = "Import Date";
+            // 
+            // importDate
+            // 
+            this.importDate.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.importDate.CustomFormat = "dd-MM-yyyy";
+            this.importDate.Font = new System.Drawing.Font("Tahoma", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.importDate.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
+            this.importDate.Location = new System.Drawing.Point(150, 9);
+            this.importDate.Margin = new System.Windows.Forms.Padding(0);
+            this.importDate.Name = "importDate";
+            this.importDate.Size = new System.Drawing.Size(159, 33);
+            this.importDate.TabIndex = 1;
+            this.importDate.KeyDown += new System.Windows.Forms.KeyEventHandler(this.dtptdate_KeyDown);
+            
+            // 
             // frmSales
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(20F, 39F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(13F, 25F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(191)))), ((int)(((byte)(219)))), ((int)(((byte)(254)))));
             this.ClientSize = new System.Drawing.Size(1658, 749);

@@ -62,10 +62,10 @@ namespace standard.report
                              select new { a.led_id, a.led_name, a.led_address2 });
 
                 ledgermasterBindingSource.DataSource = sup.OrderBy(x => x.led_address2);
-                uspledgermasterSelectResultBindingSource1.DataSource = db.usp_ledgermasterSelect(null, "Ledger", null, null, null, null);
+                uspledgermasterSelectResultBindingSource1.DataSource = db.usp_ledgermasterSelect(null, "Ledger", null, null, null, null, null);
                 ledgermasterCityBindingSource.DataSource = sup.Select(x => x.led_address2).Distinct();
                 uspledgermasterCustomerCityBindingSource.DataSource = cus.Select(x => x.led_address2).Distinct();
-                uspledgermasterCustomerSelectResultBindingSource.DataSource = db.usp_ledgermasterSelect(null, "CUSTOMER", null, null, null, null);
+                uspledgermasterCustomerSelectResultBindingSource.DataSource = db.usp_ledgermasterSelect(null, "CUSTOMER", null, null, null, null, null);
                 routeBindingSource.DataSource = db.routes.Select((route rt) => rt);
                 vehicleBindingSource.DataSource = db.vehicles.Select((vehicle vh) => vh);
                 foreach (var li in sup)
@@ -221,7 +221,7 @@ namespace standard.report
                         //rparam.Add(new ReportParameter("partyname", cboName.Text));
                         reportViewer1.RefreshReport();
                         var data = db.usp_purchasemasterSelect(null, ledid, dtpfdate.Value, null, null, null);
-                        var ledgerData = db.usp_ledgermasterSelect(ledid, null, null, null, null, null);
+                        var ledgerData = db.usp_ledgermasterSelect(ledid, null, null, null, null, null, null);
                         reportViewer1.LocalReport.ReportEmbeddedResource = "standard.report.rptPurchaseSummary.rdlc";
                         //reportViewer1.LocalReport.SetParameters(rparam);
                         ReportDataSource reportsource = new ReportDataSource("DataSet1", data.ToList());
@@ -244,7 +244,7 @@ namespace standard.report
                     if (_ReportType == "Summary")
                     {
                         var data = db.usp_salesmasterSelect(null, ledid, dtpfdate.Value, null, null, null, null);
-                        var ledgerData = db.usp_ledgermasterSelect(ledid, null, null, null, null, null);
+                        var ledgerData = db.usp_ledgermasterSelect(ledid, null, null, null, null, null, null);
                         reportViewer1.LocalReport.ReportEmbeddedResource = "standard.report.rptSalesSummary.rdlc";
                         ReportDataSource reportsource = new ReportDataSource("DataSet1", data.ToList());
                         ReportDataSource reportsource_Ledger = new ReportDataSource("DataSet2", ledgerData.ToList());
@@ -282,7 +282,7 @@ namespace standard.report
                     //rparam.Add(new ReportParameter("partyname", cboName.Text));
                     reportViewer1.RefreshReport();
                     var data = db.usp_LedgerOutstandingRpt(ledid, dtpfdate.Value, null);
-                    var ledgerData = db.usp_ledgermasterSelect(ledid, null, null, null, null, null);
+                    var ledgerData = db.usp_ledgermasterSelect(ledid, null, null, null, null, null, null);
                     reportViewer1.LocalReport.ReportEmbeddedResource = "standard.report.rptLedgersOutstanding.rdlc";
                     //reportViewer1.LocalReport.SetParameters(rparam);
                     ReportDataSource reportsource = new ReportDataSource("DataSet1", data.ToList());
@@ -304,7 +304,7 @@ namespace standard.report
                     //rparam.Add(new ReportParameter("partyname", cboName.Text));
                     reportViewer1.RefreshReport();
                     var data = db.usp_SupplierOutstandingRpt(ledid, dtpfdate.Value, null);
-                    var ledgerData = db.usp_ledgermasterSelect(ledid, null, null, null, null, null);
+                    var ledgerData = db.usp_ledgermasterSelect(ledid, null, null, null, null, null, null);
                     reportViewer1.LocalReport.ReportEmbeddedResource = "standard.report.rptSupplierOutstanding.rdlc";
                     //reportViewer1.LocalReport.SetParameters(rparam);
                     ReportDataSource reportsource = new ReportDataSource("DataSet1", data.ToList());
@@ -653,7 +653,7 @@ namespace standard.report
                     }
 
                     // Get distinct city names
-                    var cityList = inventoryDataContext.usp_ledgermasterSelect(null, null, null, null, null, num)
+                    var cityList = inventoryDataContext.usp_ledgermasterSelect(null, null, null, null, null, num, null)
                                       .Select(x => x.led_address2) // Select only city names
                                       .Distinct()  // Remove duplicates
                                       .ToList();
