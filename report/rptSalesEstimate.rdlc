@@ -1138,7 +1138,7 @@
                                 <Paragraph>
                                   <TextRuns>
                                     <TextRun>
-                                      <Value>=FormatNumber(Fields!sd_taxamount.Value,2)</Value>
+                                      <Value>=FormatNumber(Sum(Fields!sd_taxamount.Value),2)</Value>
                                       <Style />
                                     </TextRun>
                                   </TextRuns>

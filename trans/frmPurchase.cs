@@ -340,15 +340,11 @@ namespace standard.trans
 
         private void LoadData()
         {
-            dtppurdate.MinDate = global.fdate;
-            dtppurdate.MaxDate = global.sysdate;
-            dtppurdate.Value = global.sysdate;
-            dtpfdate.MinDate = global.fdate;
-            dtpfdate.MaxDate = global.sysdate;
-            dtptdate.MinDate = global.fdate;
-            dtptdate.MaxDate = global.sysdate;
-            TimeSpan value = new TimeSpan(30, 0, 0, 0, 0);
-            dtpfdate.Value = dtpfdate.Value.Subtract(value);
+            dtppurdate.MinDate = DateTimePicker.MinimumDateTime;
+            dtppurdate.MaxDate = DateTime.MaxValue; // Or DateTime.Today.AddYears(1)
+            dtppurdate.Value = DateTime.Today;
+            dtpfdate.Value = DateTime.Today.AddDays(-30);
+
             InventoryDataContext inventoryDataContext = new InventoryDataContext();
             using (inventoryDataContext)
             {
@@ -376,6 +372,7 @@ namespace standard.trans
                 long? no = 0L;
                 inventoryDataContext.usp_getYearNo("pur_no", global.sysdate, ref no, null);
                 txtpurno.Text = Convert.ToString(no);
+                usppurchasemasterSelectResultBindingSource.DataSource = inventoryDataContext.usp_purchasemasterSelect(null, Convert.ToInt32(cbopurfrom.SelectedValue), dtpfdate.Value.Date, dtppurdate.Value.Date, null, null);
             }
         }
 
@@ -989,7 +986,7 @@ namespace standard.trans
             //    txtDiscountPercentage.Text = $"{num:0.00}";
             //}                      
             decimal total = d1 + frieght + wages + taxAmount - discountRate;
-            txttotamt.Text = $"{Math.Round(total, 0, MidpointRounding.AwayFromZero):0.00}";
+            txttotamt.Text = $"{Math.Ceiling(total):0.00}";
             list2.Add(txttotamt.Value);
             list2.Add(0m);
             list2.Add(0m);
@@ -1416,7 +1413,7 @@ namespace standard.trans
                     inventoryDataContext.usp_purchasemasterUpdate(master.pm_id, purchasemaster.pm_no, purchasemaster.pm_date, purchasemaster.led_id, purchasemaster.pm_totqty, purchasemaster.pm_totamount, purchasemaster.pm_discountpercentage, purchasemaster.pm_discountamount, purchasemaster.pm_wages, purchasemaster.pm_frieght, purchasemaster.pm_billno, purchasemaster.com_id, global.ucode, global.sysdate, purchasemaster.pm_desc, purchasemaster.pm_isclose, purchasemaster.pm_paid, purchasemaster.pm_totaltaxamount, purchasemaster.pm_isimport, guid);
                 }
 
-                string companyName = master.com_id == 2 ? "Jeyakkodi Test Company" : master.com_id == 1 ? "Saamy Test Company" : "Unknown Company";
+                string companyName = master.com_id == 2 ? "JEYAKKODI TRADERS 2025-2026" : master.com_id == 1 ? "SAAMY TRADE LINKS 2025-2026" : "Unknown Company";
                 string purchaseLedger = master.com_id == 2 ? "Purchase GST" : master.com_id == 1 ? "PURCHASES GST" : "Unknown Type";
                 string supplierLedger = master.com_id == 2 ? master.led_name : master.com_id == 1 ? master.led_stlname : null;
                 string supplierGSTIN = master.led_tin ?? "";
@@ -1424,6 +1421,7 @@ namespace standard.trans
                 string partyAddressLine2 = master.led_address1;
                 string partyAddressLine3 = master.led_address2;
                 string RegistrationType = !string.IsNullOrEmpty(supplierGSTIN) ? "Regular" : "Unregistered/Consumer";
+                string vehicleNo = master.led_vehicleno;
                 string action = string.IsNullOrEmpty(guid.ToString()) ? "Create" : "Alter";
                 string state = master.led_state ?? "Tamil Nadu";
                 string godown = "Main Location";
@@ -1432,6 +1430,8 @@ namespace standard.trans
                 string igstLedger = "IGST";
                 string cgstLedger = "CGST";
                 string sgstLedger = "SGST";
+                decimal cgst = Math.Truncate((gstAmount / 2) * 100) / 100;
+                decimal sgst = Math.Truncate((gstAmount / 2) * 100) / 100;
 
                 StringBuilder xml = new StringBuilder();
 
@@ -1466,7 +1466,19 @@ namespace standard.trans
                 xml.AppendLine($"            <STATENAME>{state}</STATENAME>");
                 xml.AppendLine("            <COUNTRYOFRESIDENCE>India</COUNTRYOFRESIDENCE>");
                 xml.AppendLine($"            <GSTREGISTRATIONTYPE>{RegistrationType}</GSTREGISTRATIONTYPE>");
+                xml.AppendLine($"            <BASICSHIPVESSELNO>{vehicleNo}</BASICSHIPVESSELNO>");
+
                 // Buyer (Bill To) Address
+                // Buyer (Bill To) Address
+                xml.AppendLine($"            <PARTYLEDGERNAME>{supplierLedger}</PARTYLEDGERNAME>");
+                xml.AppendLine($"            <PARTYMAILINGNAME>{supplierLedger}</PARTYMAILINGNAME>");
+                xml.AppendLine("             <ADDRESS.LIST TYPE=\"String\">");
+                xml.AppendLine($"              <ADDRESS>{partyAddressLine1}</ADDRESS>");
+                xml.AppendLine($"              <ADDRESS>{partyAddressLine2}</ADDRESS>");
+                xml.AppendLine($"              <ADDRESS>{partyAddressLine3}</ADDRESS>");
+                xml.AppendLine($"              <ADDRESS>{state}</ADDRESS>");
+                xml.AppendLine("             </ADDRESS.LIST>");
+
                 xml.AppendLine("            <BASICBUYERADDRESS.LIST TYPE=\"String\">");
                 xml.AppendLine($"              <BASICBUYERADDRESS>{partyAddressLine1}</BASICBUYERADDRESS>");
                 xml.AppendLine($"              <BASICBUYERADDRESS>{partyAddressLine2}</BASICBUYERADDRESS>");
@@ -1500,14 +1512,14 @@ namespace standard.trans
                         xml.AppendLine("      <LEDGERENTRIES.LIST>");
                         xml.AppendLine($"        <LEDGERNAME>{cgstLedger}</LEDGERNAME>");
                         xml.AppendLine("        <ISDEEMEDPOSITIVE>Yes</ISDEEMEDPOSITIVE>");
-                        xml.AppendLine($"        <AMOUNT>-{gstAmount / 2:0.00}</AMOUNT>");
+                        xml.AppendLine($"        <AMOUNT>-{cgst:0.00}</AMOUNT>");
                         xml.AppendLine("      </LEDGERENTRIES.LIST>");
 
                         // SGST Ledger Entry
                         xml.AppendLine("      <LEDGERENTRIES.LIST>");
                         xml.AppendLine($"        <LEDGERNAME>{sgstLedger}</LEDGERNAME>");
                         xml.AppendLine("        <ISDEEMEDPOSITIVE>Yes</ISDEEMEDPOSITIVE>");
-                        xml.AppendLine($"        <AMOUNT>-{gstAmount / 2:0.00}</AMOUNT>");
+                        xml.AppendLine($"        <AMOUNT>-{sgst:0.00}</AMOUNT>");
                         xml.AppendLine("      </LEDGERENTRIES.LIST>");
 
                     }
@@ -1575,7 +1587,7 @@ namespace standard.trans
                         xml.AppendLine("              <BATCHALLOCATIONS.LIST>");
                         xml.AppendLine($"                <GODOWNNAME>{godown}</GODOWNNAME>");
                         xml.AppendLine("                <BATCHNAME>Primary Batch</BATCHNAME>");
-                        xml.AppendLine($"                <AMOUNT>{item.pd_amount:0.00}</AMOUNT>");
+                        xml.AppendLine($"                <AMOUNT>-{item.pd_amount:0.00}</AMOUNT>");
                         xml.AppendLine($"                <ACTUALQTY>{item.pd_qty} Bag</ACTUALQTY>");
                         xml.AppendLine($"                <BILLEDQTY>{item.pd_qty} Bag</BILLEDQTY>");
                         xml.AppendLine($"                <RATE>{item.pd_prate:0.00}/Bag</RATE>");
@@ -1612,7 +1624,25 @@ namespace standard.trans
 
                 decimal itemTotal = details.Sum(i => Math.Round((i.item_fullname == "CHILLIES IN KGS" ? i.pd_unitvalue * i.pd_prate : i.pd_qty * i.pd_prate), 2));
 
-                decimal roundOff = Math.Round((itemTotal + gstAmount), 0, MidpointRounding.AwayFromZero) - (itemTotal + gstAmount);
+                // Add GST
+                decimal finalTotal = 0;
+                if (gstAmount > 0)
+                {
+
+                    if (state == "Tamil Nadu")
+                    {
+                        finalTotal = itemTotal + cgst + sgst;
+                    }
+                    else
+                    {
+                        finalTotal = itemTotal + gstAmount;                    
+                    }
+                }     // Always round UP
+                decimal roundedTotal = Math.Ceiling(finalTotal);
+
+                // Calculate round off difference
+                decimal roundOff = roundedTotal - finalTotal;
+
                 if (roundOff != 0)
                 {
                     xml.AppendLine("      <LEDGERENTRIES.LIST>");
@@ -1621,6 +1651,7 @@ namespace standard.trans
                     xml.AppendLine($"        <AMOUNT>-{roundOff:0.00}</AMOUNT>");
                     xml.AppendLine("      </LEDGERENTRIES.LIST>");
                 }
+
 
                 xml.AppendLine("          </VOUCHER>");
                 xml.AppendLine("        </TALLYMESSAGE>");
@@ -1751,7 +1782,7 @@ namespace standard.trans
                     return;
                 }
 
-                DialogResult result = MessageBox.Show( $"Are you sure to Import Purchase on {importDate.Value:dd-MM-yyyy} to Tally?", "Confirm", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                DialogResult result = MessageBox.Show($"Are you sure to Import Purchase on {importDate.Value:dd-MM-yyyy} to Tally?", "Confirm", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                 if (result != DialogResult.Yes)
                 {
                     return; // User cancelled
@@ -3050,7 +3081,7 @@ namespace standard.trans
             this.tableLayoutPanel1.Controls.Add(this.cmdList, 7, 1);
             this.tableLayoutPanel1.Controls.Add(this.lblImportDate, 8, 0);
             this.tableLayoutPanel1.Controls.Add(this.importDate, 9, 0);
-            this.tableLayoutPanel1.Controls.Add(this.importButton, 10,0);
+            this.tableLayoutPanel1.Controls.Add(this.importButton, 10, 0);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel1.Location = new System.Drawing.Point(5, 59);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";

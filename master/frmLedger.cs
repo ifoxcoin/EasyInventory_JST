@@ -3,9 +3,10 @@ using standard.classes;
 using System;
 using System.ComponentModel;
 using System.Data.Linq;
-using System.Drawing;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Windows.Forms;
+using Excel = Microsoft.Office.Interop.Excel;
 
 namespace standard.master
 {
@@ -77,8 +78,6 @@ namespace standard.master
 
         private TextBox txtPin;
 
-        private Label label12;
-
         private Label label15;
 
         private TextBox txtTransport;
@@ -91,15 +90,9 @@ namespace standard.master
 
         private Label label19;
 
-        private Label label21;
-
         private TextBox txtOwnerName;
 
-        private TextBox txtManagerName;
-
         private TextBox txtOwnerPhone;
-
-        private TextBox txtManagerPhone;
 
         private TextBox txtTin;
 
@@ -123,8 +116,6 @@ namespace standard.master
 
         private BindingSource ledgermasterBindingSource;
 
-        private Label label23;
-
         private decimalbox txtDisPer;
 
         private Label label24;
@@ -133,7 +124,6 @@ namespace standard.master
 
         private Label lblCount;
         private CheckBox cbIsFreight;
-        private Label lblAreaCode;
         private Label lblDeliveryOrder;
         private ComboBox cboAreaCode;
         private BindingSource routeBindingSource;
@@ -192,6 +182,11 @@ namespace standard.master
         private TextBox txtSTLPartyName;
         private TextBox textBox1;
         private Label label14;
+        private ProgressBar progressBar1;
+        private TableLayoutPanel tableLayoutPanel1;
+        private Button button1;
+        private Button button2;
+        private Label lblProgress;
         private TextBox txtCode;
 
         public frmLedger()
@@ -243,8 +238,8 @@ namespace standard.master
             txtTransport.Text = string.Empty;
             txtOwnerName.Text = string.Empty;
             txtOwnerPhone.Text = string.Empty;
-            txtManagerName.Text = string.Empty;
-            txtManagerPhone.Text = string.Empty;
+            //txtManagerName.Text = string.Empty;
+            //txtManagerPhone.Text = string.Empty;
             cboAreaCode.SelectedIndex = 0;
             cboVehicleNo.SelectedIndex = 0;
             txtDeliveryOrder.Text = string.Empty;
@@ -321,8 +316,8 @@ namespace standard.master
                     txtTransport.Text = Convert.ToString(item.led_transport);
                     txtOwnerName.Text = Convert.ToString(item.led_ownername);
                     txtOwnerPhone.Text = Convert.ToString(item.led_ownerphone);
-                    txtManagerName.Text = Convert.ToString(item.led_managername);
-                    txtManagerPhone.Text = Convert.ToString(item.led_managerphone);
+                    //txtManagerName.Text = Convert.ToString(item.led_managername);
+                    //txtManagerPhone.Text = Convert.ToString(item.led_managerphone);
                     cboAreaCode.Text = item.rt_name;
                     cboVehicleNo.Text = item.vh_number;
                     cboratetype.Text = item.led_ratetype;
@@ -381,12 +376,12 @@ namespace standard.master
                 ledgermaster.led_transport = txtTransport.Text.Trim();
                 ledgermaster.led_ownername = txtOwnerName.Text.Trim();
                 ledgermaster.led_ownerphone = txtOwnerPhone.Text.Trim();
-                ledgermaster.led_managername = txtManagerName.Text.Trim();
-                ledgermaster.led_managerphone = txtManagerPhone.Text.Trim();
+                //ledgermaster.led_managername = txtManagerName.Text.Trim();
+                //ledgermaster.led_managerphone = txtManagerPhone.Text.Trim();
                 ledgermaster.rt_id = Convert.ToInt64(cboAreaCode.SelectedValue);
                 ledgermaster.vh_id = Convert.ToInt64(cboVehicleNo.SelectedValue);
                 ledgermaster.led_deliveryorder = txtDeliveryOrder.Text.Trim();
-                ledgermaster.led_vehicleno = txtVehicleNo.Text.Trim();
+                ledgermaster.led_vehicleno = cboVehicleNo.Text.Trim();
                 ledgermaster.led_agid = Convert.ToInt32(cboReference.SelectedValue);
                 ledgermaster.led_tin = txtTin.Text.Trim();
                 ledgermaster.led_isfreight = cbIsFreight.Checked;
@@ -441,14 +436,14 @@ namespace standard.master
                 {
                     if (MessageBox.Show("Are you sure to save?", "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.No)
                     {
-                        inventoryDataContext.usp_ledgermasterInsert(ledgermaster.led_agid, ledgermaster.led_accountcode, ledgermaster.led_accounttype, ledgermaster.led_name, ledgermaster.led_stlname, ledgermaster.led_address, ledgermaster.led_address1, ledgermaster.led_address2, ledgermaster.led_shippingaddress1, ledgermaster.led_shippingaddress2, ledgermaster.led_state, ledgermaster.led_tname, ledgermaster.led_taddress, ledgermaster.led_taddress1, ledgermaster.led_taddress2, ledgermaster.led_pincode, ledgermaster.led_transport, ledgermaster.led_ownerphone, ledgermaster.led_ownername, ledgermaster.led_managername, ledgermaster.led_managerphone, ledgermaster.led_deliveryorder, ledgermaster.led_vehicleno, ledgermaster.led_tin, ledgermaster.led_isfreight, ledgermaster.led_check, ledgermaster.led_cst, ledgermaster.led_refno, global.ucode, global.comid, ledgermaster.rt_id, ledgermaster.vh_id, global.sysdate, ledgermaster.led_ratetype, ledgermaster.led_disper);
+                        inventoryDataContext.usp_ledgermasterInsert(ledgermaster.led_agid, ledgermaster.led_accountcode, ledgermaster.led_accounttype, ledgermaster.led_name, ledgermaster.led_stlname, ledgermaster.led_address, ledgermaster.led_address1, ledgermaster.led_address2, ledgermaster.led_shippingaddress1, ledgermaster.led_shippingaddress2, ledgermaster.led_state, ledgermaster.led_tname, ledgermaster.led_taddress, ledgermaster.led_taddress1, ledgermaster.led_taddress2, ledgermaster.led_pincode, ledgermaster.led_transport, ledgermaster.led_ownerphone, ledgermaster.led_ownername, "", "", ledgermaster.led_deliveryorder, ledgermaster.led_vehicleno, ledgermaster.led_tin, ledgermaster.led_isfreight, ledgermaster.led_check, ledgermaster.led_cst, ledgermaster.led_refno, global.ucode, global.comid, ledgermaster.rt_id, ledgermaster.vh_id, global.sysdate, ledgermaster.led_ratetype, ledgermaster.led_disper);
                         MessageBox.Show("Record saved successfully...", "Information", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
                         goto IL_0521;
                     }
                 }
                 else if (MessageBox.Show("Are you sure to update?", "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.No)
                 {
-                    inventoryDataContext.usp_ledgermasterUpdate(id, ledgermaster.led_agid, ledgermaster.led_accountcode, ledgermaster.led_accounttype, ledgermaster.led_name, ledgermaster.led_stlname, ledgermaster.led_address, ledgermaster.led_address1, ledgermaster.led_shippingaddress1, ledgermaster.led_shippingaddress2, ledgermaster.led_address2, ledgermaster.led_state, ledgermaster.led_tname, ledgermaster.led_taddress, ledgermaster.led_taddress1, ledgermaster.led_taddress2, ledgermaster.led_pincode, ledgermaster.led_transport, ledgermaster.led_ownerphone, ledgermaster.led_ownername, ledgermaster.led_managername, ledgermaster.led_managerphone, ledgermaster.led_deliveryorder, ledgermaster.led_vehicleno, ledgermaster.led_tin, ledgermaster.led_isfreight, ledgermaster.led_check, ledgermaster.led_cst, ledgermaster.led_refno, global.ucode, global.comid, ledgermaster.rt_id, ledgermaster.vh_id, global.sysdate, ledgermaster.led_ratetype, ledgermaster.led_disper);
+                    inventoryDataContext.usp_ledgermasterUpdate(id, ledgermaster.led_agid, ledgermaster.led_accountcode, ledgermaster.led_accounttype, ledgermaster.led_name, ledgermaster.led_stlname, ledgermaster.led_address, ledgermaster.led_address1, ledgermaster.led_shippingaddress1, ledgermaster.led_shippingaddress2, ledgermaster.led_address2, ledgermaster.led_state, ledgermaster.led_tname, ledgermaster.led_taddress, ledgermaster.led_taddress1, ledgermaster.led_taddress2, ledgermaster.led_pincode, ledgermaster.led_transport, ledgermaster.led_ownerphone, ledgermaster.led_ownername, "" , "", ledgermaster.led_deliveryorder, ledgermaster.led_vehicleno, ledgermaster.led_tin, ledgermaster.led_isfreight, ledgermaster.led_check, ledgermaster.led_cst, ledgermaster.led_refno, global.ucode, global.comid, ledgermaster.rt_id, ledgermaster.vh_id, global.sysdate, ledgermaster.led_ratetype, ledgermaster.led_disper);
                     MessageBox.Show("Record updated successfully...", "Information", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
                     goto IL_0521;
                 }
@@ -704,10 +699,8 @@ namespace standard.master
             this.ledudateDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.uspledgermasterSelectResultBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.tblEntry = new System.Windows.Forms.TableLayoutPanel();
+            this.progressBar1 = new System.Windows.Forms.ProgressBar();
             this.txtSTLPartyName = new System.Windows.Forms.TextBox();
-            this.textBox1 = new System.Windows.Forms.TextBox();
-            this.comboBox1 = new System.Windows.Forms.ComboBox();
-            this.routeBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.txtPartyName = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.label19 = new System.Windows.Forms.Label();
@@ -720,20 +713,8 @@ namespace standard.master
             this.txtTamilPartyName = new System.Windows.Forms.TextBox();
             this.cboratetype = new System.Windows.Forms.ComboBox();
             this.label22 = new System.Windows.Forms.Label();
-            this.txtManagerName = new System.Windows.Forms.TextBox();
-            this.txtManagerPhone = new System.Windows.Forms.TextBox();
-            this.label21 = new System.Windows.Forms.Label();
-            this.lbltamil = new System.Windows.Forms.Label();
-            this.cbIsFreight = new System.Windows.Forms.CheckBox();
-            this.txtCst = new System.Windows.Forms.TextBox();
-            this.txtDisPer = new mylib.decimalbox(this.components);
-            this.label23 = new System.Windows.Forms.Label();
-            this.label12 = new System.Windows.Forms.Label();
             this.txtTransport = new System.Windows.Forms.TextBox();
-            this.txtVehicleNo = new System.Windows.Forms.TextBox();
             this.label6 = new System.Windows.Forms.Label();
-            this.lblAreaCode = new System.Windows.Forms.Label();
-            this.cboAreaCode = new System.Windows.Forms.ComboBox();
             this.txtTin = new System.Windows.Forms.TextBox();
             this.chkCheck = new System.Windows.Forms.CheckBox();
             this.label9 = new System.Windows.Forms.Label();
@@ -768,24 +749,38 @@ namespace standard.master
             this.lblref = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.label14 = new System.Windows.Forms.Label();
+            this.txtVehicleNo = new System.Windows.Forms.TextBox();
+            this.cboAreaCode = new System.Windows.Forms.ComboBox();
+            this.routeBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.txtDisPer = new mylib.decimalbox(this.components);
+            this.txtCst = new System.Windows.Forms.TextBox();
+            this.lbltamil = new System.Windows.Forms.Label();
+            this.cbIsFreight = new System.Windows.Forms.CheckBox();
+            this.cboGridReference = new System.Windows.Forms.ComboBox();
+            this.ledgermasterBindingSource1 = new System.Windows.Forms.BindingSource(this.components);
+            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
+            this.button1 = new System.Windows.Forms.Button();
+            this.button2 = new System.Windows.Forms.Button();
+            this.lblProgress = new System.Windows.Forms.Label();
+            this.comboBox1 = new System.Windows.Forms.ComboBox();
+            this.textBox1 = new System.Windows.Forms.TextBox();
             this.tblCommand = new System.Windows.Forms.TableLayoutPanel();
             this.cmdclose = new mylib.lightbutton();
             this.btnClear = new mylib.lightbutton();
             this.btnDelete = new mylib.lightbutton();
             this.btnSave = new mylib.lightbutton();
-            this.cboGridReference = new System.Windows.Forms.ComboBox();
-            this.ledgermasterBindingSource1 = new System.Windows.Forms.BindingSource(this.components);
             this.a1Paneltitle.SuspendLayout();
             this.tblMain.SuspendLayout();
             this.tblSearch.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgview)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.uspledgermasterSelectResultBindingSource)).BeginInit();
             this.tblEntry.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.routeBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.vehicleBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ledgermasterBindingSource)).BeginInit();
-            this.tblCommand.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.routeBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ledgermasterBindingSource1)).BeginInit();
+            this.tableLayoutPanel1.SuspendLayout();
+            this.tblCommand.SuspendLayout();
             this.SuspendLayout();
             // 
             // a1Paneltitle
@@ -833,7 +828,7 @@ namespace standard.master
             this.tblMain.Name = "tblMain";
             this.tblMain.RowCount = 5;
             this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 35F));
-            this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 273F));
+            this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 292F));
             this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 45F));
             this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 45F));
@@ -862,7 +857,7 @@ namespace standard.master
             this.tblSearch.Controls.Add(this.label24, 6, 0);
             this.tblSearch.Controls.Add(this.lblSearchAreaCode, 4, 0);
             this.tblSearch.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tblSearch.Location = new System.Drawing.Point(4, 314);
+            this.tblSearch.Location = new System.Drawing.Point(4, 333);
             this.tblSearch.Name = "tblSearch";
             this.tblSearch.RowCount = 1;
             this.tblSearch.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
@@ -1060,7 +1055,7 @@ namespace standard.master
             this.dgview.DefaultCellStyle = dataGridViewCellStyle3;
             this.dgview.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Bold);
             this.dgview.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.dgview.Location = new System.Drawing.Point(4, 360);
+            this.dgview.Location = new System.Drawing.Point(4, 379);
             this.dgview.MultiSelect = false;
             this.dgview.Name = "dgview";
             this.dgview.ReadOnly = true;
@@ -1077,7 +1072,7 @@ namespace standard.master
             dataGridViewCellStyle5.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
             this.dgview.RowsDefaultCellStyle = dataGridViewCellStyle5;
             this.dgview.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgview.Size = new System.Drawing.Size(1223, 288);
+            this.dgview.Size = new System.Drawing.Size(1223, 269);
             this.dgview.TabIndex = 1;
             this.dgview.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgview_CellDoubleClick);
             // 
@@ -1335,9 +1330,8 @@ namespace standard.master
             this.tblEntry.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 150F));
             this.tblEntry.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 200F));
             this.tblEntry.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tblEntry.Controls.Add(this.progressBar1, 6, 8);
             this.tblEntry.Controls.Add(this.txtSTLPartyName, 1, 1);
-            this.tblEntry.Controls.Add(this.textBox1, 0, 9);
-            this.tblEntry.Controls.Add(this.comboBox1, 0, 9);
             this.tblEntry.Controls.Add(this.txtPartyName, 1, 0);
             this.tblEntry.Controls.Add(this.label1, 0, 0);
             this.tblEntry.Controls.Add(this.label19, 4, 4);
@@ -1350,20 +1344,8 @@ namespace standard.master
             this.tblEntry.Controls.Add(this.txtTamilPartyName, 5, 1);
             this.tblEntry.Controls.Add(this.cboratetype, 5, 0);
             this.tblEntry.Controls.Add(this.label22, 4, 0);
-            this.tblEntry.Controls.Add(this.txtManagerName, 6, 0);
-            this.tblEntry.Controls.Add(this.txtManagerPhone, 6, 1);
-            this.tblEntry.Controls.Add(this.label21, 6, 4);
-            this.tblEntry.Controls.Add(this.lbltamil, 4, 6);
-            this.tblEntry.Controls.Add(this.cbIsFreight, 5, 5);
-            this.tblEntry.Controls.Add(this.txtCst, 6, 5);
-            this.tblEntry.Controls.Add(this.txtDisPer, 5, 8);
-            this.tblEntry.Controls.Add(this.label23, 4, 8);
-            this.tblEntry.Controls.Add(this.label12, 6, 2);
             this.tblEntry.Controls.Add(this.txtTransport, 6, 3);
-            this.tblEntry.Controls.Add(this.txtVehicleNo, 6, 8);
             this.tblEntry.Controls.Add(this.label6, 2, 7);
-            this.tblEntry.Controls.Add(this.lblAreaCode, 6, 6);
-            this.tblEntry.Controls.Add(this.cboAreaCode, 6, 7);
             this.tblEntry.Controls.Add(this.txtTin, 3, 8);
             this.tblEntry.Controls.Add(this.chkCheck, 3, 7);
             this.tblEntry.Controls.Add(this.label9, 2, 8);
@@ -1396,22 +1378,41 @@ namespace standard.master
             this.tblEntry.Controls.Add(this.lblref, 0, 3);
             this.tblEntry.Controls.Add(this.label3, 0, 2);
             this.tblEntry.Controls.Add(this.label14, 0, 1);
+            this.tblEntry.Controls.Add(this.txtVehicleNo, 6, 0);
+            this.tblEntry.Controls.Add(this.cboAreaCode, 6, 1);
+            this.tblEntry.Controls.Add(this.txtDisPer, 6, 2);
+            this.tblEntry.Controls.Add(this.txtCst, 6, 4);
+            this.tblEntry.Controls.Add(this.lbltamil, 4, 6);
+            this.tblEntry.Controls.Add(this.cbIsFreight, 5, 5);
+            this.tblEntry.Controls.Add(this.cboGridReference, 6, 5);
+            this.tblEntry.Controls.Add(this.tableLayoutPanel1, 4, 8);
+            this.tblEntry.Controls.Add(this.lblProgress, 5, 8);
+            this.tblEntry.Controls.Add(this.comboBox1, 6, 6);
+            this.tblEntry.Controls.Add(this.textBox1, 6, 7);
             this.tblEntry.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tblEntry.Location = new System.Drawing.Point(4, 40);
             this.tblEntry.Name = "tblEntry";
-            this.tblEntry.RowCount = 10;
+            this.tblEntry.RowCount = 9;
+            this.tblEntry.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
+            this.tblEntry.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 31F));
+            this.tblEntry.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 29F));
             this.tblEntry.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
             this.tblEntry.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
             this.tblEntry.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
             this.tblEntry.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
-            this.tblEntry.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
-            this.tblEntry.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
-            this.tblEntry.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
-            this.tblEntry.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
-            this.tblEntry.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
-            this.tblEntry.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tblEntry.Size = new System.Drawing.Size(1223, 267);
+            this.tblEntry.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 38F));
+            this.tblEntry.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 23F));
+            this.tblEntry.Size = new System.Drawing.Size(1223, 286);
             this.tblEntry.TabIndex = 1;
+            // 
+            // progressBar1
+            // 
+            this.progressBar1.Location = new System.Drawing.Point(1052, 250);
+            this.progressBar1.Margin = new System.Windows.Forms.Padding(2);
+            this.progressBar1.Name = "progressBar1";
+            this.progressBar1.Size = new System.Drawing.Size(169, 34);
+            this.progressBar1.TabIndex = 52;
+            this.progressBar1.Visible = false;
             // 
             // txtSTLPartyName
             // 
@@ -1424,36 +1425,6 @@ namespace standard.master
             this.txtSTLPartyName.Size = new System.Drawing.Size(187, 26);
             this.txtSTLPartyName.TabIndex = 2;
             this.txtSTLPartyName.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtPartyName_KeyDown);
-            // 
-            // textBox1
-            // 
-            this.textBox1.BackColor = System.Drawing.Color.White;
-            this.textBox1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.textBox1.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
-            this.textBox1.Location = new System.Drawing.Point(3, 273);
-            this.textBox1.MaxLength = 50;
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(158, 26);
-            this.textBox1.TabIndex = 42;
-            // 
-            // comboBox1
-            // 
-            this.comboBox1.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
-            this.comboBox1.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
-            this.comboBox1.DataSource = this.routeBindingSource;
-            this.comboBox1.DisplayMember = "rt_name";
-            this.comboBox1.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.comboBox1.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
-            this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Location = new System.Drawing.Point(167, 273);
-            this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(158, 26);
-            this.comboBox1.TabIndex = 40;
-            this.comboBox1.ValueMember = "rt_id";
-            // 
-            // routeBindingSource
-            // 
-            this.routeBindingSource.DataSource = typeof(standard.classes.route);
             // 
             // txtPartyName
             // 
@@ -1556,7 +1527,7 @@ namespace standard.master
             this.txtTamilAdd1.BackColor = System.Drawing.Color.White;
             this.txtTamilAdd1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.txtTamilAdd1.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
-            this.txtTamilAdd1.Location = new System.Drawing.Point(853, 63);
+            this.txtTamilAdd1.Location = new System.Drawing.Point(853, 64);
             this.txtTamilAdd1.MaxLength = 50;
             this.txtTamilAdd1.Name = "txtTamilAdd1";
             this.txtTamilAdd1.Size = new System.Drawing.Size(194, 26);
@@ -1627,143 +1598,6 @@ namespace standard.master
             this.label22.Text = "Rate Type";
             this.label22.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
-            // txtManagerName
-            // 
-            this.txtManagerName.BackColor = System.Drawing.Color.White;
-            this.txtManagerName.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.txtManagerName.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
-            this.txtManagerName.Location = new System.Drawing.Point(1053, 3);
-            this.txtManagerName.MaxLength = 50;
-            this.txtManagerName.Name = "txtManagerName";
-            this.txtManagerName.Size = new System.Drawing.Size(167, 26);
-            this.txtManagerName.TabIndex = 11;
-            this.txtManagerName.Visible = false;
-            this.txtManagerName.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtPartyName_KeyDown);
-            // 
-            // txtManagerPhone
-            // 
-            this.txtManagerPhone.BackColor = System.Drawing.Color.White;
-            this.txtManagerPhone.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.txtManagerPhone.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
-            this.txtManagerPhone.Location = new System.Drawing.Point(1053, 33);
-            this.txtManagerPhone.MaxLength = 50;
-            this.txtManagerPhone.Name = "txtManagerPhone";
-            this.txtManagerPhone.Size = new System.Drawing.Size(167, 26);
-            this.txtManagerPhone.TabIndex = 12;
-            this.txtManagerPhone.Visible = false;
-            this.txtManagerPhone.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtPartyName_KeyDown);
-            // 
-            // label21
-            // 
-            this.label21.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.label21.AutoSize = true;
-            this.label21.BackColor = System.Drawing.Color.Transparent;
-            this.label21.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
-            this.label21.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.label21.Location = new System.Drawing.Point(1053, 126);
-            this.label21.Name = "label21";
-            this.label21.Size = new System.Drawing.Size(32, 18);
-            this.label21.TabIndex = 26;
-            this.label21.Text = "Cst";
-            this.label21.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.label21.Visible = false;
-            // 
-            // lbltamil
-            // 
-            this.lbltamil.BackColor = System.Drawing.Color.White;
-            this.lbltamil.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.tblEntry.SetColumnSpan(this.lbltamil, 2);
-            this.lbltamil.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
-            this.lbltamil.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.lbltamil.Location = new System.Drawing.Point(703, 180);
-            this.lbltamil.Name = "lbltamil";
-            this.tblEntry.SetRowSpan(this.lbltamil, 2);
-            this.lbltamil.Size = new System.Drawing.Size(344, 57);
-            this.lbltamil.TabIndex = 22;
-            // 
-            // cbIsFreight
-            // 
-            this.cbIsFreight.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.cbIsFreight.AutoSize = true;
-            this.cbIsFreight.BackColor = System.Drawing.Color.Transparent;
-            this.cbIsFreight.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
-            this.cbIsFreight.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.cbIsFreight.Location = new System.Drawing.Point(852, 154);
-            this.cbIsFreight.Margin = new System.Windows.Forms.Padding(2);
-            this.cbIsFreight.Name = "cbIsFreight";
-            this.cbIsFreight.Size = new System.Drawing.Size(100, 22);
-            this.cbIsFreight.TabIndex = 31;
-            this.cbIsFreight.Text = "Is Freight";
-            this.cbIsFreight.UseVisualStyleBackColor = false;
-            this.cbIsFreight.KeyDown += new System.Windows.Forms.KeyEventHandler(this.cbIsFreight_KeyDown);
-            // 
-            // txtCst
-            // 
-            this.txtCst.BackColor = System.Drawing.Color.White;
-            this.txtCst.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.txtCst.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
-            this.txtCst.Location = new System.Drawing.Point(1053, 153);
-            this.txtCst.MaxLength = 50;
-            this.txtCst.Name = "txtCst";
-            this.txtCst.Size = new System.Drawing.Size(167, 26);
-            this.txtCst.TabIndex = 23;
-            this.txtCst.Visible = false;
-            this.txtCst.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtPartyName_KeyDown);
-            // 
-            // txtDisPer
-            // 
-            this.txtDisPer.AllowFormat = false;
-            this.txtDisPer.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.txtDisPer.BackColor = System.Drawing.Color.White;
-            this.txtDisPer.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.txtDisPer.DecimalPlaces = 2;
-            this.txtDisPer.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
-            this.txtDisPer.Location = new System.Drawing.Point(854, 244);
-            this.txtDisPer.Margin = new System.Windows.Forms.Padding(4);
-            this.txtDisPer.Name = "txtDisPer";
-            this.txtDisPer.RightAlign = true;
-            this.txtDisPer.Size = new System.Drawing.Size(192, 26);
-            this.txtDisPer.TabIndex = 18;
-            this.txtDisPer.TabStop = false;
-            this.txtDisPer.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.txtDisPer.Value = new decimal(new int[] {
-            0,
-            0,
-            0,
-            0});
-            this.txtDisPer.Visible = false;
-            this.txtDisPer.TextChanged += new System.EventHandler(this.txtDiscount_TextChanged);
-            this.txtDisPer.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtPartyName_KeyDown);
-            // 
-            // label23
-            // 
-            this.label23.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.label23.AutoSize = true;
-            this.label23.BackColor = System.Drawing.Color.Transparent;
-            this.label23.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
-            this.label23.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.label23.Location = new System.Drawing.Point(703, 246);
-            this.label23.Name = "label23";
-            this.label23.Size = new System.Drawing.Size(95, 18);
-            this.label23.TabIndex = 28;
-            this.label23.Text = "Discount %";
-            this.label23.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.label23.Visible = false;
-            // 
-            // label12
-            // 
-            this.label12.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.label12.BackColor = System.Drawing.Color.Transparent;
-            this.label12.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
-            this.label12.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.label12.Location = new System.Drawing.Point(1053, 67);
-            this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(82, 16);
-            this.label12.TabIndex = 28;
-            this.label12.Text = "Transport";
-            this.label12.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.label12.Visible = false;
-            // 
             // txtTransport
             // 
             this.txtTransport.BackColor = System.Drawing.Color.White;
@@ -1777,20 +1611,6 @@ namespace standard.master
             this.txtTransport.Visible = false;
             this.txtTransport.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtPartyName_KeyDown);
             // 
-            // txtVehicleNo
-            // 
-            this.txtVehicleNo.BackColor = System.Drawing.Color.White;
-            this.txtVehicleNo.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.txtVehicleNo.Enabled = false;
-            this.txtVehicleNo.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
-            this.txtVehicleNo.Location = new System.Drawing.Point(1053, 243);
-            this.txtVehicleNo.MaxLength = 50;
-            this.txtVehicleNo.Name = "txtVehicleNo";
-            this.txtVehicleNo.ReadOnly = true;
-            this.txtVehicleNo.Size = new System.Drawing.Size(167, 26);
-            this.txtVehicleNo.TabIndex = 25;
-            this.txtVehicleNo.Visible = false;
-            // 
             // label6
             // 
             this.label6.Anchor = System.Windows.Forms.AnchorStyles.Left;
@@ -1798,51 +1618,18 @@ namespace standard.master
             this.label6.BackColor = System.Drawing.Color.Transparent;
             this.label6.Font = new System.Drawing.Font("Georgia", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label6.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.label6.Location = new System.Drawing.Point(360, 217);
+            this.label6.Location = new System.Drawing.Point(360, 221);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(0, 16);
             this.label6.TabIndex = 2;
             this.label6.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // lblAreaCode
-            // 
-            this.lblAreaCode.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.lblAreaCode.AutoSize = true;
-            this.lblAreaCode.BackColor = System.Drawing.Color.Transparent;
-            this.lblAreaCode.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
-            this.lblAreaCode.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.lblAreaCode.Location = new System.Drawing.Point(1053, 186);
-            this.lblAreaCode.Name = "lblAreaCode";
-            this.lblAreaCode.Size = new System.Drawing.Size(84, 18);
-            this.lblAreaCode.TabIndex = 17;
-            this.lblAreaCode.Text = "Area Code";
-            this.lblAreaCode.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.lblAreaCode.Visible = false;
-            // 
-            // cboAreaCode
-            // 
-            this.cboAreaCode.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
-            this.cboAreaCode.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
-            this.cboAreaCode.DataSource = this.routeBindingSource;
-            this.cboAreaCode.DisplayMember = "rt_name";
-            this.cboAreaCode.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.cboAreaCode.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
-            this.cboAreaCode.FormattingEnabled = true;
-            this.cboAreaCode.Location = new System.Drawing.Point(1053, 213);
-            this.cboAreaCode.Name = "cboAreaCode";
-            this.cboAreaCode.Size = new System.Drawing.Size(167, 26);
-            this.cboAreaCode.TabIndex = 25;
-            this.cboAreaCode.ValueMember = "rt_id";
-            this.cboAreaCode.Visible = false;
-            this.cboAreaCode.SelectedValueChanged += new System.EventHandler(this.cboAreaCode_SelectedValueChanged);
-            this.cboAreaCode.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtPartyName_KeyDown);
             // 
             // txtTin
             // 
             this.txtTin.BackColor = System.Drawing.Color.White;
             this.txtTin.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.txtTin.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
-            this.txtTin.Location = new System.Drawing.Point(503, 243);
+            this.txtTin.Location = new System.Drawing.Point(503, 251);
             this.txtTin.MaxLength = 50;
             this.txtTin.Name = "txtTin";
             this.txtTin.Size = new System.Drawing.Size(194, 26);
@@ -1856,7 +1643,7 @@ namespace standard.master
             this.chkCheck.BackColor = System.Drawing.Color.Transparent;
             this.chkCheck.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
             this.chkCheck.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.chkCheck.Location = new System.Drawing.Point(502, 214);
+            this.chkCheck.Location = new System.Drawing.Point(502, 218);
             this.chkCheck.Margin = new System.Windows.Forms.Padding(2);
             this.chkCheck.Name = "chkCheck";
             this.chkCheck.Size = new System.Drawing.Size(147, 22);
@@ -1872,7 +1659,7 @@ namespace standard.master
             this.label9.BackColor = System.Drawing.Color.Transparent;
             this.label9.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
             this.label9.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.label9.Location = new System.Drawing.Point(360, 246);
+            this.label9.Location = new System.Drawing.Point(360, 258);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(57, 18);
             this.label9.TabIndex = 24;
@@ -1997,7 +1784,7 @@ namespace standard.master
             this.txtPin.BackColor = System.Drawing.Color.White;
             this.txtPin.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.txtPin.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
-            this.txtPin.Location = new System.Drawing.Point(503, 63);
+            this.txtPin.Location = new System.Drawing.Point(503, 64);
             this.txtPin.MaxLength = 50;
             this.txtPin.Name = "txtPin";
             this.txtPin.Size = new System.Drawing.Size(194, 26);
@@ -2076,7 +1863,7 @@ namespace standard.master
             this.txtAdd3.BackColor = System.Drawing.Color.White;
             this.txtAdd3.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.txtAdd3.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
-            this.txtAdd3.Location = new System.Drawing.Point(167, 243);
+            this.txtAdd3.Location = new System.Drawing.Point(167, 251);
             this.txtAdd3.MaxLength = 50;
             this.txtAdd3.Name = "txtAdd3";
             this.txtAdd3.Size = new System.Drawing.Size(187, 26);
@@ -2090,7 +1877,7 @@ namespace standard.master
             this.label11.BackColor = System.Drawing.Color.Transparent;
             this.label11.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
             this.label11.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.label11.Location = new System.Drawing.Point(3, 246);
+            this.label11.Location = new System.Drawing.Point(3, 258);
             this.label11.Name = "label11";
             this.label11.Size = new System.Drawing.Size(38, 18);
             this.label11.TabIndex = 12;
@@ -2116,7 +1903,7 @@ namespace standard.master
             this.lblShippingAdd2.BackColor = System.Drawing.Color.Transparent;
             this.lblShippingAdd2.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
             this.lblShippingAdd2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.lblShippingAdd2.Location = new System.Drawing.Point(3, 216);
+            this.lblShippingAdd2.Location = new System.Drawing.Point(3, 220);
             this.lblShippingAdd2.Name = "lblShippingAdd2";
             this.lblShippingAdd2.Size = new System.Drawing.Size(151, 18);
             this.lblShippingAdd2.TabIndex = 10;
@@ -2234,7 +2021,7 @@ namespace standard.master
             "Customer",
             "Supplier",
             "Agent"});
-            this.cboType.Location = new System.Drawing.Point(167, 63);
+            this.cboType.Location = new System.Drawing.Point(167, 64);
             this.cboType.Name = "cboType";
             this.cboType.Size = new System.Drawing.Size(187, 26);
             this.cboType.TabIndex = 3;
@@ -2284,6 +2071,210 @@ namespace standard.master
             this.label14.Text = "STL Party Name";
             this.label14.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
+            // txtVehicleNo
+            // 
+            this.txtVehicleNo.BackColor = System.Drawing.Color.White;
+            this.txtVehicleNo.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.txtVehicleNo.Enabled = false;
+            this.txtVehicleNo.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
+            this.txtVehicleNo.Location = new System.Drawing.Point(1053, 3);
+            this.txtVehicleNo.MaxLength = 50;
+            this.txtVehicleNo.Name = "txtVehicleNo";
+            this.txtVehicleNo.ReadOnly = true;
+            this.txtVehicleNo.Size = new System.Drawing.Size(167, 26);
+            this.txtVehicleNo.TabIndex = 25;
+            this.txtVehicleNo.Visible = false;
+            // 
+            // cboAreaCode
+            // 
+            this.cboAreaCode.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
+            this.cboAreaCode.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
+            this.cboAreaCode.DataSource = this.routeBindingSource;
+            this.cboAreaCode.DisplayMember = "rt_name";
+            this.cboAreaCode.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.cboAreaCode.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
+            this.cboAreaCode.FormattingEnabled = true;
+            this.cboAreaCode.Location = new System.Drawing.Point(1053, 33);
+            this.cboAreaCode.Name = "cboAreaCode";
+            this.cboAreaCode.Size = new System.Drawing.Size(167, 26);
+            this.cboAreaCode.TabIndex = 25;
+            this.cboAreaCode.ValueMember = "rt_id";
+            this.cboAreaCode.Visible = false;
+            this.cboAreaCode.SelectedValueChanged += new System.EventHandler(this.cboAreaCode_SelectedValueChanged);
+            this.cboAreaCode.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtPartyName_KeyDown);
+            // 
+            // routeBindingSource
+            // 
+            this.routeBindingSource.DataSource = typeof(standard.classes.route);
+            // 
+            // txtDisPer
+            // 
+            this.txtDisPer.AllowFormat = false;
+            this.txtDisPer.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.txtDisPer.BackColor = System.Drawing.Color.White;
+            this.txtDisPer.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.txtDisPer.DecimalPlaces = 2;
+            this.txtDisPer.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
+            this.txtDisPer.Location = new System.Drawing.Point(1054, 65);
+            this.txtDisPer.Margin = new System.Windows.Forms.Padding(4);
+            this.txtDisPer.Name = "txtDisPer";
+            this.txtDisPer.RightAlign = true;
+            this.txtDisPer.Size = new System.Drawing.Size(165, 26);
+            this.txtDisPer.TabIndex = 18;
+            this.txtDisPer.TabStop = false;
+            this.txtDisPer.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.txtDisPer.Value = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
+            this.txtDisPer.Visible = false;
+            this.txtDisPer.TextChanged += new System.EventHandler(this.txtDiscount_TextChanged);
+            this.txtDisPer.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtPartyName_KeyDown);
+            // 
+            // txtCst
+            // 
+            this.txtCst.BackColor = System.Drawing.Color.White;
+            this.txtCst.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.txtCst.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
+            this.txtCst.Location = new System.Drawing.Point(1053, 123);
+            this.txtCst.MaxLength = 50;
+            this.txtCst.Name = "txtCst";
+            this.txtCst.Size = new System.Drawing.Size(167, 26);
+            this.txtCst.TabIndex = 23;
+            this.txtCst.Visible = false;
+            this.txtCst.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtPartyName_KeyDown);
+            // 
+            // lbltamil
+            // 
+            this.lbltamil.BackColor = System.Drawing.Color.White;
+            this.lbltamil.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.tblEntry.SetColumnSpan(this.lbltamil, 2);
+            this.lbltamil.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
+            this.lbltamil.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
+            this.lbltamil.Location = new System.Drawing.Point(703, 180);
+            this.lbltamil.Name = "lbltamil";
+            this.tblEntry.SetRowSpan(this.lbltamil, 2);
+            this.lbltamil.Size = new System.Drawing.Size(344, 57);
+            this.lbltamil.TabIndex = 22;
+            // 
+            // cbIsFreight
+            // 
+            this.cbIsFreight.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.cbIsFreight.AutoSize = true;
+            this.cbIsFreight.BackColor = System.Drawing.Color.Transparent;
+            this.cbIsFreight.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
+            this.cbIsFreight.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
+            this.cbIsFreight.Location = new System.Drawing.Point(852, 154);
+            this.cbIsFreight.Margin = new System.Windows.Forms.Padding(2);
+            this.cbIsFreight.Name = "cbIsFreight";
+            this.cbIsFreight.Size = new System.Drawing.Size(100, 22);
+            this.cbIsFreight.TabIndex = 31;
+            this.cbIsFreight.Text = "Is Freight";
+            this.cbIsFreight.UseVisualStyleBackColor = false;
+            this.cbIsFreight.KeyDown += new System.Windows.Forms.KeyEventHandler(this.cbIsFreight_KeyDown);
+            // 
+            // cboGridReference
+            // 
+            this.cboGridReference.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
+            this.cboGridReference.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
+            this.cboGridReference.DataSource = this.ledgermasterBindingSource1;
+            this.cboGridReference.DisplayMember = "led_name";
+            this.cboGridReference.Enabled = false;
+            this.cboGridReference.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.cboGridReference.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
+            this.cboGridReference.FormattingEnabled = true;
+            this.cboGridReference.Location = new System.Drawing.Point(1053, 153);
+            this.cboGridReference.Name = "cboGridReference";
+            this.cboGridReference.Size = new System.Drawing.Size(129, 26);
+            this.cboGridReference.TabIndex = 2;
+            this.cboGridReference.ValueMember = "led_id";
+            this.cboGridReference.Visible = false;
+            this.cboGridReference.TextChanged += new System.EventHandler(this.cboGridReference_TextChanged);
+            // 
+            // tableLayoutPanel1
+            // 
+            this.tableLayoutPanel1.ColumnCount = 2;
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel1.Controls.Add(this.button1, 0, 0);
+            this.tableLayoutPanel1.Controls.Add(this.button2, 1, 0);
+            this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tableLayoutPanel1.Location = new System.Drawing.Point(702, 250);
+            this.tableLayoutPanel1.Margin = new System.Windows.Forms.Padding(2);
+            this.tableLayoutPanel1.Name = "tableLayoutPanel1";
+            this.tableLayoutPanel1.RowCount = 1;
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 34F));
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(146, 34);
+            this.tableLayoutPanel1.TabIndex = 53;
+            // 
+            // button1
+            // 
+            this.button1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.button1.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
+            this.button1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
+            this.button1.Location = new System.Drawing.Point(2, 2);
+            this.button1.Margin = new System.Windows.Forms.Padding(2);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(69, 30);
+            this.button1.TabIndex = 54;
+            this.button1.Text = "Import";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.btnImport_Click);
+            // 
+            // button2
+            // 
+            this.button2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.button2.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
+            this.button2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
+            this.button2.Location = new System.Drawing.Point(75, 2);
+            this.button2.Margin = new System.Windows.Forms.Padding(2);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(69, 30);
+            this.button2.TabIndex = 54;
+            this.button2.Text = "Export";
+            this.button2.UseVisualStyleBackColor = true;
+            this.button2.Click += new System.EventHandler(this.btnExport_Click);
+            // 
+            // lblProgress
+            // 
+            this.lblProgress.AutoSize = true;
+            this.lblProgress.Dock = System.Windows.Forms.DockStyle.Right;
+            this.lblProgress.Location = new System.Drawing.Point(1048, 248);
+            this.lblProgress.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.lblProgress.Name = "lblProgress";
+            this.lblProgress.Size = new System.Drawing.Size(0, 38);
+            this.lblProgress.TabIndex = 54;
+            // 
+            // comboBox1
+            // 
+            this.comboBox1.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
+            this.comboBox1.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
+            this.comboBox1.DataSource = this.routeBindingSource;
+            this.comboBox1.DisplayMember = "rt_name";
+            this.comboBox1.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.comboBox1.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
+            this.comboBox1.FormattingEnabled = true;
+            this.comboBox1.Location = new System.Drawing.Point(1053, 183);
+            this.comboBox1.Name = "comboBox1";
+            this.comboBox1.Size = new System.Drawing.Size(158, 26);
+            this.comboBox1.TabIndex = 40;
+            this.comboBox1.ValueMember = "rt_id";
+            this.comboBox1.Visible = false;
+            // 
+            // textBox1
+            // 
+            this.textBox1.BackColor = System.Drawing.Color.White;
+            this.textBox1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.textBox1.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
+            this.textBox1.Location = new System.Drawing.Point(1053, 213);
+            this.textBox1.MaxLength = 50;
+            this.textBox1.Name = "textBox1";
+            this.textBox1.Size = new System.Drawing.Size(158, 26);
+            this.textBox1.TabIndex = 42;
+            this.textBox1.Visible = false;
+            // 
             // tblCommand
             // 
             this.tblCommand.ColumnCount = 5;
@@ -2296,7 +2287,6 @@ namespace standard.master
             this.tblCommand.Controls.Add(this.btnClear, 3, 0);
             this.tblCommand.Controls.Add(this.btnDelete, 2, 0);
             this.tblCommand.Controls.Add(this.btnSave, 1, 0);
-            this.tblCommand.Controls.Add(this.cboGridReference, 0, 0);
             this.tblCommand.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tblCommand.Location = new System.Drawing.Point(4, 655);
             this.tblCommand.Name = "tblCommand";
@@ -2314,7 +2304,7 @@ namespace standard.master
             this.cmdclose.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(41)))), ((int)(((byte)(66)))), ((int)(((byte)(122)))));
             this.cmdclose.Location = new System.Drawing.Point(1126, 3);
             this.cmdclose.Name = "cmdclose";
-            this.cmdclose.Size = new System.Drawing.Size(90, 26);
+            this.cmdclose.Size = new System.Drawing.Size(90, 32);
             this.cmdclose.TabIndex = 3;
             this.cmdclose.Text = "&Close";
             this.cmdclose.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
@@ -2329,7 +2319,7 @@ namespace standard.master
             this.btnClear.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(41)))), ((int)(((byte)(66)))), ((int)(((byte)(122)))));
             this.btnClear.Location = new System.Drawing.Point(1026, 3);
             this.btnClear.Name = "btnClear";
-            this.btnClear.Size = new System.Drawing.Size(90, 26);
+            this.btnClear.Size = new System.Drawing.Size(90, 32);
             this.btnClear.TabIndex = 2;
             this.btnClear.Text = "&Clear";
             this.btnClear.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
@@ -2344,7 +2334,7 @@ namespace standard.master
             this.btnDelete.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(41)))), ((int)(((byte)(66)))), ((int)(((byte)(122)))));
             this.btnDelete.Location = new System.Drawing.Point(926, 3);
             this.btnDelete.Name = "btnDelete";
-            this.btnDelete.Size = new System.Drawing.Size(90, 26);
+            this.btnDelete.Size = new System.Drawing.Size(90, 32);
             this.btnDelete.TabIndex = 1;
             this.btnDelete.Text = "&Delete";
             this.btnDelete.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
@@ -2359,30 +2349,12 @@ namespace standard.master
             this.btnSave.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(41)))), ((int)(((byte)(66)))), ((int)(((byte)(122)))));
             this.btnSave.Location = new System.Drawing.Point(826, 3);
             this.btnSave.Name = "btnSave";
-            this.btnSave.Size = new System.Drawing.Size(90, 26);
+            this.btnSave.Size = new System.Drawing.Size(90, 32);
             this.btnSave.TabIndex = 0;
             this.btnSave.Text = "&Save";
             this.btnSave.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.btnSave.UseVisualStyleBackColor = false;
             this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
-            // 
-            // cboGridReference
-            // 
-            this.cboGridReference.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
-            this.cboGridReference.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
-            this.cboGridReference.DataSource = this.ledgermasterBindingSource1;
-            this.cboGridReference.DisplayMember = "led_name";
-            this.cboGridReference.Enabled = false;
-            this.cboGridReference.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.cboGridReference.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
-            this.cboGridReference.FormattingEnabled = true;
-            this.cboGridReference.Location = new System.Drawing.Point(3, 3);
-            this.cboGridReference.Name = "cboGridReference";
-            this.cboGridReference.Size = new System.Drawing.Size(129, 26);
-            this.cboGridReference.TabIndex = 2;
-            this.cboGridReference.ValueMember = "led_id";
-            this.cboGridReference.Visible = false;
-            this.cboGridReference.TextChanged += new System.EventHandler(this.cboGridReference_TextChanged);
             // 
             // frmLedger
             // 
@@ -2404,12 +2376,13 @@ namespace standard.master
             ((System.ComponentModel.ISupportInitialize)(this.uspledgermasterSelectResultBindingSource)).EndInit();
             this.tblEntry.ResumeLayout(false);
             this.tblEntry.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.routeBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.vehicleBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ledgermasterBindingSource)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.routeBindingSource)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ledgermasterBindingSource1)).EndInit();
+            this.tableLayoutPanel1.ResumeLayout(false);
             this.tblCommand.ResumeLayout(false);
             this.tblCommand.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.ledgermasterBindingSource1)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -2464,6 +2437,344 @@ namespace standard.master
                 }
             }
         }
-       
+
+        private void btnExport_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                // Load data from your database (item table)
+                InventoryDataContext db = new InventoryDataContext();
+                var ledgers = db.ledgermasters.ToList();
+
+                if (ledgers.Count == 0)
+                {
+                    MessageBox.Show("No records to export.", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+
+                // Create Excel Application
+                Excel.Application excelApp = new Excel.Application();
+                Excel.Workbook workbook = excelApp.Workbooks.Add(Type.Missing);
+                Excel.Worksheet worksheet = (Excel.Worksheet)workbook.Sheets[1];
+                worksheet.Name = "LedgerExport".Replace(":", "").Replace("/", "").Replace("\\", "");
+
+                // Header Row
+                worksheet.Cells[1, 1] = "Party ID";
+                worksheet.Cells[1, 2] = "Jeyakkodi Party Name";
+                worksheet.Cells[1, 3] = "Saamy Party Name";
+                worksheet.Cells[1, 4] = "Party Type";
+                worksheet.Cells[1, 5] = "Address 1";
+                worksheet.Cells[1, 6] = "Address 2";
+                worksheet.Cells[1, 7] = "City";
+                worksheet.Cells[1, 8] = "Shipping Address 1";
+                worksheet.Cells[1, 9] = "Shipping Address 2";
+                worksheet.Cells[1, 10] = "State";
+                worksheet.Cells[1, 11] = "State Code";
+                worksheet.Cells[1, 12] = "PinCode";
+                worksheet.Cells[1, 13] = "Owner Name";
+                worksheet.Cells[1, 14] = "Phone No.";
+                worksheet.Cells[1, 15] = "GSTIN";
+                worksheet.Cells[1, 16] = "Rate Type";
+                worksheet.Cells[1, 17] = "Freight Charge";
+                worksheet.Cells[1, 18] = "Company ID";
+
+                // ===== Progress bar setup =====
+                progressBar1.Visible = true;
+                lblProgress.Text = "";
+                progressBar1.Value = 0;
+
+                foreach (Control ctrl in this.Controls)
+                {
+                    if (ctrl != progressBar1)
+                        ctrl.Enabled = false;
+                }
+                Cursor.Current = Cursors.WaitCursor;
+                // ==============================
+
+                // Fill data
+                int row = 2;
+                int totalRows = ledgers.Count;
+                int currentRow = 0;
+
+                foreach (var ledger in ledgers)
+                {
+                    worksheet.Cells[row, 1] = ledger.led_id;
+                    worksheet.Cells[row, 2] = ledger.led_name;
+                    worksheet.Cells[row, 3] = ledger.led_stlname;
+                    worksheet.Cells[row, 4] = ledger.led_accounttype;
+                    worksheet.Cells[row, 5] = ledger.led_address;
+                    worksheet.Cells[row, 6] = ledger.led_address1;
+                    worksheet.Cells[row, 7] = ledger.led_address2;
+                    worksheet.Cells[row, 8] = ledger.led_shippingaddress1;
+                    worksheet.Cells[row, 9] = ledger.led_shippingaddress2;
+                    worksheet.Cells[row, 10] = ledger.led_state;
+                    worksheet.Cells[row, 11] = ledger.led_accountcode;
+                    worksheet.Cells[row, 12] = ledger.led_pincode;
+                    worksheet.Cells[row, 13] = ledger.led_ownername;
+                    worksheet.Cells[row, 14] = ledger.led_ownerphone;
+                    worksheet.Cells[row, 15] = ledger.led_tin;
+                    worksheet.Cells[row, 16] = ledger.led_ratetype;
+                    worksheet.Cells[row, 17] = ledger.led_isfreight;
+                    worksheet.Cells[row, 18] = ledger.com_id;
+                    row++;
+
+                    // ===== Update Progress =====
+                    currentRow++;
+                    int percent = (int)((currentRow * 100.0) / totalRows);
+                    progressBar1.Value = percent;
+                    lblProgress.Text = $"Export Progress: {percent}%";
+                    Application.DoEvents(); // refresh UI
+                }
+
+                worksheet.Columns.AutoFit();
+
+                // Show save dialog
+                SaveFileDialog saveFileDialog = new SaveFileDialog();
+                saveFileDialog.Filter = "Excel Files|*.xlsx";
+                saveFileDialog.Title = "Save Excel File";
+                saveFileDialog.FileName = "LedgerExport.xlsx";
+
+                if (saveFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    workbook.SaveAs(saveFileDialog.FileName);
+                }
+
+                workbook.Close();
+                excelApp.Quit();
+
+                // Reset UI
+                foreach (Control ctrl in this.Controls)
+                {
+                    ctrl.Enabled = true;
+                }
+                Cursor.Current = Cursors.Default;
+                progressBar1.Visible = false;
+                lblProgress.Text = "";
+
+                MessageBox.Show("Exported successfully!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error: " + ex.Message, "Export Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+
+        private void btnImport_Click(object sender, EventArgs e)
+        {
+            Excel.Application excelApp = null;
+            Excel.Workbook workbook = null;
+            Excel.Worksheet worksheet = null;
+            Excel.Range range = null;
+
+            try
+            {
+                OpenFileDialog openFileDialog = new OpenFileDialog();
+                openFileDialog.Filter = "Excel Files|*.xlsx;*.xls";
+                openFileDialog.Title = "Select Excel File";
+
+                if (openFileDialog.ShowDialog() != DialogResult.OK)
+                    return;
+
+                string filePath = openFileDialog.FileName;
+
+                excelApp = new Excel.Application();
+                workbook = excelApp.Workbooks.Open(filePath);
+                worksheet = (Excel.Worksheet)workbook.Sheets[1];
+                range = worksheet.UsedRange;
+
+                string header1 = Convert.ToString((range.Cells[1, 1] as Excel.Range)?.Value2)?.Trim();
+                string header2 = Convert.ToString((range.Cells[1, 2] as Excel.Range)?.Value2)?.Trim();
+
+                if (!string.Equals(header1, "Party ID", StringComparison.OrdinalIgnoreCase) ||
+                    !string.Equals(header2, "Jeyakkodi Party Name", StringComparison.OrdinalIgnoreCase))
+                {
+                    MessageBox.Show("Invalid Excel format.",
+                        "Import Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+                progressBar1.Visible = true;
+                lblProgress.Text = "";
+                foreach (Control ctrl in this.Controls)
+                {
+                    if (ctrl != progressBar1)
+                        ctrl.Enabled = false;
+                }
+
+                Cursor.Current = Cursors.WaitCursor;
+
+                int totalRows = range.Rows.Count - 1;
+
+                InventoryDataContext db = new InventoryDataContext();
+
+                for (int row = 2; row <= range.Rows.Count; row++) // Start from row 2 (skip headers)
+                {
+                    int? ledIdValue = (range.Cells[row, 1] as Excel.Range)?.Value2 != null ? Convert.ToInt32((range.Cells[row, 1] as Excel.Range).Value2) : (int?)null;
+
+                    if (!ledIdValue.HasValue)
+                    {
+                        // if no led_id, skip row
+                        continue;
+                    }
+
+
+                    string ledIdText = Convert.ToString((range.Cells[row, 1] as Excel.Range)?.Value2);
+
+                    if (int.TryParse(ledIdText, out int ledId))
+                    {
+                        // check if already exists
+                        var existingItem = db.ledgermasters.FirstOrDefault(x => x.led_id == ledId);
+
+                        if (existingItem != null)
+                        {
+                            string GetString(Excel.Range cell) => Convert.ToString(cell?.Value2)?.Trim() ?? "";
+
+                            existingItem.led_name = GetString(range.Cells[row, 2]);
+                            existingItem.led_stlname = GetString(range.Cells[row, 3]);
+                            existingItem.led_accounttype = GetString(range.Cells[row, 4]);
+                            existingItem.led_address = GetString(range.Cells[row, 5]);
+                            existingItem.led_address1 = GetString(range.Cells[row, 6]);
+                            existingItem.led_address2 = GetString(range.Cells[row, 7]);
+                            existingItem.led_shippingaddress1 = GetString(range.Cells[row, 8]);
+                            existingItem.led_shippingaddress2 = GetString(range.Cells[row, 9]);
+                            existingItem.led_state = GetString(range.Cells[row, 10]);
+                            existingItem.led_accountcode = GetString(range.Cells[row, 11]);
+                            existingItem.led_pincode = GetString(range.Cells[row, 12]);
+                            existingItem.led_ownername = GetString(range.Cells[row, 13]);
+                            existingItem.led_ownerphone = GetString(range.Cells[row, 14]);
+                            existingItem.led_tin = GetString(range.Cells[row, 15]);
+                            existingItem.led_ratetype = GetString(range.Cells[row, 16]);
+
+                            // For boolean, treat non-empty as true if needed, otherwise default false
+                            var boolVal = (range.Cells[row, 17] as Excel.Range)?.Value2;
+                            existingItem.led_isfreight = boolVal != null && Convert.ToBoolean(boolVal);
+
+                            // For int, handle safely (default 0 if null)
+                            var intVal = (range.Cells[row, 18] as Excel.Range)?.Value2;
+                            existingItem.com_id = intVal != null ? Convert.ToInt32(intVal) : 0;
+                        }
+
+                        else
+                        {
+                            // Add new item
+                            string GetString(Excel.Range cell) => Convert.ToString(cell?.Value2)?.Trim() ?? "";
+
+                            ledgermaster newLedger = new ledgermaster
+                            {
+                                led_name = GetString(range.Cells[row, 2]),
+                                led_stlname = GetString(range.Cells[row, 3]),
+                                led_accounttype = GetString(range.Cells[row, 4]),
+                                led_address = GetString(range.Cells[row, 5]),
+                                led_address1 = GetString(range.Cells[row, 6]),
+                                led_address2 = GetString(range.Cells[row, 7]),
+                                led_shippingaddress1 = GetString(range.Cells[row, 8]),
+                                led_shippingaddress2 = GetString(range.Cells[row, 9]),
+                                led_state = GetString(range.Cells[row, 10]),
+                                led_accountcode = GetString(range.Cells[row, 11]),
+                                led_pincode = GetString(range.Cells[row, 12]),
+                                led_ownername = GetString(range.Cells[row, 13]),
+                                led_ownerphone = GetString(range.Cells[row, 14]),
+                                led_tin = GetString(range.Cells[row, 15]),
+                                led_ratetype = GetString(range.Cells[row, 16]),
+
+                                // boolean safe convert
+                                led_isfreight = Convert.ToBoolean((range.Cells[row, 17] as Excel.Range)?.Value2 ?? false),
+
+                                // int safe convert
+                                com_id = Convert.ToInt32((range.Cells[row, 18] as Excel.Range)?.Value2 ?? 0),
+
+                                users_uid = 1,
+                                led_udate = DateTime.Now.Date
+                            };
+
+                            db.ledgermasters.InsertOnSubmit(newLedger);
+                        }
+                    }
+                    int currentRow = row - 1; // Since you started at 2
+                    int percent = (int)((currentRow * 100.0) / totalRows);
+
+                    progressBar1.Value = percent;
+                    lblProgress.Text = $"Progress: {percent}%";
+                    Application.DoEvents();
+                }
+
+                foreach (Control ctrl in this.Controls)
+                {
+                    ctrl.Enabled = true;
+                }
+
+                Cursor.Current = Cursors.Default;
+                progressBar1.Visible = false;
+                lblProgress.Text = "";
+                progressBar1.Value = 100;
+
+                db.SubmitChanges();
+
+                workbook.Close(false);
+                excelApp.Quit();
+
+                MessageBox.Show("Items imported successfully!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Import Error: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            finally
+            {
+                try
+                {
+                    if (range != null)
+                    {
+                        Marshal.ReleaseComObject(range);
+                        range = null;
+                    }
+
+                    if (worksheet != null)
+                    {
+                        Marshal.ReleaseComObject(worksheet);
+                        worksheet = null;
+                    }
+
+                    if (workbook != null)
+                    {
+                        try
+                        {
+                            workbook.Close(false);
+                        }
+                        catch (Exception ex)
+                        {
+                            // Optional: log or ignore close exception
+                        }
+                        Marshal.ReleaseComObject(workbook);
+                        workbook = null;
+                    }
+
+                    if (excelApp != null)
+                    {
+                        try
+                        {
+                            excelApp.Quit();
+                        }
+                        catch (Exception ex)
+                        {
+                            // Optional: log or ignore quit exception
+                        }
+                        Marshal.ReleaseComObject(excelApp);
+                        excelApp = null;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    // Optional: log cleanup exceptions
+                }
+                finally
+                {
+                    GC.Collect();
+                    GC.WaitForPendingFinalizers();
+                }
+            }
+        }
+
     }
 }

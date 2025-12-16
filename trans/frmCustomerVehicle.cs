@@ -161,8 +161,19 @@ namespace standard.trans
                         int oldVehicleId = (int)ledgermaster.vh_id;
                         if (newVehicleId != 0)
                         {
+                            // Update Vehicle ID
                             ledgermaster.vh_id = newVehicleId;
+
+                            // Fetch and update Vehicle Number
+                            var vehicle = inventoryDataContext.vehicles
+                                           .SingleOrDefault(v => v.vh_id == newVehicleId);
+
+                            if (vehicle != null)
+                            {
+                                ledgermaster.led_vehicleno = vehicle.vh_number;
+                            }
                         }
+
 
                         string oldDeliveryOrder = ledgermaster.led_deliveryorder;
                         if (!string.IsNullOrWhiteSpace(newDeliveryOrder))

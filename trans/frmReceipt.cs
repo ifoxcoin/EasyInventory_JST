@@ -132,15 +132,6 @@ namespace standard.trans
 
         private BindingSource ledgermasterViewBindingSource;
         private Label lblReceiptType;
-        private DataGridViewTextBoxColumn osno;
-        private DataGridViewTextBoxColumn cBillNo;
-        private DataGridViewTextBoxColumn cBilldate;
-        private DataGridViewTextBoxColumn cBillAmt;
-        private DataGridViewTextBoxColumn cReceived;
-        private DataGridViewTextBoxColumn cExistReceived;
-        private DataGridViewTextBoxColumn cNewBalance;
-        private DataGridViewTextBoxColumn cDayscount;
-        private DataGridViewTextBoxColumn cSMId;
         private DataGridViewImageColumn ldelete;
         private DataGridViewImageColumn ledit;
         private DataGridViewImageColumn lprint;
@@ -157,6 +148,16 @@ namespace standard.trans
         private DataGridViewTextBoxColumn recnewbalanceDataGridViewTextBoxColumn;
         private DataGridViewTextBoxColumn reciscloseDataGridViewTextBoxColumn;
         private DataGridViewTextBoxColumn ob_id;
+        private DataGridViewTextBoxColumn osno;
+        private DataGridViewTextBoxColumn cBillNo;
+        private DataGridViewTextBoxColumn cBilldate;
+        private DataGridViewTextBoxColumn cBillAmt;
+        private DataGridViewTextBoxColumn cReceived;
+        private DataGridViewTextBoxColumn cExistReceived;
+        private DataGridViewTextBoxColumn cNewBalance;
+        private DataGridViewTextBoxColumn cDayscount;
+        private DataGridViewTextBoxColumn cCompany;
+        private DataGridViewTextBoxColumn cSMId;
         private Label lblAddress1;
 
         public frmReceipt()
@@ -719,6 +720,7 @@ namespace standard.trans
                         dgvReceipt.Rows[num].Cells["cBilldate"].Value = item2.ob_date.Value.ToString("dd-MM-yyyy");
                         TimeSpan timeSpan = DateTime.Now.Subtract(item2.ob_date.Value);
                         dgvReceipt.Rows[num].Cells["cDayscount"].Value = timeSpan.Days;
+                        dgvReceipt.Rows[num].Cells["cCompany"].Value = timeSpan.Days;
                         dgvReceipt.Rows[num].Cells["cBillAmt"].Value = item2.ob_netamount;
                         num2 += item2.ob_netamount - item2.ob_received;
                         dgvReceipt.Rows[num].Cells["cReceived"].Value = 0;
@@ -750,6 +752,7 @@ namespace standard.trans
                         dgvReceipt.Rows.Clear();
                         int num = 0;
                         decimal num2 = 0m;
+                        var companyLookup = inventoryDataContext.companies.ToDictionary(c => c.com_id, c => c.com_name);
                         foreach (salesmaster item2 in queryable2)
                         {
                             dgvReceipt.Rows.Add();
@@ -759,6 +762,7 @@ namespace standard.trans
                             dgvReceipt.Rows[num].Cells["cBilldate"].Value = item2.sm_date.Value.ToString("dd-MM-yyyy");
                             TimeSpan timeSpan = DateTime.Now.Subtract(item2.sm_date.Value);
                             dgvReceipt.Rows[num].Cells["cDayscount"].Value = timeSpan.Days;
+                            dgvReceipt.Rows[num].Cells["cCompany"].Value =companyLookup.TryGetValue((long)item2.com_id, out var companyName)? companyName : string.Empty;
                             dgvReceipt.Rows[num].Cells["cBillAmt"].Value = item2.sm_netamount;
                             num2 += item2.sm_netamount - item2.sm_received;
                             dgvReceipt.Rows[num].Cells["cReceived"].Value = 0;
@@ -893,16 +897,16 @@ namespace standard.trans
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle8 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle7 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle9 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle10 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle11 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle12 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle13 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle7 = new System.Windows.Forms.DataGridViewCellStyle();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmReceipt));
             this.tablemain = new System.Windows.Forms.TableLayoutPanel();
             this.lbltitle = new System.Windows.Forms.Label();
@@ -933,15 +937,6 @@ namespace standard.trans
             this.cmdview = new mylib.lightbutton();
             this.pnlentry = new System.Windows.Forms.Panel();
             this.dgvReceipt = new mylib.mygrid();
-            this.osno = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.cBillNo = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.cBilldate = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.cBillAmt = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.cReceived = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.cExistReceived = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.cNewBalance = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.cDayscount = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.cSMId = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.tableview = new System.Windows.Forms.TableLayoutPanel();
             this.dglist = new mylib.mygrid();
             this.ldelete = new System.Windows.Forms.DataGridViewImageColumn();
@@ -976,6 +971,16 @@ namespace standard.trans
             this.ledgermasterViewBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.cmdexit = new mylib.lightbutton();
             this.pnlview = new System.Windows.Forms.Panel();
+            this.osno = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.cBillNo = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.cBilldate = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.cBillAmt = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.cReceived = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.cExistReceived = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.cNewBalance = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.cDayscount = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.cCompany = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.cSMId = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.tablemain.SuspendLayout();
             this.tableentry.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.ledgermasterCityBindingSource)).BeginInit();
@@ -1010,7 +1015,7 @@ namespace standard.trans
             this.tablemain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 125F));
             this.tablemain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tablemain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 71F));
-            this.tablemain.Size = new System.Drawing.Size(1160, 697);
+            this.tablemain.Size = new System.Drawing.Size(1313, 716);
             this.tablemain.TabIndex = 0;
             this.tablemain.Paint += new System.Windows.Forms.PaintEventHandler(this.tablemain_Paint);
             // 
@@ -1020,7 +1025,7 @@ namespace standard.trans
             this.lbltitle.AutoSize = true;
             this.lbltitle.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold);
             this.lbltitle.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.lbltitle.Location = new System.Drawing.Point(533, 10);
+            this.lbltitle.Location = new System.Drawing.Point(609, 10);
             this.lbltitle.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.lbltitle.Name = "lbltitle";
             this.lbltitle.Size = new System.Drawing.Size(94, 23);
@@ -1064,7 +1069,7 @@ namespace standard.trans
             this.tableentry.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 35F));
             this.tableentry.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 35F));
             this.tableentry.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableentry.Size = new System.Drawing.Size(1146, 111);
+            this.tableentry.Size = new System.Drawing.Size(1299, 111);
             this.tableentry.TabIndex = 0;
             // 
             // lblopno
@@ -1353,12 +1358,12 @@ namespace standard.trans
             this.tablecmd.Controls.Add(this.cmdclose, 4, 0);
             this.tablecmd.Controls.Add(this.cmdview, 3, 0);
             this.tablecmd.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tablecmd.Location = new System.Drawing.Point(7, 631);
+            this.tablecmd.Location = new System.Drawing.Point(7, 650);
             this.tablecmd.Margin = new System.Windows.Forms.Padding(5, 7, 5, 7);
             this.tablecmd.Name = "tablecmd";
             this.tablecmd.RowCount = 1;
             this.tablecmd.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tablecmd.Size = new System.Drawing.Size(1146, 57);
+            this.tablecmd.Size = new System.Drawing.Size(1299, 57);
             this.tablecmd.TabIndex = 3;
             // 
             // cmdsave
@@ -1366,7 +1371,7 @@ namespace standard.trans
             this.cmdsave.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.cmdsave.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold);
             this.cmdsave.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(41)))), ((int)(((byte)(66)))), ((int)(((byte)(122)))));
-            this.cmdsave.Location = new System.Drawing.Point(515, 7);
+            this.cmdsave.Location = new System.Drawing.Point(668, 7);
             this.cmdsave.Margin = new System.Windows.Forms.Padding(5, 7, 5, 7);
             this.cmdsave.Name = "cmdsave";
             this.cmdsave.Size = new System.Drawing.Size(149, 43);
@@ -1380,7 +1385,7 @@ namespace standard.trans
             this.cmdrefresh.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.cmdrefresh.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold);
             this.cmdrefresh.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(41)))), ((int)(((byte)(66)))), ((int)(((byte)(122)))));
-            this.cmdrefresh.Location = new System.Drawing.Point(674, 7);
+            this.cmdrefresh.Location = new System.Drawing.Point(827, 7);
             this.cmdrefresh.Margin = new System.Windows.Forms.Padding(5, 7, 5, 7);
             this.cmdrefresh.Name = "cmdrefresh";
             this.cmdrefresh.Size = new System.Drawing.Size(149, 43);
@@ -1394,7 +1399,7 @@ namespace standard.trans
             this.cmdclose.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.cmdclose.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold);
             this.cmdclose.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(41)))), ((int)(((byte)(66)))), ((int)(((byte)(122)))));
-            this.cmdclose.Location = new System.Drawing.Point(992, 7);
+            this.cmdclose.Location = new System.Drawing.Point(1145, 7);
             this.cmdclose.Margin = new System.Windows.Forms.Padding(5, 7, 5, 7);
             this.cmdclose.Name = "cmdclose";
             this.cmdclose.Size = new System.Drawing.Size(149, 43);
@@ -1408,7 +1413,7 @@ namespace standard.trans
             this.cmdview.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.cmdview.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold);
             this.cmdview.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(41)))), ((int)(((byte)(66)))), ((int)(((byte)(122)))));
-            this.cmdview.Location = new System.Drawing.Point(833, 7);
+            this.cmdview.Location = new System.Drawing.Point(986, 7);
             this.cmdview.Margin = new System.Windows.Forms.Padding(5, 7, 5, 7);
             this.cmdview.Name = "cmdview";
             this.cmdview.Size = new System.Drawing.Size(149, 43);
@@ -1424,7 +1429,7 @@ namespace standard.trans
             this.pnlentry.Location = new System.Drawing.Point(7, 178);
             this.pnlentry.Margin = new System.Windows.Forms.Padding(5, 7, 5, 7);
             this.pnlentry.Name = "pnlentry";
-            this.pnlentry.Size = new System.Drawing.Size(1146, 437);
+            this.pnlentry.Size = new System.Drawing.Size(1299, 456);
             this.pnlentry.TabIndex = 1;
             // 
             // dgvReceipt
@@ -1452,6 +1457,7 @@ namespace standard.trans
             this.cExistReceived,
             this.cNewBalance,
             this.cDayscount,
+            this.cCompany,
             this.cSMId});
             this.dgvReceipt.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dgvReceipt.Location = new System.Drawing.Point(0, 0);
@@ -1464,96 +1470,13 @@ namespace standard.trans
             this.dgvReceipt.RowsDefaultCellStyle = dataGridViewCellStyle8;
             this.dgvReceipt.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect;
             this.dgvReceipt.ShowCellToolTips = false;
-            this.dgvReceipt.Size = new System.Drawing.Size(1146, 437);
+            this.dgvReceipt.Size = new System.Drawing.Size(1299, 456);
             this.dgvReceipt.TabIndex = 0;
             this.dgvReceipt.CellEndEdit += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgopen_CellEndEdit);
             this.dgvReceipt.EditingControlShowing += new System.Windows.Forms.DataGridViewEditingControlShowingEventHandler(this.dgvPurchase_EditingControlShowing);
             this.dgvReceipt.RowsAdded += new System.Windows.Forms.DataGridViewRowsAddedEventHandler(this.dgopen_RowsAdded);
             this.dgvReceipt.RowsRemoved += new System.Windows.Forms.DataGridViewRowsRemovedEventHandler(this.dgopen_RowsRemoved);
             this.dgvReceipt.KeyDown += new System.Windows.Forms.KeyEventHandler(this.dgopen_KeyDown);
-            // 
-            // osno
-            // 
-            this.osno.HeaderText = "SNO";
-            this.osno.Name = "osno";
-            this.osno.ReadOnly = true;
-            this.osno.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-            this.osno.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
-            this.osno.Width = 45;
-            // 
-            // cBillNo
-            // 
-            this.cBillNo.HeaderText = "BILL NO";
-            this.cBillNo.Name = "cBillNo";
-            this.cBillNo.ReadOnly = true;
-            this.cBillNo.Width = 150;
-            // 
-            // cBilldate
-            // 
-            this.cBilldate.HeaderText = "BILL DATE";
-            this.cBilldate.Name = "cBilldate";
-            this.cBilldate.ReadOnly = true;
-            this.cBilldate.Width = 150;
-            // 
-            // cBillAmt
-            // 
-            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            dataGridViewCellStyle3.Format = "N2";
-            this.cBillAmt.DefaultCellStyle = dataGridViewCellStyle3;
-            this.cBillAmt.HeaderText = "BILL AMOUNT";
-            this.cBillAmt.Name = "cBillAmt";
-            this.cBillAmt.ReadOnly = true;
-            this.cBillAmt.Width = 150;
-            // 
-            // cReceived
-            // 
-            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            dataGridViewCellStyle4.Format = "N2";
-            this.cReceived.DefaultCellStyle = dataGridViewCellStyle4;
-            this.cReceived.HeaderText = "RECEIVED";
-            this.cReceived.MaxInputLength = 10;
-            this.cReceived.Name = "cReceived";
-            this.cReceived.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-            this.cReceived.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
-            this.cReceived.Width = 150;
-            // 
-            // cExistReceived
-            // 
-            dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            dataGridViewCellStyle5.Format = "N2";
-            this.cExistReceived.DefaultCellStyle = dataGridViewCellStyle5;
-            this.cExistReceived.HeaderText = "ALREADY RECEIVED";
-            this.cExistReceived.Name = "cExistReceived";
-            this.cExistReceived.ReadOnly = true;
-            this.cExistReceived.Width = 150;
-            // 
-            // cNewBalance
-            // 
-            dataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            dataGridViewCellStyle6.Format = "N2";
-            this.cNewBalance.DefaultCellStyle = dataGridViewCellStyle6;
-            this.cNewBalance.HeaderText = "NEW BALANCE";
-            this.cNewBalance.Name = "cNewBalance";
-            this.cNewBalance.ReadOnly = true;
-            this.cNewBalance.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-            this.cNewBalance.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
-            this.cNewBalance.Width = 150;
-            // 
-            // cDayscount
-            // 
-            dataGridViewCellStyle7.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            this.cDayscount.DefaultCellStyle = dataGridViewCellStyle7;
-            this.cDayscount.HeaderText = "DAYS COUNT";
-            this.cDayscount.Name = "cDayscount";
-            this.cDayscount.ReadOnly = true;
-            this.cDayscount.Width = 150;
-            // 
-            // cSMId
-            // 
-            this.cSMId.HeaderText = "SMID";
-            this.cSMId.Name = "cSMId";
-            this.cSMId.ReadOnly = true;
-            this.cSMId.Visible = false;
             // 
             // tableview
             // 
@@ -1572,7 +1495,7 @@ namespace standard.trans
             this.tableview.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 110F));
             this.tableview.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableview.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 53F));
-            this.tableview.Size = new System.Drawing.Size(1160, 697);
+            this.tableview.Size = new System.Drawing.Size(1313, 716);
             this.tableview.TabIndex = 0;
             // 
             // dglist
@@ -1621,7 +1544,7 @@ namespace standard.trans
             this.dglist.RowHeadersVisible = false;
             this.dglist.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dglist.ShowCellToolTips = false;
-            this.dglist.Size = new System.Drawing.Size(1146, 457);
+            this.dglist.Size = new System.Drawing.Size(1299, 476);
             this.dglist.TabIndex = 1;
             this.dglist.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dglist_CellContentClick);
             this.dglist.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dglist_CellDoubleClick);
@@ -1776,7 +1699,7 @@ namespace standard.trans
             this.lblsubtitle.AutoSize = true;
             this.lblsubtitle.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold);
             this.lblsubtitle.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.lblsubtitle.Location = new System.Drawing.Point(508, 17);
+            this.lblsubtitle.Location = new System.Drawing.Point(584, 17);
             this.lblsubtitle.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.lblsubtitle.Name = "lblsubtitle";
             this.lblsubtitle.Size = new System.Drawing.Size(144, 23);
@@ -1814,7 +1737,7 @@ namespace standard.trans
             this.tablelist.RowCount = 2;
             this.tablelist.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tablelist.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 48F));
-            this.tablelist.Size = new System.Drawing.Size(1146, 96);
+            this.tablelist.Size = new System.Drawing.Size(1299, 96);
             this.tablelist.TabIndex = 0;
             this.tablelist.Paint += new System.Windows.Forms.PaintEventHandler(this.tablelist_Paint);
             // 
@@ -1981,15 +1904,105 @@ namespace standard.trans
             this.pnlview.Location = new System.Drawing.Point(0, 0);
             this.pnlview.Margin = new System.Windows.Forms.Padding(5, 7, 5, 7);
             this.pnlview.Name = "pnlview";
-            this.pnlview.Size = new System.Drawing.Size(1160, 697);
+            this.pnlview.Size = new System.Drawing.Size(1313, 716);
             this.pnlview.TabIndex = 12;
+            // 
+            // osno
+            // 
+            this.osno.HeaderText = "SNO";
+            this.osno.Name = "osno";
+            this.osno.ReadOnly = true;
+            this.osno.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.osno.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            this.osno.Width = 45;
+            // 
+            // cBillNo
+            // 
+            this.cBillNo.HeaderText = "BILL NO";
+            this.cBillNo.Name = "cBillNo";
+            this.cBillNo.ReadOnly = true;
+            this.cBillNo.Width = 150;
+            // 
+            // cBilldate
+            // 
+            this.cBilldate.HeaderText = "BILL DATE";
+            this.cBilldate.Name = "cBilldate";
+            this.cBilldate.ReadOnly = true;
+            this.cBilldate.Width = 150;
+            // 
+            // cBillAmt
+            // 
+            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            dataGridViewCellStyle3.Format = "N2";
+            this.cBillAmt.DefaultCellStyle = dataGridViewCellStyle3;
+            this.cBillAmt.HeaderText = "BILL AMOUNT";
+            this.cBillAmt.Name = "cBillAmt";
+            this.cBillAmt.ReadOnly = true;
+            this.cBillAmt.Width = 150;
+            // 
+            // cReceived
+            // 
+            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            dataGridViewCellStyle4.Format = "N2";
+            this.cReceived.DefaultCellStyle = dataGridViewCellStyle4;
+            this.cReceived.HeaderText = "RECEIVED";
+            this.cReceived.MaxInputLength = 10;
+            this.cReceived.Name = "cReceived";
+            this.cReceived.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.cReceived.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            this.cReceived.Width = 150;
+            // 
+            // cExistReceived
+            // 
+            dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            dataGridViewCellStyle5.Format = "N2";
+            this.cExistReceived.DefaultCellStyle = dataGridViewCellStyle5;
+            this.cExistReceived.HeaderText = "ALREADY RECEIVED";
+            this.cExistReceived.Name = "cExistReceived";
+            this.cExistReceived.ReadOnly = true;
+            this.cExistReceived.Width = 150;
+            // 
+            // cNewBalance
+            // 
+            dataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            dataGridViewCellStyle6.Format = "N2";
+            this.cNewBalance.DefaultCellStyle = dataGridViewCellStyle6;
+            this.cNewBalance.HeaderText = "NEW BALANCE";
+            this.cNewBalance.Name = "cNewBalance";
+            this.cNewBalance.ReadOnly = true;
+            this.cNewBalance.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.cNewBalance.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            this.cNewBalance.Width = 150;
+            // 
+            // cDayscount
+            // 
+            dataGridViewCellStyle7.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            this.cDayscount.DefaultCellStyle = dataGridViewCellStyle7;
+            this.cDayscount.HeaderText = "DAYS COUNT";
+            this.cDayscount.Name = "cDayscount";
+            this.cDayscount.ReadOnly = true;
+            this.cDayscount.Width = 150;
+            // 
+            // cCompany
+            // 
+            this.cCompany.HeaderText = "COMPANY";
+            this.cCompany.Name = "cCompany";
+            this.cCompany.ReadOnly = true;
+            this.cCompany.Width = 250;
+            // 
+            // cSMId
+            // 
+            this.cSMId.HeaderText = "SMID";
+            this.cSMId.Name = "cSMId";
+            this.cSMId.ReadOnly = true;
+            this.cSMId.Visible = false;
             // 
             // frmReceipt
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 23F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(191)))), ((int)(((byte)(219)))), ((int)(((byte)(254)))));
-            this.ClientSize = new System.Drawing.Size(1160, 697);
+            this.ClientSize = new System.Drawing.Size(1313, 716);
             this.Controls.Add(this.tablemain);
             this.Controls.Add(this.pnlview);
             this.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold);

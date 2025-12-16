@@ -14,7 +14,9 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Security;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows.Forms;
 
@@ -464,8 +466,8 @@ namespace standard.trans
             dtpsaldate.MinDate = DateTimePicker.MinimumDateTime;
             dtpsaldate.MaxDate = DateTime.MaxValue; // Or DateTime.Today.AddYears(1)
             dtpsaldate.Value = DateTime.Today;
-            TimeSpan value = new TimeSpan(30, 0, 0, 0, 0);
-            dtpfdate.Value = dtpfdate.Value.Subtract(value);
+            dtpfdate.Value = DateTime.Today.AddDays(-30);
+
             InventoryDataContext inventoryDataContext = new InventoryDataContext();
             using (inventoryDataContext)
             {
@@ -895,7 +897,7 @@ namespace standard.trans
                                         .Sum(od => od.od_qty);
                                     salesorder.so_totqty = totalQty;
                                     salesorder.so_refno = salesOrder.so_refno;
-                                }                                
+                                }
                             }
                             else
                             {
@@ -1844,11 +1846,18 @@ namespace standard.trans
                     salesmaster salesmaster = inventoryDataContext.salesmasters.FirstOrDefault(x => x.sm_id == master.sm_id);
                     inventoryDataContext.usp_salesmasterUpdate(salesmaster.sm_id, salesmaster.sm_bookno, salesmaster.sm_refno, salesmaster.sm_date, salesmaster.led_id, salesmaster.sm_totqty, salesmaster.sm_totamount, salesmaster.sm_itemcount, salesmaster.sm_profit, salesmaster.sm_disamount, salesmaster.sm_taxamount, salesmaster.sm_taxpercentage, salesmaster.sm_packingcharge, salesmaster.sm_netamount, salesmaster.sm_received, salesmaster.sm_paidcommission, salesmaster.sm_paidpacking, salesmaster.sm_roundamount, salesmaster.sm_iscommissionclose, salesmaster.sm_ispackingclose, global.ucode, global.sysdate, salesmaster.sm_desc, salesmaster.sm_isclose, salesmaster.sm_isdraft, salesmaster.so_id, salesmaster.com_id, salesmaster.sm_istaxable, false, guid);
                 }
-                string companyName = master.com_id == 2 ? "Jeyakkodi Traders" : master.com_id == 1 ? "Jeyakkodi Traders" : "Unknown Company";
-                string partyLedger = master.com_id == 2 ? master.led_name : master.com_id == 1 ? master.led_stlname : null;
+                string companyName = master.com_id == 2 ? "JEYAKKODI TRADERS 2025-2026" : master.com_id == 1 ? "SAAMY TRADE LINKS 2025-2026" : "Unknown Company";
+
+                string Ledger = master.com_id == 2 ? master.led_name : master.com_id == 1 ? master.led_stlname : null;
+                Ledger = System.Net.WebUtility.HtmlDecode(Ledger);
+                Ledger = Regex.Replace(Ledger, @"[\u0000-\u001F\u007F-\u009F\u200B-\u200D\uFEFF]", "");
+                Ledger = Ledger.Trim();
+                string partyLedger = SecurityElement.Escape(Ledger);
+
                 string action = string.IsNullOrEmpty(guid.ToString()) ? "Create" : "Alter";
                 string partyGSTIN = master.led_tin ?? "";
-                string partyAddressLine1 = master.led_address;
+                string Address1 = master.led_address;
+                string partyAddressLine1 = SecurityElement.Escape(Address1);
                 string partyAddressLine2 = master.led_address1;
                 string partyAddressLine3 = master.led_address2;
                 string partyAddressLine4 = master.led_pincode;
@@ -1861,6 +1870,7 @@ namespace standard.trans
                 {
                     RegistrationType = "Unregistered/Consumer";
                 }
+                string vehicleNo = master.led_vehicleno;
 
                 string state = master.led_state ?? "Tamil Nadu";
                 string salesLedger = "Sales GST";
@@ -1886,14 +1896,14 @@ namespace standard.trans
                     xml.AppendLine("      </REQUESTDESC>");
                     xml.AppendLine("      <REQUESTDATA>");
                     xml.AppendLine("        <TALLYMESSAGE xmlns:UDF=\"TallyUDF\">");
-                    xml.AppendLine($"          <VOUCHER REMOTEID=\"{guid}\" VCHTYPE=\"GST SALES N\" ACTION=\"{action}\" GUID=\"{guid}\" OBJVIEW=\"Invoice Voucher View\">");
+                    xml.AppendLine($"          <VOUCHER REMOTEID=\"{guid}\" VCHTYPE=\"Gst Sales\" ACTION=\"{action}\" GUID=\"{guid}\" OBJVIEW=\"Invoice Voucher View\">");
 
-                    xml.AppendLine($"            <DATE>20250401</DATE>");
+                    xml.AppendLine($"            <DATE>{date}</DATE>");
                     xml.AppendLine($"            <GUID>{guid}</GUID>");
                     xml.AppendLine($"            <VOUCHERNUMBER>{voucherNumber}</VOUCHERNUMBER>");
                     xml.AppendLine($"            <PARTYLEDGERNAME>{partyLedger}</PARTYLEDGERNAME>");
-                    xml.AppendLine("            <VOUCHERTYPENAME>GST SALES N</VOUCHERTYPENAME>");
-                    xml.AppendLine("            <CLASSNAME>SALES</CLASSNAME>");
+                    xml.AppendLine("            <VOUCHERTYPENAME>Gst Sales</VOUCHERTYPENAME>");
+                    xml.AppendLine("            <CLASSNAME>SALES</CLASSNAME>");                   
                     xml.AppendLine($"            <BASICBUYERNAME>{partyLedger}</BASICBUYERNAME>");
                     xml.AppendLine($"            <BASICBASEPARTYNAME>{partyLedger}</BASICBASEPARTYNAME>");
                     xml.AppendLine($"            <PARTYGSTIN>{partyGSTIN}</PARTYGSTIN>");
@@ -1901,7 +1911,20 @@ namespace standard.trans
                     xml.AppendLine($"            <STATENAME>{state}</STATENAME>");
                     xml.AppendLine("            <COUNTRYOFRESIDENCE>India</COUNTRYOFRESIDENCE>");
                     xml.AppendLine($"            <GSTREGISTRATIONTYPE>{RegistrationType}</GSTREGISTRATIONTYPE>");
+                    xml.AppendLine($"            <BASICSHIPVESSELNO>{vehicleNo}</BASICSHIPVESSELNO>");
+
+
                     // Buyer (Bill To) Address
+                    xml.AppendLine($"            <PARTYLEDGERNAME>{partyLedger}</PARTYLEDGERNAME>");
+                    xml.AppendLine($"            <PARTYMAILINGNAME>{partyLedger}</PARTYMAILINGNAME>");
+                    xml.AppendLine("             <ADDRESS.LIST TYPE=\"String\">");
+                    xml.AppendLine($"              <ADDRESS>{partyAddressLine1}</ADDRESS>");
+                    xml.AppendLine($"              <ADDRESS>{partyAddressLine2}</ADDRESS>");
+                    xml.AppendLine($"              <ADDRESS>{partyAddressLine3}</ADDRESS>");
+                    xml.AppendLine($"              <ADDRESS>{partyAddressLine4}</ADDRESS>");
+                    xml.AppendLine($"              <ADDRESS>{state}</ADDRESS>");
+                    xml.AppendLine("             </ADDRESS.LIST>");
+
                     xml.AppendLine("            <BASICBUYERADDRESS.LIST TYPE=\"String\">");
                     xml.AppendLine($"              <BASICBUYERADDRESS>{partyAddressLine1}</BASICBUYERADDRESS>");
                     xml.AppendLine($"              <BASICBUYERADDRESS>{partyAddressLine2}</BASICBUYERADDRESS>");
@@ -1911,12 +1934,15 @@ namespace standard.trans
                     xml.AppendLine("            </BASICBUYERADDRESS.LIST>");
 
                     // Consignee (Ship To) Address
+                    xml.AppendLine($"           <CONSIGNEEMAILINGNAME>{partyLedger}</CONSIGNEEMAILINGNAME>");
+                    xml.AppendLine($"           <CONSIGNEEGSTIN>{partyGSTIN}</CONSIGNEEGSTIN>");
+                    xml.AppendLine($"           <CONSIGNEESTATENAME>{state}</CONSIGNEESTATENAME>");
                     xml.AppendLine("            <BASICSHIPADDRESS.LIST TYPE=\"String\">");
                     xml.AppendLine($"              <BASICSHIPADDRESS>{partyAddressLine1}</BASICSHIPADDRESS>");
                     xml.AppendLine($"              <BASICSHIPADDRESS>{partyAddressLine2}</BASICSHIPADDRESS>");
                     xml.AppendLine($"              <BASICSHIPADDRESS>{partyAddressLine3}</BASICSHIPADDRESS>");
-                    xml.AppendLine($"              <BASICBUYERADDRESS>{partyAddressLine4}</BASICBUYERADDRESS>");
-                    xml.AppendLine($"              <BASICBUYERADDRESS>{state}</BASICBUYERADDRESS>");
+                    xml.AppendLine($"              <BASICSHIPADDRESS>{partyAddressLine4}</BASICSHIPADDRESS>");
+                    xml.AppendLine($"              <BASICSHIPADDRESS>{state}</BASICSHIPADDRESS>");
                     xml.AppendLine("            </BASICSHIPADDRESS.LIST>");
 
                     xml.AppendLine("            <ISINVOICE>Yes</ISINVOICE>");
@@ -1969,7 +1995,7 @@ namespace standard.trans
 
                     }
 
-                    decimal itemTotal = details.Sum(i => Math.Round((i.item_fullname == "CHILLIES IN KGS" ? i.sd_unitvalue * i.sd_rate : i.sd_qty * i.sd_rate), 2));
+                    decimal itemTotal = details.Sum(i => Math.Round((i.item_fullname == "CHILLIES IN KGS" ? i.sd_unitvalue * i.sd_perunitrate : i.sd_qty * i.sd_rate), 2));
                     decimal roundOff = Math.Round((itemTotal + gstAmount), 0, MidpointRounding.AwayFromZero) - (itemTotal + gstAmount);
                     if (roundOff != 0)
                     {
@@ -2022,18 +2048,37 @@ namespace standard.trans
                     xml.AppendLine($"            <STATENAME>{state}</STATENAME>");
                     xml.AppendLine("            <COUNTRYOFRESIDENCE>India</COUNTRYOFRESIDENCE>");
                     xml.AppendLine($"            <GSTREGISTRATIONTYPE>{RegistrationType}</GSTREGISTRATIONTYPE>");
+                    xml.AppendLine($"            <BASICSHIPVESSELNO>{vehicleNo}</BASICSHIPVESSELNO>");
+
                     // Buyer (Bill To) Address
+                    xml.AppendLine($"            <PARTYLEDGERNAME>{partyLedger}</PARTYLEDGERNAME>");
+                    xml.AppendLine($"            <PARTYMAILINGNAME>{partyLedger}</PARTYMAILINGNAME>");
+                    xml.AppendLine("            <ADDRESS.LIST TYPE=\"String\">");
+                    xml.AppendLine($"              <ADDRESS>{partyAddressLine1}</ADDRESS>");
+                    xml.AppendLine($"              <ADDRESS>{partyAddressLine2}</ADDRESS>");
+                    xml.AppendLine($"              <ADDRESS>{partyAddressLine3}</ADDRESS>");
+                    xml.AppendLine($"              <ADDRESS>{partyAddressLine4}</ADDRESS>");
+                    xml.AppendLine($"              <ADDRESS>{state}</ADDRESS>");
+                    xml.AppendLine("            </ADDRESS.LIST>");
+
                     xml.AppendLine("            <BASICBUYERADDRESS.LIST TYPE=\"String\">");
                     xml.AppendLine($"              <BASICBUYERADDRESS>{partyAddressLine1}</BASICBUYERADDRESS>");
                     xml.AppendLine($"              <BASICBUYERADDRESS>{partyAddressLine2}</BASICBUYERADDRESS>");
                     xml.AppendLine($"              <BASICBUYERADDRESS>{partyAddressLine3}</BASICBUYERADDRESS>");
+                    xml.AppendLine($"              <BASICBUYERADDRESS>{partyAddressLine4}</BASICBUYERADDRESS>");
+                    xml.AppendLine($"              <BASICBUYERADDRESS>{state}</BASICBUYERADDRESS>");
                     xml.AppendLine("            </BASICBUYERADDRESS.LIST>");
 
                     // Consignee (Ship To) Address
+                    xml.AppendLine($"           <CONSIGNEEMAILINGNAME>{partyLedger}</CONSIGNEEMAILINGNAME>");
+                    xml.AppendLine($"           <CONSIGNEEGSTIN>{partyGSTIN}</CONSIGNEEGSTIN>");
+                    xml.AppendLine($"           <CONSIGNEESTATENAME>{state}</CONSIGNEESTATENAME>");
                     xml.AppendLine("            <BASICSHIPADDRESS.LIST TYPE=\"String\">");
                     xml.AppendLine($"              <BASICSHIPADDRESS>{partyAddressLine1}</BASICSHIPADDRESS>");
                     xml.AppendLine($"              <BASICSHIPADDRESS>{partyAddressLine2}</BASICSHIPADDRESS>");
                     xml.AppendLine($"              <BASICSHIPADDRESS>{partyAddressLine3}</BASICSHIPADDRESS>");
+                    xml.AppendLine($"              <BASICSHIPADDRESS>{partyAddressLine4}</BASICSHIPADDRESS>");
+                    xml.AppendLine($"              <BASICSHIPADDRESS>{state}</BASICSHIPADDRESS>");
                     xml.AppendLine("            </BASICSHIPADDRESS.LIST>");
                     xml.AppendLine("            <ISINVOICE>Yes</ISINVOICE>");
                     xml.AppendLine("            <PERSISTEDVIEW>Invoice Voucher View</PERSISTEDVIEW>");
@@ -2161,7 +2206,7 @@ namespace standard.trans
 
                     }
 
-                    decimal itemTotal = details.Sum(i => Math.Round((i.item_fullname == "CHILLIES IN KGS" ? i.sd_unitvalue * i.sd_rate : i.sd_qty * i.sd_rate), 2));
+                    decimal itemTotal = details.Sum(i => Math.Round((i.item_fullname == "CHILLIES IN KGS" ? i.sd_unitvalue * i.sd_perunitrate : i.sd_qty * i.sd_rate), 2));
                     decimal roundOff = Math.Round((itemTotal + gstAmount), 0, MidpointRounding.AwayFromZero) - (itemTotal + gstAmount);
                     if (roundOff != 0)
                     {
@@ -2213,18 +2258,37 @@ namespace standard.trans
                     xml.AppendLine($"            <STATENAME>{state}</STATENAME>");
                     xml.AppendLine("            <COUNTRYOFRESIDENCE>India</COUNTRYOFRESIDENCE>");
                     xml.AppendLine($"           <GSTREGISTRATIONTYPE>{RegistrationType}</GSTREGISTRATIONTYPE>");
+                    xml.AppendLine($"            <BASICSHIPVESSELNO>{vehicleNo}</BASICSHIPVESSELNO>");
+
                     // Buyer (Bill To) Address
+                    xml.AppendLine($"            <PARTYLEDGERNAME>{partyLedger}</PARTYLEDGERNAME>");
+                    xml.AppendLine($"            <PARTYMAILINGNAME>{partyLedger}</PARTYMAILINGNAME>");
+                    xml.AppendLine("            <ADDRESS.LIST TYPE=\"String\">");
+                    xml.AppendLine($"              <ADDRESS>{partyAddressLine1}</ADDRESS>");
+                    xml.AppendLine($"              <ADDRESS>{partyAddressLine2}</ADDRESS>");
+                    xml.AppendLine($"              <ADDRESS>{partyAddressLine3}</ADDRESS>");
+                    xml.AppendLine($"              <ADDRESS>{partyAddressLine4}</ADDRESS>");
+                    xml.AppendLine($"              <ADDRESS>{state}</ADDRESS>");
+                    xml.AppendLine("            </ADDRESS.LIST>");
+
                     xml.AppendLine("            <BASICBUYERADDRESS.LIST TYPE=\"String\">");
                     xml.AppendLine($"              <BASICBUYERADDRESS>{partyAddressLine1}</BASICBUYERADDRESS>");
                     xml.AppendLine($"              <BASICBUYERADDRESS>{partyAddressLine2}</BASICBUYERADDRESS>");
                     xml.AppendLine($"              <BASICBUYERADDRESS>{partyAddressLine3}</BASICBUYERADDRESS>");
+                    xml.AppendLine($"              <BASICBUYERADDRESS>{partyAddressLine4}</BASICBUYERADDRESS>");
+                    xml.AppendLine($"              <BASICBUYERADDRESS>{state}</BASICBUYERADDRESS>");
                     xml.AppendLine("            </BASICBUYERADDRESS.LIST>");
 
                     // Consignee (Ship To) Address
+                    xml.AppendLine($"           <CONSIGNEEMAILINGNAME>{partyLedger}</CONSIGNEEMAILINGNAME>");
+                    xml.AppendLine($"           <CONSIGNEEGSTIN>{partyGSTIN}</CONSIGNEEGSTIN>");
+                    xml.AppendLine($"           <CONSIGNEESTATENAME>{state}</CONSIGNEESTATENAME>");
                     xml.AppendLine("            <BASICSHIPADDRESS.LIST TYPE=\"String\">");
                     xml.AppendLine($"              <BASICSHIPADDRESS>{partyAddressLine1}</BASICSHIPADDRESS>");
                     xml.AppendLine($"              <BASICSHIPADDRESS>{partyAddressLine2}</BASICSHIPADDRESS>");
                     xml.AppendLine($"              <BASICSHIPADDRESS>{partyAddressLine3}</BASICSHIPADDRESS>");
+                    xml.AppendLine($"              <BASICSHIPADDRESS>{partyAddressLine4}</BASICSHIPADDRESS>");
+                    xml.AppendLine($"              <BASICSHIPADDRESS>{state}</BASICSHIPADDRESS>");
                     xml.AppendLine("            </BASICSHIPADDRESS.LIST>");
                     xml.AppendLine("            <ISINVOICE>Yes</ISINVOICE>");
                     xml.AppendLine("            <PERSISTEDVIEW>Invoice Voucher View</PERSISTEDVIEW>");
@@ -2276,7 +2340,7 @@ namespace standard.trans
 
                     }
 
-                    decimal itemTotal = details.Sum(i => Math.Round((i.item_fullname == "CHILLIES IN KGS" ? i.sd_unitvalue * i.sd_rate : i.sd_qty * i.sd_rate), 2));
+                    decimal itemTotal = details.Sum(i => Math.Round((i.item_fullname == "CHILLIES IN KGS" ? i.sd_unitvalue * i.sd_perunitrate : i.sd_qty * i.sd_rate), 2));
                     decimal roundOff = Math.Round((itemTotal + gstAmount), 0, MidpointRounding.AwayFromZero) - (itemTotal + gstAmount);
                     if (roundOff != 0)
                     {
@@ -2326,18 +2390,37 @@ namespace standard.trans
                     xml.AppendLine($"            <STATENAME>{state}</STATENAME>");
                     xml.AppendLine("            <COUNTRYOFRESIDENCE>India</COUNTRYOFRESIDENCE>");
                     xml.AppendLine($"            <GSTREGISTRATIONTYPE>{RegistrationType}</GSTREGISTRATIONTYPE>");
+                    xml.AppendLine($"            <BASICSHIPVESSELNO>{vehicleNo}</BASICSHIPVESSELNO>");
+
                     // Buyer (Bill To) Address
+                    xml.AppendLine($"            <PARTYLEDGERNAME>{partyLedger}</PARTYLEDGERNAME>");
+                    xml.AppendLine($"            <PARTYMAILINGNAME>{partyLedger}</PARTYMAILINGNAME>");
+                    xml.AppendLine("            <ADDRESS.LIST TYPE=\"String\">");
+                    xml.AppendLine($"              <ADDRESS>{partyAddressLine1}</ADDRESS>");
+                    xml.AppendLine($"              <ADDRESS>{partyAddressLine2}</ADDRESS>");
+                    xml.AppendLine($"              <ADDRESS>{partyAddressLine3}</ADDRESS>");
+                    xml.AppendLine($"              <ADDRESS>{partyAddressLine4}</ADDRESS>");
+                    xml.AppendLine($"              <ADDRESS>{state}</ADDRESS>");
+                    xml.AppendLine("            </ADDRESS.LIST>");
+
                     xml.AppendLine("            <BASICBUYERADDRESS.LIST TYPE=\"String\">");
                     xml.AppendLine($"              <BASICBUYERADDRESS>{partyAddressLine1}</BASICBUYERADDRESS>");
                     xml.AppendLine($"              <BASICBUYERADDRESS>{partyAddressLine2}</BASICBUYERADDRESS>");
                     xml.AppendLine($"              <BASICBUYERADDRESS>{partyAddressLine3}</BASICBUYERADDRESS>");
+                    xml.AppendLine($"              <BASICBUYERADDRESS>{partyAddressLine4}</BASICBUYERADDRESS>");
+                    xml.AppendLine($"              <BASICBUYERADDRESS>{state}</BASICBUYERADDRESS>");
                     xml.AppendLine("            </BASICBUYERADDRESS.LIST>");
 
                     // Consignee (Ship To) Address
+                    xml.AppendLine($"           <CONSIGNEEMAILINGNAME>{partyLedger}</CONSIGNEEMAILINGNAME>");
+                    xml.AppendLine($"           <CONSIGNEEGSTIN>{partyGSTIN}</CONSIGNEEGSTIN>");
+                    xml.AppendLine($"           <CONSIGNEESTATENAME>{state}</CONSIGNEESTATENAME>");
                     xml.AppendLine("            <BASICSHIPADDRESS.LIST TYPE=\"String\">");
                     xml.AppendLine($"              <BASICSHIPADDRESS>{partyAddressLine1}</BASICSHIPADDRESS>");
                     xml.AppendLine($"              <BASICSHIPADDRESS>{partyAddressLine2}</BASICSHIPADDRESS>");
                     xml.AppendLine($"              <BASICSHIPADDRESS>{partyAddressLine3}</BASICSHIPADDRESS>");
+                    xml.AppendLine($"              <BASICSHIPADDRESS>{partyAddressLine4}</BASICSHIPADDRESS>");
+                    xml.AppendLine($"              <BASICSHIPADDRESS>{state}</BASICSHIPADDRESS>");
                     xml.AppendLine("            </BASICSHIPADDRESS.LIST>");
                     xml.AppendLine("            <ISINVOICE>Yes</ISINVOICE>");
                     xml.AppendLine("            <PERSISTEDVIEW>Invoice Voucher View</PERSISTEDVIEW>");
@@ -2425,7 +2508,7 @@ namespace standard.trans
 
                     }
 
-                    decimal itemTotal = details.Sum(i => Math.Round((i.item_fullname == "CHILLIES IN KGS" ? i.sd_unitvalue * i.sd_rate : i.sd_qty * i.sd_rate), 2));
+                    decimal itemTotal = details.Sum(i => Math.Round((i.item_fullname == "CHILLIES IN KGS" ? i.sd_unitvalue * i.sd_perunitrate : i.sd_qty * i.sd_rate), 2));
                     decimal roundOff = Math.Round((itemTotal + gstAmount), 0, MidpointRounding.AwayFromZero) - (itemTotal + gstAmount);
                     if (roundOff != 0)
                     {
@@ -2551,7 +2634,7 @@ namespace standard.trans
                 //File.WriteAllText(xmlPath, tallyXml); 
                 //Process.Start("notepad.exe", xmlPath); 
 
-               bool success = TallyHelper.SendToTally(tallyXml, (int)salesMaster.sm_id);
+                bool success = TallyHelper.SendToTally(tallyXml, (int)salesMaster.sm_id);
 
                 MessageBox.Show(success ? "Imported to Tally successfully!" : "Failed to import to Tally.", "Status", MessageBoxButtons.OK, success ? MessageBoxIcon.Information : MessageBoxIcon.Error);
                 ClearData();
@@ -2916,6 +2999,14 @@ namespace standard.trans
                                     dgvSales["cStock", r].Value = item3.stock;
                                 }
                             }
+                        }
+                        if (Convert.ToDecimal(dgvSales["cQty", r].Value) >= 1)
+                        {
+                            decimal.TryParse(Convert.ToString(dgvSales["cRate", r].Value), out rate);
+                            decimal.TryParse(Convert.ToString(dgvSales["cQty", r].Value), out qty);                           
+                            decimal.TryParse(Convert.ToString(dgvSales["cTaxPercentage", r].Value), out taxPercentage);
+                            dgvSales["cAmount", r].Value = ((rate > 0m && qty > 0m) ? ((object)((rate * qty) + ((rate * qty) * taxPercentage / 100))) : null);
+                            calacTotal();
                         }
                         dgvSales.CurrentCell = dgvSales.Rows[dgvSales.CurrentCellAddress.Y].Cells["cQty"];
                         dgvSales.Focus();
@@ -3491,7 +3582,6 @@ namespace standard.trans
             this.lprint = new System.Windows.Forms.DataGridViewImageColumn();
             this.lEstimateprint = new System.Windows.Forms.DataGridViewImageColumn();
             this.isDraft = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.isImport = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ldc = new System.Windows.Forms.DataGridViewImageColumn();
             this.smidDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.smbooknoDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -3510,6 +3600,7 @@ namespace standard.trans
             this.usersnameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.smudateDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.lImport = new System.Windows.Forms.DataGridViewImageColumn();
+            this.isImport = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.smdescDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.uspsalesmasterSelectResultBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
@@ -3518,18 +3609,18 @@ namespace standard.trans
             this.ledgermasterViewBindingSource1 = new System.Windows.Forms.BindingSource(this.components);
             this.lblfdate = new System.Windows.Forms.Label();
             this.dtpfdate = new System.Windows.Forms.DateTimePicker();
-            this.importDate = new System.Windows.Forms.DateTimePicker();
             this.lblhyp = new System.Windows.Forms.Label();
             this.cmdList = new mylib.lightbutton();
             this.cmdexit = new mylib.lightbutton();
-            this.importButton = new System.Windows.Forms.Button();
             this.label6 = new System.Windows.Forms.Label();
             this.lblCompany = new System.Windows.Forms.Label();
-            this.lblImportDate = new System.Windows.Forms.Label();
             this.cboCompany = new System.Windows.Forms.ComboBox();
             this.companyViewBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.lblBillNo = new System.Windows.Forms.Label();
             this.txtSearchBillNo = new System.Windows.Forms.TextBox();
+            this.lblImportDate = new System.Windows.Forms.Label();
+            this.importDate = new System.Windows.Forms.DateTimePicker();
+            this.importButton = new System.Windows.Forms.Button();
             this.ledgermasterViewBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.cboCityView = new System.Windows.Forms.ComboBox();
             this.ledgermasteCityViewrBindingSource = new System.Windows.Forms.BindingSource(this.components);
@@ -4864,14 +4955,6 @@ namespace standard.trans
             this.companyDataGridViewTextBoxColumn.ReadOnly = true;
             this.companyDataGridViewTextBoxColumn.Width = 200;
             // 
-            // isTaxableDataGridViewTextBoxColumn
-            // 
-            this.isTaxableDataGridViewTextBoxColumn.DataPropertyName = "item_istaxable";
-            this.isTaxableDataGridViewTextBoxColumn.HeaderText = "Taxable";
-            this.isTaxableDataGridViewTextBoxColumn.Name = "taxStatus";
-            this.isTaxableDataGridViewTextBoxColumn.ReadOnly = true;
-            this.isTaxableDataGridViewTextBoxColumn.Width = 200;
-            // 
             // smtotqtyDataGridViewTextBoxColumn
             // 
             this.smtotqtyDataGridViewTextBoxColumn.DataPropertyName = "sm_totqty";
@@ -4963,6 +5046,14 @@ namespace standard.trans
             this.lImport.Resizable = System.Windows.Forms.DataGridViewTriState.False;
             this.lImport.Width = 150;
             // 
+            // isImport
+            // 
+            this.isImport.DataPropertyName = "sm_isimport";
+            this.isImport.HeaderText = "IMPORT STATUS";
+            this.isImport.Name = "isImport";
+            this.isImport.ReadOnly = true;
+            this.isImport.Width = 160;
+            // 
             // smdescDataGridViewTextBoxColumn
             // 
             this.smdescDataGridViewTextBoxColumn.DataPropertyName = "sm_desc";
@@ -5014,19 +5105,6 @@ namespace standard.trans
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tableLayoutPanel1.Size = new System.Drawing.Size(1648, 104);
             this.tableLayoutPanel1.TabIndex = 0;
-            // 
-            // importButton
-            // 
-            this.importButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.importButton.BackColor = System.Drawing.Color.Red;
-            this.importButton.ForeColor = System.Drawing.Color.White;
-            this.importButton.Location = new System.Drawing.Point(1024, 50);
-            this.importButton.Name = "importButton";
-            this.importButton.Size = new System.Drawing.Size(217, 40);
-            this.importButton.TabIndex = 16;
-            this.importButton.Text = "Tally Import";
-            this.importButton.UseVisualStyleBackColor = false;
-            this.importButton.Click += new System.EventHandler(this.ImportTodaysSalesToTally);
             // 
             // dtptdate
             // 
@@ -5203,6 +5281,45 @@ namespace standard.trans
             this.txtSearchBillNo.TabIndex = 7;
             this.txtSearchBillNo.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtSearchBillNo_KeyDown_1);
             // 
+            // lblImportDate
+            // 
+            this.lblImportDate.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblImportDate.AutoSize = true;
+            this.lblImportDate.Font = new System.Drawing.Font("Tahoma", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblImportDate.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
+            this.lblImportDate.Location = new System.Drawing.Point(1275, 13);
+            this.lblImportDate.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblImportDate.Name = "lblImportDate";
+            this.lblImportDate.Size = new System.Drawing.Size(142, 25);
+            this.lblImportDate.TabIndex = 30;
+            this.lblImportDate.Text = "Import Date";
+            // 
+            // importDate
+            // 
+            this.importDate.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.importDate.CustomFormat = "dd-MM-yyyy";
+            this.importDate.Font = new System.Drawing.Font("Tahoma", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.importDate.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
+            this.importDate.Location = new System.Drawing.Point(1447, 9);
+            this.importDate.Margin = new System.Windows.Forms.Padding(0);
+            this.importDate.Name = "importDate";
+            this.importDate.Size = new System.Drawing.Size(159, 33);
+            this.importDate.TabIndex = 1;
+            this.importDate.KeyDown += new System.Windows.Forms.KeyEventHandler(this.dtptdate_KeyDown);
+            // 
+            // importButton
+            // 
+            this.importButton.BackColor = System.Drawing.Color.Red;
+            this.importButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.importButton.ForeColor = System.Drawing.Color.White;
+            this.importButton.Location = new System.Drawing.Point(1626, 3);
+            this.importButton.Name = "importButton";
+            this.importButton.Size = new System.Drawing.Size(19, 40);
+            this.importButton.TabIndex = 16;
+            this.importButton.Text = "Tally Import";
+            this.importButton.UseVisualStyleBackColor = false;
+            this.importButton.Click += new System.EventHandler(this.ImportTodaysSalesToTally);
+            // 
             // cboCityView
             // 
             this.cboCityView.Anchor = System.Windows.Forms.AnchorStyles.Left;
@@ -5258,33 +5375,6 @@ namespace standard.trans
             this.smprofitDataGridViewTextBoxColumn.HeaderText = "Profit";
             this.smprofitDataGridViewTextBoxColumn.Name = "smprofitDataGridViewTextBoxColumn";
             this.smprofitDataGridViewTextBoxColumn.Width = 130;
-            // 
-            // lblImportDate
-            // 
-            this.lblImportDate.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.lblImportDate.AutoSize = true;
-            this.lblImportDate.Font = new System.Drawing.Font("Tahoma", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblImportDate.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.lblImportDate.Location = new System.Drawing.Point(826, 13);
-            this.lblImportDate.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.lblImportDate.Name = "lblImportDate";
-            this.lblImportDate.Size = new System.Drawing.Size(110, 25);
-            this.lblImportDate.TabIndex = 30;
-            this.lblImportDate.Text = "Import Date";
-            // 
-            // importDate
-            // 
-            this.importDate.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.importDate.CustomFormat = "dd-MM-yyyy";
-            this.importDate.Font = new System.Drawing.Font("Tahoma", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.importDate.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-            this.importDate.Location = new System.Drawing.Point(150, 9);
-            this.importDate.Margin = new System.Windows.Forms.Padding(0);
-            this.importDate.Name = "importDate";
-            this.importDate.Size = new System.Drawing.Size(159, 33);
-            this.importDate.TabIndex = 1;
-            this.importDate.KeyDown += new System.Windows.Forms.KeyEventHandler(this.dtptdate_KeyDown);
-            
             // 
             // frmSales
             // 

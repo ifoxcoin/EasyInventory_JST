@@ -2562,49 +2562,6 @@
       <Column Name="sm_isimport" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
     </ElementType>
   </Function>
-  <Function Name="dbo.usp_purchasemasterSelect" Method="usp_purchasemasterSelect">
-    <Parameter Name="pm_id" Type="System.Int64" DbType="BigInt" />
-    <Parameter Name="led_id" Type="System.Int64" DbType="BigInt" />
-    <Parameter Name="fdate" Type="System.DateTime" DbType="DateTime" />
-    <Parameter Name="tdate" Type="System.DateTime" DbType="DateTime" />
-    <Parameter Name="pm_isclose" Type="System.Boolean" DbType="Bit" />
-    <Parameter Name="pm_no" Type="System.Int64" DbType="BigInt" />
-    <ElementType Name="usp_purchasemasterSelectResult">
-      <Column Name="pm_id" Type="System.Int64" DbType="BigInt NOT NULL" CanBeNull="false" />
-      <Column Name="pm_no" Type="System.Int64" DbType="BigInt NOT NULL" CanBeNull="false" />
-      <Column Name="pm_date" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
-      <Column Name="led_id" Type="System.Int64" DbType="BigInt" CanBeNull="true" />
-      <Column Name="led_address2" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
-      <Column Name="led_pincode" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
-      <Column Name="led_tin" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
-      <Column Name="led_cst" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
-      <Column Name="led_name" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
-      <Column Name="led_stlname" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
-      <Column Name="led_address" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
-      <Column Name="led_address1" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
-      <Column Name="led_state" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
-      <Column Name="led_transport" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
-      <Column Name="led_ownerphone" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
-      <Column Name="pm_totqty" Type="System.Decimal" DbType="Decimal(18,3) NOT NULL" CanBeNull="false" />
-      <Column Name="pm_totamount" Type="System.Decimal" DbType="Decimal(18,3) NOT NULL" CanBeNull="false" />
-      <Column Name="users_uid" Type="System.Int64" DbType="BigInt" CanBeNull="true" />
-      <Column Name="users_name" Type="System.String" DbType="NVarChar(25)" CanBeNull="true" />
-      <Column Name="pm_udate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
-      <Column Name="pm_desc" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
-      <Column Name="com_id" Type="System.Int64" DbType="BigInt" CanBeNull="true" />
-      <Column Name="com_name" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
-      <Column Name="pm_isclose" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
-      <Column Name="pm_paid" Type="System.Decimal" DbType="Decimal(18,3) NOT NULL" CanBeNull="false" />
-      <Column Name="pm_discountpercentage" Type="System.Decimal" DbType="Decimal(18,3) NOT NULL" CanBeNull="false" />
-      <Column Name="pm_discountamount" Type="System.Decimal" DbType="Decimal(18,3) NOT NULL" CanBeNull="false" />
-      <Column Name="pm_wages" Type="System.Decimal" DbType="Decimal(18,3) NOT NULL" CanBeNull="false" />
-      <Column Name="pm_frieght" Type="System.Decimal" DbType="Decimal(18,3) NOT NULL" CanBeNull="false" />
-      <Column Name="pm_billno" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
-      <Column Name="pm_totaltaxamount" Type="System.Decimal" DbType="Decimal(18,3) NOT NULL" CanBeNull="false" />
-      <Column Name="pm_isimport" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
-      <Column Name="pm_guid" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
-    </ElementType>
-  </Function>
   <Function Name="dbo.usp_purchasemasterUpdate" Method="usp_purchasemasterUpdate">
     <Parameter Name="pm_id" Type="System.Int64" DbType="BigInt" />
     <Parameter Name="pm_no" Type="System.Int64" DbType="BigInt" />
@@ -2713,6 +2670,50 @@
       <Column Name="sm_guid" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
     </ElementType>
   </Function>
+  <Function Name="dbo.usp_purchasemasterSelect" Method="usp_purchasemasterSelect">
+    <Parameter Name="pm_id" Type="System.Int64" DbType="BigInt" />
+    <Parameter Name="led_id" Type="System.Int64" DbType="BigInt" />
+    <Parameter Name="fdate" Type="System.DateTime" DbType="DateTime" />
+    <Parameter Name="tdate" Type="System.DateTime" DbType="DateTime" />
+    <Parameter Name="pm_isclose" Type="System.Boolean" DbType="Bit" />
+    <Parameter Name="pm_no" Type="System.Int64" DbType="BigInt" />
+    <ElementType Name="usp_purchasemasterSelectResult">
+      <Column Name="pm_id" Type="System.Int64" DbType="BigInt NOT NULL" CanBeNull="false" />
+      <Column Name="pm_no" Type="System.Int64" DbType="BigInt NOT NULL" CanBeNull="false" />
+      <Column Name="pm_date" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="led_id" Type="System.Int64" DbType="BigInt" CanBeNull="true" />
+      <Column Name="led_address2" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="led_pincode" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="led_tin" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="led_cst" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="led_name" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="led_stlname" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="led_address" Type="System.String" DbType="NVarChar(500)" CanBeNull="true" />
+      <Column Name="led_address1" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="led_state" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="led_transport" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="led_ownerphone" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="led_vehicleno" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="pm_totqty" Type="System.Decimal" DbType="Decimal(18,3) NOT NULL" CanBeNull="false" />
+      <Column Name="pm_totamount" Type="System.Decimal" DbType="Decimal(18,3) NOT NULL" CanBeNull="false" />
+      <Column Name="users_uid" Type="System.Int64" DbType="BigInt" CanBeNull="true" />
+      <Column Name="users_name" Type="System.String" DbType="NVarChar(25)" CanBeNull="true" />
+      <Column Name="pm_udate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="pm_desc" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="com_id" Type="System.Int64" DbType="BigInt" CanBeNull="true" />
+      <Column Name="com_name" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="pm_isclose" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="pm_paid" Type="System.Decimal" DbType="Decimal(18,3) NOT NULL" CanBeNull="false" />
+      <Column Name="pm_discountpercentage" Type="System.Decimal" DbType="Decimal(18,3) NOT NULL" CanBeNull="false" />
+      <Column Name="pm_discountamount" Type="System.Decimal" DbType="Decimal(18,3) NOT NULL" CanBeNull="false" />
+      <Column Name="pm_wages" Type="System.Decimal" DbType="Decimal(18,3) NOT NULL" CanBeNull="false" />
+      <Column Name="pm_frieght" Type="System.Decimal" DbType="Decimal(18,3) NOT NULL" CanBeNull="false" />
+      <Column Name="pm_billno" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="pm_totaltaxamount" Type="System.Decimal" DbType="Decimal(18,3) NOT NULL" CanBeNull="false" />
+      <Column Name="pm_isimport" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="pm_guid" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
+    </ElementType>
+  </Function>
   <Function Name="dbo.usp_salesmasterSelect" Method="usp_salesmasterSelect">
     <Parameter Name="sm_id" Type="System.Int64" DbType="BigInt" />
     <Parameter Name="led_id" Type="System.Int64" DbType="BigInt" />
@@ -2735,7 +2736,7 @@
       <Column Name="led_cst" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
       <Column Name="led_name" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
       <Column Name="led_stlname" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
-      <Column Name="led_address" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="led_address" Type="System.String" DbType="NVarChar(500)" CanBeNull="true" />
       <Column Name="led_address1" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
       <Column Name="led_state" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
       <Column Name="led_transport" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
@@ -2767,8 +2768,29 @@
       <Column Name="sm_guid" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
       <Column Name="com_id" Type="System.Int64" DbType="BigInt NOT NULL" CanBeNull="false" />
       <Column Name="com_name" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="com_accountnumber" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="com_add1" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="com_add2" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="com_add3" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="com_bankname" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
+      <Column Name="com_branch" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
+      <Column Name="com_city" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="com_country" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="com_email" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="com_fssai" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="com_gstin" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
+      <Column Name="com_ifsc" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
+      <Column Name="com_code" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="com_godownadd" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
+      <Column Name="com_mobile1" Type="System.String" DbType="NVarChar(15)" CanBeNull="true" />
+      <Column Name="com_mobile2" Type="System.String" DbType="NVarChar(15)" CanBeNull="true" />
+      <Column Name="com_pan" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="com_phone" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="com_pin" Type="System.String" DbType="NVarChar(7)" CanBeNull="true" />
+      <Column Name="com_state" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
       <Column Name="led_shippingaddress1" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
       <Column Name="led_shippingaddress2" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="led_vehicleno" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
       <Column Name="dayscount" Type="System.Int32" DbType="Int" CanBeNull="true" />
     </ElementType>
   </Function>
