@@ -620,7 +620,7 @@ namespace standard.trans
                                         salesmasters.sm_paidcommission, salesmasters.sm_paidpacking, salesmasters.sm_roundamount,
                                         salesmasters.sm_iscommissionclose, salesmasters.sm_ispackingclose, global.ucode, global.sysdate,
                                         salesmasters.sm_desc, salesmasters.sm_isclose, salesmasters.sm_isdraft, salesmasters.so_id,
-                                        salesmasters.com_id, salesmasters.sm_istaxable, false, salesmasters.sm_guid
+                                        salesmasters.com_id, salesmasters.sm_istaxable, false, salesmasters.sm_guid, salesmaster.sm_agid
                                     );
                                 }
 
@@ -1261,7 +1261,8 @@ namespace standard.trans
                 salesorder.so_status = "Fully Converted";
                 salesmaster.com_id = firstItem.com_id;
                 salesmaster.sm_istaxable = firstItem.item_istaxable;
-                inventoryDataContext.usp_salesmasterInsert(ref id, salesmaster.sm_bookno, salesmaster.sm_refno, salesmaster.sm_date, salesmaster.led_id, salesmaster.sm_totqty, salesmaster.sm_totamount, salesmaster.sm_itemcount, salesmaster.sm_profit, salesmaster.sm_disamount, salesmaster.sm_taxamount, salesmaster.sm_taxpercentage, salesmaster.sm_packingcharge, salesmaster.sm_netamount, salesmaster.sm_received, salesmaster.sm_paidcommission, salesmaster.sm_paidpacking, salesmaster.sm_roundamount, false, false, global.ucode, global.sysdate, salesmaster.sm_desc, false, false, salesmaster.so_id, salesmaster.com_id, salesmaster.sm_istaxable, false);
+                salesmaster.sm_agid = firstItem.led_agid;
+                inventoryDataContext.usp_salesmasterInsert(ref id, salesmaster.sm_bookno, salesmaster.sm_refno, salesmaster.sm_date, salesmaster.led_id, salesmaster.sm_totqty, salesmaster.sm_totamount, salesmaster.sm_itemcount, salesmaster.sm_profit, salesmaster.sm_disamount, salesmaster.sm_taxamount, salesmaster.sm_taxpercentage, salesmaster.sm_packingcharge, salesmaster.sm_netamount, salesmaster.sm_received, salesmaster.sm_paidcommission, salesmaster.sm_paidpacking, salesmaster.sm_roundamount, false, false, global.ucode, global.sysdate, salesmaster.sm_desc, false, false, salesmaster.so_id, salesmaster.com_id, salesmaster.sm_istaxable, false, salesmaster.sm_agid);
 
                 inventoryDataContext.usp_salesorderUpdate(salesmaster.so_id, salesorder.so_refno, salesmaster.sm_date, salesmaster.led_id, salesorder.so_totqty, salesorder.so_status, global.ucode, global.sysdate, true);
                 salesdetail.sm_id = id;
@@ -1345,7 +1346,8 @@ namespace standard.trans
                 salesorder.so_status = "Fully Converted";
                 salesmaster.com_id = firstItem.com_id;
                 salesmaster.sm_istaxable = true;
-                inventoryDataContext.usp_salesmasterInsert(ref id, salesmaster.sm_bookno, salesmaster.sm_refno, salesmaster.sm_date, salesmaster.led_id, salesmaster.sm_totqty, salesmaster.sm_totamount, salesmaster.sm_itemcount, salesmaster.sm_profit, salesmaster.sm_disamount, salesmaster.sm_taxamount, salesmaster.sm_taxpercentage, salesmaster.sm_packingcharge, salesmaster.sm_netamount, salesmaster.sm_received, salesmaster.sm_paidcommission, salesmaster.sm_paidpacking, salesmaster.sm_roundamount, false, false, global.ucode, global.sysdate, salesmaster.sm_desc, false, false, salesmaster.so_id, salesmaster.com_id, salesmaster.sm_istaxable, false);
+                salesmaster.sm_agid = firstItem.led_agid;
+                inventoryDataContext.usp_salesmasterInsert(ref id, salesmaster.sm_bookno, salesmaster.sm_refno, salesmaster.sm_date, salesmaster.led_id, salesmaster.sm_totqty, salesmaster.sm_totamount, salesmaster.sm_itemcount, salesmaster.sm_profit, salesmaster.sm_disamount, salesmaster.sm_taxamount, salesmaster.sm_taxpercentage, salesmaster.sm_packingcharge, salesmaster.sm_netamount, salesmaster.sm_received, salesmaster.sm_paidcommission, salesmaster.sm_paidpacking, salesmaster.sm_roundamount, false, false, global.ucode, global.sysdate, salesmaster.sm_desc, false, false, salesmaster.so_id, salesmaster.com_id, salesmaster.sm_istaxable, false, salesmaster.sm_agid);
                 inventoryDataContext.usp_salesorderUpdate(salesmaster.so_id, salesorder.so_refno, salesmaster.sm_date, salesmaster.led_id, salesorder.so_totqty, salesorder.so_status, global.ucode, global.sysdate, true);
                 salesdetail.sm_id = id;
 
@@ -1429,7 +1431,8 @@ namespace standard.trans
                 salesorder.so_status = "Fully Converted";
                 salesmaster.com_id = secondItem.com_id;
                 salesmaster.sm_istaxable = false;
-                inventoryDataContext.usp_salesmasterInsert(ref id, salesmaster.sm_bookno, salesmaster.sm_refno, salesmaster.sm_date, salesmaster.led_id, salesmaster.sm_totqty, salesmaster.sm_totamount, salesmaster.sm_itemcount, salesmaster.sm_profit, salesmaster.sm_disamount, salesmaster.sm_taxamount, salesmaster.sm_taxpercentage, salesmaster.sm_packingcharge, salesmaster.sm_netamount, salesmaster.sm_received, salesmaster.sm_paidcommission, salesmaster.sm_paidpacking, salesmaster.sm_roundamount, false, false, global.ucode, global.sysdate, salesmaster.sm_desc, false, false, salesmaster.so_id, salesmaster.com_id, salesmaster.sm_istaxable, false);
+                salesmaster.sm_agid = secondItem.led_agid;
+                inventoryDataContext.usp_salesmasterInsert(ref id, salesmaster.sm_bookno, salesmaster.sm_refno, salesmaster.sm_date, salesmaster.led_id, salesmaster.sm_totqty, salesmaster.sm_totamount, salesmaster.sm_itemcount, salesmaster.sm_profit, salesmaster.sm_disamount, salesmaster.sm_taxamount, salesmaster.sm_taxpercentage, salesmaster.sm_packingcharge, salesmaster.sm_netamount, salesmaster.sm_received, salesmaster.sm_paidcommission, salesmaster.sm_paidpacking, salesmaster.sm_roundamount, false, false, global.ucode, global.sysdate, salesmaster.sm_desc, false, false, salesmaster.so_id, salesmaster.com_id, salesmaster.sm_istaxable, false, salesmaster.sm_agid);
                 inventoryDataContext.usp_salesorderUpdate(salesmaster.so_id, salesorder.so_refno, salesmaster.sm_date, salesmaster.led_id, salesorder.so_totqty, salesorder.so_status, global.ucode, global.sysdate, true);
                 salesdetail.sm_id = id;
                 foreach (var com2SOD in com2list)
@@ -1510,7 +1513,8 @@ namespace standard.trans
                 salesorder.so_status = "Fully Converted";
                 salesmaster.com_id = secondItem.com_id;
                 salesmaster.sm_istaxable = true;
-                inventoryDataContext.usp_salesmasterInsert(ref id, salesmaster.sm_bookno, salesmaster.sm_refno, salesmaster.sm_date, salesmaster.led_id, salesmaster.sm_totqty, salesmaster.sm_totamount, salesmaster.sm_itemcount, salesmaster.sm_profit, salesmaster.sm_disamount, salesmaster.sm_taxamount, salesmaster.sm_taxpercentage, salesmaster.sm_packingcharge, salesmaster.sm_netamount, salesmaster.sm_received, salesmaster.sm_paidcommission, salesmaster.sm_paidpacking, salesmaster.sm_roundamount, false, false, global.ucode, global.sysdate, salesmaster.sm_desc, false, false, salesmaster.so_id, salesmaster.com_id, salesmaster.sm_istaxable, false);
+                salesmaster.sm_agid = secondItem.led_agid;
+                inventoryDataContext.usp_salesmasterInsert(ref id, salesmaster.sm_bookno, salesmaster.sm_refno, salesmaster.sm_date, salesmaster.led_id, salesmaster.sm_totqty, salesmaster.sm_totamount, salesmaster.sm_itemcount, salesmaster.sm_profit, salesmaster.sm_disamount, salesmaster.sm_taxamount, salesmaster.sm_taxpercentage, salesmaster.sm_packingcharge, salesmaster.sm_netamount, salesmaster.sm_received, salesmaster.sm_paidcommission, salesmaster.sm_paidpacking, salesmaster.sm_roundamount, false, false, global.ucode, global.sysdate, salesmaster.sm_desc, false, false, salesmaster.so_id, salesmaster.com_id, salesmaster.sm_istaxable, false, salesmaster.sm_agid);
                 inventoryDataContext.usp_salesorderUpdate(salesmaster.so_id, salesorder.so_refno, salesmaster.sm_date, salesmaster.led_id, salesorder.so_totqty, salesorder.so_status, global.ucode, global.sysdate, true);
                 salesdetail.sm_id = id;
                 foreach (var com2SOD in com2taxlist)
@@ -2497,7 +2501,7 @@ namespace standard.trans
             this.tablemain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tablemain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 100F));
             this.tablemain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 60F));
-            this.tablemain.Size = new System.Drawing.Size(1284, 749);
+            this.tablemain.Size = new System.Drawing.Size(1456, 749);
             this.tablemain.TabIndex = 0;
             // 
             // tableentry
@@ -2531,7 +2535,7 @@ namespace standard.trans
             this.tableentry.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tableentry.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tableentry.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tableentry.Size = new System.Drawing.Size(1270, 86);
+            this.tableentry.Size = new System.Drawing.Size(1442, 86);
             this.tableentry.TabIndex = 4;
             // 
             // chkIsFrieght
@@ -2666,7 +2670,7 @@ namespace standard.trans
             this.cboCity.Location = new System.Drawing.Point(1230, 7);
             this.cboCity.Margin = new System.Windows.Forms.Padding(5, 7, 5, 7);
             this.cboCity.Name = "cboCity";
-            this.cboCity.Size = new System.Drawing.Size(35, 31);
+            this.cboCity.Size = new System.Drawing.Size(166, 31);
             this.cboCity.TabIndex = 2;
             this.cboCity.ValueMember = "led_id";
             this.cboCity.Visible = false;
@@ -2717,7 +2721,7 @@ namespace standard.trans
             this.lbltitle.AutoSize = true;
             this.lbltitle.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lbltitle.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.lbltitle.Location = new System.Drawing.Point(569, 7);
+            this.lbltitle.Location = new System.Drawing.Point(655, 7);
             this.lbltitle.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.lbltitle.Name = "lbltitle";
             this.lbltitle.Size = new System.Drawing.Size(145, 23);
@@ -2744,7 +2748,7 @@ namespace standard.trans
             this.tablecmd.RowCount = 1;
             this.tablecmd.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tablecmd.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 46F));
-            this.tablecmd.Size = new System.Drawing.Size(1270, 46);
+            this.tablecmd.Size = new System.Drawing.Size(1442, 46);
             this.tablecmd.TabIndex = 3;
             // 
             // lblGSTIN
@@ -2765,7 +2769,7 @@ namespace standard.trans
             this.cmdsave.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.cmdsave.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold);
             this.cmdsave.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(41)))), ((int)(((byte)(66)))), ((int)(((byte)(122)))));
-            this.cmdsave.Location = new System.Drawing.Point(755, 7);
+            this.cmdsave.Location = new System.Drawing.Point(927, 7);
             this.cmdsave.Margin = new System.Windows.Forms.Padding(5, 7, 5, 7);
             this.cmdsave.Name = "cmdsave";
             this.cmdsave.Size = new System.Drawing.Size(120, 32);
@@ -2779,7 +2783,7 @@ namespace standard.trans
             this.cmdrefresh.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.cmdrefresh.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold);
             this.cmdrefresh.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(41)))), ((int)(((byte)(66)))), ((int)(((byte)(122)))));
-            this.cmdrefresh.Location = new System.Drawing.Point(885, 7);
+            this.cmdrefresh.Location = new System.Drawing.Point(1057, 7);
             this.cmdrefresh.Margin = new System.Windows.Forms.Padding(5, 7, 5, 7);
             this.cmdrefresh.Name = "cmdrefresh";
             this.cmdrefresh.Size = new System.Drawing.Size(120, 32);
@@ -2793,7 +2797,7 @@ namespace standard.trans
             this.cmdclose.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.cmdclose.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold);
             this.cmdclose.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(41)))), ((int)(((byte)(66)))), ((int)(((byte)(122)))));
-            this.cmdclose.Location = new System.Drawing.Point(1145, 7);
+            this.cmdclose.Location = new System.Drawing.Point(1317, 7);
             this.cmdclose.Margin = new System.Windows.Forms.Padding(5, 7, 5, 7);
             this.cmdclose.Name = "cmdclose";
             this.cmdclose.Size = new System.Drawing.Size(120, 32);
@@ -2807,7 +2811,7 @@ namespace standard.trans
             this.cmdview.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.cmdview.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold);
             this.cmdview.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(41)))), ((int)(((byte)(66)))), ((int)(((byte)(122)))));
-            this.cmdview.Location = new System.Drawing.Point(1015, 7);
+            this.cmdview.Location = new System.Drawing.Point(1187, 7);
             this.cmdview.Margin = new System.Windows.Forms.Padding(5, 7, 5, 7);
             this.cmdview.Name = "cmdview";
             this.cmdview.Size = new System.Drawing.Size(120, 32);
@@ -2842,7 +2846,7 @@ namespace standard.trans
             this.tablesum.RowCount = 2;
             this.tablesum.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tablesum.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tablesum.Size = new System.Drawing.Size(1270, 86);
+            this.tablesum.Size = new System.Drawing.Size(1442, 86);
             this.tablesum.TabIndex = 2;
             // 
             // lbltotqty
@@ -2900,7 +2904,7 @@ namespace standard.trans
             this.pnlentry.Location = new System.Drawing.Point(7, 146);
             this.pnlentry.Margin = new System.Windows.Forms.Padding(5, 7, 5, 7);
             this.pnlentry.Name = "pnlentry";
-            this.pnlentry.Size = new System.Drawing.Size(1270, 430);
+            this.pnlentry.Size = new System.Drawing.Size(1442, 430);
             this.pnlentry.TabIndex = 1;
             // 
             // dgvSales
@@ -2950,7 +2954,7 @@ namespace standard.trans
             this.dgvSales.RowsDefaultCellStyle = dataGridViewCellStyle11;
             this.dgvSales.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect;
             this.dgvSales.ShowCellToolTips = false;
-            this.dgvSales.Size = new System.Drawing.Size(1270, 430);
+            this.dgvSales.Size = new System.Drawing.Size(1442, 430);
             this.dgvSales.TabIndex = 0;
             this.dgvSales.CellEndEdit += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvSales_CellEndEdit);
             this.dgvSales.EditingControlShowing += new System.Windows.Forms.DataGridViewEditingControlShowingEventHandler(this.dgvSales_EditingControlShowing);
@@ -3143,7 +3147,7 @@ namespace standard.trans
             this.pnlview.Location = new System.Drawing.Point(0, 0);
             this.pnlview.Margin = new System.Windows.Forms.Padding(5, 7, 5, 7);
             this.pnlview.Name = "pnlview";
-            this.pnlview.Size = new System.Drawing.Size(1284, 749);
+            this.pnlview.Size = new System.Drawing.Size(1456, 749);
             this.pnlview.TabIndex = 12;
             // 
             // tableview
@@ -3163,7 +3167,7 @@ namespace standard.trans
             this.tableview.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 110F));
             this.tableview.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableview.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 10F));
-            this.tableview.Size = new System.Drawing.Size(1284, 749);
+            this.tableview.Size = new System.Drawing.Size(1456, 749);
             this.tableview.TabIndex = 0;
             // 
             // lblsubtitle
@@ -3172,7 +3176,7 @@ namespace standard.trans
             this.lblsubtitle.AutoSize = true;
             this.lblsubtitle.Font = new System.Drawing.Font("Tahoma", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblsubtitle.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.lblsubtitle.Location = new System.Drawing.Point(536, 7);
+            this.lblsubtitle.Location = new System.Drawing.Point(622, 7);
             this.lblsubtitle.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.lblsubtitle.Name = "lblsubtitle";
             this.lblsubtitle.Size = new System.Drawing.Size(212, 25);
@@ -3221,7 +3225,7 @@ namespace standard.trans
             this.dglist.RowHeadersVisible = false;
             this.dglist.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect;
             this.dglist.ShowCellToolTips = false;
-            this.dglist.Size = new System.Drawing.Size(1270, 569);
+            this.dglist.Size = new System.Drawing.Size(1442, 569);
             this.dglist.TabIndex = 1;
             this.dglist.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dglist_CellContentClick);
             this.dglist.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dglist_CellDoubleClick);
@@ -3388,7 +3392,7 @@ namespace standard.trans
             this.tableLayoutPanel1.RowCount = 2;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(1274, 104);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(1446, 104);
             this.tableLayoutPanel1.TabIndex = 0;
             // 
             // dtptdate
@@ -3637,7 +3641,7 @@ namespace standard.trans
             this.AutoScaleDimensions = new System.Drawing.SizeF(13F, 25F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(191)))), ((int)(((byte)(219)))), ((int)(((byte)(254)))));
-            this.ClientSize = new System.Drawing.Size(1284, 749);
+            this.ClientSize = new System.Drawing.Size(1456, 749);
             this.Controls.Add(this.tablemain);
             this.Controls.Add(this.pnlview);
             this.Font = new System.Drawing.Font("Tahoma", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));

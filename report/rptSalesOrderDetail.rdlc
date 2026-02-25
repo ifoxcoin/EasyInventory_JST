@@ -627,7 +627,8 @@
               </Group>
               <SortExpressions>
                 <SortExpression>
-                  <Value>=Fields!so_id.Value</Value>
+                  <Value>=Fields!so_date.Value</Value>
+                  <Direction>Descending</Direction>
                 </SortExpression>
               </SortExpressions>
               <TablixMembers>

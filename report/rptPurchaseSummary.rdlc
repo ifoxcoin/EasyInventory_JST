@@ -798,6 +798,12 @@
             </TablixMember>
             <TablixMember>
               <Group Name="Details" />
+              <SortExpressions>
+                <SortExpression>
+                  <Value>=Fields!pm_date.Value</Value>
+                  <Direction>Descending</Direction>
+                </SortExpression>
+              </SortExpressions>
             </TablixMember>
             <TablixMember>
               <KeepWithGroup>Before</KeepWithGroup>

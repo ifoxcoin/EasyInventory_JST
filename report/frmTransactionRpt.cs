@@ -189,9 +189,9 @@ namespace standard.report
 
 
                 chkIsSummary.Visible = false;
-                dtpfdate.Visible = false;
-                dtptdate.Visible = false;
-                lblfdate.Visible = false;
+                dtpfdate.Visible = true;
+                dtptdate.Visible = true;
+                lblfdate.Visible = true;
                 lblhyp.Visible = false;
                 //cboCity.Visible = false; //Arun
                 //lblCity.Visible = false; //Arun
@@ -203,9 +203,11 @@ namespace standard.report
                 cboPartyType.Visible = false;
                 lblReference.Visible = false;
                 cboReference.Visible = false;
+                cboItemName.Visible = true;
+                label1.Visible = true;
 
-                cboName.Visible = true;
-                lblLedger.Visible = true;
+                cboType.Visible = true;
+                lblType.Visible = true;
 
             }
             else if (_ReportName == "Sales Order Report")
@@ -316,8 +318,8 @@ namespace standard.report
                     }
                     else
                     {
-
-                        var data = db.usp_purchasedetailsSelect(null, ledid, dtpfdate.Value, dtptdate.Value, null, null);
+                        long? itemId = cboItemName.SelectedValue != null ? Convert.ToInt64(cboItemName.SelectedValue) : (long?)null;
+                        var data = db.usp_purchasedetailsSelect(null, ledid, dtpfdate.Value, dtptdate.Value, itemId, null);
                         reportViewer1.LocalReport.ReportEmbeddedResource = "standard.report.rptPurchaseDetail.rdlc";
                         ReportDataSource reportsource = new ReportDataSource("DataSet1", data.ToList());
                         reportViewer1.LocalReport.DataSources.Add(reportsource);
@@ -417,14 +419,37 @@ namespace standard.report
                 }
                 else if (_ReportName == "Agent Outstanding Report")
                 {
+                    if (ledid <= 0)
+                    {
+                        MessageBox.Show("Please select the Agent", "Validation", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        ((ComboBox)cboName).Focus();
+                        return;
+                    }
                     string citynames = string.Join(",", txtCityNames.Lines.Where(line => line.Trim().Length > 0));
+                    long? itemId = cboItemName.SelectedValue != null ? Convert.ToInt64(cboItemName.SelectedValue) : (long?)null;
                     //var data = db.usp_OutstandingReport(null, ledid, null, null, null, citynames).ToList();
-                    var data = db.usp_OutstandingReport(null, ledid, null, null, null, null).ToList();
-                    reportViewer1.LocalReport.ReportEmbeddedResource = "standard.report.rptOutstanding.rdlc";
+                    var data = db.usp_NewOutstandingReport(null, null, ledid, dtpfdate.Value, dtptdate.Value, cboType.Text, itemId).ToList();
+                    string reportTitle = "";
+
+                    if (cboType.Text == "Sales")
+                    {
+                        reportTitle = "Agentwise Sales Report";
+                    }
+                    else if (cboType.Text == "Purchase")
+                    {
+                        reportTitle = "Agentwise Purchase Report";
+                    }
+                    ReportParameter[] param = new ReportParameter[]
+                    {
+                        new ReportParameter("ReportTitle", reportTitle)
+                    };                   
+                    reportViewer1.LocalReport.ReportEmbeddedResource = "standard.report.rptAgentwise.rdlc";                   
                     //var data = db.usp_LedgerwiseOutstandingReport(ledid);
                     //reportViewer1.LocalReport.ReportEmbeddedResource = "standard.report.rptLedgerwiseOutstanding.rdlc";
                     ReportDataSource reportsource = new ReportDataSource("DataSet1", data.ToList());
                     reportViewer1.LocalReport.DataSources.Add(reportsource);
+                    reportViewer1.LocalReport.SetParameters(param);
+                    reportViewer1.RefreshReport();
                 }
                 else if (_ReportName == "Ledger Report")
                 {
@@ -793,6 +818,11 @@ namespace standard.report
 
             // Open the file dialog for the user to manually attach the file
             Process.Start("explorer.exe", filePath);
+        }
+
+        private void lblCity_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

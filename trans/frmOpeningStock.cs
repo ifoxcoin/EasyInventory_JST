@@ -1126,7 +1126,7 @@ namespace standard.trans
                         salesorder.so_status = "Fully Converted";
                         salesmaster.com_id = firstItem.com_id;
                         salesmaster.sm_istaxable = firstItem.item_istaxable;
-                        inventoryDataContext.usp_salesmasterInsert(ref id, salesmaster.sm_bookno, salesmaster.sm_refno, salesmaster.sm_date, salesmaster.led_id, salesmaster.sm_totqty, salesmaster.sm_totamount, salesmaster.sm_itemcount, salesmaster.sm_profit, salesmaster.sm_disamount, salesmaster.sm_taxamount, salesmaster.sm_taxpercentage, salesmaster.sm_packingcharge, salesmaster.sm_netamount, salesmaster.sm_received, salesmaster.sm_paidcommission, salesmaster.sm_paidpacking, salesmaster.sm_roundamount, false, false, global.ucode, global.sysdate, salesmaster.sm_desc, false, false, salesmaster.so_id, salesmaster.com_id, salesmaster.sm_istaxable, false);
+                        inventoryDataContext.usp_salesmasterInsert(ref id, salesmaster.sm_bookno, salesmaster.sm_refno, salesmaster.sm_date, salesmaster.led_id, salesmaster.sm_totqty, salesmaster.sm_totamount, salesmaster.sm_itemcount, salesmaster.sm_profit, salesmaster.sm_disamount, salesmaster.sm_taxamount, salesmaster.sm_taxpercentage, salesmaster.sm_packingcharge, salesmaster.sm_netamount, salesmaster.sm_received, salesmaster.sm_paidcommission, salesmaster.sm_paidpacking, salesmaster.sm_roundamount, false, false, global.ucode, global.sysdate, salesmaster.sm_desc, false, false, salesmaster.so_id, salesmaster.com_id, salesmaster.sm_istaxable, false, salesmaster.sm_agid);
 
                         inventoryDataContext.usp_salesorderUpdate(salesmaster.so_id, salesorder.so_refno, salesmaster.sm_date, salesmaster.led_id, salesorder.so_totqty, salesorder.so_status, global.ucode, global.sysdate, true);
                         salesdetail.sm_id = id;
@@ -1168,7 +1168,7 @@ namespace standard.trans
                         salesorder.so_status = "Fully Converted";
                         salesmaster.com_id = secondItem.com_id;
                         salesmaster.sm_istaxable = secondItem.item_istaxable;
-                        inventoryDataContext.usp_salesmasterInsert(ref id, salesmaster.sm_bookno, salesmaster.sm_refno, salesmaster.sm_date, salesmaster.led_id, salesmaster.sm_totqty, salesmaster.sm_totamount, salesmaster.sm_itemcount, salesmaster.sm_profit, salesmaster.sm_disamount, salesmaster.sm_taxamount, salesmaster.sm_taxpercentage, salesmaster.sm_packingcharge, salesmaster.sm_netamount, salesmaster.sm_received, salesmaster.sm_paidcommission, salesmaster.sm_paidpacking, salesmaster.sm_roundamount, false, false, global.ucode, global.sysdate, salesmaster.sm_desc, false, false, salesmaster.so_id, salesmaster.com_id, salesmaster.sm_istaxable, false);
+                        inventoryDataContext.usp_salesmasterInsert(ref id, salesmaster.sm_bookno, salesmaster.sm_refno, salesmaster.sm_date, salesmaster.led_id, salesmaster.sm_totqty, salesmaster.sm_totamount, salesmaster.sm_itemcount, salesmaster.sm_profit, salesmaster.sm_disamount, salesmaster.sm_taxamount, salesmaster.sm_taxpercentage, salesmaster.sm_packingcharge, salesmaster.sm_netamount, salesmaster.sm_received, salesmaster.sm_paidcommission, salesmaster.sm_paidpacking, salesmaster.sm_roundamount, false, false, global.ucode, global.sysdate, salesmaster.sm_desc, false, false, salesmaster.so_id, salesmaster.com_id, salesmaster.sm_istaxable, false, salesmaster.sm_agid);
 
                         inventoryDataContext.usp_salesorderUpdate(salesmaster.so_id, salesorder.so_refno, salesmaster.sm_date, salesmaster.led_id, salesorder.so_totqty, salesorder.so_status, global.ucode, global.sysdate, true);
                         salesdetail.sm_id = id;
@@ -1569,19 +1569,16 @@ namespace standard.trans
         {
             this.components = new System.ComponentModel.Container();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle10 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle11 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmOpeningStock));
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle12 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle13 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle8 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle7 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle8 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle9 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmOpeningStock));
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle10 = new System.Windows.Forms.DataGridViewCellStyle();
             this.tablemain = new System.Windows.Forms.TableLayoutPanel();
             this.tableentry = new System.Windows.Forms.TableLayoutPanel();
             this.lblRateType = new System.Windows.Forms.Label();
@@ -1601,62 +1598,20 @@ namespace standard.trans
             this.lblGSTIN = new System.Windows.Forms.Label();
             this.cmdclose = new mylib.lightbutton();
             this.cmdrefresh = new mylib.lightbutton();
+            this.cmdview = new mylib.lightbutton();
             this.cmdsave = new mylib.lightbutton();
             this.tablesum = new System.Windows.Forms.TableLayoutPanel();
             this.lbltotqty = new System.Windows.Forms.Label();
             this.txttotqty = new mylib.decimalbox(this.components);
             this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
-            this.cmdview = new mylib.lightbutton();
             this.pnlentry = new System.Windows.Forms.Panel();
             this.dgvSales = new mylib.mygrid();
-            this.pnlview = new System.Windows.Forms.Panel();
-            this.tableview = new System.Windows.Forms.TableLayoutPanel();
-            this.lblsubtitle = new System.Windows.Forms.Label();
-            this.dglist = new mylib.mygrid();
-            this.ldelete = new System.Windows.Forms.DataGridViewImageColumn();
-            this.ledit = new System.Windows.Forms.DataGridViewImageColumn();
-            this.ldc = new System.Windows.Forms.DataGridViewImageColumn();
-            this.stidDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.itemidDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.itemqtyDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.itemunitDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.itemnameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.stqtyDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.stdateDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.lednameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.sototqtyDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.cConvert = new System.Windows.Forms.DataGridViewImageColumn();
-            this.sostatusDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.ledidDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.usersuidDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.usersnameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.smudateDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.uspStockSelectResultBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
-            this.dtptdate = new System.Windows.Forms.DateTimePicker();
-            this.cboCustomerView = new System.Windows.Forms.ComboBox();
-            this.ledgermasterViewBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.lblfdate = new System.Windows.Forms.Label();
-            this.dtpfdate = new System.Windows.Forms.DateTimePicker();
-            this.lblhyp = new System.Windows.Forms.Label();
-            this.cboCityView = new System.Windows.Forms.ComboBox();
-            this.ledgermasteCityViewrBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.label5 = new System.Windows.Forms.Label();
-            this.cmdList = new mylib.lightbutton();
-            this.cmdexit = new mylib.lightbutton();
-            this.label6 = new System.Windows.Forms.Label();
-            this.lblBillNo = new System.Windows.Forms.Label();
-            this.txtSearchBillNo = new System.Windows.Forms.TextBox();
-            this.isConvert = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.lprint = new System.Windows.Forms.DataGridViewImageColumn();
             this.cSNo = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.cComId = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.cCategory = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.cItemName = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.cQty = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.cRate = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.cSoldQty = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.CPendingQty = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.cItemUnitType = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.cStock = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.cCompany = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -1667,6 +1622,43 @@ namespace standard.trans
             this.cCatID = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.cItemID = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.cCostAmount = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.pnlview = new System.Windows.Forms.Panel();
+            this.tableview = new System.Windows.Forms.TableLayoutPanel();
+            this.lblsubtitle = new System.Windows.Forms.Label();
+            this.dglist = new mylib.mygrid();
+            this.ldelete = new System.Windows.Forms.DataGridViewImageColumn();
+            this.ledit = new System.Windows.Forms.DataGridViewImageColumn();
+            this.ldc = new System.Windows.Forms.DataGridViewImageColumn();
+            this.stdateDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.uspStockSelectResultBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
+            this.dtptdate = new System.Windows.Forms.DateTimePicker();
+            this.lblfdate = new System.Windows.Forms.Label();
+            this.dtpfdate = new System.Windows.Forms.DateTimePicker();
+            this.lblhyp = new System.Windows.Forms.Label();
+            this.cmdList = new mylib.lightbutton();
+            this.cmdexit = new mylib.lightbutton();
+            this.label6 = new System.Windows.Forms.Label();
+            this.cboCustomerView = new System.Windows.Forms.ComboBox();
+            this.ledgermasterViewBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.itemidDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.lednameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.sototqtyDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.cConvert = new System.Windows.Forms.DataGridViewImageColumn();
+            this.sostatusDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.ledidDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.usersuidDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.usersnameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.smudateDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.cboCityView = new System.Windows.Forms.ComboBox();
+            this.ledgermasteCityViewrBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.label5 = new System.Windows.Forms.Label();
+            this.lblBillNo = new System.Windows.Forms.Label();
+            this.txtSearchBillNo = new System.Windows.Forms.TextBox();
+            this.isConvert = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.lprint = new System.Windows.Forms.DataGridViewImageColumn();
+            this.cSoldQty = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.CPendingQty = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.tablemain.SuspendLayout();
             this.tableentry.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.ledgermasterCityBindingSource)).BeginInit();
@@ -1746,10 +1738,10 @@ namespace standard.trans
             this.tableentry.SetColumnSpan(this.lblRateType, 2);
             this.lblRateType.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold);
             this.lblRateType.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(192)))), ((int)(((byte)(0)))));
-            this.lblRateType.Location = new System.Drawing.Point(335, 47);
+            this.lblRateType.Location = new System.Drawing.Point(335, 53);
             this.lblRateType.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.lblRateType.Name = "lblRateType";
-            this.lblRateType.Size = new System.Drawing.Size(24, 35);
+            this.lblRateType.Size = new System.Drawing.Size(16, 23);
             this.lblRateType.TabIndex = 10;
             this.lblRateType.Text = ".";
             this.lblRateType.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -1762,10 +1754,10 @@ namespace standard.trans
             this.tableentry.SetColumnSpan(this.lblAddress, 3);
             this.lblAddress.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold);
             this.lblAddress.ForeColor = System.Drawing.Color.Red;
-            this.lblAddress.Location = new System.Drawing.Point(610, 47);
+            this.lblAddress.Location = new System.Drawing.Point(610, 53);
             this.lblAddress.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.lblAddress.Name = "lblAddress";
-            this.lblAddress.Size = new System.Drawing.Size(24, 35);
+            this.lblAddress.Size = new System.Drawing.Size(16, 23);
             this.lblAddress.TabIndex = 10;
             this.lblAddress.Text = ".";
             this.lblAddress.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -1777,10 +1769,10 @@ namespace standard.trans
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold);
             this.label2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.label2.Location = new System.Drawing.Point(902, 4);
+            this.label2.Location = new System.Drawing.Point(902, 10);
             this.label2.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(72, 35);
+            this.label2.Size = new System.Drawing.Size(48, 23);
             this.label2.TabIndex = 10;
             this.label2.Text = "City";
             this.label2.Visible = false;
@@ -1798,7 +1790,7 @@ namespace standard.trans
             this.cboCity.Location = new System.Drawing.Point(1230, 7);
             this.cboCity.Margin = new System.Windows.Forms.Padding(5, 7, 5, 7);
             this.cboCity.Name = "cboCity";
-            this.cboCity.Size = new System.Drawing.Size(340, 43);
+            this.cboCity.Size = new System.Drawing.Size(340, 31);
             this.cboCity.TabIndex = 2;
             this.cboCity.ValueMember = "led_id";
             this.cboCity.Visible = false;
@@ -1814,10 +1806,10 @@ namespace standard.trans
             this.lblfrom.AutoSize = true;
             this.lblfrom.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblfrom.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.lblfrom.Location = new System.Drawing.Point(435, 4);
+            this.lblfrom.Location = new System.Drawing.Point(435, 10);
             this.lblfrom.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.lblfrom.Name = "lblfrom";
-            this.lblfrom.Size = new System.Drawing.Size(156, 35);
+            this.lblfrom.Size = new System.Drawing.Size(102, 23);
             this.lblfrom.TabIndex = 10;
             this.lblfrom.Text = "Customer";
             this.lblfrom.Visible = false;
@@ -1834,7 +1826,7 @@ namespace standard.trans
             this.cboissueto.Location = new System.Drawing.Point(610, 7);
             this.cboissueto.Margin = new System.Windows.Forms.Padding(5, 7, 5, 7);
             this.cboissueto.Name = "cboissueto";
-            this.cboissueto.Size = new System.Drawing.Size(261, 43);
+            this.cboissueto.Size = new System.Drawing.Size(261, 31);
             this.cboissueto.TabIndex = 3;
             this.cboissueto.ValueMember = "led_id";
             this.cboissueto.Visible = false;
@@ -1857,7 +1849,7 @@ namespace standard.trans
             this.txtopno.Name = "txtopno";
             this.txtopno.ReadOnly = true;
             this.txtopno.RightAlign = true;
-            this.txtopno.Size = new System.Drawing.Size(90, 42);
+            this.txtopno.Size = new System.Drawing.Size(90, 30);
             this.txtopno.TabIndex = 0;
             this.txtopno.TabStop = false;
             this.txtopno.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
@@ -1889,10 +1881,10 @@ namespace standard.trans
             this.lbldate.AutoSize = true;
             this.lbldate.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lbldate.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.lbldate.Location = new System.Drawing.Point(5, 4);
+            this.lbldate.Location = new System.Drawing.Point(5, 10);
             this.lbldate.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.lbldate.Name = "lbldate";
-            this.lbldate.Size = new System.Drawing.Size(83, 35);
+            this.lbldate.Size = new System.Drawing.Size(54, 23);
             this.lbldate.TabIndex = 2;
             this.lbldate.Text = "Date";
             // 
@@ -1905,7 +1897,7 @@ namespace standard.trans
             this.dtpsaldate.Location = new System.Drawing.Point(132, 7);
             this.dtpsaldate.Margin = new System.Windows.Forms.Padding(5, 7, 5, 7);
             this.dtpsaldate.Name = "dtpsaldate";
-            this.dtpsaldate.Size = new System.Drawing.Size(193, 42);
+            this.dtpsaldate.Size = new System.Drawing.Size(193, 30);
             this.dtpsaldate.TabIndex = 1;
             this.dtpsaldate.KeyDown += new System.Windows.Forms.KeyEventHandler(this.dtpsaldate_KeyDown);
             // 
@@ -1915,10 +1907,10 @@ namespace standard.trans
             this.lbltitle.AutoSize = true;
             this.lbltitle.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lbltitle.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.lbltitle.Location = new System.Drawing.Point(699, 2);
+            this.lbltitle.Location = new System.Drawing.Point(742, 7);
             this.lbltitle.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.lbltitle.Name = "lbltitle";
-            this.lbltitle.Size = new System.Drawing.Size(260, 33);
+            this.lbltitle.Size = new System.Drawing.Size(173, 23);
             this.lbltitle.TabIndex = 3;
             this.lbltitle.Text = "OPENING STOCK";
             // 
@@ -1951,10 +1943,10 @@ namespace standard.trans
             this.lblGSTIN.AutoSize = true;
             this.lblGSTIN.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold);
             this.lblGSTIN.ForeColor = System.Drawing.Color.Red;
-            this.lblGSTIN.Location = new System.Drawing.Point(5, 5);
+            this.lblGSTIN.Location = new System.Drawing.Point(5, 11);
             this.lblGSTIN.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.lblGSTIN.Name = "lblGSTIN";
-            this.lblGSTIN.Size = new System.Drawing.Size(24, 35);
+            this.lblGSTIN.Size = new System.Drawing.Size(16, 23);
             this.lblGSTIN.TabIndex = 11;
             this.lblGSTIN.Text = ".";
             // 
@@ -1985,6 +1977,20 @@ namespace standard.trans
             this.cmdrefresh.Text = "&Refresh";
             this.cmdrefresh.UseVisualStyleBackColor = true;
             this.cmdrefresh.Click += new System.EventHandler(this.cmdrefresh_Click);
+            // 
+            // cmdview
+            // 
+            this.cmdview.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.cmdview.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold);
+            this.cmdview.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(41)))), ((int)(((byte)(66)))), ((int)(((byte)(122)))));
+            this.cmdview.Location = new System.Drawing.Point(1259, 8);
+            this.cmdview.Margin = new System.Windows.Forms.Padding(5, 7, 5, 7);
+            this.cmdview.Name = "cmdview";
+            this.cmdview.Size = new System.Drawing.Size(120, 29);
+            this.cmdview.TabIndex = 2;
+            this.cmdview.Text = "&View";
+            this.cmdview.UseVisualStyleBackColor = true;
+            this.cmdview.Click += new System.EventHandler(this.cmdview_Click);
             // 
             // cmdsave
             // 
@@ -2035,10 +2041,10 @@ namespace standard.trans
             this.lbltotqty.AutoSize = true;
             this.lbltotqty.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lbltotqty.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.lbltotqty.Location = new System.Drawing.Point(5, 0);
+            this.lbltotqty.Location = new System.Drawing.Point(5, 10);
             this.lbltotqty.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.lbltotqty.Name = "lbltotqty";
-            this.lbltotqty.Size = new System.Drawing.Size(63, 43);
+            this.lbltotqty.Size = new System.Drawing.Size(59, 23);
             this.lbltotqty.TabIndex = 2;
             this.lbltotqty.Text = "Total";
             // 
@@ -2055,7 +2061,7 @@ namespace standard.trans
             this.txttotqty.Name = "txttotqty";
             this.txttotqty.ReadOnly = true;
             this.txttotqty.RightAlign = true;
-            this.txttotqty.Size = new System.Drawing.Size(100, 42);
+            this.txttotqty.Size = new System.Drawing.Size(100, 30);
             this.txttotqty.TabIndex = 5;
             this.txttotqty.TabStop = false;
             this.txttotqty.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
@@ -2076,20 +2082,6 @@ namespace standard.trans
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanel2.Size = new System.Drawing.Size(144, 37);
             this.tableLayoutPanel2.TabIndex = 11;
-            // 
-            // cmdview
-            // 
-            this.cmdview.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.cmdview.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold);
-            this.cmdview.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(41)))), ((int)(((byte)(66)))), ((int)(((byte)(122)))));
-            this.cmdview.Location = new System.Drawing.Point(1259, 8);
-            this.cmdview.Margin = new System.Windows.Forms.Padding(5, 7, 5, 7);
-            this.cmdview.Name = "cmdview";
-            this.cmdview.Size = new System.Drawing.Size(120, 29);
-            this.cmdview.TabIndex = 2;
-            this.cmdview.Text = "&View";
-            this.cmdview.UseVisualStyleBackColor = true;
-            this.cmdview.Click += new System.EventHandler(this.cmdview_Click);
             // 
             // pnlentry
             // 
@@ -2122,8 +2114,6 @@ namespace standard.trans
             this.cItemName,
             this.cQty,
             this.cRate,
-            //this.cSoldQty,
-            //this.CPendingQty,
             this.cItemUnitType,
             this.cStock,
             this.cCompany,
@@ -2141,8 +2131,8 @@ namespace standard.trans
             this.dgvSales.Name = "dgvSales";
             this.dgvSales.RowHeadersVisible = false;
             this.dgvSales.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.AutoSizeToAllHeaders;
-            dataGridViewCellStyle10.Font = new System.Drawing.Font("Tahoma", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.dgvSales.RowsDefaultCellStyle = dataGridViewCellStyle10;
+            dataGridViewCellStyle8.Font = new System.Drawing.Font("Tahoma", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.dgvSales.RowsDefaultCellStyle = dataGridViewCellStyle8;
             this.dgvSales.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect;
             this.dgvSales.ShowCellToolTips = false;
             this.dgvSales.Size = new System.Drawing.Size(1644, 430);
@@ -2152,406 +2142,6 @@ namespace standard.trans
             this.dgvSales.RowsAdded += new System.Windows.Forms.DataGridViewRowsAddedEventHandler(this.dgopen_RowsAdded);
             this.dgvSales.RowsRemoved += new System.Windows.Forms.DataGridViewRowsRemovedEventHandler(this.dgopen_RowsRemoved);
             this.dgvSales.KeyDown += new System.Windows.Forms.KeyEventHandler(this.dgopen_KeyDown);
-            // 
-            // pnlview
-            // 
-            this.pnlview.Controls.Add(this.tableview);
-            this.pnlview.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pnlview.Enabled = false;
-            this.pnlview.Location = new System.Drawing.Point(0, 0);
-            this.pnlview.Margin = new System.Windows.Forms.Padding(5, 7, 5, 7);
-            this.pnlview.Name = "pnlview";
-            this.pnlview.Size = new System.Drawing.Size(1658, 749);
-            this.pnlview.TabIndex = 12;
-            // 
-            // tableview
-            // 
-            this.tableview.CellBorderStyle = System.Windows.Forms.TableLayoutPanelCellBorderStyle.Inset;
-            this.tableview.ColumnCount = 1;
-            this.tableview.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableview.Controls.Add(this.lblsubtitle, 0, 0);
-            this.tableview.Controls.Add(this.dglist, 0, 2);
-            this.tableview.Controls.Add(this.tableLayoutPanel1, 0, 1);
-            this.tableview.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableview.Location = new System.Drawing.Point(0, 0);
-            this.tableview.Margin = new System.Windows.Forms.Padding(5, 7, 5, 7);
-            this.tableview.Name = "tableview";
-            this.tableview.RowCount = 4;
-            this.tableview.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 36F));
-            this.tableview.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 110F));
-            this.tableview.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableview.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 10F));
-            this.tableview.Size = new System.Drawing.Size(1658, 749);
-            this.tableview.TabIndex = 0;
-            // 
-            // lblsubtitle
-            // 
-            this.lblsubtitle.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.lblsubtitle.AutoSize = true;
-            this.lblsubtitle.Font = new System.Drawing.Font("Tahoma", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblsubtitle.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.lblsubtitle.Location = new System.Drawing.Point(667, 2);
-            this.lblsubtitle.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
-            this.lblsubtitle.Name = "lblsubtitle";
-            this.lblsubtitle.Size = new System.Drawing.Size(323, 36);
-            this.lblsubtitle.TabIndex = 4;
-            this.lblsubtitle.Text = "OPENING STOCK LIST";
-            // 
-            // dglist
-            // 
-            this.dglist.AllowUserToAddRows = false;
-            this.dglist.AllowUserToDeleteRows = false;
-            this.dglist.AllowUserToResizeRows = false;
-            this.dglist.AutoGenerateColumns = true;
-            this.dglist.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.DisplayedCells;
-            this.dglist.BackgroundColor = System.Drawing.Color.White;
-            dataGridViewCellStyle11.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle11.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle11.Font = new System.Drawing.Font("Tahoma", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle11.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle11.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle11.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle11.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dglist.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle11;
-            this.dglist.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dglist.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.ldelete,
-            this.ledit,
-            this.ldc,
-            this.stidDataGridViewTextBoxColumn,
-            //this.itemidDataGridViewTextBoxColumn,
-            this.stdateDataGridViewTextBoxColumn,
-            this.itemnameDataGridViewTextBoxColumn,
-            this.itemqtyDataGridViewTextBoxColumn,
-            this.itemunitDataGridViewTextBoxColumn,
-            this.stqtyDataGridViewTextBoxColumn,
-            //this.lednameDataGridViewTextBoxColumn,
-            //this.sototqtyDataGridViewTextBoxColumn,
-            //this.cConvert,
-            //this.sostatusDataGridViewTextBoxColumn,
-            //this.ledidDataGridViewTextBoxColumn,
-            //this.usersuidDataGridViewTextBoxColumn,
-            //this.usersnameDataGridViewTextBoxColumn,
-            /*this.smudateDataGridViewTextBoxColumn*/});
-            this.dglist.DataSource = this.uspStockSelectResultBindingSource;
-            this.dglist.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.dglist.Location = new System.Drawing.Point(7, 159);
-            this.dglist.Margin = new System.Windows.Forms.Padding(5, 7, 5, 7);
-            this.dglist.MultiSelect = false;
-            this.dglist.Name = "dglist";
-            this.dglist.ReadOnly = true;
-            this.dglist.RowHeadersVisible = false;
-            this.dglist.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect;
-            this.dglist.ShowCellToolTips = false;
-            this.dglist.Size = new System.Drawing.Size(1644, 569);
-            this.dglist.TabIndex = 1;
-            this.dglist.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dglist_CellContentClick);
-            //this.dglist.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dglist_CellDoubleClick);
-            this.dglist.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.dglist_CellFormatting);
-            this.dglist.KeyDown += new System.Windows.Forms.KeyEventHandler(this.dglist_KeyDown);
-            // 
-            // ldelete
-            // 
-            this.ldelete.HeaderText = "DELETE";
-            this.ldelete.Image = ((System.Drawing.Image)(resources.GetObject("ldelete.Image")));
-            this.ldelete.Name = "ldelete";
-            this.ldelete.ReadOnly = true;
-            this.ldelete.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-            this.ldelete.Width = 75;
-            this.ldelete.Visible = false;
-            // 
-            // ledit
-            // 
-            this.ledit.HeaderText = "EDIT";
-            this.ledit.Image = global::standard.Properties.Resources.edit;
-            this.ledit.Name = "ledit";
-            this.ledit.ReadOnly = true;
-            this.ledit.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-            this.ledit.Width = 75;
-            this.ledit.Visible = false;
-            // 
-            // ldc
-            // 
-            this.ldc.HeaderText = "ldc";
-            this.ldc.Name = "ldc";
-            this.ldc.ReadOnly = true;
-            this.ldc.Visible = false;
-            this.ldc.Width = 60;
-            // 
-            // stidDataGridViewTextBoxColumn
-            // 
-            this.stidDataGridViewTextBoxColumn.DataPropertyName = "id";
-            this.stidDataGridViewTextBoxColumn.HeaderText = "st_id";
-            this.stidDataGridViewTextBoxColumn.Name = "stidDataGridViewTextBoxColumn";
-            this.stidDataGridViewTextBoxColumn.ReadOnly = true;
-            //this.stidDataGridViewTextBoxColumn.Visible = false;
-            // 
-            // stqtyDataGridViewTextBoxColumn
-            // 
-            this.stqtyDataGridViewTextBoxColumn.DataPropertyName = "stock_addqty";
-            this.stqtyDataGridViewTextBoxColumn.HeaderText = "ADDED QTY";
-            this.stqtyDataGridViewTextBoxColumn.Name = "stqtyDataGridViewTextBoxColumn";
-            this.stqtyDataGridViewTextBoxColumn.ReadOnly = true;
-            this.stqtyDataGridViewTextBoxColumn.Width = 150;
-            this.stqtyDataGridViewTextBoxColumn.DefaultCellStyle.Format = "N0";
-            this.stqtyDataGridViewTextBoxColumn.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            // 
-            // stdateDataGridViewTextBoxColumn
-            // 
-            this.stdateDataGridViewTextBoxColumn.DataPropertyName = "stock_date";
-            dataGridViewCellStyle12.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle12.Format = "dd-MM-yyyy";
-            this.stdateDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle12;
-            this.stdateDataGridViewTextBoxColumn.HeaderText = "Date";
-            this.stdateDataGridViewTextBoxColumn.Name = "stdateDataGridViewTextBoxColumn";
-            this.stdateDataGridViewTextBoxColumn.ReadOnly = true;
-            this.stdateDataGridViewTextBoxColumn.Width = 200;
-            // 
-            // itemidDataGridViewTextBoxColumn
-            // 
-            this.itemidDataGridViewTextBoxColumn.DataPropertyName = "id";
-            this.itemidDataGridViewTextBoxColumn.HeaderText = "ITEM ID";
-            this.itemidDataGridViewTextBoxColumn.Name = "itemidDataGridViewTextBoxColumn";
-            this.itemidDataGridViewTextBoxColumn.ReadOnly = true;            
-            // 
-            // itemnameDataGridViewTextBoxColumn
-            // 
-            this.itemnameDataGridViewTextBoxColumn.DataPropertyName = "item_name";
-            this.itemnameDataGridViewTextBoxColumn.HeaderText = "ITEM NAME";
-            this.itemnameDataGridViewTextBoxColumn.Name = "itemnameDataGridViewTextBoxColumn";
-            this.itemnameDataGridViewTextBoxColumn.ReadOnly = true;
-            this.itemnameDataGridViewTextBoxColumn.Width = 300;
-            // 
-            // itemqtyDataGridViewTextBoxColumn
-            // 
-            this.itemqtyDataGridViewTextBoxColumn.DataPropertyName = "item_quantity";
-            this.itemqtyDataGridViewTextBoxColumn.HeaderText = "UNIT";
-            this.itemqtyDataGridViewTextBoxColumn.Name = "itemqtyDataGridViewTextBoxColumn";
-            this.itemqtyDataGridViewTextBoxColumn.ReadOnly = true;
-            this.itemqtyDataGridViewTextBoxColumn.Width = 100;
-            // 
-            // itemunitDataGridViewTextBoxColumn
-            // 
-            this.itemunitDataGridViewTextBoxColumn.DataPropertyName = "item_unit";
-            this.itemunitDataGridViewTextBoxColumn.HeaderText = "UNIT TYPE";
-            this.itemunitDataGridViewTextBoxColumn.Name = "itemunitDataGridViewTextBoxColumn";
-            this.itemunitDataGridViewTextBoxColumn.ReadOnly = true;
-            this.itemunitDataGridViewTextBoxColumn.Width = 100;
-            // uspsalesorderSelectResultBindingSource
-            // 
-            this.uspStockSelectResultBindingSource.DataSource = typeof(standard.classes.usp_stockSelectResult);
-            // 
-            // cConvert
-            // 
-            this.cConvert.HeaderText = "CONVERT TO SALES";
-            this.cConvert.Image = ((System.Drawing.Image)(resources.GetObject("cConvert.Image")));
-            this.cConvert.Name = "cConvert";
-            this.cConvert.ReadOnly = true;
-            this.cConvert.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-            this.cConvert.Width = 120;
-            this.cConvert.Visible = false;
-            // 
-            // tableLayoutPanel1
-            // 
-            this.tableLayoutPanel1.ColumnCount = 11;
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 74F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 176F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 167F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 63F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 238F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 129F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 153F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 120F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 120F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel1.Controls.Add(this.dtptdate, 3, 0);
-            //this.tableLayoutPanel1.Controls.Add(this.cboCustomerView, 7, 0);
-            this.tableLayoutPanel1.Controls.Add(this.lblfdate, 0, 0);
-            this.tableLayoutPanel1.Controls.Add(this.dtpfdate, 1, 0);
-            this.tableLayoutPanel1.Controls.Add(this.lblhyp, 2, 0);
-            //this.tableLayoutPanel1.Controls.Add(this.cboCityView, 5, 0);
-            //this.tableLayoutPanel1.Controls.Add(this.label5, 4, 0);
-            this.tableLayoutPanel1.Controls.Add(this.cmdList, 7, 1);
-            this.tableLayoutPanel1.Controls.Add(this.cmdexit, 8, 1);
-            this.tableLayoutPanel1.Controls.Add(this.label6, 6, 0);
-            //this.tableLayoutPanel1.Controls.Add(this.lblBillNo, 5, 1);
-            //this.tableLayoutPanel1.Controls.Add(this.txtSearchBillNo, 6, 1);
-            this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel1.Location = new System.Drawing.Point(5, 43);
-            this.tableLayoutPanel1.Name = "tableLayoutPanel1";
-            this.tableLayoutPanel1.RowCount = 2;
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(1648, 104);
-            this.tableLayoutPanel1.TabIndex = 0;
-            // 
-            // dtptdate
-            // 
-            this.dtptdate.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.dtptdate.CustomFormat = "dd-MM-yyyy";
-            this.dtptdate.Font = new System.Drawing.Font("Tahoma", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.dtptdate.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-            this.dtptdate.Location = new System.Drawing.Point(274, 5);
-            this.dtptdate.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.dtptdate.Name = "dtptdate";
-            this.dtptdate.Size = new System.Drawing.Size(159, 46);
-            this.dtptdate.TabIndex = 1;
-            this.dtptdate.KeyDown += new System.Windows.Forms.KeyEventHandler(this.dtptdate_KeyDown);
-            // 
-            // cboCustomerView
-            // 
-            this.cboCustomerView.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.cboCustomerView.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
-            this.cboCustomerView.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
-            this.tableLayoutPanel1.SetColumnSpan(this.cboCustomerView, 2);
-            this.cboCustomerView.DataSource = this.ledgermasterViewBindingSource;
-            this.cboCustomerView.DisplayMember = "led_name";
-            this.cboCustomerView.Font = new System.Drawing.Font("Tahoma", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cboCustomerView.FormattingEnabled = true;
-            this.cboCustomerView.Location = new System.Drawing.Point(871, 5);
-            this.cboCustomerView.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.cboCustomerView.Name = "cboCustomerView";
-            this.cboCustomerView.Size = new System.Drawing.Size(265, 47);
-            this.cboCustomerView.TabIndex = 5;
-            this.cboCustomerView.ValueMember = "led_id";
-            this.cboCustomerView.KeyDown += new System.Windows.Forms.KeyEventHandler(this.cboCustomerView_KeyDown);
-            // 
-            // ledgermasterViewBindingSource
-            // 
-            this.ledgermasterViewBindingSource.DataSource = typeof(standard.classes.ledgermaster);
-            // 
-            // lblfdate
-            // 
-            this.lblfdate.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.lblfdate.AutoSize = true;
-            this.lblfdate.Font = new System.Drawing.Font("Tahoma", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblfdate.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.lblfdate.Location = new System.Drawing.Point(4, 0);
-            this.lblfdate.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.lblfdate.Name = "lblfdate";
-            this.lblfdate.Size = new System.Drawing.Size(60, 52);
-            this.lblfdate.TabIndex = 0;
-            this.lblfdate.Text = "Date";
-            // 
-            // dtpfdate
-            // 
-            this.dtpfdate.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.dtpfdate.CalendarFont = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.dtpfdate.CustomFormat = "dd-MM-yyyy";
-            this.dtpfdate.Font = new System.Drawing.Font("Tahoma", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.dtpfdate.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-            this.dtpfdate.Location = new System.Drawing.Point(78, 5);
-            this.dtpfdate.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.dtpfdate.Name = "dtpfdate";
-            this.dtpfdate.Size = new System.Drawing.Size(168, 46);
-            this.dtpfdate.TabIndex = 0;
-            this.dtpfdate.KeyDown += new System.Windows.Forms.KeyEventHandler(this.dtpfdate_KeyDown);
-            // 
-            // lblhyp
-            // 
-            this.lblhyp.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.lblhyp.AutoSize = true;
-            this.lblhyp.Font = new System.Drawing.Font("Tahoma", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblhyp.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.lblhyp.Location = new System.Drawing.Point(254, 6);
-            this.lblhyp.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.lblhyp.Name = "lblhyp";
-            this.lblhyp.Size = new System.Drawing.Size(12, 39);
-            this.lblhyp.TabIndex = 4;
-            this.lblhyp.Text = "-";
-            // 
-            // cboCityView
-            // 
-            this.cboCityView.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.cboCityView.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
-            this.cboCityView.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
-            this.cboCityView.DataSource = this.ledgermasteCityViewrBindingSource;
-            this.cboCityView.DisplayMember = "led_address2";
-            this.cboCityView.Font = new System.Drawing.Font("Tahoma", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cboCityView.FormattingEnabled = true;
-            this.cboCityView.Location = new System.Drawing.Point(504, 5);
-            this.cboCityView.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.cboCityView.Name = "cboCityView";
-            this.cboCityView.Size = new System.Drawing.Size(230, 47);
-            this.cboCityView.TabIndex = 3;
-            this.cboCityView.ValueMember = "led_id";
-            this.cboCityView.SelectedValueChanged += new System.EventHandler(this.cboCityView_SelectedValueChanged);
-            this.cboCityView.KeyDown += new System.Windows.Forms.KeyEventHandler(this.cboCityView_KeyDown);
-            // 
-            // ledgermasteCityViewrBindingSource
-            // 
-            this.ledgermasteCityViewrBindingSource.DataSource = typeof(standard.classes.ledgermaster);
-            // 
-            // label5
-            // 
-            this.label5.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.label5.AutoSize = true;
-            this.label5.Font = new System.Drawing.Font("Tahoma", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label5.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.label5.Location = new System.Drawing.Point(441, 0);
-            this.label5.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(48, 52);
-            this.label5.TabIndex = 2;
-            this.label5.Text = "City";
-            // 
-            // cmdList
-            // 
-            this.cmdList.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-            this.cmdList.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(191)))), ((int)(((byte)(219)))), ((int)(((byte)(254)))));
-            this.cmdList.Font = new System.Drawing.Font("Tahoma", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cmdList.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(41)))), ((int)(((byte)(66)))), ((int)(((byte)(122)))));
-            this.cmdList.Location = new System.Drawing.Point(884, 54);
-            this.cmdList.Margin = new System.Windows.Forms.Padding(1);
-            this.cmdList.Name = "cmdList";
-            this.cmdList.Size = new System.Drawing.Size(118, 49);
-            this.cmdList.TabIndex = 6;
-            this.cmdList.Text = "&View";
-            this.cmdList.UseVisualStyleBackColor = false;
-            this.cmdList.Click += new System.EventHandler(this.cmdprint_Click);
-            // 
-            // cmdexit
-            // 
-            this.cmdexit.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-            this.cmdexit.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(191)))), ((int)(((byte)(219)))), ((int)(((byte)(254)))));
-            this.cmdexit.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.cmdexit.Font = new System.Drawing.Font("Tahoma", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cmdexit.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(41)))), ((int)(((byte)(66)))), ((int)(((byte)(122)))));
-            this.cmdexit.Location = new System.Drawing.Point(1021, 54);
-            this.cmdexit.Margin = new System.Windows.Forms.Padding(1);
-            this.cmdexit.Name = "cmdexit";
-            this.cmdexit.Size = new System.Drawing.Size(118, 49);
-            this.cmdexit.TabIndex = 8;
-            this.cmdexit.Text = "&Exit";
-            this.cmdexit.UseVisualStyleBackColor = false;
-            this.cmdexit.Click += new System.EventHandler(this.cmdexit_Click);
-            // 
-            // txtSearchBillNo
-            // 
-            this.txtSearchBillNo.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.txtSearchBillNo.Location = new System.Drawing.Point(741, 55);
-            this.txtSearchBillNo.Name = "txtSearchBillNo";
-            this.txtSearchBillNo.Size = new System.Drawing.Size(123, 46);
-            this.txtSearchBillNo.TabIndex = 7;
-            this.txtSearchBillNo.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtSearchBillNo_KeyDown_1);
-            // 
-            // isConvert
-            // 
-            this.isConvert.DataPropertyName = "so_isclose";
-            this.isConvert.HeaderText = "IS CONVERTED";
-            this.isConvert.Name = "isConvert";
-            this.isConvert.ReadOnly = true;
-            this.isConvert.Width = 170;
-            // 
-            // lprint
-            // 
-            this.lprint.HeaderText = "PRINT";
-            this.lprint.Image = global::standard.Properties.Resources.print;
-            this.lprint.Name = "lprint";
-            this.lprint.ReadOnly = true;
-            this.lprint.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-            this.lprint.Width = 75;
             // 
             // cSNo
             // 
@@ -2618,13 +2208,13 @@ namespace standard.trans
             // 
             // cStock
             // 
-            dataGridViewCellStyle7.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle7.BackColor = System.Drawing.Color.Red;
-            dataGridViewCellStyle7.ForeColor = System.Drawing.Color.White;
-            dataGridViewCellStyle7.Format = "N0";
-            dataGridViewCellStyle7.NullValue = "0";
-            dataGridViewCellStyle7.SelectionForeColor = System.Drawing.Color.White;
-            this.cStock.DefaultCellStyle = dataGridViewCellStyle7;
+            dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle5.BackColor = System.Drawing.Color.Red;
+            dataGridViewCellStyle5.ForeColor = System.Drawing.Color.White;
+            dataGridViewCellStyle5.Format = "N0";
+            dataGridViewCellStyle5.NullValue = "0";
+            dataGridViewCellStyle5.SelectionForeColor = System.Drawing.Color.White;
+            this.cStock.DefaultCellStyle = dataGridViewCellStyle5;
             this.cStock.HeaderText = "STOCK";
             this.cStock.Name = "cStock";
             this.cStock.ReadOnly = true;
@@ -2642,9 +2232,9 @@ namespace standard.trans
             // 
             // cTaxPercentage
             // 
-            dataGridViewCellStyle8.Format = "N2";
-            dataGridViewCellStyle8.NullValue = null;
-            this.cTaxPercentage.DefaultCellStyle = dataGridViewCellStyle8;
+            dataGridViewCellStyle6.Format = "N2";
+            dataGridViewCellStyle6.NullValue = null;
+            this.cTaxPercentage.DefaultCellStyle = dataGridViewCellStyle6;
             this.cTaxPercentage.HeaderText = "TAX %";
             this.cTaxPercentage.Name = "cTaxPercentage";
             this.cTaxPercentage.ReadOnly = true;
@@ -2655,9 +2245,9 @@ namespace standard.trans
             // 
             // cTaxAmount
             // 
-            dataGridViewCellStyle9.Format = "N2";
-            dataGridViewCellStyle9.NullValue = null;
-            this.cTaxAmount.DefaultCellStyle = dataGridViewCellStyle9;
+            dataGridViewCellStyle7.Format = "N2";
+            dataGridViewCellStyle7.NullValue = null;
+            this.cTaxAmount.DefaultCellStyle = dataGridViewCellStyle7;
             this.cTaxAmount.HeaderText = "TAX AMOUNT";
             this.cTaxAmount.Name = "cTaxAmount";
             this.cTaxAmount.ReadOnly = true;
@@ -2699,9 +2289,397 @@ namespace standard.trans
             this.cCostAmount.Visible = false;
             this.cCostAmount.Width = 130;
             // 
+            // pnlview
+            // 
+            this.pnlview.Controls.Add(this.tableview);
+            this.pnlview.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pnlview.Enabled = false;
+            this.pnlview.Location = new System.Drawing.Point(0, 0);
+            this.pnlview.Margin = new System.Windows.Forms.Padding(5, 7, 5, 7);
+            this.pnlview.Name = "pnlview";
+            this.pnlview.Size = new System.Drawing.Size(1658, 749);
+            this.pnlview.TabIndex = 12;
+            // 
+            // tableview
+            // 
+            this.tableview.CellBorderStyle = System.Windows.Forms.TableLayoutPanelCellBorderStyle.Inset;
+            this.tableview.ColumnCount = 1;
+            this.tableview.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableview.Controls.Add(this.lblsubtitle, 0, 0);
+            this.tableview.Controls.Add(this.dglist, 0, 2);
+            this.tableview.Controls.Add(this.tableLayoutPanel1, 0, 1);
+            this.tableview.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tableview.Location = new System.Drawing.Point(0, 0);
+            this.tableview.Margin = new System.Windows.Forms.Padding(5, 7, 5, 7);
+            this.tableview.Name = "tableview";
+            this.tableview.RowCount = 4;
+            this.tableview.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 36F));
+            this.tableview.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 110F));
+            this.tableview.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableview.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 10F));
+            this.tableview.Size = new System.Drawing.Size(1658, 749);
+            this.tableview.TabIndex = 0;
+            // 
+            // lblsubtitle
+            // 
+            this.lblsubtitle.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.lblsubtitle.AutoSize = true;
+            this.lblsubtitle.Font = new System.Drawing.Font("Tahoma", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblsubtitle.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
+            this.lblsubtitle.Location = new System.Drawing.Point(707, 7);
+            this.lblsubtitle.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
+            this.lblsubtitle.Name = "lblsubtitle";
+            this.lblsubtitle.Size = new System.Drawing.Size(244, 25);
+            this.lblsubtitle.TabIndex = 4;
+            this.lblsubtitle.Text = "OPENING STOCK LIST";
+            // 
+            // dglist
+            // 
+            this.dglist.AllowUserToAddRows = false;
+            this.dglist.AllowUserToDeleteRows = false;
+            this.dglist.AllowUserToResizeRows = false;
+            this.dglist.AutoGenerateColumns = false;
+            this.dglist.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.DisplayedCells;
+            this.dglist.BackgroundColor = System.Drawing.Color.White;
+            dataGridViewCellStyle9.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle9.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle9.Font = new System.Drawing.Font("Tahoma", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle9.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle9.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle9.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle9.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dglist.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle9;
+            this.dglist.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dglist.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.ldelete,
+            this.ledit,
+            this.ldc,
+            this.stdateDataGridViewTextBoxColumn});
+            this.dglist.DataSource = this.uspStockSelectResultBindingSource;
+            this.dglist.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.dglist.Location = new System.Drawing.Point(7, 159);
+            this.dglist.Margin = new System.Windows.Forms.Padding(5, 7, 5, 7);
+            this.dglist.MultiSelect = false;
+            this.dglist.Name = "dglist";
+            this.dglist.ReadOnly = true;
+            this.dglist.RowHeadersVisible = false;
+            this.dglist.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect;
+            this.dglist.ShowCellToolTips = false;
+            this.dglist.Size = new System.Drawing.Size(1644, 569);
+            this.dglist.TabIndex = 1;
+            this.dglist.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dglist_CellContentClick);
+            this.dglist.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.dglist_CellFormatting);
+            this.dglist.KeyDown += new System.Windows.Forms.KeyEventHandler(this.dglist_KeyDown);
+            // 
+            // ldelete
+            // 
+            this.ldelete.HeaderText = "DELETE";
+            this.ldelete.Image = ((System.Drawing.Image)(resources.GetObject("ldelete.Image")));
+            this.ldelete.Name = "ldelete";
+            this.ldelete.ReadOnly = true;
+            this.ldelete.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.ldelete.Visible = false;
+            this.ldelete.Width = 75;
+            // 
+            // ledit
+            // 
+            this.ledit.HeaderText = "EDIT";
+            this.ledit.Image = global::standard.Properties.Resources.edit;
+            this.ledit.Name = "ledit";
+            this.ledit.ReadOnly = true;
+            this.ledit.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.ledit.Visible = false;
+            this.ledit.Width = 75;
+            // 
+            // ldc
+            // 
+            this.ldc.HeaderText = "ldc";
+            this.ldc.Name = "ldc";
+            this.ldc.ReadOnly = true;
+            this.ldc.Visible = false;
+            this.ldc.Width = 60;
+            // 
+            // stdateDataGridViewTextBoxColumn
+            // 
+            this.stdateDataGridViewTextBoxColumn.DataPropertyName = "stock_date";
+            dataGridViewCellStyle10.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle10.Format = "dd-MM-yyyy";
+            this.stdateDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle10;
+            this.stdateDataGridViewTextBoxColumn.HeaderText = "Date";
+            this.stdateDataGridViewTextBoxColumn.Name = "stdateDataGridViewTextBoxColumn";
+            this.stdateDataGridViewTextBoxColumn.ReadOnly = true;
+            this.stdateDataGridViewTextBoxColumn.Width = 200;
+            // 
+            // uspStockSelectResultBindingSource
+            // 
+            this.uspStockSelectResultBindingSource.DataSource = typeof(standard.classes.usp_stockSelectResult);
+            // 
+            // tableLayoutPanel1
+            // 
+            this.tableLayoutPanel1.ColumnCount = 11;
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 74F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 176F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 167F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 63F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 238F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 129F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 153F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 120F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 120F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel1.Controls.Add(this.dtptdate, 3, 0);
+            this.tableLayoutPanel1.Controls.Add(this.lblfdate, 0, 0);
+            this.tableLayoutPanel1.Controls.Add(this.dtpfdate, 1, 0);
+            this.tableLayoutPanel1.Controls.Add(this.lblhyp, 2, 0);
+            this.tableLayoutPanel1.Controls.Add(this.cmdList, 7, 1);
+            this.tableLayoutPanel1.Controls.Add(this.cmdexit, 8, 1);
+            this.tableLayoutPanel1.Controls.Add(this.label6, 6, 0);
+            this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tableLayoutPanel1.Location = new System.Drawing.Point(5, 43);
+            this.tableLayoutPanel1.Name = "tableLayoutPanel1";
+            this.tableLayoutPanel1.RowCount = 2;
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(1648, 104);
+            this.tableLayoutPanel1.TabIndex = 0;
+            // 
+            // dtptdate
+            // 
+            this.dtptdate.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.dtptdate.CustomFormat = "dd-MM-yyyy";
+            this.dtptdate.Font = new System.Drawing.Font("Tahoma", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.dtptdate.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
+            this.dtptdate.Location = new System.Drawing.Point(274, 9);
+            this.dtptdate.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.dtptdate.Name = "dtptdate";
+            this.dtptdate.Size = new System.Drawing.Size(159, 33);
+            this.dtptdate.TabIndex = 1;
+            this.dtptdate.KeyDown += new System.Windows.Forms.KeyEventHandler(this.dtptdate_KeyDown);
+            // 
+            // lblfdate
+            // 
+            this.lblfdate.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblfdate.AutoSize = true;
+            this.lblfdate.Font = new System.Drawing.Font("Tahoma", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblfdate.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
+            this.lblfdate.Location = new System.Drawing.Point(4, 13);
+            this.lblfdate.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblfdate.Name = "lblfdate";
+            this.lblfdate.Size = new System.Drawing.Size(62, 25);
+            this.lblfdate.TabIndex = 0;
+            this.lblfdate.Text = "Date";
+            // 
+            // dtpfdate
+            // 
+            this.dtpfdate.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.dtpfdate.CalendarFont = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.dtpfdate.CustomFormat = "dd-MM-yyyy";
+            this.dtpfdate.Font = new System.Drawing.Font("Tahoma", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.dtpfdate.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
+            this.dtpfdate.Location = new System.Drawing.Point(78, 9);
+            this.dtpfdate.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.dtpfdate.Name = "dtpfdate";
+            this.dtpfdate.Size = new System.Drawing.Size(168, 33);
+            this.dtpfdate.TabIndex = 0;
+            this.dtpfdate.KeyDown += new System.Windows.Forms.KeyEventHandler(this.dtpfdate_KeyDown);
+            // 
+            // lblhyp
+            // 
+            this.lblhyp.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.lblhyp.AutoSize = true;
+            this.lblhyp.Font = new System.Drawing.Font("Tahoma", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblhyp.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
+            this.lblhyp.Location = new System.Drawing.Point(254, 13);
+            this.lblhyp.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblhyp.Name = "lblhyp";
+            this.lblhyp.Size = new System.Drawing.Size(12, 25);
+            this.lblhyp.TabIndex = 4;
+            this.lblhyp.Text = "-";
+            // 
+            // cmdList
+            // 
+            this.cmdList.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
+            this.cmdList.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(191)))), ((int)(((byte)(219)))), ((int)(((byte)(254)))));
+            this.cmdList.Font = new System.Drawing.Font("Tahoma", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cmdList.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(41)))), ((int)(((byte)(66)))), ((int)(((byte)(122)))));
+            this.cmdList.Location = new System.Drawing.Point(884, 54);
+            this.cmdList.Margin = new System.Windows.Forms.Padding(1);
+            this.cmdList.Name = "cmdList";
+            this.cmdList.Size = new System.Drawing.Size(118, 49);
+            this.cmdList.TabIndex = 6;
+            this.cmdList.Text = "&View";
+            this.cmdList.UseVisualStyleBackColor = false;
+            this.cmdList.Click += new System.EventHandler(this.cmdprint_Click);
+            // 
+            // cmdexit
+            // 
+            this.cmdexit.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
+            this.cmdexit.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(191)))), ((int)(((byte)(219)))), ((int)(((byte)(254)))));
+            this.cmdexit.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            this.cmdexit.Font = new System.Drawing.Font("Tahoma", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cmdexit.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(41)))), ((int)(((byte)(66)))), ((int)(((byte)(122)))));
+            this.cmdexit.Location = new System.Drawing.Point(1021, 54);
+            this.cmdexit.Margin = new System.Windows.Forms.Padding(1);
+            this.cmdexit.Name = "cmdexit";
+            this.cmdexit.Size = new System.Drawing.Size(118, 49);
+            this.cmdexit.TabIndex = 8;
+            this.cmdexit.Text = "&Exit";
+            this.cmdexit.UseVisualStyleBackColor = false;
+            this.cmdexit.Click += new System.EventHandler(this.cmdexit_Click);
+            // 
+            // label6
+            // 
+            this.label6.Location = new System.Drawing.Point(741, 0);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(100, 23);
+            this.label6.TabIndex = 9;
+            // 
+            // cboCustomerView
+            // 
+            this.cboCustomerView.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.cboCustomerView.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
+            this.cboCustomerView.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
+            this.cboCustomerView.DataSource = this.ledgermasterViewBindingSource;
+            this.cboCustomerView.DisplayMember = "led_name";
+            this.cboCustomerView.Font = new System.Drawing.Font("Tahoma", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cboCustomerView.FormattingEnabled = true;
+            this.cboCustomerView.Location = new System.Drawing.Point(871, 5);
+            this.cboCustomerView.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.cboCustomerView.Name = "cboCustomerView";
+            this.cboCustomerView.Size = new System.Drawing.Size(265, 33);
+            this.cboCustomerView.TabIndex = 5;
+            this.cboCustomerView.ValueMember = "led_id";
+            this.cboCustomerView.KeyDown += new System.Windows.Forms.KeyEventHandler(this.cboCustomerView_KeyDown);
+            // 
+            // ledgermasterViewBindingSource
+            // 
+            this.ledgermasterViewBindingSource.DataSource = typeof(standard.classes.ledgermaster);
+            // 
+            // itemidDataGridViewTextBoxColumn
+            // 
+            this.itemidDataGridViewTextBoxColumn.DataPropertyName = "id";
+            this.itemidDataGridViewTextBoxColumn.HeaderText = "ITEM ID";
+            this.itemidDataGridViewTextBoxColumn.Name = "itemidDataGridViewTextBoxColumn";
+            this.itemidDataGridViewTextBoxColumn.ReadOnly = true;
+            // 
+            // lednameDataGridViewTextBoxColumn
+            // 
+            this.lednameDataGridViewTextBoxColumn.Name = "lednameDataGridViewTextBoxColumn";
+            // 
+            // sototqtyDataGridViewTextBoxColumn
+            // 
+            this.sototqtyDataGridViewTextBoxColumn.Name = "sototqtyDataGridViewTextBoxColumn";
+            // 
+            // cConvert
+            // 
+            this.cConvert.HeaderText = "CONVERT TO SALES";
+            this.cConvert.Image = ((System.Drawing.Image)(resources.GetObject("cConvert.Image")));
+            this.cConvert.Name = "cConvert";
+            this.cConvert.ReadOnly = true;
+            this.cConvert.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.cConvert.Visible = false;
+            this.cConvert.Width = 120;
+            // 
+            // sostatusDataGridViewTextBoxColumn
+            // 
+            this.sostatusDataGridViewTextBoxColumn.Name = "sostatusDataGridViewTextBoxColumn";
+            // 
+            // ledidDataGridViewTextBoxColumn
+            // 
+            this.ledidDataGridViewTextBoxColumn.Name = "ledidDataGridViewTextBoxColumn";
+            // 
+            // usersuidDataGridViewTextBoxColumn
+            // 
+            this.usersuidDataGridViewTextBoxColumn.Name = "usersuidDataGridViewTextBoxColumn";
+            // 
+            // usersnameDataGridViewTextBoxColumn
+            // 
+            this.usersnameDataGridViewTextBoxColumn.Name = "usersnameDataGridViewTextBoxColumn";
+            // 
+            // smudateDataGridViewTextBoxColumn
+            // 
+            this.smudateDataGridViewTextBoxColumn.Name = "smudateDataGridViewTextBoxColumn";
+            // 
+            // cboCityView
+            // 
+            this.cboCityView.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.cboCityView.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
+            this.cboCityView.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
+            this.cboCityView.DataSource = this.ledgermasteCityViewrBindingSource;
+            this.cboCityView.DisplayMember = "led_address2";
+            this.cboCityView.Font = new System.Drawing.Font("Tahoma", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cboCityView.FormattingEnabled = true;
+            this.cboCityView.Location = new System.Drawing.Point(504, 5);
+            this.cboCityView.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.cboCityView.Name = "cboCityView";
+            this.cboCityView.Size = new System.Drawing.Size(230, 33);
+            this.cboCityView.TabIndex = 3;
+            this.cboCityView.ValueMember = "led_id";
+            this.cboCityView.SelectedValueChanged += new System.EventHandler(this.cboCityView_SelectedValueChanged);
+            this.cboCityView.KeyDown += new System.Windows.Forms.KeyEventHandler(this.cboCityView_KeyDown);
+            // 
+            // ledgermasteCityViewrBindingSource
+            // 
+            this.ledgermasteCityViewrBindingSource.DataSource = typeof(standard.classes.ledgermaster);
+            // 
+            // label5
+            // 
+            this.label5.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.label5.AutoSize = true;
+            this.label5.Font = new System.Drawing.Font("Tahoma", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label5.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
+            this.label5.Location = new System.Drawing.Point(441, 0);
+            this.label5.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(48, 52);
+            this.label5.TabIndex = 2;
+            this.label5.Text = "City";
+            // 
+            // lblBillNo
+            // 
+            this.lblBillNo.Location = new System.Drawing.Point(0, 0);
+            this.lblBillNo.Name = "lblBillNo";
+            this.lblBillNo.Size = new System.Drawing.Size(100, 23);
+            this.lblBillNo.TabIndex = 0;
+            // 
+            // txtSearchBillNo
+            // 
+            this.txtSearchBillNo.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.txtSearchBillNo.Location = new System.Drawing.Point(741, 55);
+            this.txtSearchBillNo.Name = "txtSearchBillNo";
+            this.txtSearchBillNo.Size = new System.Drawing.Size(123, 20);
+            this.txtSearchBillNo.TabIndex = 7;
+            this.txtSearchBillNo.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtSearchBillNo_KeyDown_1);
+            // 
+            // isConvert
+            // 
+            this.isConvert.DataPropertyName = "so_isclose";
+            this.isConvert.HeaderText = "IS CONVERTED";
+            this.isConvert.Name = "isConvert";
+            this.isConvert.ReadOnly = true;
+            this.isConvert.Width = 170;
+            // 
+            // lprint
+            // 
+            this.lprint.HeaderText = "PRINT";
+            this.lprint.Image = global::standard.Properties.Resources.print;
+            this.lprint.Name = "lprint";
+            this.lprint.ReadOnly = true;
+            this.lprint.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.lprint.Width = 75;
+            // 
+            // cSoldQty
+            // 
+            this.cSoldQty.Name = "cSoldQty";
+            // 
+            // CPendingQty
+            // 
+            this.CPendingQty.Name = "CPendingQty";
+            // 
             // frmOpeningStock
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(20F, 39F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(13F, 25F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(191)))), ((int)(((byte)(219)))), ((int)(((byte)(254)))));
             this.ClientSize = new System.Drawing.Size(1658, 749);

@@ -567,7 +567,7 @@
             // ribbonPanelAgentOutstanding
             // 
             this.ribbonPanelAgentOutstanding.Items.Add(this.btnAgentOutstandingReport);
-            this.ribbonPanelAgentOutstanding.Text = "Agent Outstanding";
+            this.ribbonPanelAgentOutstanding.Text = "Agent Report";
             // 
             // btnAgentOutstandingReport
             // 
