@@ -96,12 +96,12 @@ namespace standard.classes
     partial void Insertledgermaster(ledgermaster instance);
     partial void Updateledgermaster(ledgermaster instance);
     partial void Deleteledgermaster(ledgermaster instance);
-    partial void Insertpurchasemaster(purchasemaster instance);
-    partial void Updatepurchasemaster(purchasemaster instance);
-    partial void Deletepurchasemaster(purchasemaster instance);
     partial void Insertsalesmaster(salesmaster instance);
     partial void Updatesalesmaster(salesmaster instance);
     partial void Deletesalesmaster(salesmaster instance);
+    partial void Insertpurchasemaster(purchasemaster instance);
+    partial void Updatepurchasemaster(purchasemaster instance);
+    partial void Deletepurchasemaster(purchasemaster instance);
     #endregion
 		
 		public InventoryDataContext() : 
@@ -318,19 +318,19 @@ namespace standard.classes
 			}
 		}
 		
-		public System.Data.Linq.Table<purchasemaster> purchasemasters
-		{
-			get
-			{
-				return this.GetTable<purchasemaster>();
-			}
-		}
-		
 		public System.Data.Linq.Table<salesmaster> salesmasters
 		{
 			get
 			{
 				return this.GetTable<salesmaster>();
+			}
+		}
+		
+		public System.Data.Linq.Table<purchasemaster> purchasemasters
+		{
+			get
+			{
+				return this.GetTable<purchasemaster>();
 			}
 		}
 		
@@ -1130,13 +1130,6 @@ namespace standard.classes
 			return ((ISingleResult<usp_stockReportResult>)(result.ReturnValue));
 		}
 		
-		[global::System.Data.Linq.Mapping.FunctionAttribute(Name="dbo.usp_salesorderdetailsSelect")]
-		public ISingleResult<usp_salesorderdetailsSelectResult> usp_salesorderdetailsSelect([global::System.Data.Linq.Mapping.ParameterAttribute(DbType="BigInt")] System.Nullable<long> so_id, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Date")] System.Nullable<System.DateTime> fdate, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Date")] System.Nullable<System.DateTime> tdate, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="BigInt")] System.Nullable<long> led_id, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="BigInt")] System.Nullable<long> item_id, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="BigInt")] System.Nullable<long> cat_id)
-		{
-			IExecuteResult result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), so_id, fdate, tdate, led_id, item_id, cat_id);
-			return ((ISingleResult<usp_salesorderdetailsSelectResult>)(result.ReturnValue));
-		}
-		
 		[global::System.Data.Linq.Mapping.FunctionAttribute(Name="dbo.usp_salesdetailsSelect")]
 		public ISingleResult<usp_salesdetailsSelectResult> usp_salesdetailsSelect([global::System.Data.Linq.Mapping.ParameterAttribute(DbType="BigInt")] System.Nullable<long> sm_id, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Date")] System.Nullable<System.DateTime> fdate, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Date")] System.Nullable<System.DateTime> tdate, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="BigInt")] System.Nullable<long> led_id, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="BigInt")] System.Nullable<long> item_id, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="BigInt")] System.Nullable<long> cat_id, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="BigInt")] System.Nullable<long> com_id)
 		{
@@ -1149,13 +1142,6 @@ namespace standard.classes
 		{
 			IExecuteResult result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), pm_id, item_id, cat_id, pd_particulars, pd_qty, pd_unitvalue, pd_prate, pd_amount, pd_totfrieght, pd_taxpercentage, pd_taxamount);
 			return ((ISingleResult<usp_purchasedetailsInsertResult>)(result.ReturnValue));
-		}
-		
-		[global::System.Data.Linq.Mapping.FunctionAttribute(Name="dbo.usp_purchasedetailsSelect")]
-		public ISingleResult<usp_purchasedetailsSelectResult> usp_purchasedetailsSelect([global::System.Data.Linq.Mapping.ParameterAttribute(DbType="BigInt")] System.Nullable<long> pm_id, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="BigInt")] System.Nullable<long> led_id, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="DateTime")] System.Nullable<System.DateTime> fdate, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="DateTime")] System.Nullable<System.DateTime> tdate, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="BigInt")] System.Nullable<long> item_id, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="BigInt")] System.Nullable<long> cat_id)
-		{
-			IExecuteResult result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), pm_id, led_id, fdate, tdate, item_id, cat_id);
-			return ((ISingleResult<usp_purchasedetailsSelectResult>)(result.ReturnValue));
 		}
 		
 		[global::System.Data.Linq.Mapping.FunctionAttribute(Name="dbo.usp_purchasedetailsUpdate")]
@@ -1277,11 +1263,47 @@ namespace standard.classes
 					[global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Bit")] System.Nullable<bool> pm_isclose, 
 					[global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Decimal(18,3)")] System.Nullable<decimal> pm_paid, 
 					[global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Decimal(18,3)")] System.Nullable<decimal> pm_totaltaxamount, 
-					[global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Bit")] System.Nullable<bool> pm_isimport)
+					[global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Bit")] System.Nullable<bool> pm_isimport, 
+					[global::System.Data.Linq.Mapping.ParameterAttribute(DbType="BigInt")] System.Nullable<long> pm_agid)
 		{
-			IExecuteResult result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), pm_id, pm_no, pm_date, led_id, pm_totqty, pm_totamount, pm_discountpercentage, pm_discountamount, pm_wages, pm_frieght, pm_billno, com_id, users_uid, pm_udate, pm_desc, pm_isclose, pm_paid, pm_totaltaxamount, pm_isimport);
+			IExecuteResult result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), pm_id, pm_no, pm_date, led_id, pm_totqty, pm_totamount, pm_discountpercentage, pm_discountamount, pm_wages, pm_frieght, pm_billno, com_id, users_uid, pm_udate, pm_desc, pm_isclose, pm_paid, pm_totaltaxamount, pm_isimport, pm_agid);
 			pm_id = ((System.Nullable<long>)(result.GetParameterValue(0)));
 			return ((ISingleResult<usp_purchasemasterInsertResult>)(result.ReturnValue));
+		}
+		
+		[global::System.Data.Linq.Mapping.FunctionAttribute(Name="dbo.usp_purchasemasterSelect")]
+		public ISingleResult<usp_purchasemasterSelectResult> usp_purchasemasterSelect([global::System.Data.Linq.Mapping.ParameterAttribute(DbType="BigInt")] System.Nullable<long> pm_id, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="BigInt")] System.Nullable<long> led_id, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="DateTime")] System.Nullable<System.DateTime> fdate, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="DateTime")] System.Nullable<System.DateTime> tdate, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Bit")] System.Nullable<bool> pm_isclose, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="BigInt")] System.Nullable<long> pm_no)
+		{
+			IExecuteResult result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), pm_id, led_id, fdate, tdate, pm_isclose, pm_no);
+			return ((ISingleResult<usp_purchasemasterSelectResult>)(result.ReturnValue));
+		}
+		
+		[global::System.Data.Linq.Mapping.FunctionAttribute(Name="dbo.usp_purchasemasterUpdate")]
+		public ISingleResult<usp_purchasemasterUpdateResult> usp_purchasemasterUpdate(
+					[global::System.Data.Linq.Mapping.ParameterAttribute(DbType="BigInt")] System.Nullable<long> pm_id, 
+					[global::System.Data.Linq.Mapping.ParameterAttribute(DbType="BigInt")] System.Nullable<long> pm_no, 
+					[global::System.Data.Linq.Mapping.ParameterAttribute(DbType="DateTime")] System.Nullable<System.DateTime> pm_date, 
+					[global::System.Data.Linq.Mapping.ParameterAttribute(DbType="BigInt")] System.Nullable<long> led_id, 
+					[global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Decimal(18,3)")] System.Nullable<decimal> pm_totqty, 
+					[global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Decimal(18,3)")] System.Nullable<decimal> pm_totamount, 
+					[global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Decimal(18,3)")] System.Nullable<decimal> pm_discountpercentage, 
+					[global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Decimal(18,3)")] System.Nullable<decimal> pm_discountamount, 
+					[global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Decimal(18,3)")] System.Nullable<decimal> pm_wages, 
+					[global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Decimal(18,3)")] System.Nullable<decimal> pm_frieght, 
+					[global::System.Data.Linq.Mapping.ParameterAttribute(DbType="NVarChar(100)")] string pm_billno, 
+					[global::System.Data.Linq.Mapping.ParameterAttribute(DbType="BigInt")] System.Nullable<long> com_id, 
+					[global::System.Data.Linq.Mapping.ParameterAttribute(DbType="BigInt")] System.Nullable<long> users_uid, 
+					[global::System.Data.Linq.Mapping.ParameterAttribute(DbType="DateTime")] System.Nullable<System.DateTime> pm_udate, 
+					[global::System.Data.Linq.Mapping.ParameterAttribute(DbType="NVarChar(50)")] string pm_desc, 
+					[global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Bit")] System.Nullable<bool> pm_isclose, 
+					[global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Decimal(18,3)")] System.Nullable<decimal> pm_paid, 
+					[global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Decimal(18,3)")] System.Nullable<decimal> pm_totaltaxamount, 
+					[global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Bit")] System.Nullable<bool> pm_isimport, 
+					[global::System.Data.Linq.Mapping.ParameterAttribute(DbType="UniqueIdentifier")] System.Nullable<System.Guid> pm_guid, 
+					[global::System.Data.Linq.Mapping.ParameterAttribute(DbType="BigInt")] System.Nullable<long> pm_agid)
+		{
+			IExecuteResult result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), pm_id, pm_no, pm_date, led_id, pm_totqty, pm_totamount, pm_discountpercentage, pm_discountamount, pm_wages, pm_frieght, pm_billno, com_id, users_uid, pm_udate, pm_desc, pm_isclose, pm_paid, pm_totaltaxamount, pm_isimport, pm_guid, pm_agid);
+			return ((ISingleResult<usp_purchasemasterUpdateResult>)(result.ReturnValue));
 		}
 		
 		[global::System.Data.Linq.Mapping.FunctionAttribute(Name="dbo.usp_salesmasterInsert")]
@@ -1314,38 +1336,19 @@ namespace standard.classes
 					[global::System.Data.Linq.Mapping.ParameterAttribute(DbType="BigInt")] System.Nullable<long> so_id, 
 					[global::System.Data.Linq.Mapping.ParameterAttribute(DbType="BigInt")] System.Nullable<long> com_id, 
 					[global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Bit")] System.Nullable<bool> sm_istaxable, 
-					[global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Bit")] System.Nullable<bool> sm_isimport)
+					[global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Bit")] System.Nullable<bool> sm_isimport, 
+					[global::System.Data.Linq.Mapping.ParameterAttribute(DbType="BigInt")] System.Nullable<long> sm_agid)
 		{
-			IExecuteResult result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), sm_id, sm_bookno, sm_refno, sm_date, led_id, sm_totqty, sm_totamount, sm_itemcount, sm_profit, sm_disamount, sm_taxamount, sm_taxpercentage, sm_packingcharge, sm_netamount, sm_received, sm_paidcommission, sm_paidpacking, sm_roundamount, sm_iscommissionclose, sm_ispackingclose, users_uid, sm_udate, sm_desc, sm_isclose, sm_isdraft, so_id, com_id, sm_istaxable, sm_isimport);
+			IExecuteResult result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), sm_id, sm_bookno, sm_refno, sm_date, led_id, sm_totqty, sm_totamount, sm_itemcount, sm_profit, sm_disamount, sm_taxamount, sm_taxpercentage, sm_packingcharge, sm_netamount, sm_received, sm_paidcommission, sm_paidpacking, sm_roundamount, sm_iscommissionclose, sm_ispackingclose, users_uid, sm_udate, sm_desc, sm_isclose, sm_isdraft, so_id, com_id, sm_istaxable, sm_isimport, sm_agid);
 			sm_id = ((System.Nullable<long>)(result.GetParameterValue(0)));
 			return ((ISingleResult<usp_salesmasterInsertResult>)(result.ReturnValue));
 		}
 		
-		[global::System.Data.Linq.Mapping.FunctionAttribute(Name="dbo.usp_purchasemasterUpdate")]
-		public ISingleResult<usp_purchasemasterUpdateResult> usp_purchasemasterUpdate(
-					[global::System.Data.Linq.Mapping.ParameterAttribute(DbType="BigInt")] System.Nullable<long> pm_id, 
-					[global::System.Data.Linq.Mapping.ParameterAttribute(DbType="BigInt")] System.Nullable<long> pm_no, 
-					[global::System.Data.Linq.Mapping.ParameterAttribute(DbType="DateTime")] System.Nullable<System.DateTime> pm_date, 
-					[global::System.Data.Linq.Mapping.ParameterAttribute(DbType="BigInt")] System.Nullable<long> led_id, 
-					[global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Decimal(18,3)")] System.Nullable<decimal> pm_totqty, 
-					[global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Decimal(18,3)")] System.Nullable<decimal> pm_totamount, 
-					[global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Decimal(18,3)")] System.Nullable<decimal> pm_discountpercentage, 
-					[global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Decimal(18,3)")] System.Nullable<decimal> pm_discountamount, 
-					[global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Decimal(18,3)")] System.Nullable<decimal> pm_wages, 
-					[global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Decimal(18,3)")] System.Nullable<decimal> pm_frieght, 
-					[global::System.Data.Linq.Mapping.ParameterAttribute(DbType="NVarChar(100)")] string pm_billno, 
-					[global::System.Data.Linq.Mapping.ParameterAttribute(DbType="BigInt")] System.Nullable<long> com_id, 
-					[global::System.Data.Linq.Mapping.ParameterAttribute(DbType="BigInt")] System.Nullable<long> users_uid, 
-					[global::System.Data.Linq.Mapping.ParameterAttribute(DbType="DateTime")] System.Nullable<System.DateTime> pm_udate, 
-					[global::System.Data.Linq.Mapping.ParameterAttribute(DbType="NVarChar(50)")] string pm_desc, 
-					[global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Bit")] System.Nullable<bool> pm_isclose, 
-					[global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Decimal(18,3)")] System.Nullable<decimal> pm_paid, 
-					[global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Decimal(18,3)")] System.Nullable<decimal> pm_totaltaxamount, 
-					[global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Bit")] System.Nullable<bool> pm_isimport, 
-					[global::System.Data.Linq.Mapping.ParameterAttribute(DbType="UniqueIdentifier")] System.Nullable<System.Guid> pm_guid)
+		[global::System.Data.Linq.Mapping.FunctionAttribute(Name="dbo.usp_salesmasterSelect")]
+		public ISingleResult<usp_salesmasterSelectResult> usp_salesmasterSelect([global::System.Data.Linq.Mapping.ParameterAttribute(DbType="BigInt")] System.Nullable<long> sm_id, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="BigInt")] System.Nullable<long> led_id, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="DateTime")] System.Nullable<System.DateTime> fdate, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="DateTime")] System.Nullable<System.DateTime> tdate, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="IsClose", DbType="Bit")] System.Nullable<bool> isClose, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="BigInt")] System.Nullable<long> sm_refno, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="BigInt")] System.Nullable<long> com_id)
 		{
-			IExecuteResult result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), pm_id, pm_no, pm_date, led_id, pm_totqty, pm_totamount, pm_discountpercentage, pm_discountamount, pm_wages, pm_frieght, pm_billno, com_id, users_uid, pm_udate, pm_desc, pm_isclose, pm_paid, pm_totaltaxamount, pm_isimport, pm_guid);
-			return ((ISingleResult<usp_purchasemasterUpdateResult>)(result.ReturnValue));
+			IExecuteResult result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), sm_id, led_id, fdate, tdate, isClose, sm_refno, com_id);
+			return ((ISingleResult<usp_salesmasterSelectResult>)(result.ReturnValue));
 		}
 		
 		[global::System.Data.Linq.Mapping.FunctionAttribute(Name="dbo.usp_salesmasterUpdate")]
@@ -1379,24 +1382,32 @@ namespace standard.classes
 					[global::System.Data.Linq.Mapping.ParameterAttribute(DbType="BigInt")] System.Nullable<long> com_id, 
 					[global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Bit")] System.Nullable<bool> sm_istaxable, 
 					[global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Bit")] System.Nullable<bool> sm_isimport, 
-					[global::System.Data.Linq.Mapping.ParameterAttribute(DbType="UniqueIdentifier")] System.Nullable<System.Guid> sm_guid)
+					[global::System.Data.Linq.Mapping.ParameterAttribute(DbType="UniqueIdentifier")] System.Nullable<System.Guid> sm_guid, 
+					[global::System.Data.Linq.Mapping.ParameterAttribute(DbType="BigInt")] System.Nullable<long> sm_agid)
 		{
-			IExecuteResult result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), sm_id, sm_bookno, sm_refno, sm_date, led_id, sm_totqty, sm_totamount, sm_itemcount, sm_profit, sm_disamount, sm_taxamount, sm_taxpercentage, sm_packingcharge, sm_netamount, sm_received, sm_paidcommission, sm_paidpacking, sm_roundamount, sm_iscommissionclose, sm_ispackingclose, users_uid, sm_udate, sm_desc, sm_isclose, sm_isdraft, so_id, com_id, sm_istaxable, sm_isimport, sm_guid);
+			IExecuteResult result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), sm_id, sm_bookno, sm_refno, sm_date, led_id, sm_totqty, sm_totamount, sm_itemcount, sm_profit, sm_disamount, sm_taxamount, sm_taxpercentage, sm_packingcharge, sm_netamount, sm_received, sm_paidcommission, sm_paidpacking, sm_roundamount, sm_iscommissionclose, sm_ispackingclose, users_uid, sm_udate, sm_desc, sm_isclose, sm_isdraft, so_id, com_id, sm_istaxable, sm_isimport, sm_guid, sm_agid);
 			return ((ISingleResult<usp_salesmasterUpdateResult>)(result.ReturnValue));
 		}
 		
-		[global::System.Data.Linq.Mapping.FunctionAttribute(Name="dbo.usp_purchasemasterSelect")]
-		public ISingleResult<usp_purchasemasterSelectResult> usp_purchasemasterSelect([global::System.Data.Linq.Mapping.ParameterAttribute(DbType="BigInt")] System.Nullable<long> pm_id, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="BigInt")] System.Nullable<long> led_id, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="DateTime")] System.Nullable<System.DateTime> fdate, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="DateTime")] System.Nullable<System.DateTime> tdate, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Bit")] System.Nullable<bool> pm_isclose, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="BigInt")] System.Nullable<long> pm_no)
+		[global::System.Data.Linq.Mapping.FunctionAttribute(Name="dbo.usp_salesorderdetailsSelect")]
+		public ISingleResult<usp_salesorderdetailsSelectResult> usp_salesorderdetailsSelect([global::System.Data.Linq.Mapping.ParameterAttribute(DbType="BigInt")] System.Nullable<long> so_id, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Date")] System.Nullable<System.DateTime> fdate, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Date")] System.Nullable<System.DateTime> tdate, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="BigInt")] System.Nullable<long> led_id, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="BigInt")] System.Nullable<long> item_id, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="BigInt")] System.Nullable<long> cat_id)
 		{
-			IExecuteResult result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), pm_id, led_id, fdate, tdate, pm_isclose, pm_no);
-			return ((ISingleResult<usp_purchasemasterSelectResult>)(result.ReturnValue));
+			IExecuteResult result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), so_id, fdate, tdate, led_id, item_id, cat_id);
+			return ((ISingleResult<usp_salesorderdetailsSelectResult>)(result.ReturnValue));
 		}
 		
-		[global::System.Data.Linq.Mapping.FunctionAttribute(Name="dbo.usp_salesmasterSelect")]
-		public ISingleResult<usp_salesmasterSelectResult> usp_salesmasterSelect([global::System.Data.Linq.Mapping.ParameterAttribute(DbType="BigInt")] System.Nullable<long> sm_id, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="BigInt")] System.Nullable<long> led_id, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="DateTime")] System.Nullable<System.DateTime> fdate, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="DateTime")] System.Nullable<System.DateTime> tdate, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="IsClose", DbType="Bit")] System.Nullable<bool> isClose, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="BigInt")] System.Nullable<long> sm_refno, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="BigInt")] System.Nullable<long> com_id)
+		[global::System.Data.Linq.Mapping.FunctionAttribute(Name="dbo.usp_NewOutstandingReport")]
+		public ISingleResult<usp_NewOutstandingReportResult> usp_NewOutstandingReport([global::System.Data.Linq.Mapping.ParameterAttribute(DbType="BigInt")] System.Nullable<long> pm_id, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="BigInt")] System.Nullable<long> sm_id, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="BigInt")] System.Nullable<long> led_agid, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Date")] System.Nullable<System.DateTime> fdate, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Date")] System.Nullable<System.DateTime> tdate, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="Type", DbType="NVarChar(20)")] string type, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="BigInt")] System.Nullable<long> item_id)
 		{
-			IExecuteResult result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), sm_id, led_id, fdate, tdate, isClose, sm_refno, com_id);
-			return ((ISingleResult<usp_salesmasterSelectResult>)(result.ReturnValue));
+			IExecuteResult result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), pm_id, sm_id, led_agid, fdate, tdate, type, item_id);
+			return ((ISingleResult<usp_NewOutstandingReportResult>)(result.ReturnValue));
+		}
+		
+		[global::System.Data.Linq.Mapping.FunctionAttribute(Name="dbo.usp_purchasedetailsSelect")]
+		public ISingleResult<usp_purchasedetailsSelectResult> usp_purchasedetailsSelect([global::System.Data.Linq.Mapping.ParameterAttribute(DbType="BigInt")] System.Nullable<long> pm_id, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="BigInt")] System.Nullable<long> led_id, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="DateTime")] System.Nullable<System.DateTime> fdate, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="DateTime")] System.Nullable<System.DateTime> tdate, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="BigInt")] System.Nullable<long> item_id, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="BigInt")] System.Nullable<long> cat_id)
+		{
+			IExecuteResult result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), pm_id, led_id, fdate, tdate, item_id, cat_id);
+			return ((ISingleResult<usp_purchasedetailsSelectResult>)(result.ReturnValue));
 		}
 	}
 	
@@ -3428,9 +3439,9 @@ namespace standard.classes
 		
 		private EntitySet<ledgermaster> _ledgermasters;
 		
-		private EntitySet<purchasemaster> _purchasemasters;
-		
 		private EntitySet<salesmaster> _salesmasters;
+		
+		private EntitySet<purchasemaster> _purchasemasters;
 		
     #region Extensibility Method Definitions
     partial void OnLoaded();
@@ -3459,8 +3470,8 @@ namespace standard.classes
 			this._salesorders = new EntitySet<salesorder>(new Action<salesorder>(this.attach_salesorders), new Action<salesorder>(this.detach_salesorders));
 			this._items = new EntitySet<item>(new Action<item>(this.attach_items), new Action<item>(this.detach_items));
 			this._ledgermasters = new EntitySet<ledgermaster>(new Action<ledgermaster>(this.attach_ledgermasters), new Action<ledgermaster>(this.detach_ledgermasters));
-			this._purchasemasters = new EntitySet<purchasemaster>(new Action<purchasemaster>(this.attach_purchasemasters), new Action<purchasemaster>(this.detach_purchasemasters));
 			this._salesmasters = new EntitySet<salesmaster>(new Action<salesmaster>(this.attach_salesmasters), new Action<salesmaster>(this.detach_salesmasters));
+			this._purchasemasters = new EntitySet<purchasemaster>(new Action<purchasemaster>(this.attach_purchasemasters), new Action<purchasemaster>(this.detach_purchasemasters));
 			OnCreated();
 		}
 		
@@ -3669,19 +3680,6 @@ namespace standard.classes
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="user_purchasemaster", Storage="_purchasemasters", ThisKey="users_uid", OtherKey="users_uid")]
-		public EntitySet<purchasemaster> purchasemasters
-		{
-			get
-			{
-				return this._purchasemasters;
-			}
-			set
-			{
-				this._purchasemasters.Assign(value);
-			}
-		}
-		
 		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="user_salesmaster", Storage="_salesmasters", ThisKey="users_uid", OtherKey="users_uid")]
 		public EntitySet<salesmaster> salesmasters
 		{
@@ -3692,6 +3690,19 @@ namespace standard.classes
 			set
 			{
 				this._salesmasters.Assign(value);
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="user_purchasemaster", Storage="_purchasemasters", ThisKey="users_uid", OtherKey="users_uid")]
+		public EntitySet<purchasemaster> purchasemasters
+		{
+			get
+			{
+				return this._purchasemasters;
+			}
+			set
+			{
+				this._purchasemasters.Assign(value);
 			}
 		}
 		
@@ -3775,18 +3786,6 @@ namespace standard.classes
 			entity.user = null;
 		}
 		
-		private void attach_purchasemasters(purchasemaster entity)
-		{
-			this.SendPropertyChanging();
-			entity.user = this;
-		}
-		
-		private void detach_purchasemasters(purchasemaster entity)
-		{
-			this.SendPropertyChanging();
-			entity.user = null;
-		}
-		
 		private void attach_salesmasters(salesmaster entity)
 		{
 			this.SendPropertyChanging();
@@ -3794,6 +3793,18 @@ namespace standard.classes
 		}
 		
 		private void detach_salesmasters(salesmaster entity)
+		{
+			this.SendPropertyChanging();
+			entity.user = null;
+		}
+		
+		private void attach_purchasemasters(purchasemaster entity)
+		{
+			this.SendPropertyChanging();
+			entity.user = this;
+		}
+		
+		private void detach_purchasemasters(purchasemaster entity)
 		{
 			this.SendPropertyChanging();
 			entity.user = null;
@@ -10026,9 +10037,9 @@ namespace standard.classes
 		
 		private EntitySet<salesorder> _salesorders;
 		
-		private EntitySet<purchasemaster> _purchasemasters;
-		
 		private EntitySet<salesmaster> _salesmasters;
+		
+		private EntitySet<purchasemaster> _purchasemasters;
 		
 		private EntityRef<company> _company;
 		
@@ -10123,8 +10134,8 @@ namespace standard.classes
 			this._payments = new EntitySet<payment>(new Action<payment>(this.attach_payments), new Action<payment>(this.detach_payments));
 			this._payments1 = new EntitySet<payment>(new Action<payment>(this.attach_payments1), new Action<payment>(this.detach_payments1));
 			this._salesorders = new EntitySet<salesorder>(new Action<salesorder>(this.attach_salesorders), new Action<salesorder>(this.detach_salesorders));
-			this._purchasemasters = new EntitySet<purchasemaster>(new Action<purchasemaster>(this.attach_purchasemasters), new Action<purchasemaster>(this.detach_purchasemasters));
 			this._salesmasters = new EntitySet<salesmaster>(new Action<salesmaster>(this.attach_salesmasters), new Action<salesmaster>(this.detach_salesmasters));
+			this._purchasemasters = new EntitySet<purchasemaster>(new Action<purchasemaster>(this.attach_purchasemasters), new Action<purchasemaster>(this.detach_purchasemasters));
 			this._company = default(EntityRef<company>);
 			this._user = default(EntityRef<user>);
 			this._route = default(EntityRef<route>);
@@ -10954,19 +10965,6 @@ namespace standard.classes
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="ledgermaster_purchasemaster", Storage="_purchasemasters", ThisKey="led_id", OtherKey="led_id")]
-		public EntitySet<purchasemaster> purchasemasters
-		{
-			get
-			{
-				return this._purchasemasters;
-			}
-			set
-			{
-				this._purchasemasters.Assign(value);
-			}
-		}
-		
 		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="ledgermaster_salesmaster", Storage="_salesmasters", ThisKey="led_id", OtherKey="led_id")]
 		public EntitySet<salesmaster> salesmasters
 		{
@@ -10977,6 +10975,19 @@ namespace standard.classes
 			set
 			{
 				this._salesmasters.Assign(value);
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="ledgermaster_purchasemaster", Storage="_purchasemasters", ThisKey="led_id", OtherKey="led_id")]
+		public EntitySet<purchasemaster> purchasemasters
+		{
+			get
+			{
+				return this._purchasemasters;
+			}
+			set
+			{
+				this._purchasemasters.Assign(value);
 			}
 		}
 		
@@ -11186,18 +11197,6 @@ namespace standard.classes
 			entity.ledgermaster = null;
 		}
 		
-		private void attach_purchasemasters(purchasemaster entity)
-		{
-			this.SendPropertyChanging();
-			entity.ledgermaster = this;
-		}
-		
-		private void detach_purchasemasters(purchasemaster entity)
-		{
-			this.SendPropertyChanging();
-			entity.ledgermaster = null;
-		}
-		
 		private void attach_salesmasters(salesmaster entity)
 		{
 			this.SendPropertyChanging();
@@ -11209,674 +11208,17 @@ namespace standard.classes
 			this.SendPropertyChanging();
 			entity.ledgermaster = null;
 		}
-	}
-	
-	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.purchasemaster")]
-	public partial class purchasemaster : INotifyPropertyChanging, INotifyPropertyChanged
-	{
 		
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-		private long _pm_id;
-		
-		private long _pm_no;
-		
-		private System.Nullable<System.DateTime> _pm_date;
-		
-		private System.Nullable<long> _led_id;
-		
-		private decimal _pm_totqty;
-		
-		private decimal _pm_totamount;
-		
-		private System.Nullable<bool> _pm_isclose;
-		
-		private System.Nullable<long> _com_id;
-		
-		private System.Nullable<long> _users_uid;
-		
-		private System.Nullable<System.DateTime> _pm_udate;
-		
-		private string _pm_desc;
-		
-		private decimal _pm_paid;
-		
-		private decimal _pm_discountpercentage;
-		
-		private decimal _pm_discountamount;
-		
-		private string _pm_billno;
-		
-		private decimal _pm_wages;
-		
-		private decimal _pm_frieght;
-		
-		private decimal _pm_totaltaxamount;
-		
-		private System.Nullable<bool> _pm_isimport;
-		
-		private System.Nullable<System.Guid> _pm_guid;
-		
-		private EntitySet<purchasedetail> _purchasedetails;
-		
-		private EntityRef<company> _company;
-		
-		private EntityRef<ledgermaster> _ledgermaster;
-		
-		private EntityRef<user> _user;
-		
-    #region Extensibility Method Definitions
-    partial void OnLoaded();
-    partial void OnValidate(System.Data.Linq.ChangeAction action);
-    partial void OnCreated();
-    partial void Onpm_idChanging(long value);
-    partial void Onpm_idChanged();
-    partial void Onpm_noChanging(long value);
-    partial void Onpm_noChanged();
-    partial void Onpm_dateChanging(System.Nullable<System.DateTime> value);
-    partial void Onpm_dateChanged();
-    partial void Onled_idChanging(System.Nullable<long> value);
-    partial void Onled_idChanged();
-    partial void Onpm_totqtyChanging(decimal value);
-    partial void Onpm_totqtyChanged();
-    partial void Onpm_totamountChanging(decimal value);
-    partial void Onpm_totamountChanged();
-    partial void Onpm_iscloseChanging(System.Nullable<bool> value);
-    partial void Onpm_iscloseChanged();
-    partial void Oncom_idChanging(System.Nullable<long> value);
-    partial void Oncom_idChanged();
-    partial void Onusers_uidChanging(System.Nullable<long> value);
-    partial void Onusers_uidChanged();
-    partial void Onpm_udateChanging(System.Nullable<System.DateTime> value);
-    partial void Onpm_udateChanged();
-    partial void Onpm_descChanging(string value);
-    partial void Onpm_descChanged();
-    partial void Onpm_paidChanging(decimal value);
-    partial void Onpm_paidChanged();
-    partial void Onpm_discountpercentageChanging(decimal value);
-    partial void Onpm_discountpercentageChanged();
-    partial void Onpm_discountamountChanging(decimal value);
-    partial void Onpm_discountamountChanged();
-    partial void Onpm_billnoChanging(string value);
-    partial void Onpm_billnoChanged();
-    partial void Onpm_wagesChanging(decimal value);
-    partial void Onpm_wagesChanged();
-    partial void Onpm_frieghtChanging(decimal value);
-    partial void Onpm_frieghtChanged();
-    partial void Onpm_totaltaxamountChanging(decimal value);
-    partial void Onpm_totaltaxamountChanged();
-    partial void Onpm_isimportChanging(System.Nullable<bool> value);
-    partial void Onpm_isimportChanged();
-    partial void Onpm_guidChanging(System.Nullable<System.Guid> value);
-    partial void Onpm_guidChanged();
-    #endregion
-		
-		public purchasemaster()
-		{
-			this._purchasedetails = new EntitySet<purchasedetail>(new Action<purchasedetail>(this.attach_purchasedetails), new Action<purchasedetail>(this.detach_purchasedetails));
-			this._company = default(EntityRef<company>);
-			this._ledgermaster = default(EntityRef<ledgermaster>);
-			this._user = default(EntityRef<user>);
-			OnCreated();
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_pm_id", AutoSync=AutoSync.OnInsert, DbType="BigInt NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
-		public long pm_id
-		{
-			get
-			{
-				return this._pm_id;
-			}
-			set
-			{
-				if ((this._pm_id != value))
-				{
-					this.Onpm_idChanging(value);
-					this.SendPropertyChanging();
-					this._pm_id = value;
-					this.SendPropertyChanged("pm_id");
-					this.Onpm_idChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_pm_no", DbType="BigInt NOT NULL")]
-		public long pm_no
-		{
-			get
-			{
-				return this._pm_no;
-			}
-			set
-			{
-				if ((this._pm_no != value))
-				{
-					this.Onpm_noChanging(value);
-					this.SendPropertyChanging();
-					this._pm_no = value;
-					this.SendPropertyChanged("pm_no");
-					this.Onpm_noChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_pm_date", DbType="DateTime")]
-		public System.Nullable<System.DateTime> pm_date
-		{
-			get
-			{
-				return this._pm_date;
-			}
-			set
-			{
-				if ((this._pm_date != value))
-				{
-					this.Onpm_dateChanging(value);
-					this.SendPropertyChanging();
-					this._pm_date = value;
-					this.SendPropertyChanged("pm_date");
-					this.Onpm_dateChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_led_id", DbType="BigInt")]
-		public System.Nullable<long> led_id
-		{
-			get
-			{
-				return this._led_id;
-			}
-			set
-			{
-				if ((this._led_id != value))
-				{
-					if (this._ledgermaster.HasLoadedOrAssignedValue)
-					{
-						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
-					}
-					this.Onled_idChanging(value);
-					this.SendPropertyChanging();
-					this._led_id = value;
-					this.SendPropertyChanged("led_id");
-					this.Onled_idChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_pm_totqty", DbType="Decimal(18,3) NOT NULL")]
-		public decimal pm_totqty
-		{
-			get
-			{
-				return this._pm_totqty;
-			}
-			set
-			{
-				if ((this._pm_totqty != value))
-				{
-					this.Onpm_totqtyChanging(value);
-					this.SendPropertyChanging();
-					this._pm_totqty = value;
-					this.SendPropertyChanged("pm_totqty");
-					this.Onpm_totqtyChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_pm_totamount", DbType="Decimal(18,3) NOT NULL")]
-		public decimal pm_totamount
-		{
-			get
-			{
-				return this._pm_totamount;
-			}
-			set
-			{
-				if ((this._pm_totamount != value))
-				{
-					this.Onpm_totamountChanging(value);
-					this.SendPropertyChanging();
-					this._pm_totamount = value;
-					this.SendPropertyChanged("pm_totamount");
-					this.Onpm_totamountChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_pm_isclose", DbType="Bit")]
-		public System.Nullable<bool> pm_isclose
-		{
-			get
-			{
-				return this._pm_isclose;
-			}
-			set
-			{
-				if ((this._pm_isclose != value))
-				{
-					this.Onpm_iscloseChanging(value);
-					this.SendPropertyChanging();
-					this._pm_isclose = value;
-					this.SendPropertyChanged("pm_isclose");
-					this.Onpm_iscloseChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_com_id", DbType="BigInt")]
-		public System.Nullable<long> com_id
-		{
-			get
-			{
-				return this._com_id;
-			}
-			set
-			{
-				if ((this._com_id != value))
-				{
-					if (this._company.HasLoadedOrAssignedValue)
-					{
-						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
-					}
-					this.Oncom_idChanging(value);
-					this.SendPropertyChanging();
-					this._com_id = value;
-					this.SendPropertyChanged("com_id");
-					this.Oncom_idChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_users_uid", DbType="BigInt")]
-		public System.Nullable<long> users_uid
-		{
-			get
-			{
-				return this._users_uid;
-			}
-			set
-			{
-				if ((this._users_uid != value))
-				{
-					if (this._user.HasLoadedOrAssignedValue)
-					{
-						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
-					}
-					this.Onusers_uidChanging(value);
-					this.SendPropertyChanging();
-					this._users_uid = value;
-					this.SendPropertyChanged("users_uid");
-					this.Onusers_uidChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_pm_udate", DbType="DateTime")]
-		public System.Nullable<System.DateTime> pm_udate
-		{
-			get
-			{
-				return this._pm_udate;
-			}
-			set
-			{
-				if ((this._pm_udate != value))
-				{
-					this.Onpm_udateChanging(value);
-					this.SendPropertyChanging();
-					this._pm_udate = value;
-					this.SendPropertyChanged("pm_udate");
-					this.Onpm_udateChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_pm_desc", DbType="NVarChar(50)")]
-		public string pm_desc
-		{
-			get
-			{
-				return this._pm_desc;
-			}
-			set
-			{
-				if ((this._pm_desc != value))
-				{
-					this.Onpm_descChanging(value);
-					this.SendPropertyChanging();
-					this._pm_desc = value;
-					this.SendPropertyChanged("pm_desc");
-					this.Onpm_descChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_pm_paid", DbType="Decimal(18,3) NOT NULL")]
-		public decimal pm_paid
-		{
-			get
-			{
-				return this._pm_paid;
-			}
-			set
-			{
-				if ((this._pm_paid != value))
-				{
-					this.Onpm_paidChanging(value);
-					this.SendPropertyChanging();
-					this._pm_paid = value;
-					this.SendPropertyChanged("pm_paid");
-					this.Onpm_paidChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_pm_discountpercentage", DbType="Decimal(18,3) NOT NULL")]
-		public decimal pm_discountpercentage
-		{
-			get
-			{
-				return this._pm_discountpercentage;
-			}
-			set
-			{
-				if ((this._pm_discountpercentage != value))
-				{
-					this.Onpm_discountpercentageChanging(value);
-					this.SendPropertyChanging();
-					this._pm_discountpercentage = value;
-					this.SendPropertyChanged("pm_discountpercentage");
-					this.Onpm_discountpercentageChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_pm_discountamount", DbType="Decimal(18,3) NOT NULL")]
-		public decimal pm_discountamount
-		{
-			get
-			{
-				return this._pm_discountamount;
-			}
-			set
-			{
-				if ((this._pm_discountamount != value))
-				{
-					this.Onpm_discountamountChanging(value);
-					this.SendPropertyChanging();
-					this._pm_discountamount = value;
-					this.SendPropertyChanged("pm_discountamount");
-					this.Onpm_discountamountChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_pm_billno", DbType="NVarChar(100) NOT NULL", CanBeNull=false)]
-		public string pm_billno
-		{
-			get
-			{
-				return this._pm_billno;
-			}
-			set
-			{
-				if ((this._pm_billno != value))
-				{
-					this.Onpm_billnoChanging(value);
-					this.SendPropertyChanging();
-					this._pm_billno = value;
-					this.SendPropertyChanged("pm_billno");
-					this.Onpm_billnoChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_pm_wages", DbType="Decimal(18,3) NOT NULL")]
-		public decimal pm_wages
-		{
-			get
-			{
-				return this._pm_wages;
-			}
-			set
-			{
-				if ((this._pm_wages != value))
-				{
-					this.Onpm_wagesChanging(value);
-					this.SendPropertyChanging();
-					this._pm_wages = value;
-					this.SendPropertyChanged("pm_wages");
-					this.Onpm_wagesChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_pm_frieght", DbType="Decimal(18,3) NOT NULL")]
-		public decimal pm_frieght
-		{
-			get
-			{
-				return this._pm_frieght;
-			}
-			set
-			{
-				if ((this._pm_frieght != value))
-				{
-					this.Onpm_frieghtChanging(value);
-					this.SendPropertyChanging();
-					this._pm_frieght = value;
-					this.SendPropertyChanged("pm_frieght");
-					this.Onpm_frieghtChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_pm_totaltaxamount", DbType="Decimal(18,3) NOT NULL")]
-		public decimal pm_totaltaxamount
-		{
-			get
-			{
-				return this._pm_totaltaxamount;
-			}
-			set
-			{
-				if ((this._pm_totaltaxamount != value))
-				{
-					this.Onpm_totaltaxamountChanging(value);
-					this.SendPropertyChanging();
-					this._pm_totaltaxamount = value;
-					this.SendPropertyChanged("pm_totaltaxamount");
-					this.Onpm_totaltaxamountChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_pm_isimport", DbType="Bit")]
-		public System.Nullable<bool> pm_isimport
-		{
-			get
-			{
-				return this._pm_isimport;
-			}
-			set
-			{
-				if ((this._pm_isimport != value))
-				{
-					this.Onpm_isimportChanging(value);
-					this.SendPropertyChanging();
-					this._pm_isimport = value;
-					this.SendPropertyChanged("pm_isimport");
-					this.Onpm_isimportChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_pm_guid", DbType="UniqueIdentifier")]
-		public System.Nullable<System.Guid> pm_guid
-		{
-			get
-			{
-				return this._pm_guid;
-			}
-			set
-			{
-				if ((this._pm_guid != value))
-				{
-					this.Onpm_guidChanging(value);
-					this.SendPropertyChanging();
-					this._pm_guid = value;
-					this.SendPropertyChanged("pm_guid");
-					this.Onpm_guidChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="purchasemaster_purchasedetail", Storage="_purchasedetails", ThisKey="pm_id", OtherKey="pm_id")]
-		public EntitySet<purchasedetail> purchasedetails
-		{
-			get
-			{
-				return this._purchasedetails;
-			}
-			set
-			{
-				this._purchasedetails.Assign(value);
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="company_purchasemaster", Storage="_company", ThisKey="com_id", OtherKey="com_id", IsForeignKey=true)]
-		public company company
-		{
-			get
-			{
-				return this._company.Entity;
-			}
-			set
-			{
-				company previousValue = this._company.Entity;
-				if (((previousValue != value) 
-							|| (this._company.HasLoadedOrAssignedValue == false)))
-				{
-					this.SendPropertyChanging();
-					if ((previousValue != null))
-					{
-						this._company.Entity = null;
-						previousValue.purchasemasters.Remove(this);
-					}
-					this._company.Entity = value;
-					if ((value != null))
-					{
-						value.purchasemasters.Add(this);
-						this._com_id = value.com_id;
-					}
-					else
-					{
-						this._com_id = default(Nullable<long>);
-					}
-					this.SendPropertyChanged("company");
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="ledgermaster_purchasemaster", Storage="_ledgermaster", ThisKey="led_id", OtherKey="led_id", IsForeignKey=true)]
-		public ledgermaster ledgermaster
-		{
-			get
-			{
-				return this._ledgermaster.Entity;
-			}
-			set
-			{
-				ledgermaster previousValue = this._ledgermaster.Entity;
-				if (((previousValue != value) 
-							|| (this._ledgermaster.HasLoadedOrAssignedValue == false)))
-				{
-					this.SendPropertyChanging();
-					if ((previousValue != null))
-					{
-						this._ledgermaster.Entity = null;
-						previousValue.purchasemasters.Remove(this);
-					}
-					this._ledgermaster.Entity = value;
-					if ((value != null))
-					{
-						value.purchasemasters.Add(this);
-						this._led_id = value.led_id;
-					}
-					else
-					{
-						this._led_id = default(Nullable<long>);
-					}
-					this.SendPropertyChanged("ledgermaster");
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="user_purchasemaster", Storage="_user", ThisKey="users_uid", OtherKey="users_uid", IsForeignKey=true)]
-		public user user
-		{
-			get
-			{
-				return this._user.Entity;
-			}
-			set
-			{
-				user previousValue = this._user.Entity;
-				if (((previousValue != value) 
-							|| (this._user.HasLoadedOrAssignedValue == false)))
-				{
-					this.SendPropertyChanging();
-					if ((previousValue != null))
-					{
-						this._user.Entity = null;
-						previousValue.purchasemasters.Remove(this);
-					}
-					this._user.Entity = value;
-					if ((value != null))
-					{
-						value.purchasemasters.Add(this);
-						this._users_uid = value.users_uid;
-					}
-					else
-					{
-						this._users_uid = default(Nullable<long>);
-					}
-					this.SendPropertyChanged("user");
-				}
-			}
-		}
-		
-		public event PropertyChangingEventHandler PropertyChanging;
-		
-		public event PropertyChangedEventHandler PropertyChanged;
-		
-		protected virtual void SendPropertyChanging()
-		{
-			if ((this.PropertyChanging != null))
-			{
-				this.PropertyChanging(this, emptyChangingEventArgs);
-			}
-		}
-		
-		protected virtual void SendPropertyChanged(String propertyName)
-		{
-			if ((this.PropertyChanged != null))
-			{
-				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-			}
-		}
-		
-		private void attach_purchasedetails(purchasedetail entity)
+		private void attach_purchasemasters(purchasemaster entity)
 		{
 			this.SendPropertyChanging();
-			entity.purchasemaster = this;
+			entity.ledgermaster = this;
 		}
 		
-		private void detach_purchasedetails(purchasedetail entity)
+		private void detach_purchasemasters(purchasemaster entity)
 		{
 			this.SendPropertyChanging();
-			entity.purchasemaster = null;
+			entity.ledgermaster = null;
 		}
 	}
 	
@@ -11945,6 +11287,8 @@ namespace standard.classes
 		private System.Nullable<bool> _sm_isimport;
 		
 		private System.Nullable<System.Guid> _sm_guid;
+		
+		private System.Nullable<long> _sm_agid;
 		
 		private EntitySet<commissionreceipt> _commissionreceipts;
 		
@@ -12022,6 +11366,8 @@ namespace standard.classes
     partial void Onsm_isimportChanged();
     partial void Onsm_guidChanging(System.Nullable<System.Guid> value);
     partial void Onsm_guidChanged();
+    partial void Onsm_agidChanging(System.Nullable<long> value);
+    partial void Onsm_agidChanged();
     #endregion
 		
 		public salesmaster()
@@ -12647,6 +11993,26 @@ namespace standard.classes
 			}
 		}
 		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_sm_agid", DbType="BigInt")]
+		public System.Nullable<long> sm_agid
+		{
+			get
+			{
+				return this._sm_agid;
+			}
+			set
+			{
+				if ((this._sm_agid != value))
+				{
+					this.Onsm_agidChanging(value);
+					this.SendPropertyChanging();
+					this._sm_agid = value;
+					this.SendPropertyChanged("sm_agid");
+					this.Onsm_agidChanged();
+				}
+			}
+		}
+		
 		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="salesmaster_commissionreceipt", Storage="_commissionreceipts", ThisKey="sm_id", OtherKey="sm_id")]
 		public EntitySet<commissionreceipt> commissionreceipts
 		{
@@ -12842,6 +12208,699 @@ namespace standard.classes
 		{
 			this.SendPropertyChanging();
 			entity.salesmaster = null;
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.purchasemaster")]
+	public partial class purchasemaster : INotifyPropertyChanging, INotifyPropertyChanged
+	{
+		
+		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+		
+		private long _pm_id;
+		
+		private long _pm_no;
+		
+		private System.Nullable<System.DateTime> _pm_date;
+		
+		private System.Nullable<long> _led_id;
+		
+		private decimal _pm_totqty;
+		
+		private decimal _pm_totamount;
+		
+		private System.Nullable<bool> _pm_isclose;
+		
+		private System.Nullable<long> _com_id;
+		
+		private System.Nullable<long> _users_uid;
+		
+		private System.Nullable<System.DateTime> _pm_udate;
+		
+		private string _pm_desc;
+		
+		private decimal _pm_paid;
+		
+		private decimal _pm_discountpercentage;
+		
+		private decimal _pm_discountamount;
+		
+		private string _pm_billno;
+		
+		private decimal _pm_wages;
+		
+		private decimal _pm_frieght;
+		
+		private decimal _pm_totaltaxamount;
+		
+		private System.Nullable<bool> _pm_isimport;
+		
+		private System.Nullable<System.Guid> _pm_guid;
+		
+		private System.Nullable<long> _pm_agid;
+		
+		private EntitySet<purchasedetail> _purchasedetails;
+		
+		private EntityRef<company> _company;
+		
+		private EntityRef<ledgermaster> _ledgermaster;
+		
+		private EntityRef<user> _user;
+		
+    #region Extensibility Method Definitions
+    partial void OnLoaded();
+    partial void OnValidate(System.Data.Linq.ChangeAction action);
+    partial void OnCreated();
+    partial void Onpm_idChanging(long value);
+    partial void Onpm_idChanged();
+    partial void Onpm_noChanging(long value);
+    partial void Onpm_noChanged();
+    partial void Onpm_dateChanging(System.Nullable<System.DateTime> value);
+    partial void Onpm_dateChanged();
+    partial void Onled_idChanging(System.Nullable<long> value);
+    partial void Onled_idChanged();
+    partial void Onpm_totqtyChanging(decimal value);
+    partial void Onpm_totqtyChanged();
+    partial void Onpm_totamountChanging(decimal value);
+    partial void Onpm_totamountChanged();
+    partial void Onpm_iscloseChanging(System.Nullable<bool> value);
+    partial void Onpm_iscloseChanged();
+    partial void Oncom_idChanging(System.Nullable<long> value);
+    partial void Oncom_idChanged();
+    partial void Onusers_uidChanging(System.Nullable<long> value);
+    partial void Onusers_uidChanged();
+    partial void Onpm_udateChanging(System.Nullable<System.DateTime> value);
+    partial void Onpm_udateChanged();
+    partial void Onpm_descChanging(string value);
+    partial void Onpm_descChanged();
+    partial void Onpm_paidChanging(decimal value);
+    partial void Onpm_paidChanged();
+    partial void Onpm_discountpercentageChanging(decimal value);
+    partial void Onpm_discountpercentageChanged();
+    partial void Onpm_discountamountChanging(decimal value);
+    partial void Onpm_discountamountChanged();
+    partial void Onpm_billnoChanging(string value);
+    partial void Onpm_billnoChanged();
+    partial void Onpm_wagesChanging(decimal value);
+    partial void Onpm_wagesChanged();
+    partial void Onpm_frieghtChanging(decimal value);
+    partial void Onpm_frieghtChanged();
+    partial void Onpm_totaltaxamountChanging(decimal value);
+    partial void Onpm_totaltaxamountChanged();
+    partial void Onpm_isimportChanging(System.Nullable<bool> value);
+    partial void Onpm_isimportChanged();
+    partial void Onpm_guidChanging(System.Nullable<System.Guid> value);
+    partial void Onpm_guidChanged();
+    partial void Onpm_agidChanging(System.Nullable<long> value);
+    partial void Onpm_agidChanged();
+    #endregion
+		
+		public purchasemaster()
+		{
+			this._purchasedetails = new EntitySet<purchasedetail>(new Action<purchasedetail>(this.attach_purchasedetails), new Action<purchasedetail>(this.detach_purchasedetails));
+			this._company = default(EntityRef<company>);
+			this._ledgermaster = default(EntityRef<ledgermaster>);
+			this._user = default(EntityRef<user>);
+			OnCreated();
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_pm_id", AutoSync=AutoSync.OnInsert, DbType="BigInt NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
+		public long pm_id
+		{
+			get
+			{
+				return this._pm_id;
+			}
+			set
+			{
+				if ((this._pm_id != value))
+				{
+					this.Onpm_idChanging(value);
+					this.SendPropertyChanging();
+					this._pm_id = value;
+					this.SendPropertyChanged("pm_id");
+					this.Onpm_idChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_pm_no", DbType="BigInt NOT NULL")]
+		public long pm_no
+		{
+			get
+			{
+				return this._pm_no;
+			}
+			set
+			{
+				if ((this._pm_no != value))
+				{
+					this.Onpm_noChanging(value);
+					this.SendPropertyChanging();
+					this._pm_no = value;
+					this.SendPropertyChanged("pm_no");
+					this.Onpm_noChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_pm_date", DbType="DateTime")]
+		public System.Nullable<System.DateTime> pm_date
+		{
+			get
+			{
+				return this._pm_date;
+			}
+			set
+			{
+				if ((this._pm_date != value))
+				{
+					this.Onpm_dateChanging(value);
+					this.SendPropertyChanging();
+					this._pm_date = value;
+					this.SendPropertyChanged("pm_date");
+					this.Onpm_dateChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_led_id", DbType="BigInt")]
+		public System.Nullable<long> led_id
+		{
+			get
+			{
+				return this._led_id;
+			}
+			set
+			{
+				if ((this._led_id != value))
+				{
+					if (this._ledgermaster.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.Onled_idChanging(value);
+					this.SendPropertyChanging();
+					this._led_id = value;
+					this.SendPropertyChanged("led_id");
+					this.Onled_idChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_pm_totqty", DbType="Decimal(18,3) NOT NULL")]
+		public decimal pm_totqty
+		{
+			get
+			{
+				return this._pm_totqty;
+			}
+			set
+			{
+				if ((this._pm_totqty != value))
+				{
+					this.Onpm_totqtyChanging(value);
+					this.SendPropertyChanging();
+					this._pm_totqty = value;
+					this.SendPropertyChanged("pm_totqty");
+					this.Onpm_totqtyChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_pm_totamount", DbType="Decimal(18,3) NOT NULL")]
+		public decimal pm_totamount
+		{
+			get
+			{
+				return this._pm_totamount;
+			}
+			set
+			{
+				if ((this._pm_totamount != value))
+				{
+					this.Onpm_totamountChanging(value);
+					this.SendPropertyChanging();
+					this._pm_totamount = value;
+					this.SendPropertyChanged("pm_totamount");
+					this.Onpm_totamountChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_pm_isclose", DbType="Bit")]
+		public System.Nullable<bool> pm_isclose
+		{
+			get
+			{
+				return this._pm_isclose;
+			}
+			set
+			{
+				if ((this._pm_isclose != value))
+				{
+					this.Onpm_iscloseChanging(value);
+					this.SendPropertyChanging();
+					this._pm_isclose = value;
+					this.SendPropertyChanged("pm_isclose");
+					this.Onpm_iscloseChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_com_id", DbType="BigInt")]
+		public System.Nullable<long> com_id
+		{
+			get
+			{
+				return this._com_id;
+			}
+			set
+			{
+				if ((this._com_id != value))
+				{
+					if (this._company.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.Oncom_idChanging(value);
+					this.SendPropertyChanging();
+					this._com_id = value;
+					this.SendPropertyChanged("com_id");
+					this.Oncom_idChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_users_uid", DbType="BigInt")]
+		public System.Nullable<long> users_uid
+		{
+			get
+			{
+				return this._users_uid;
+			}
+			set
+			{
+				if ((this._users_uid != value))
+				{
+					if (this._user.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.Onusers_uidChanging(value);
+					this.SendPropertyChanging();
+					this._users_uid = value;
+					this.SendPropertyChanged("users_uid");
+					this.Onusers_uidChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_pm_udate", DbType="DateTime")]
+		public System.Nullable<System.DateTime> pm_udate
+		{
+			get
+			{
+				return this._pm_udate;
+			}
+			set
+			{
+				if ((this._pm_udate != value))
+				{
+					this.Onpm_udateChanging(value);
+					this.SendPropertyChanging();
+					this._pm_udate = value;
+					this.SendPropertyChanged("pm_udate");
+					this.Onpm_udateChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_pm_desc", DbType="NVarChar(50)")]
+		public string pm_desc
+		{
+			get
+			{
+				return this._pm_desc;
+			}
+			set
+			{
+				if ((this._pm_desc != value))
+				{
+					this.Onpm_descChanging(value);
+					this.SendPropertyChanging();
+					this._pm_desc = value;
+					this.SendPropertyChanged("pm_desc");
+					this.Onpm_descChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_pm_paid", DbType="Decimal(18,3) NOT NULL")]
+		public decimal pm_paid
+		{
+			get
+			{
+				return this._pm_paid;
+			}
+			set
+			{
+				if ((this._pm_paid != value))
+				{
+					this.Onpm_paidChanging(value);
+					this.SendPropertyChanging();
+					this._pm_paid = value;
+					this.SendPropertyChanged("pm_paid");
+					this.Onpm_paidChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_pm_discountpercentage", DbType="Decimal(18,3) NOT NULL")]
+		public decimal pm_discountpercentage
+		{
+			get
+			{
+				return this._pm_discountpercentage;
+			}
+			set
+			{
+				if ((this._pm_discountpercentage != value))
+				{
+					this.Onpm_discountpercentageChanging(value);
+					this.SendPropertyChanging();
+					this._pm_discountpercentage = value;
+					this.SendPropertyChanged("pm_discountpercentage");
+					this.Onpm_discountpercentageChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_pm_discountamount", DbType="Decimal(18,3) NOT NULL")]
+		public decimal pm_discountamount
+		{
+			get
+			{
+				return this._pm_discountamount;
+			}
+			set
+			{
+				if ((this._pm_discountamount != value))
+				{
+					this.Onpm_discountamountChanging(value);
+					this.SendPropertyChanging();
+					this._pm_discountamount = value;
+					this.SendPropertyChanged("pm_discountamount");
+					this.Onpm_discountamountChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_pm_billno", DbType="NVarChar(100) NOT NULL", CanBeNull=false)]
+		public string pm_billno
+		{
+			get
+			{
+				return this._pm_billno;
+			}
+			set
+			{
+				if ((this._pm_billno != value))
+				{
+					this.Onpm_billnoChanging(value);
+					this.SendPropertyChanging();
+					this._pm_billno = value;
+					this.SendPropertyChanged("pm_billno");
+					this.Onpm_billnoChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_pm_wages", DbType="Decimal(18,3) NOT NULL")]
+		public decimal pm_wages
+		{
+			get
+			{
+				return this._pm_wages;
+			}
+			set
+			{
+				if ((this._pm_wages != value))
+				{
+					this.Onpm_wagesChanging(value);
+					this.SendPropertyChanging();
+					this._pm_wages = value;
+					this.SendPropertyChanged("pm_wages");
+					this.Onpm_wagesChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_pm_frieght", DbType="Decimal(18,3) NOT NULL")]
+		public decimal pm_frieght
+		{
+			get
+			{
+				return this._pm_frieght;
+			}
+			set
+			{
+				if ((this._pm_frieght != value))
+				{
+					this.Onpm_frieghtChanging(value);
+					this.SendPropertyChanging();
+					this._pm_frieght = value;
+					this.SendPropertyChanged("pm_frieght");
+					this.Onpm_frieghtChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_pm_totaltaxamount", DbType="Decimal(18,3) NOT NULL")]
+		public decimal pm_totaltaxamount
+		{
+			get
+			{
+				return this._pm_totaltaxamount;
+			}
+			set
+			{
+				if ((this._pm_totaltaxamount != value))
+				{
+					this.Onpm_totaltaxamountChanging(value);
+					this.SendPropertyChanging();
+					this._pm_totaltaxamount = value;
+					this.SendPropertyChanged("pm_totaltaxamount");
+					this.Onpm_totaltaxamountChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_pm_isimport", DbType="Bit")]
+		public System.Nullable<bool> pm_isimport
+		{
+			get
+			{
+				return this._pm_isimport;
+			}
+			set
+			{
+				if ((this._pm_isimport != value))
+				{
+					this.Onpm_isimportChanging(value);
+					this.SendPropertyChanging();
+					this._pm_isimport = value;
+					this.SendPropertyChanged("pm_isimport");
+					this.Onpm_isimportChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_pm_guid", DbType="UniqueIdentifier")]
+		public System.Nullable<System.Guid> pm_guid
+		{
+			get
+			{
+				return this._pm_guid;
+			}
+			set
+			{
+				if ((this._pm_guid != value))
+				{
+					this.Onpm_guidChanging(value);
+					this.SendPropertyChanging();
+					this._pm_guid = value;
+					this.SendPropertyChanged("pm_guid");
+					this.Onpm_guidChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_pm_agid", DbType="BigInt")]
+		public System.Nullable<long> pm_agid
+		{
+			get
+			{
+				return this._pm_agid;
+			}
+			set
+			{
+				if ((this._pm_agid != value))
+				{
+					this.Onpm_agidChanging(value);
+					this.SendPropertyChanging();
+					this._pm_agid = value;
+					this.SendPropertyChanged("pm_agid");
+					this.Onpm_agidChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="purchasemaster_purchasedetail", Storage="_purchasedetails", ThisKey="pm_id", OtherKey="pm_id")]
+		public EntitySet<purchasedetail> purchasedetails
+		{
+			get
+			{
+				return this._purchasedetails;
+			}
+			set
+			{
+				this._purchasedetails.Assign(value);
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="company_purchasemaster", Storage="_company", ThisKey="com_id", OtherKey="com_id", IsForeignKey=true)]
+		public company company
+		{
+			get
+			{
+				return this._company.Entity;
+			}
+			set
+			{
+				company previousValue = this._company.Entity;
+				if (((previousValue != value) 
+							|| (this._company.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._company.Entity = null;
+						previousValue.purchasemasters.Remove(this);
+					}
+					this._company.Entity = value;
+					if ((value != null))
+					{
+						value.purchasemasters.Add(this);
+						this._com_id = value.com_id;
+					}
+					else
+					{
+						this._com_id = default(Nullable<long>);
+					}
+					this.SendPropertyChanged("company");
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="ledgermaster_purchasemaster", Storage="_ledgermaster", ThisKey="led_id", OtherKey="led_id", IsForeignKey=true)]
+		public ledgermaster ledgermaster
+		{
+			get
+			{
+				return this._ledgermaster.Entity;
+			}
+			set
+			{
+				ledgermaster previousValue = this._ledgermaster.Entity;
+				if (((previousValue != value) 
+							|| (this._ledgermaster.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._ledgermaster.Entity = null;
+						previousValue.purchasemasters.Remove(this);
+					}
+					this._ledgermaster.Entity = value;
+					if ((value != null))
+					{
+						value.purchasemasters.Add(this);
+						this._led_id = value.led_id;
+					}
+					else
+					{
+						this._led_id = default(Nullable<long>);
+					}
+					this.SendPropertyChanged("ledgermaster");
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="user_purchasemaster", Storage="_user", ThisKey="users_uid", OtherKey="users_uid", IsForeignKey=true)]
+		public user user
+		{
+			get
+			{
+				return this._user.Entity;
+			}
+			set
+			{
+				user previousValue = this._user.Entity;
+				if (((previousValue != value) 
+							|| (this._user.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._user.Entity = null;
+						previousValue.purchasemasters.Remove(this);
+					}
+					this._user.Entity = value;
+					if ((value != null))
+					{
+						value.purchasemasters.Add(this);
+						this._users_uid = value.users_uid;
+					}
+					else
+					{
+						this._users_uid = default(Nullable<long>);
+					}
+					this.SendPropertyChanged("user");
+				}
+			}
+		}
+		
+		public event PropertyChangingEventHandler PropertyChanging;
+		
+		public event PropertyChangedEventHandler PropertyChanged;
+		
+		protected virtual void SendPropertyChanging()
+		{
+			if ((this.PropertyChanging != null))
+			{
+				this.PropertyChanging(this, emptyChangingEventArgs);
+			}
+		}
+		
+		protected virtual void SendPropertyChanged(String propertyName)
+		{
+			if ((this.PropertyChanged != null))
+			{
+				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+			}
+		}
+		
+		private void attach_purchasedetails(purchasedetail entity)
+		{
+			this.SendPropertyChanging();
+			entity.purchasemaster = this;
+		}
+		
+		private void detach_purchasedetails(purchasedetail entity)
+		{
+			this.SendPropertyChanging();
+			entity.purchasemaster = null;
 		}
 	}
 	
@@ -26125,770 +26184,6 @@ namespace standard.classes
 		}
 	}
 	
-	public partial class usp_salesorderdetailsSelectResult
-	{
-		
-		private long _od_id;
-		
-		private long _so_id;
-		
-		private long _so_refno;
-		
-		private System.Nullable<System.DateTime> _so_date;
-		
-		private decimal _so_totqty;
-		
-		private string _led_name;
-		
-		private string _led_ratetype;
-		
-		private long _led_id;
-		
-		private bool _led_isfreight;
-		
-		private string _led_address;
-		
-		private string _led_address1;
-		
-		private string _led_address2;
-		
-		private long _cat_id;
-		
-		private string _cat_name;
-		
-		private long _item_id;
-		
-		private string _item_tamilname;
-		
-		private bool _od_istaxable;
-		
-		private decimal _item_perunitrate;
-		
-		private decimal _item_perunitrateb;
-		
-		private decimal _item_perunitratec;
-		
-		private long _com_id;
-		
-		private string _item_code;
-		
-		private string _item_name;
-		
-		private string _item_unit;
-		
-		private string _item_unittype;
-		
-		private int _item_quantity;
-		
-		private decimal _item_purchaserate;
-		
-		private decimal _item_costrate;
-		
-		private decimal _item_mrp;
-		
-		private decimal _item_specialrate;
-		
-		private decimal _item_supersepecialrate;
-		
-		private decimal _item_wholesalerate;
-		
-		private decimal _od_qty;
-		
-		private decimal _od_soldqty;
-		
-		private decimal _od_pendingqty;
-		
-		private System.Nullable<long> _com_id1;
-		
-		private decimal _item_taxpercentage;
-		
-		private bool _item_istaxable;
-		
-		private string _led_ratetype1;
-		
-		private decimal _item_perunitrate1;
-		
-		private decimal _od_rate;
-		
-		private decimal _od_unitvalue;
-		
-		public usp_salesorderdetailsSelectResult()
-		{
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_od_id", DbType="BigInt NOT NULL")]
-		public long od_id
-		{
-			get
-			{
-				return this._od_id;
-			}
-			set
-			{
-				if ((this._od_id != value))
-				{
-					this._od_id = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_so_id", DbType="BigInt NOT NULL")]
-		public long so_id
-		{
-			get
-			{
-				return this._so_id;
-			}
-			set
-			{
-				if ((this._so_id != value))
-				{
-					this._so_id = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_so_refno", DbType="BigInt NOT NULL")]
-		public long so_refno
-		{
-			get
-			{
-				return this._so_refno;
-			}
-			set
-			{
-				if ((this._so_refno != value))
-				{
-					this._so_refno = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_so_date", DbType="DateTime")]
-		public System.Nullable<System.DateTime> so_date
-		{
-			get
-			{
-				return this._so_date;
-			}
-			set
-			{
-				if ((this._so_date != value))
-				{
-					this._so_date = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_so_totqty", DbType="Decimal(18,3) NOT NULL")]
-		public decimal so_totqty
-		{
-			get
-			{
-				return this._so_totqty;
-			}
-			set
-			{
-				if ((this._so_totqty != value))
-				{
-					this._so_totqty = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_led_name", DbType="NVarChar(100) NOT NULL", CanBeNull=false)]
-		public string led_name
-		{
-			get
-			{
-				return this._led_name;
-			}
-			set
-			{
-				if ((this._led_name != value))
-				{
-					this._led_name = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_led_ratetype", DbType="NVarChar(100) NOT NULL", CanBeNull=false)]
-		public string led_ratetype
-		{
-			get
-			{
-				return this._led_ratetype;
-			}
-			set
-			{
-				if ((this._led_ratetype != value))
-				{
-					this._led_ratetype = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_led_id", DbType="BigInt NOT NULL")]
-		public long led_id
-		{
-			get
-			{
-				return this._led_id;
-			}
-			set
-			{
-				if ((this._led_id != value))
-				{
-					this._led_id = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_led_isfreight", DbType="Bit NOT NULL")]
-		public bool led_isfreight
-		{
-			get
-			{
-				return this._led_isfreight;
-			}
-			set
-			{
-				if ((this._led_isfreight != value))
-				{
-					this._led_isfreight = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_led_address", DbType="NVarChar(100) NOT NULL", CanBeNull=false)]
-		public string led_address
-		{
-			get
-			{
-				return this._led_address;
-			}
-			set
-			{
-				if ((this._led_address != value))
-				{
-					this._led_address = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_led_address1", DbType="NVarChar(100) NOT NULL", CanBeNull=false)]
-		public string led_address1
-		{
-			get
-			{
-				return this._led_address1;
-			}
-			set
-			{
-				if ((this._led_address1 != value))
-				{
-					this._led_address1 = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_led_address2", DbType="NVarChar(100) NOT NULL", CanBeNull=false)]
-		public string led_address2
-		{
-			get
-			{
-				return this._led_address2;
-			}
-			set
-			{
-				if ((this._led_address2 != value))
-				{
-					this._led_address2 = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_cat_id", DbType="BigInt NOT NULL")]
-		public long cat_id
-		{
-			get
-			{
-				return this._cat_id;
-			}
-			set
-			{
-				if ((this._cat_id != value))
-				{
-					this._cat_id = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_cat_name", DbType="NVarChar(100) NOT NULL", CanBeNull=false)]
-		public string cat_name
-		{
-			get
-			{
-				return this._cat_name;
-			}
-			set
-			{
-				if ((this._cat_name != value))
-				{
-					this._cat_name = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_item_id", DbType="BigInt NOT NULL")]
-		public long item_id
-		{
-			get
-			{
-				return this._item_id;
-			}
-			set
-			{
-				if ((this._item_id != value))
-				{
-					this._item_id = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_item_tamilname", DbType="NVarChar(100) NOT NULL", CanBeNull=false)]
-		public string item_tamilname
-		{
-			get
-			{
-				return this._item_tamilname;
-			}
-			set
-			{
-				if ((this._item_tamilname != value))
-				{
-					this._item_tamilname = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_od_istaxable", DbType="Bit NOT NULL")]
-		public bool od_istaxable
-		{
-			get
-			{
-				return this._od_istaxable;
-			}
-			set
-			{
-				if ((this._od_istaxable != value))
-				{
-					this._od_istaxable = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_item_perunitrate", DbType="Decimal(18,3) NOT NULL")]
-		public decimal item_perunitrate
-		{
-			get
-			{
-				return this._item_perunitrate;
-			}
-			set
-			{
-				if ((this._item_perunitrate != value))
-				{
-					this._item_perunitrate = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_item_perunitrateb", DbType="Decimal(18,3) NOT NULL")]
-		public decimal item_perunitrateb
-		{
-			get
-			{
-				return this._item_perunitrateb;
-			}
-			set
-			{
-				if ((this._item_perunitrateb != value))
-				{
-					this._item_perunitrateb = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_item_perunitratec", DbType="Decimal(18,3) NOT NULL")]
-		public decimal item_perunitratec
-		{
-			get
-			{
-				return this._item_perunitratec;
-			}
-			set
-			{
-				if ((this._item_perunitratec != value))
-				{
-					this._item_perunitratec = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_com_id", DbType="BigInt NOT NULL")]
-		public long com_id
-		{
-			get
-			{
-				return this._com_id;
-			}
-			set
-			{
-				if ((this._com_id != value))
-				{
-					this._com_id = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_item_code", DbType="NVarChar(100) NOT NULL", CanBeNull=false)]
-		public string item_code
-		{
-			get
-			{
-				return this._item_code;
-			}
-			set
-			{
-				if ((this._item_code != value))
-				{
-					this._item_code = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_item_name", DbType="NVarChar(100) NOT NULL", CanBeNull=false)]
-		public string item_name
-		{
-			get
-			{
-				return this._item_name;
-			}
-			set
-			{
-				if ((this._item_name != value))
-				{
-					this._item_name = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_item_unit", DbType="NVarChar(100) NOT NULL", CanBeNull=false)]
-		public string item_unit
-		{
-			get
-			{
-				return this._item_unit;
-			}
-			set
-			{
-				if ((this._item_unit != value))
-				{
-					this._item_unit = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_item_unittype", DbType="NVarChar(100) NOT NULL", CanBeNull=false)]
-		public string item_unittype
-		{
-			get
-			{
-				return this._item_unittype;
-			}
-			set
-			{
-				if ((this._item_unittype != value))
-				{
-					this._item_unittype = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_item_quantity", DbType="Int NOT NULL")]
-		public int item_quantity
-		{
-			get
-			{
-				return this._item_quantity;
-			}
-			set
-			{
-				if ((this._item_quantity != value))
-				{
-					this._item_quantity = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_item_purchaserate", DbType="Decimal(18,3) NOT NULL")]
-		public decimal item_purchaserate
-		{
-			get
-			{
-				return this._item_purchaserate;
-			}
-			set
-			{
-				if ((this._item_purchaserate != value))
-				{
-					this._item_purchaserate = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_item_costrate", DbType="Decimal(18,3) NOT NULL")]
-		public decimal item_costrate
-		{
-			get
-			{
-				return this._item_costrate;
-			}
-			set
-			{
-				if ((this._item_costrate != value))
-				{
-					this._item_costrate = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_item_mrp", DbType="Decimal(18,3) NOT NULL")]
-		public decimal item_mrp
-		{
-			get
-			{
-				return this._item_mrp;
-			}
-			set
-			{
-				if ((this._item_mrp != value))
-				{
-					this._item_mrp = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_item_specialrate", DbType="Decimal(18,3) NOT NULL")]
-		public decimal item_specialrate
-		{
-			get
-			{
-				return this._item_specialrate;
-			}
-			set
-			{
-				if ((this._item_specialrate != value))
-				{
-					this._item_specialrate = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_item_supersepecialrate", DbType="Decimal(18,3) NOT NULL")]
-		public decimal item_supersepecialrate
-		{
-			get
-			{
-				return this._item_supersepecialrate;
-			}
-			set
-			{
-				if ((this._item_supersepecialrate != value))
-				{
-					this._item_supersepecialrate = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_item_wholesalerate", DbType="Decimal(18,3) NOT NULL")]
-		public decimal item_wholesalerate
-		{
-			get
-			{
-				return this._item_wholesalerate;
-			}
-			set
-			{
-				if ((this._item_wholesalerate != value))
-				{
-					this._item_wholesalerate = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_od_qty", DbType="Decimal(18,3) NOT NULL")]
-		public decimal od_qty
-		{
-			get
-			{
-				return this._od_qty;
-			}
-			set
-			{
-				if ((this._od_qty != value))
-				{
-					this._od_qty = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_od_soldqty", DbType="Decimal(18,3) NOT NULL")]
-		public decimal od_soldqty
-		{
-			get
-			{
-				return this._od_soldqty;
-			}
-			set
-			{
-				if ((this._od_soldqty != value))
-				{
-					this._od_soldqty = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_od_pendingqty", DbType="Decimal(18,3) NOT NULL")]
-		public decimal od_pendingqty
-		{
-			get
-			{
-				return this._od_pendingqty;
-			}
-			set
-			{
-				if ((this._od_pendingqty != value))
-				{
-					this._od_pendingqty = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_com_id1", DbType="BigInt")]
-		public System.Nullable<long> com_id1
-		{
-			get
-			{
-				return this._com_id1;
-			}
-			set
-			{
-				if ((this._com_id1 != value))
-				{
-					this._com_id1 = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_item_taxpercentage", DbType="Decimal(18,3) NOT NULL")]
-		public decimal item_taxpercentage
-		{
-			get
-			{
-				return this._item_taxpercentage;
-			}
-			set
-			{
-				if ((this._item_taxpercentage != value))
-				{
-					this._item_taxpercentage = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_item_istaxable", DbType="Bit NOT NULL")]
-		public bool item_istaxable
-		{
-			get
-			{
-				return this._item_istaxable;
-			}
-			set
-			{
-				if ((this._item_istaxable != value))
-				{
-					this._item_istaxable = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_led_ratetype1", DbType="NVarChar(100) NOT NULL", CanBeNull=false)]
-		public string led_ratetype1
-		{
-			get
-			{
-				return this._led_ratetype1;
-			}
-			set
-			{
-				if ((this._led_ratetype1 != value))
-				{
-					this._led_ratetype1 = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_item_perunitrate1", DbType="Decimal(18,3) NOT NULL")]
-		public decimal item_perunitrate1
-		{
-			get
-			{
-				return this._item_perunitrate1;
-			}
-			set
-			{
-				if ((this._item_perunitrate1 != value))
-				{
-					this._item_perunitrate1 = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_od_rate", DbType="Decimal(18,3) NOT NULL")]
-		public decimal od_rate
-		{
-			get
-			{
-				return this._od_rate;
-			}
-			set
-			{
-				if ((this._od_rate != value))
-				{
-					this._od_rate = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_od_unitvalue", DbType="Decimal(18,3) NOT NULL")]
-		public decimal od_unitvalue
-		{
-			get
-			{
-				return this._od_unitvalue;
-			}
-			set
-			{
-				if ((this._od_unitvalue != value))
-				{
-					this._od_unitvalue = value;
-				}
-			}
-		}
-	}
-	
 	public partial class usp_salesdetailsSelectResult
 	{
 		
@@ -27980,428 +27275,6 @@ namespace standard.classes
 				if ((this._pd_taxamount != value))
 				{
 					this._pd_taxamount = value;
-				}
-			}
-		}
-	}
-	
-	public partial class usp_purchasedetailsSelectResult
-	{
-		
-		private long _pd_id;
-		
-		private System.Nullable<long> _pm_id;
-		
-		private long _pm_no;
-		
-		private decimal _pm_totamount;
-		
-		private decimal _pm_totqty;
-		
-		private System.Nullable<System.DateTime> _pm_date;
-		
-		private System.Nullable<long> _item_id;
-		
-		private string _item_name;
-		
-		private System.Nullable<long> _cat_id;
-		
-		private string _cat_name;
-		
-		private string _pd_particulars;
-		
-		private decimal _pd_qty;
-		
-		private decimal _pd_unitvalue;
-		
-		private decimal _pd_prate;
-		
-		private decimal _pd_amount;
-		
-		private decimal _pd_totfrieght;
-		
-		private decimal _pd_taxpercentage;
-		
-		private decimal _pd_taxamount;
-		
-		private string _item_unit;
-		
-		private int _item_quantity;
-		
-		private string _item_fullname;
-		
-		private bool _item_istaxable;
-		
-		private string _item_hsncode;
-		
-		public usp_purchasedetailsSelectResult()
-		{
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_pd_id", DbType="BigInt NOT NULL")]
-		public long pd_id
-		{
-			get
-			{
-				return this._pd_id;
-			}
-			set
-			{
-				if ((this._pd_id != value))
-				{
-					this._pd_id = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_pm_id", DbType="BigInt")]
-		public System.Nullable<long> pm_id
-		{
-			get
-			{
-				return this._pm_id;
-			}
-			set
-			{
-				if ((this._pm_id != value))
-				{
-					this._pm_id = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_pm_no", DbType="BigInt NOT NULL")]
-		public long pm_no
-		{
-			get
-			{
-				return this._pm_no;
-			}
-			set
-			{
-				if ((this._pm_no != value))
-				{
-					this._pm_no = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_pm_totamount", DbType="Decimal(18,3) NOT NULL")]
-		public decimal pm_totamount
-		{
-			get
-			{
-				return this._pm_totamount;
-			}
-			set
-			{
-				if ((this._pm_totamount != value))
-				{
-					this._pm_totamount = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_pm_totqty", DbType="Decimal(18,3) NOT NULL")]
-		public decimal pm_totqty
-		{
-			get
-			{
-				return this._pm_totqty;
-			}
-			set
-			{
-				if ((this._pm_totqty != value))
-				{
-					this._pm_totqty = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_pm_date", DbType="DateTime")]
-		public System.Nullable<System.DateTime> pm_date
-		{
-			get
-			{
-				return this._pm_date;
-			}
-			set
-			{
-				if ((this._pm_date != value))
-				{
-					this._pm_date = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_item_id", DbType="BigInt")]
-		public System.Nullable<long> item_id
-		{
-			get
-			{
-				return this._item_id;
-			}
-			set
-			{
-				if ((this._item_id != value))
-				{
-					this._item_id = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_item_name", DbType="NVarChar(100) NOT NULL", CanBeNull=false)]
-		public string item_name
-		{
-			get
-			{
-				return this._item_name;
-			}
-			set
-			{
-				if ((this._item_name != value))
-				{
-					this._item_name = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_cat_id", DbType="BigInt")]
-		public System.Nullable<long> cat_id
-		{
-			get
-			{
-				return this._cat_id;
-			}
-			set
-			{
-				if ((this._cat_id != value))
-				{
-					this._cat_id = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_cat_name", DbType="NVarChar(100) NOT NULL", CanBeNull=false)]
-		public string cat_name
-		{
-			get
-			{
-				return this._cat_name;
-			}
-			set
-			{
-				if ((this._cat_name != value))
-				{
-					this._cat_name = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_pd_particulars", DbType="NVarChar(100) NOT NULL", CanBeNull=false)]
-		public string pd_particulars
-		{
-			get
-			{
-				return this._pd_particulars;
-			}
-			set
-			{
-				if ((this._pd_particulars != value))
-				{
-					this._pd_particulars = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_pd_qty", DbType="Decimal(18,3) NOT NULL")]
-		public decimal pd_qty
-		{
-			get
-			{
-				return this._pd_qty;
-			}
-			set
-			{
-				if ((this._pd_qty != value))
-				{
-					this._pd_qty = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_pd_unitvalue", DbType="Decimal(18,3) NOT NULL")]
-		public decimal pd_unitvalue
-		{
-			get
-			{
-				return this._pd_unitvalue;
-			}
-			set
-			{
-				if ((this._pd_unitvalue != value))
-				{
-					this._pd_unitvalue = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_pd_prate", DbType="Decimal(18,3) NOT NULL")]
-		public decimal pd_prate
-		{
-			get
-			{
-				return this._pd_prate;
-			}
-			set
-			{
-				if ((this._pd_prate != value))
-				{
-					this._pd_prate = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_pd_amount", DbType="Decimal(18,3) NOT NULL")]
-		public decimal pd_amount
-		{
-			get
-			{
-				return this._pd_amount;
-			}
-			set
-			{
-				if ((this._pd_amount != value))
-				{
-					this._pd_amount = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_pd_totfrieght", DbType="Decimal(18,3) NOT NULL")]
-		public decimal pd_totfrieght
-		{
-			get
-			{
-				return this._pd_totfrieght;
-			}
-			set
-			{
-				if ((this._pd_totfrieght != value))
-				{
-					this._pd_totfrieght = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_pd_taxpercentage", DbType="Decimal(18,3) NOT NULL")]
-		public decimal pd_taxpercentage
-		{
-			get
-			{
-				return this._pd_taxpercentage;
-			}
-			set
-			{
-				if ((this._pd_taxpercentage != value))
-				{
-					this._pd_taxpercentage = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_pd_taxamount", DbType="Decimal(18,3) NOT NULL")]
-		public decimal pd_taxamount
-		{
-			get
-			{
-				return this._pd_taxamount;
-			}
-			set
-			{
-				if ((this._pd_taxamount != value))
-				{
-					this._pd_taxamount = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_item_unit", DbType="NVarChar(100) NOT NULL", CanBeNull=false)]
-		public string item_unit
-		{
-			get
-			{
-				return this._item_unit;
-			}
-			set
-			{
-				if ((this._item_unit != value))
-				{
-					this._item_unit = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_item_quantity", DbType="Int NOT NULL")]
-		public int item_quantity
-		{
-			get
-			{
-				return this._item_quantity;
-			}
-			set
-			{
-				if ((this._item_quantity != value))
-				{
-					this._item_quantity = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_item_fullname", DbType="NVarChar(100) NOT NULL", CanBeNull=false)]
-		public string item_fullname
-		{
-			get
-			{
-				return this._item_fullname;
-			}
-			set
-			{
-				if ((this._item_fullname != value))
-				{
-					this._item_fullname = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_item_istaxable", DbType="Bit NOT NULL")]
-		public bool item_istaxable
-		{
-			get
-			{
-				return this._item_istaxable;
-			}
-			set
-			{
-				if ((this._item_istaxable != value))
-				{
-					this._item_istaxable = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_item_hsncode", DbType="NVarChar(100) NOT NULL", CanBeNull=false)]
-		public string item_hsncode
-		{
-			get
-			{
-				return this._item_hsncode;
-			}
-			set
-			{
-				if ((this._item_hsncode != value))
-				{
-					this._item_hsncode = value;
 				}
 			}
 		}
@@ -30694,6 +29567,8 @@ namespace standard.classes
 		
 		private System.Nullable<bool> _pm_isimport;
 		
+		private System.Nullable<long> _pm_agid;
+		
 		public usp_purchasemasterInsertResult()
 		{
 		}
@@ -31001,1449 +29876,19 @@ namespace standard.classes
 				}
 			}
 		}
-	}
-	
-	public partial class usp_salesmasterInsertResult
-	{
 		
-		private long _sm_id;
-		
-		private string _sm_bookno;
-		
-		private long _sm_refno;
-		
-		private System.Nullable<System.DateTime> _sm_date;
-		
-		private System.Nullable<long> _led_id;
-		
-		private decimal _sm_totqty;
-		
-		private decimal _sm_totamount;
-		
-		private System.Nullable<long> _sm_itemcount;
-		
-		private decimal _sm_profit;
-		
-		private decimal _sm_disamount;
-		
-		private decimal _sm_packingcharge;
-		
-		private decimal _sm_netamount;
-		
-		private decimal _sm_received;
-		
-		private decimal _sm_paidcommission;
-		
-		private decimal _sm_paidpacking;
-		
-		private System.Nullable<bool> _sm_iscommissionclose;
-		
-		private System.Nullable<bool> _sm_ispackingclose;
-		
-		private System.Nullable<long> _users_uid;
-		
-		private System.Nullable<System.DateTime> _sm_udate;
-		
-		private string _sm_desc;
-		
-		private System.Nullable<bool> _sm_isclose;
-		
-		private decimal _sm_taxamount;
-		
-		private decimal _sm_taxpercentage;
-		
-		private System.Nullable<decimal> _sm_roundamount;
-		
-		private System.Nullable<long> _so_id;
-		
-		private System.Nullable<bool> _sm_isdraft;
-		
-		private System.Nullable<long> _com_id;
-		
-		private bool _sm_istaxable;
-		
-		private System.Nullable<bool> _sm_isimport;
-		
-		public usp_salesmasterInsertResult()
-		{
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_sm_id", DbType="BigInt NOT NULL")]
-		public long sm_id
-		{
-			get
-			{
-				return this._sm_id;
-			}
-			set
-			{
-				if ((this._sm_id != value))
-				{
-					this._sm_id = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_sm_bookno", DbType="NVarChar(100) NOT NULL", CanBeNull=false)]
-		public string sm_bookno
-		{
-			get
-			{
-				return this._sm_bookno;
-			}
-			set
-			{
-				if ((this._sm_bookno != value))
-				{
-					this._sm_bookno = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_sm_refno", DbType="BigInt NOT NULL")]
-		public long sm_refno
-		{
-			get
-			{
-				return this._sm_refno;
-			}
-			set
-			{
-				if ((this._sm_refno != value))
-				{
-					this._sm_refno = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_sm_date", DbType="DateTime")]
-		public System.Nullable<System.DateTime> sm_date
-		{
-			get
-			{
-				return this._sm_date;
-			}
-			set
-			{
-				if ((this._sm_date != value))
-				{
-					this._sm_date = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_led_id", DbType="BigInt")]
-		public System.Nullable<long> led_id
-		{
-			get
-			{
-				return this._led_id;
-			}
-			set
-			{
-				if ((this._led_id != value))
-				{
-					this._led_id = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_sm_totqty", DbType="Decimal(18,3) NOT NULL")]
-		public decimal sm_totqty
-		{
-			get
-			{
-				return this._sm_totqty;
-			}
-			set
-			{
-				if ((this._sm_totqty != value))
-				{
-					this._sm_totqty = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_sm_totamount", DbType="Decimal(18,3) NOT NULL")]
-		public decimal sm_totamount
-		{
-			get
-			{
-				return this._sm_totamount;
-			}
-			set
-			{
-				if ((this._sm_totamount != value))
-				{
-					this._sm_totamount = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_sm_itemcount", DbType="BigInt")]
-		public System.Nullable<long> sm_itemcount
-		{
-			get
-			{
-				return this._sm_itemcount;
-			}
-			set
-			{
-				if ((this._sm_itemcount != value))
-				{
-					this._sm_itemcount = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_sm_profit", DbType="Decimal(18,3) NOT NULL")]
-		public decimal sm_profit
-		{
-			get
-			{
-				return this._sm_profit;
-			}
-			set
-			{
-				if ((this._sm_profit != value))
-				{
-					this._sm_profit = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_sm_disamount", DbType="Decimal(18,3) NOT NULL")]
-		public decimal sm_disamount
-		{
-			get
-			{
-				return this._sm_disamount;
-			}
-			set
-			{
-				if ((this._sm_disamount != value))
-				{
-					this._sm_disamount = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_sm_packingcharge", DbType="Decimal(18,3) NOT NULL")]
-		public decimal sm_packingcharge
-		{
-			get
-			{
-				return this._sm_packingcharge;
-			}
-			set
-			{
-				if ((this._sm_packingcharge != value))
-				{
-					this._sm_packingcharge = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_sm_netamount", DbType="Decimal(18,3) NOT NULL")]
-		public decimal sm_netamount
-		{
-			get
-			{
-				return this._sm_netamount;
-			}
-			set
-			{
-				if ((this._sm_netamount != value))
-				{
-					this._sm_netamount = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_sm_received", DbType="Decimal(18,3) NOT NULL")]
-		public decimal sm_received
-		{
-			get
-			{
-				return this._sm_received;
-			}
-			set
-			{
-				if ((this._sm_received != value))
-				{
-					this._sm_received = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_sm_paidcommission", DbType="Decimal(18,3) NOT NULL")]
-		public decimal sm_paidcommission
-		{
-			get
-			{
-				return this._sm_paidcommission;
-			}
-			set
-			{
-				if ((this._sm_paidcommission != value))
-				{
-					this._sm_paidcommission = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_sm_paidpacking", DbType="Decimal(18,3) NOT NULL")]
-		public decimal sm_paidpacking
-		{
-			get
-			{
-				return this._sm_paidpacking;
-			}
-			set
-			{
-				if ((this._sm_paidpacking != value))
-				{
-					this._sm_paidpacking = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_sm_iscommissionclose", DbType="Bit")]
-		public System.Nullable<bool> sm_iscommissionclose
-		{
-			get
-			{
-				return this._sm_iscommissionclose;
-			}
-			set
-			{
-				if ((this._sm_iscommissionclose != value))
-				{
-					this._sm_iscommissionclose = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_sm_ispackingclose", DbType="Bit")]
-		public System.Nullable<bool> sm_ispackingclose
-		{
-			get
-			{
-				return this._sm_ispackingclose;
-			}
-			set
-			{
-				if ((this._sm_ispackingclose != value))
-				{
-					this._sm_ispackingclose = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_users_uid", DbType="BigInt")]
-		public System.Nullable<long> users_uid
-		{
-			get
-			{
-				return this._users_uid;
-			}
-			set
-			{
-				if ((this._users_uid != value))
-				{
-					this._users_uid = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_sm_udate", DbType="DateTime")]
-		public System.Nullable<System.DateTime> sm_udate
-		{
-			get
-			{
-				return this._sm_udate;
-			}
-			set
-			{
-				if ((this._sm_udate != value))
-				{
-					this._sm_udate = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_sm_desc", DbType="NVarChar(50)")]
-		public string sm_desc
-		{
-			get
-			{
-				return this._sm_desc;
-			}
-			set
-			{
-				if ((this._sm_desc != value))
-				{
-					this._sm_desc = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_sm_isclose", DbType="Bit")]
-		public System.Nullable<bool> sm_isclose
-		{
-			get
-			{
-				return this._sm_isclose;
-			}
-			set
-			{
-				if ((this._sm_isclose != value))
-				{
-					this._sm_isclose = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_sm_taxamount", DbType="Decimal(18,3) NOT NULL")]
-		public decimal sm_taxamount
-		{
-			get
-			{
-				return this._sm_taxamount;
-			}
-			set
-			{
-				if ((this._sm_taxamount != value))
-				{
-					this._sm_taxamount = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_sm_taxpercentage", DbType="Decimal(18,3) NOT NULL")]
-		public decimal sm_taxpercentage
-		{
-			get
-			{
-				return this._sm_taxpercentage;
-			}
-			set
-			{
-				if ((this._sm_taxpercentage != value))
-				{
-					this._sm_taxpercentage = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_sm_roundamount", DbType="Decimal(18,3)")]
-		public System.Nullable<decimal> sm_roundamount
-		{
-			get
-			{
-				return this._sm_roundamount;
-			}
-			set
-			{
-				if ((this._sm_roundamount != value))
-				{
-					this._sm_roundamount = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_so_id", DbType="BigInt")]
-		public System.Nullable<long> so_id
-		{
-			get
-			{
-				return this._so_id;
-			}
-			set
-			{
-				if ((this._so_id != value))
-				{
-					this._so_id = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_sm_isdraft", DbType="Bit")]
-		public System.Nullable<bool> sm_isdraft
-		{
-			get
-			{
-				return this._sm_isdraft;
-			}
-			set
-			{
-				if ((this._sm_isdraft != value))
-				{
-					this._sm_isdraft = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_com_id", DbType="BigInt")]
-		public System.Nullable<long> com_id
-		{
-			get
-			{
-				return this._com_id;
-			}
-			set
-			{
-				if ((this._com_id != value))
-				{
-					this._com_id = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_sm_istaxable", DbType="Bit NOT NULL")]
-		public bool sm_istaxable
-		{
-			get
-			{
-				return this._sm_istaxable;
-			}
-			set
-			{
-				if ((this._sm_istaxable != value))
-				{
-					this._sm_istaxable = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_sm_isimport", DbType="Bit")]
-		public System.Nullable<bool> sm_isimport
-		{
-			get
-			{
-				return this._sm_isimport;
-			}
-			set
-			{
-				if ((this._sm_isimport != value))
-				{
-					this._sm_isimport = value;
-				}
-			}
-		}
-	}
-	
-	public partial class usp_purchasemasterUpdateResult
-	{
-		
-		private long _pm_id;
-		
-		private long _pm_no;
-		
-		private System.Nullable<System.DateTime> _pm_date;
-		
-		private System.Nullable<long> _led_id;
-		
-		private decimal _pm_totqty;
-		
-		private decimal _pm_totamount;
-		
-		private decimal _pm_discountpercentage;
-		
-		private decimal _pm_discountamount;
-		
-		private decimal _pm_wages;
-		
-		private decimal _pm_frieght;
-		
-		private string _pm_billno;
-		
-		private System.Nullable<long> _com_id;
-		
-		private System.Nullable<long> _users_uid;
-		
-		private System.Nullable<System.DateTime> _pm_udate;
-		
-		private string _pm_desc;
-		
-		private System.Nullable<bool> _pm_isclose;
-		
-		private decimal _pm_paid;
-		
-		private decimal _pm_totaltaxamount;
-		
-		private System.Nullable<bool> _pm_isimport;
-		
-		private System.Nullable<System.Guid> _pm_guid;
-		
-		public usp_purchasemasterUpdateResult()
-		{
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_pm_id", DbType="BigInt NOT NULL")]
-		public long pm_id
-		{
-			get
-			{
-				return this._pm_id;
-			}
-			set
-			{
-				if ((this._pm_id != value))
-				{
-					this._pm_id = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_pm_no", DbType="BigInt NOT NULL")]
-		public long pm_no
-		{
-			get
-			{
-				return this._pm_no;
-			}
-			set
-			{
-				if ((this._pm_no != value))
-				{
-					this._pm_no = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_pm_date", DbType="DateTime")]
-		public System.Nullable<System.DateTime> pm_date
-		{
-			get
-			{
-				return this._pm_date;
-			}
-			set
-			{
-				if ((this._pm_date != value))
-				{
-					this._pm_date = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_led_id", DbType="BigInt")]
-		public System.Nullable<long> led_id
-		{
-			get
-			{
-				return this._led_id;
-			}
-			set
-			{
-				if ((this._led_id != value))
-				{
-					this._led_id = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_pm_totqty", DbType="Decimal(18,3) NOT NULL")]
-		public decimal pm_totqty
-		{
-			get
-			{
-				return this._pm_totqty;
-			}
-			set
-			{
-				if ((this._pm_totqty != value))
-				{
-					this._pm_totqty = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_pm_totamount", DbType="Decimal(18,3) NOT NULL")]
-		public decimal pm_totamount
-		{
-			get
-			{
-				return this._pm_totamount;
-			}
-			set
-			{
-				if ((this._pm_totamount != value))
-				{
-					this._pm_totamount = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_pm_discountpercentage", DbType="Decimal(18,3) NOT NULL")]
-		public decimal pm_discountpercentage
-		{
-			get
-			{
-				return this._pm_discountpercentage;
-			}
-			set
-			{
-				if ((this._pm_discountpercentage != value))
-				{
-					this._pm_discountpercentage = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_pm_discountamount", DbType="Decimal(18,3) NOT NULL")]
-		public decimal pm_discountamount
-		{
-			get
-			{
-				return this._pm_discountamount;
-			}
-			set
-			{
-				if ((this._pm_discountamount != value))
-				{
-					this._pm_discountamount = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_pm_wages", DbType="Decimal(18,3) NOT NULL")]
-		public decimal pm_wages
-		{
-			get
-			{
-				return this._pm_wages;
-			}
-			set
-			{
-				if ((this._pm_wages != value))
-				{
-					this._pm_wages = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_pm_frieght", DbType="Decimal(18,3) NOT NULL")]
-		public decimal pm_frieght
-		{
-			get
-			{
-				return this._pm_frieght;
-			}
-			set
-			{
-				if ((this._pm_frieght != value))
-				{
-					this._pm_frieght = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_pm_billno", DbType="NVarChar(100) NOT NULL", CanBeNull=false)]
-		public string pm_billno
-		{
-			get
-			{
-				return this._pm_billno;
-			}
-			set
-			{
-				if ((this._pm_billno != value))
-				{
-					this._pm_billno = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_com_id", DbType="BigInt")]
-		public System.Nullable<long> com_id
-		{
-			get
-			{
-				return this._com_id;
-			}
-			set
-			{
-				if ((this._com_id != value))
-				{
-					this._com_id = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_users_uid", DbType="BigInt")]
-		public System.Nullable<long> users_uid
-		{
-			get
-			{
-				return this._users_uid;
-			}
-			set
-			{
-				if ((this._users_uid != value))
-				{
-					this._users_uid = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_pm_udate", DbType="DateTime")]
-		public System.Nullable<System.DateTime> pm_udate
-		{
-			get
-			{
-				return this._pm_udate;
-			}
-			set
-			{
-				if ((this._pm_udate != value))
-				{
-					this._pm_udate = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_pm_desc", DbType="NVarChar(50)")]
-		public string pm_desc
-		{
-			get
-			{
-				return this._pm_desc;
-			}
-			set
-			{
-				if ((this._pm_desc != value))
-				{
-					this._pm_desc = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_pm_isclose", DbType="Bit")]
-		public System.Nullable<bool> pm_isclose
-		{
-			get
-			{
-				return this._pm_isclose;
-			}
-			set
-			{
-				if ((this._pm_isclose != value))
-				{
-					this._pm_isclose = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_pm_paid", DbType="Decimal(18,3) NOT NULL")]
-		public decimal pm_paid
-		{
-			get
-			{
-				return this._pm_paid;
-			}
-			set
-			{
-				if ((this._pm_paid != value))
-				{
-					this._pm_paid = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_pm_totaltaxamount", DbType="Decimal(18,3) NOT NULL")]
-		public decimal pm_totaltaxamount
-		{
-			get
-			{
-				return this._pm_totaltaxamount;
-			}
-			set
-			{
-				if ((this._pm_totaltaxamount != value))
-				{
-					this._pm_totaltaxamount = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_pm_isimport", DbType="Bit")]
-		public System.Nullable<bool> pm_isimport
-		{
-			get
-			{
-				return this._pm_isimport;
-			}
-			set
-			{
-				if ((this._pm_isimport != value))
-				{
-					this._pm_isimport = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_pm_guid", DbType="UniqueIdentifier")]
-		public System.Nullable<System.Guid> pm_guid
-		{
-			get
-			{
-				return this._pm_guid;
-			}
-			set
-			{
-				if ((this._pm_guid != value))
-				{
-					this._pm_guid = value;
-				}
-			}
-		}
-	}
-	
-	public partial class usp_salesmasterUpdateResult
-	{
-		
-		private long _sm_id;
-		
-		private string _sm_bookno;
-		
-		private long _sm_refno;
-		
-		private System.Nullable<System.DateTime> _sm_date;
-		
-		private System.Nullable<long> _led_id;
-		
-		private decimal _sm_totqty;
-		
-		private decimal _sm_totamount;
-		
-		private System.Nullable<long> _sm_itemcount;
-		
-		private decimal _sm_profit;
-		
-		private decimal _sm_disamount;
-		
-		private decimal _sm_packingcharge;
-		
-		private decimal _sm_netamount;
-		
-		private decimal _sm_received;
-		
-		private decimal _sm_paidcommission;
-		
-		private decimal _sm_paidpacking;
-		
-		private System.Nullable<bool> _sm_iscommissionclose;
-		
-		private System.Nullable<bool> _sm_ispackingclose;
-		
-		private System.Nullable<long> _users_uid;
-		
-		private System.Nullable<System.DateTime> _sm_udate;
-		
-		private string _sm_desc;
-		
-		private System.Nullable<bool> _sm_isclose;
-		
-		private decimal _sm_taxamount;
-		
-		private decimal _sm_taxpercentage;
-		
-		private System.Nullable<decimal> _sm_roundamount;
-		
-		private System.Nullable<long> _so_id;
-		
-		private System.Nullable<bool> _sm_isdraft;
-		
-		private System.Nullable<long> _com_id;
-		
-		private bool _sm_istaxable;
-		
-		private System.Nullable<bool> _sm_isimport;
-		
-		private System.Nullable<System.Guid> _sm_guid;
-		
-		public usp_salesmasterUpdateResult()
-		{
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_sm_id", DbType="BigInt NOT NULL")]
-		public long sm_id
-		{
-			get
-			{
-				return this._sm_id;
-			}
-			set
-			{
-				if ((this._sm_id != value))
-				{
-					this._sm_id = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_sm_bookno", DbType="NVarChar(100) NOT NULL", CanBeNull=false)]
-		public string sm_bookno
-		{
-			get
-			{
-				return this._sm_bookno;
-			}
-			set
-			{
-				if ((this._sm_bookno != value))
-				{
-					this._sm_bookno = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_sm_refno", DbType="BigInt NOT NULL")]
-		public long sm_refno
-		{
-			get
-			{
-				return this._sm_refno;
-			}
-			set
-			{
-				if ((this._sm_refno != value))
-				{
-					this._sm_refno = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_sm_date", DbType="DateTime")]
-		public System.Nullable<System.DateTime> sm_date
-		{
-			get
-			{
-				return this._sm_date;
-			}
-			set
-			{
-				if ((this._sm_date != value))
-				{
-					this._sm_date = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_led_id", DbType="BigInt")]
-		public System.Nullable<long> led_id
-		{
-			get
-			{
-				return this._led_id;
-			}
-			set
-			{
-				if ((this._led_id != value))
-				{
-					this._led_id = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_sm_totqty", DbType="Decimal(18,3) NOT NULL")]
-		public decimal sm_totqty
-		{
-			get
-			{
-				return this._sm_totqty;
-			}
-			set
-			{
-				if ((this._sm_totqty != value))
-				{
-					this._sm_totqty = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_sm_totamount", DbType="Decimal(18,3) NOT NULL")]
-		public decimal sm_totamount
-		{
-			get
-			{
-				return this._sm_totamount;
-			}
-			set
-			{
-				if ((this._sm_totamount != value))
-				{
-					this._sm_totamount = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_sm_itemcount", DbType="BigInt")]
-		public System.Nullable<long> sm_itemcount
-		{
-			get
-			{
-				return this._sm_itemcount;
-			}
-			set
-			{
-				if ((this._sm_itemcount != value))
-				{
-					this._sm_itemcount = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_sm_profit", DbType="Decimal(18,3) NOT NULL")]
-		public decimal sm_profit
-		{
-			get
-			{
-				return this._sm_profit;
-			}
-			set
-			{
-				if ((this._sm_profit != value))
-				{
-					this._sm_profit = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_sm_disamount", DbType="Decimal(18,3) NOT NULL")]
-		public decimal sm_disamount
-		{
-			get
-			{
-				return this._sm_disamount;
-			}
-			set
-			{
-				if ((this._sm_disamount != value))
-				{
-					this._sm_disamount = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_sm_packingcharge", DbType="Decimal(18,3) NOT NULL")]
-		public decimal sm_packingcharge
-		{
-			get
-			{
-				return this._sm_packingcharge;
-			}
-			set
-			{
-				if ((this._sm_packingcharge != value))
-				{
-					this._sm_packingcharge = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_sm_netamount", DbType="Decimal(18,3) NOT NULL")]
-		public decimal sm_netamount
-		{
-			get
-			{
-				return this._sm_netamount;
-			}
-			set
-			{
-				if ((this._sm_netamount != value))
-				{
-					this._sm_netamount = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_sm_received", DbType="Decimal(18,3) NOT NULL")]
-		public decimal sm_received
-		{
-			get
-			{
-				return this._sm_received;
-			}
-			set
-			{
-				if ((this._sm_received != value))
-				{
-					this._sm_received = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_sm_paidcommission", DbType="Decimal(18,3) NOT NULL")]
-		public decimal sm_paidcommission
-		{
-			get
-			{
-				return this._sm_paidcommission;
-			}
-			set
-			{
-				if ((this._sm_paidcommission != value))
-				{
-					this._sm_paidcommission = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_sm_paidpacking", DbType="Decimal(18,3) NOT NULL")]
-		public decimal sm_paidpacking
-		{
-			get
-			{
-				return this._sm_paidpacking;
-			}
-			set
-			{
-				if ((this._sm_paidpacking != value))
-				{
-					this._sm_paidpacking = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_sm_iscommissionclose", DbType="Bit")]
-		public System.Nullable<bool> sm_iscommissionclose
-		{
-			get
-			{
-				return this._sm_iscommissionclose;
-			}
-			set
-			{
-				if ((this._sm_iscommissionclose != value))
-				{
-					this._sm_iscommissionclose = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_sm_ispackingclose", DbType="Bit")]
-		public System.Nullable<bool> sm_ispackingclose
-		{
-			get
-			{
-				return this._sm_ispackingclose;
-			}
-			set
-			{
-				if ((this._sm_ispackingclose != value))
-				{
-					this._sm_ispackingclose = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_users_uid", DbType="BigInt")]
-		public System.Nullable<long> users_uid
-		{
-			get
-			{
-				return this._users_uid;
-			}
-			set
-			{
-				if ((this._users_uid != value))
-				{
-					this._users_uid = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_sm_udate", DbType="DateTime")]
-		public System.Nullable<System.DateTime> sm_udate
-		{
-			get
-			{
-				return this._sm_udate;
-			}
-			set
-			{
-				if ((this._sm_udate != value))
-				{
-					this._sm_udate = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_sm_desc", DbType="NVarChar(50)")]
-		public string sm_desc
-		{
-			get
-			{
-				return this._sm_desc;
-			}
-			set
-			{
-				if ((this._sm_desc != value))
-				{
-					this._sm_desc = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_sm_isclose", DbType="Bit")]
-		public System.Nullable<bool> sm_isclose
-		{
-			get
-			{
-				return this._sm_isclose;
-			}
-			set
-			{
-				if ((this._sm_isclose != value))
-				{
-					this._sm_isclose = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_sm_taxamount", DbType="Decimal(18,3) NOT NULL")]
-		public decimal sm_taxamount
-		{
-			get
-			{
-				return this._sm_taxamount;
-			}
-			set
-			{
-				if ((this._sm_taxamount != value))
-				{
-					this._sm_taxamount = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_sm_taxpercentage", DbType="Decimal(18,3) NOT NULL")]
-		public decimal sm_taxpercentage
-		{
-			get
-			{
-				return this._sm_taxpercentage;
-			}
-			set
-			{
-				if ((this._sm_taxpercentage != value))
-				{
-					this._sm_taxpercentage = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_sm_roundamount", DbType="Decimal(18,3)")]
-		public System.Nullable<decimal> sm_roundamount
-		{
-			get
-			{
-				return this._sm_roundamount;
-			}
-			set
-			{
-				if ((this._sm_roundamount != value))
-				{
-					this._sm_roundamount = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_so_id", DbType="BigInt")]
-		public System.Nullable<long> so_id
-		{
-			get
-			{
-				return this._so_id;
-			}
-			set
-			{
-				if ((this._so_id != value))
-				{
-					this._so_id = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_sm_isdraft", DbType="Bit")]
-		public System.Nullable<bool> sm_isdraft
-		{
-			get
-			{
-				return this._sm_isdraft;
-			}
-			set
-			{
-				if ((this._sm_isdraft != value))
-				{
-					this._sm_isdraft = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_com_id", DbType="BigInt")]
-		public System.Nullable<long> com_id
-		{
-			get
-			{
-				return this._com_id;
-			}
-			set
-			{
-				if ((this._com_id != value))
-				{
-					this._com_id = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_sm_istaxable", DbType="Bit NOT NULL")]
-		public bool sm_istaxable
-		{
-			get
-			{
-				return this._sm_istaxable;
-			}
-			set
-			{
-				if ((this._sm_istaxable != value))
-				{
-					this._sm_istaxable = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_sm_isimport", DbType="Bit")]
-		public System.Nullable<bool> sm_isimport
-		{
-			get
-			{
-				return this._sm_isimport;
-			}
-			set
-			{
-				if ((this._sm_isimport != value))
-				{
-					this._sm_isimport = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_sm_guid", DbType="UniqueIdentifier")]
-		public System.Nullable<System.Guid> sm_guid
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_pm_agid", DbType="BigInt")]
+		public System.Nullable<long> pm_agid
 		{
 			get
 			{
-				return this._sm_guid;
+				return this._pm_agid;
 			}
 			set
 			{
-				if ((this._sm_guid != value))
+				if ((this._pm_agid != value))
 				{
-					this._sm_guid = value;
+					this._pm_agid = value;
 				}
 			}
 		}
@@ -32519,6 +29964,8 @@ namespace standard.classes
 		private System.Nullable<bool> _pm_isimport;
 		
 		private System.Nullable<System.Guid> _pm_guid;
+		
+		private System.Nullable<long> _pm_agid;
 		
 		public usp_purchasemasterSelectResult()
 		{
@@ -33067,6 +30514,956 @@ namespace standard.classes
 				}
 			}
 		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_pm_agid", DbType="BigInt")]
+		public System.Nullable<long> pm_agid
+		{
+			get
+			{
+				return this._pm_agid;
+			}
+			set
+			{
+				if ((this._pm_agid != value))
+				{
+					this._pm_agid = value;
+				}
+			}
+		}
+	}
+	
+	public partial class usp_purchasemasterUpdateResult
+	{
+		
+		private long _pm_id;
+		
+		private long _pm_no;
+		
+		private System.Nullable<System.DateTime> _pm_date;
+		
+		private System.Nullable<long> _led_id;
+		
+		private decimal _pm_totqty;
+		
+		private decimal _pm_totamount;
+		
+		private decimal _pm_discountpercentage;
+		
+		private decimal _pm_discountamount;
+		
+		private decimal _pm_wages;
+		
+		private decimal _pm_frieght;
+		
+		private string _pm_billno;
+		
+		private System.Nullable<long> _com_id;
+		
+		private System.Nullable<long> _users_uid;
+		
+		private System.Nullable<System.DateTime> _pm_udate;
+		
+		private string _pm_desc;
+		
+		private System.Nullable<bool> _pm_isclose;
+		
+		private decimal _pm_paid;
+		
+		private decimal _pm_totaltaxamount;
+		
+		private System.Nullable<bool> _pm_isimport;
+		
+		private System.Nullable<System.Guid> _pm_guid;
+		
+		private System.Nullable<long> _pm_agid;
+		
+		public usp_purchasemasterUpdateResult()
+		{
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_pm_id", DbType="BigInt NOT NULL")]
+		public long pm_id
+		{
+			get
+			{
+				return this._pm_id;
+			}
+			set
+			{
+				if ((this._pm_id != value))
+				{
+					this._pm_id = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_pm_no", DbType="BigInt NOT NULL")]
+		public long pm_no
+		{
+			get
+			{
+				return this._pm_no;
+			}
+			set
+			{
+				if ((this._pm_no != value))
+				{
+					this._pm_no = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_pm_date", DbType="DateTime")]
+		public System.Nullable<System.DateTime> pm_date
+		{
+			get
+			{
+				return this._pm_date;
+			}
+			set
+			{
+				if ((this._pm_date != value))
+				{
+					this._pm_date = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_led_id", DbType="BigInt")]
+		public System.Nullable<long> led_id
+		{
+			get
+			{
+				return this._led_id;
+			}
+			set
+			{
+				if ((this._led_id != value))
+				{
+					this._led_id = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_pm_totqty", DbType="Decimal(18,3) NOT NULL")]
+		public decimal pm_totqty
+		{
+			get
+			{
+				return this._pm_totqty;
+			}
+			set
+			{
+				if ((this._pm_totqty != value))
+				{
+					this._pm_totqty = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_pm_totamount", DbType="Decimal(18,3) NOT NULL")]
+		public decimal pm_totamount
+		{
+			get
+			{
+				return this._pm_totamount;
+			}
+			set
+			{
+				if ((this._pm_totamount != value))
+				{
+					this._pm_totamount = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_pm_discountpercentage", DbType="Decimal(18,3) NOT NULL")]
+		public decimal pm_discountpercentage
+		{
+			get
+			{
+				return this._pm_discountpercentage;
+			}
+			set
+			{
+				if ((this._pm_discountpercentage != value))
+				{
+					this._pm_discountpercentage = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_pm_discountamount", DbType="Decimal(18,3) NOT NULL")]
+		public decimal pm_discountamount
+		{
+			get
+			{
+				return this._pm_discountamount;
+			}
+			set
+			{
+				if ((this._pm_discountamount != value))
+				{
+					this._pm_discountamount = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_pm_wages", DbType="Decimal(18,3) NOT NULL")]
+		public decimal pm_wages
+		{
+			get
+			{
+				return this._pm_wages;
+			}
+			set
+			{
+				if ((this._pm_wages != value))
+				{
+					this._pm_wages = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_pm_frieght", DbType="Decimal(18,3) NOT NULL")]
+		public decimal pm_frieght
+		{
+			get
+			{
+				return this._pm_frieght;
+			}
+			set
+			{
+				if ((this._pm_frieght != value))
+				{
+					this._pm_frieght = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_pm_billno", DbType="NVarChar(100) NOT NULL", CanBeNull=false)]
+		public string pm_billno
+		{
+			get
+			{
+				return this._pm_billno;
+			}
+			set
+			{
+				if ((this._pm_billno != value))
+				{
+					this._pm_billno = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_com_id", DbType="BigInt")]
+		public System.Nullable<long> com_id
+		{
+			get
+			{
+				return this._com_id;
+			}
+			set
+			{
+				if ((this._com_id != value))
+				{
+					this._com_id = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_users_uid", DbType="BigInt")]
+		public System.Nullable<long> users_uid
+		{
+			get
+			{
+				return this._users_uid;
+			}
+			set
+			{
+				if ((this._users_uid != value))
+				{
+					this._users_uid = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_pm_udate", DbType="DateTime")]
+		public System.Nullable<System.DateTime> pm_udate
+		{
+			get
+			{
+				return this._pm_udate;
+			}
+			set
+			{
+				if ((this._pm_udate != value))
+				{
+					this._pm_udate = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_pm_desc", DbType="NVarChar(50)")]
+		public string pm_desc
+		{
+			get
+			{
+				return this._pm_desc;
+			}
+			set
+			{
+				if ((this._pm_desc != value))
+				{
+					this._pm_desc = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_pm_isclose", DbType="Bit")]
+		public System.Nullable<bool> pm_isclose
+		{
+			get
+			{
+				return this._pm_isclose;
+			}
+			set
+			{
+				if ((this._pm_isclose != value))
+				{
+					this._pm_isclose = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_pm_paid", DbType="Decimal(18,3) NOT NULL")]
+		public decimal pm_paid
+		{
+			get
+			{
+				return this._pm_paid;
+			}
+			set
+			{
+				if ((this._pm_paid != value))
+				{
+					this._pm_paid = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_pm_totaltaxamount", DbType="Decimal(18,3) NOT NULL")]
+		public decimal pm_totaltaxamount
+		{
+			get
+			{
+				return this._pm_totaltaxamount;
+			}
+			set
+			{
+				if ((this._pm_totaltaxamount != value))
+				{
+					this._pm_totaltaxamount = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_pm_isimport", DbType="Bit")]
+		public System.Nullable<bool> pm_isimport
+		{
+			get
+			{
+				return this._pm_isimport;
+			}
+			set
+			{
+				if ((this._pm_isimport != value))
+				{
+					this._pm_isimport = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_pm_guid", DbType="UniqueIdentifier")]
+		public System.Nullable<System.Guid> pm_guid
+		{
+			get
+			{
+				return this._pm_guid;
+			}
+			set
+			{
+				if ((this._pm_guid != value))
+				{
+					this._pm_guid = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_pm_agid", DbType="BigInt")]
+		public System.Nullable<long> pm_agid
+		{
+			get
+			{
+				return this._pm_agid;
+			}
+			set
+			{
+				if ((this._pm_agid != value))
+				{
+					this._pm_agid = value;
+				}
+			}
+		}
+	}
+	
+	public partial class usp_salesmasterInsertResult
+	{
+		
+		private long _sm_id;
+		
+		private string _sm_bookno;
+		
+		private long _sm_refno;
+		
+		private System.Nullable<System.DateTime> _sm_date;
+		
+		private System.Nullable<long> _led_id;
+		
+		private decimal _sm_totqty;
+		
+		private decimal _sm_totamount;
+		
+		private System.Nullable<long> _sm_itemcount;
+		
+		private decimal _sm_profit;
+		
+		private decimal _sm_disamount;
+		
+		private decimal _sm_packingcharge;
+		
+		private decimal _sm_netamount;
+		
+		private decimal _sm_received;
+		
+		private decimal _sm_paidcommission;
+		
+		private decimal _sm_paidpacking;
+		
+		private System.Nullable<bool> _sm_iscommissionclose;
+		
+		private System.Nullable<bool> _sm_ispackingclose;
+		
+		private System.Nullable<long> _users_uid;
+		
+		private System.Nullable<System.DateTime> _sm_udate;
+		
+		private string _sm_desc;
+		
+		private System.Nullable<bool> _sm_isclose;
+		
+		private decimal _sm_taxamount;
+		
+		private decimal _sm_taxpercentage;
+		
+		private System.Nullable<decimal> _sm_roundamount;
+		
+		private System.Nullable<long> _so_id;
+		
+		private System.Nullable<bool> _sm_isdraft;
+		
+		private System.Nullable<long> _com_id;
+		
+		private bool _sm_istaxable;
+		
+		private System.Nullable<bool> _sm_isimport;
+		
+		private System.Nullable<long> _sm_agid;
+		
+		public usp_salesmasterInsertResult()
+		{
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_sm_id", DbType="BigInt NOT NULL")]
+		public long sm_id
+		{
+			get
+			{
+				return this._sm_id;
+			}
+			set
+			{
+				if ((this._sm_id != value))
+				{
+					this._sm_id = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_sm_bookno", DbType="NVarChar(100) NOT NULL", CanBeNull=false)]
+		public string sm_bookno
+		{
+			get
+			{
+				return this._sm_bookno;
+			}
+			set
+			{
+				if ((this._sm_bookno != value))
+				{
+					this._sm_bookno = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_sm_refno", DbType="BigInt NOT NULL")]
+		public long sm_refno
+		{
+			get
+			{
+				return this._sm_refno;
+			}
+			set
+			{
+				if ((this._sm_refno != value))
+				{
+					this._sm_refno = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_sm_date", DbType="DateTime")]
+		public System.Nullable<System.DateTime> sm_date
+		{
+			get
+			{
+				return this._sm_date;
+			}
+			set
+			{
+				if ((this._sm_date != value))
+				{
+					this._sm_date = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_led_id", DbType="BigInt")]
+		public System.Nullable<long> led_id
+		{
+			get
+			{
+				return this._led_id;
+			}
+			set
+			{
+				if ((this._led_id != value))
+				{
+					this._led_id = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_sm_totqty", DbType="Decimal(18,3) NOT NULL")]
+		public decimal sm_totqty
+		{
+			get
+			{
+				return this._sm_totqty;
+			}
+			set
+			{
+				if ((this._sm_totqty != value))
+				{
+					this._sm_totqty = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_sm_totamount", DbType="Decimal(18,3) NOT NULL")]
+		public decimal sm_totamount
+		{
+			get
+			{
+				return this._sm_totamount;
+			}
+			set
+			{
+				if ((this._sm_totamount != value))
+				{
+					this._sm_totamount = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_sm_itemcount", DbType="BigInt")]
+		public System.Nullable<long> sm_itemcount
+		{
+			get
+			{
+				return this._sm_itemcount;
+			}
+			set
+			{
+				if ((this._sm_itemcount != value))
+				{
+					this._sm_itemcount = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_sm_profit", DbType="Decimal(18,3) NOT NULL")]
+		public decimal sm_profit
+		{
+			get
+			{
+				return this._sm_profit;
+			}
+			set
+			{
+				if ((this._sm_profit != value))
+				{
+					this._sm_profit = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_sm_disamount", DbType="Decimal(18,3) NOT NULL")]
+		public decimal sm_disamount
+		{
+			get
+			{
+				return this._sm_disamount;
+			}
+			set
+			{
+				if ((this._sm_disamount != value))
+				{
+					this._sm_disamount = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_sm_packingcharge", DbType="Decimal(18,3) NOT NULL")]
+		public decimal sm_packingcharge
+		{
+			get
+			{
+				return this._sm_packingcharge;
+			}
+			set
+			{
+				if ((this._sm_packingcharge != value))
+				{
+					this._sm_packingcharge = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_sm_netamount", DbType="Decimal(18,3) NOT NULL")]
+		public decimal sm_netamount
+		{
+			get
+			{
+				return this._sm_netamount;
+			}
+			set
+			{
+				if ((this._sm_netamount != value))
+				{
+					this._sm_netamount = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_sm_received", DbType="Decimal(18,3) NOT NULL")]
+		public decimal sm_received
+		{
+			get
+			{
+				return this._sm_received;
+			}
+			set
+			{
+				if ((this._sm_received != value))
+				{
+					this._sm_received = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_sm_paidcommission", DbType="Decimal(18,3) NOT NULL")]
+		public decimal sm_paidcommission
+		{
+			get
+			{
+				return this._sm_paidcommission;
+			}
+			set
+			{
+				if ((this._sm_paidcommission != value))
+				{
+					this._sm_paidcommission = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_sm_paidpacking", DbType="Decimal(18,3) NOT NULL")]
+		public decimal sm_paidpacking
+		{
+			get
+			{
+				return this._sm_paidpacking;
+			}
+			set
+			{
+				if ((this._sm_paidpacking != value))
+				{
+					this._sm_paidpacking = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_sm_iscommissionclose", DbType="Bit")]
+		public System.Nullable<bool> sm_iscommissionclose
+		{
+			get
+			{
+				return this._sm_iscommissionclose;
+			}
+			set
+			{
+				if ((this._sm_iscommissionclose != value))
+				{
+					this._sm_iscommissionclose = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_sm_ispackingclose", DbType="Bit")]
+		public System.Nullable<bool> sm_ispackingclose
+		{
+			get
+			{
+				return this._sm_ispackingclose;
+			}
+			set
+			{
+				if ((this._sm_ispackingclose != value))
+				{
+					this._sm_ispackingclose = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_users_uid", DbType="BigInt")]
+		public System.Nullable<long> users_uid
+		{
+			get
+			{
+				return this._users_uid;
+			}
+			set
+			{
+				if ((this._users_uid != value))
+				{
+					this._users_uid = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_sm_udate", DbType="DateTime")]
+		public System.Nullable<System.DateTime> sm_udate
+		{
+			get
+			{
+				return this._sm_udate;
+			}
+			set
+			{
+				if ((this._sm_udate != value))
+				{
+					this._sm_udate = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_sm_desc", DbType="NVarChar(50)")]
+		public string sm_desc
+		{
+			get
+			{
+				return this._sm_desc;
+			}
+			set
+			{
+				if ((this._sm_desc != value))
+				{
+					this._sm_desc = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_sm_isclose", DbType="Bit")]
+		public System.Nullable<bool> sm_isclose
+		{
+			get
+			{
+				return this._sm_isclose;
+			}
+			set
+			{
+				if ((this._sm_isclose != value))
+				{
+					this._sm_isclose = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_sm_taxamount", DbType="Decimal(18,3) NOT NULL")]
+		public decimal sm_taxamount
+		{
+			get
+			{
+				return this._sm_taxamount;
+			}
+			set
+			{
+				if ((this._sm_taxamount != value))
+				{
+					this._sm_taxamount = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_sm_taxpercentage", DbType="Decimal(18,3) NOT NULL")]
+		public decimal sm_taxpercentage
+		{
+			get
+			{
+				return this._sm_taxpercentage;
+			}
+			set
+			{
+				if ((this._sm_taxpercentage != value))
+				{
+					this._sm_taxpercentage = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_sm_roundamount", DbType="Decimal(18,3)")]
+		public System.Nullable<decimal> sm_roundamount
+		{
+			get
+			{
+				return this._sm_roundamount;
+			}
+			set
+			{
+				if ((this._sm_roundamount != value))
+				{
+					this._sm_roundamount = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_so_id", DbType="BigInt")]
+		public System.Nullable<long> so_id
+		{
+			get
+			{
+				return this._so_id;
+			}
+			set
+			{
+				if ((this._so_id != value))
+				{
+					this._so_id = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_sm_isdraft", DbType="Bit")]
+		public System.Nullable<bool> sm_isdraft
+		{
+			get
+			{
+				return this._sm_isdraft;
+			}
+			set
+			{
+				if ((this._sm_isdraft != value))
+				{
+					this._sm_isdraft = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_com_id", DbType="BigInt")]
+		public System.Nullable<long> com_id
+		{
+			get
+			{
+				return this._com_id;
+			}
+			set
+			{
+				if ((this._com_id != value))
+				{
+					this._com_id = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_sm_istaxable", DbType="Bit NOT NULL")]
+		public bool sm_istaxable
+		{
+			get
+			{
+				return this._sm_istaxable;
+			}
+			set
+			{
+				if ((this._sm_istaxable != value))
+				{
+					this._sm_istaxable = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_sm_isimport", DbType="Bit")]
+		public System.Nullable<bool> sm_isimport
+		{
+			get
+			{
+				return this._sm_isimport;
+			}
+			set
+			{
+				if ((this._sm_isimport != value))
+				{
+					this._sm_isimport = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_sm_agid", DbType="BigInt")]
+		public System.Nullable<long> sm_agid
+		{
+			get
+			{
+				return this._sm_agid;
+			}
+			set
+			{
+				if ((this._sm_agid != value))
+				{
+					this._sm_agid = value;
+				}
+			}
+		}
 	}
 	
 	public partial class usp_salesmasterSelectResult
@@ -33162,46 +31559,6 @@ namespace standard.classes
 		
 		private string _com_name;
 		
-		private string _com_accountnumber;
-		
-		private string _com_add1;
-		
-		private string _com_add2;
-		
-		private string _com_add3;
-		
-		private string _com_bankname;
-		
-		private string _com_branch;
-		
-		private string _com_city;
-		
-		private string _com_country;
-		
-		private string _com_email;
-		
-		private string _com_fssai;
-		
-		private string _com_gstin;
-		
-		private string _com_ifsc;
-		
-		private System.Nullable<int> _com_code;
-		
-		private string _com_godownadd;
-		
-		private string _com_mobile1;
-		
-		private string _com_mobile2;
-		
-		private string _com_pan;
-		
-		private string _com_phone;
-		
-		private string _com_pin;
-		
-		private string _com_state;
-		
 		private string _led_shippingaddress1;
 		
 		private string _led_shippingaddress2;
@@ -33209,6 +31566,8 @@ namespace standard.classes
 		private string _led_vehicleno;
 		
 		private System.Nullable<int> _dayscount;
+		
+		private System.Nullable<long> _sm_agid;
 		
 		public usp_salesmasterSelectResult()
 		{
@@ -33934,326 +32293,6 @@ namespace standard.classes
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_com_accountnumber", DbType="NVarChar(100) NOT NULL", CanBeNull=false)]
-		public string com_accountnumber
-		{
-			get
-			{
-				return this._com_accountnumber;
-			}
-			set
-			{
-				if ((this._com_accountnumber != value))
-				{
-					this._com_accountnumber = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_com_add1", DbType="NVarChar(50)")]
-		public string com_add1
-		{
-			get
-			{
-				return this._com_add1;
-			}
-			set
-			{
-				if ((this._com_add1 != value))
-				{
-					this._com_add1 = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_com_add2", DbType="NVarChar(50)")]
-		public string com_add2
-		{
-			get
-			{
-				return this._com_add2;
-			}
-			set
-			{
-				if ((this._com_add2 != value))
-				{
-					this._com_add2 = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_com_add3", DbType="NVarChar(50)")]
-		public string com_add3
-		{
-			get
-			{
-				return this._com_add3;
-			}
-			set
-			{
-				if ((this._com_add3 != value))
-				{
-					this._com_add3 = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_com_bankname", DbType="NVarChar(100)")]
-		public string com_bankname
-		{
-			get
-			{
-				return this._com_bankname;
-			}
-			set
-			{
-				if ((this._com_bankname != value))
-				{
-					this._com_bankname = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_com_branch", DbType="NVarChar(100)")]
-		public string com_branch
-		{
-			get
-			{
-				return this._com_branch;
-			}
-			set
-			{
-				if ((this._com_branch != value))
-				{
-					this._com_branch = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_com_city", DbType="NVarChar(50)")]
-		public string com_city
-		{
-			get
-			{
-				return this._com_city;
-			}
-			set
-			{
-				if ((this._com_city != value))
-				{
-					this._com_city = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_com_country", DbType="NVarChar(50)")]
-		public string com_country
-		{
-			get
-			{
-				return this._com_country;
-			}
-			set
-			{
-				if ((this._com_country != value))
-				{
-					this._com_country = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_com_email", DbType="NVarChar(50)")]
-		public string com_email
-		{
-			get
-			{
-				return this._com_email;
-			}
-			set
-			{
-				if ((this._com_email != value))
-				{
-					this._com_email = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_com_fssai", DbType="NVarChar(100) NOT NULL", CanBeNull=false)]
-		public string com_fssai
-		{
-			get
-			{
-				return this._com_fssai;
-			}
-			set
-			{
-				if ((this._com_fssai != value))
-				{
-					this._com_fssai = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_com_gstin", DbType="NVarChar(100)")]
-		public string com_gstin
-		{
-			get
-			{
-				return this._com_gstin;
-			}
-			set
-			{
-				if ((this._com_gstin != value))
-				{
-					this._com_gstin = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_com_ifsc", DbType="NVarChar(100)")]
-		public string com_ifsc
-		{
-			get
-			{
-				return this._com_ifsc;
-			}
-			set
-			{
-				if ((this._com_ifsc != value))
-				{
-					this._com_ifsc = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_com_code", DbType="Int")]
-		public System.Nullable<int> com_code
-		{
-			get
-			{
-				return this._com_code;
-			}
-			set
-			{
-				if ((this._com_code != value))
-				{
-					this._com_code = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_com_godownadd", DbType="NVarChar(100)")]
-		public string com_godownadd
-		{
-			get
-			{
-				return this._com_godownadd;
-			}
-			set
-			{
-				if ((this._com_godownadd != value))
-				{
-					this._com_godownadd = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_com_mobile1", DbType="NVarChar(15)")]
-		public string com_mobile1
-		{
-			get
-			{
-				return this._com_mobile1;
-			}
-			set
-			{
-				if ((this._com_mobile1 != value))
-				{
-					this._com_mobile1 = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_com_mobile2", DbType="NVarChar(15)")]
-		public string com_mobile2
-		{
-			get
-			{
-				return this._com_mobile2;
-			}
-			set
-			{
-				if ((this._com_mobile2 != value))
-				{
-					this._com_mobile2 = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_com_pan", DbType="NVarChar(50)")]
-		public string com_pan
-		{
-			get
-			{
-				return this._com_pan;
-			}
-			set
-			{
-				if ((this._com_pan != value))
-				{
-					this._com_pan = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_com_phone", DbType="NVarChar(50)")]
-		public string com_phone
-		{
-			get
-			{
-				return this._com_phone;
-			}
-			set
-			{
-				if ((this._com_phone != value))
-				{
-					this._com_phone = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_com_pin", DbType="NVarChar(7)")]
-		public string com_pin
-		{
-			get
-			{
-				return this._com_pin;
-			}
-			set
-			{
-				if ((this._com_pin != value))
-				{
-					this._com_pin = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_com_state", DbType="NVarChar(50)")]
-		public string com_state
-		{
-			get
-			{
-				return this._com_state;
-			}
-			set
-			{
-				if ((this._com_state != value))
-				{
-					this._com_state = value;
-				}
-			}
-		}
-		
 		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_led_shippingaddress1", DbType="NVarChar(100) NOT NULL", CanBeNull=false)]
 		public string led_shippingaddress1
 		{
@@ -34314,6 +32353,2286 @@ namespace standard.classes
 				if ((this._dayscount != value))
 				{
 					this._dayscount = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_sm_agid", DbType="BigInt")]
+		public System.Nullable<long> sm_agid
+		{
+			get
+			{
+				return this._sm_agid;
+			}
+			set
+			{
+				if ((this._sm_agid != value))
+				{
+					this._sm_agid = value;
+				}
+			}
+		}
+	}
+	
+	public partial class usp_salesmasterUpdateResult
+	{
+		
+		private long _sm_id;
+		
+		private string _sm_bookno;
+		
+		private long _sm_refno;
+		
+		private System.Nullable<System.DateTime> _sm_date;
+		
+		private System.Nullable<long> _led_id;
+		
+		private decimal _sm_totqty;
+		
+		private decimal _sm_totamount;
+		
+		private System.Nullable<long> _sm_itemcount;
+		
+		private decimal _sm_profit;
+		
+		private decimal _sm_disamount;
+		
+		private decimal _sm_packingcharge;
+		
+		private decimal _sm_netamount;
+		
+		private decimal _sm_received;
+		
+		private decimal _sm_paidcommission;
+		
+		private decimal _sm_paidpacking;
+		
+		private System.Nullable<bool> _sm_iscommissionclose;
+		
+		private System.Nullable<bool> _sm_ispackingclose;
+		
+		private System.Nullable<long> _users_uid;
+		
+		private System.Nullable<System.DateTime> _sm_udate;
+		
+		private string _sm_desc;
+		
+		private System.Nullable<bool> _sm_isclose;
+		
+		private decimal _sm_taxamount;
+		
+		private decimal _sm_taxpercentage;
+		
+		private System.Nullable<decimal> _sm_roundamount;
+		
+		private System.Nullable<long> _so_id;
+		
+		private System.Nullable<bool> _sm_isdraft;
+		
+		private System.Nullable<long> _com_id;
+		
+		private bool _sm_istaxable;
+		
+		private System.Nullable<bool> _sm_isimport;
+		
+		private System.Nullable<System.Guid> _sm_guid;
+		
+		private System.Nullable<long> _sm_agid;
+		
+		public usp_salesmasterUpdateResult()
+		{
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_sm_id", DbType="BigInt NOT NULL")]
+		public long sm_id
+		{
+			get
+			{
+				return this._sm_id;
+			}
+			set
+			{
+				if ((this._sm_id != value))
+				{
+					this._sm_id = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_sm_bookno", DbType="NVarChar(100) NOT NULL", CanBeNull=false)]
+		public string sm_bookno
+		{
+			get
+			{
+				return this._sm_bookno;
+			}
+			set
+			{
+				if ((this._sm_bookno != value))
+				{
+					this._sm_bookno = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_sm_refno", DbType="BigInt NOT NULL")]
+		public long sm_refno
+		{
+			get
+			{
+				return this._sm_refno;
+			}
+			set
+			{
+				if ((this._sm_refno != value))
+				{
+					this._sm_refno = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_sm_date", DbType="DateTime")]
+		public System.Nullable<System.DateTime> sm_date
+		{
+			get
+			{
+				return this._sm_date;
+			}
+			set
+			{
+				if ((this._sm_date != value))
+				{
+					this._sm_date = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_led_id", DbType="BigInt")]
+		public System.Nullable<long> led_id
+		{
+			get
+			{
+				return this._led_id;
+			}
+			set
+			{
+				if ((this._led_id != value))
+				{
+					this._led_id = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_sm_totqty", DbType="Decimal(18,3) NOT NULL")]
+		public decimal sm_totqty
+		{
+			get
+			{
+				return this._sm_totqty;
+			}
+			set
+			{
+				if ((this._sm_totqty != value))
+				{
+					this._sm_totqty = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_sm_totamount", DbType="Decimal(18,3) NOT NULL")]
+		public decimal sm_totamount
+		{
+			get
+			{
+				return this._sm_totamount;
+			}
+			set
+			{
+				if ((this._sm_totamount != value))
+				{
+					this._sm_totamount = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_sm_itemcount", DbType="BigInt")]
+		public System.Nullable<long> sm_itemcount
+		{
+			get
+			{
+				return this._sm_itemcount;
+			}
+			set
+			{
+				if ((this._sm_itemcount != value))
+				{
+					this._sm_itemcount = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_sm_profit", DbType="Decimal(18,3) NOT NULL")]
+		public decimal sm_profit
+		{
+			get
+			{
+				return this._sm_profit;
+			}
+			set
+			{
+				if ((this._sm_profit != value))
+				{
+					this._sm_profit = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_sm_disamount", DbType="Decimal(18,3) NOT NULL")]
+		public decimal sm_disamount
+		{
+			get
+			{
+				return this._sm_disamount;
+			}
+			set
+			{
+				if ((this._sm_disamount != value))
+				{
+					this._sm_disamount = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_sm_packingcharge", DbType="Decimal(18,3) NOT NULL")]
+		public decimal sm_packingcharge
+		{
+			get
+			{
+				return this._sm_packingcharge;
+			}
+			set
+			{
+				if ((this._sm_packingcharge != value))
+				{
+					this._sm_packingcharge = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_sm_netamount", DbType="Decimal(18,3) NOT NULL")]
+		public decimal sm_netamount
+		{
+			get
+			{
+				return this._sm_netamount;
+			}
+			set
+			{
+				if ((this._sm_netamount != value))
+				{
+					this._sm_netamount = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_sm_received", DbType="Decimal(18,3) NOT NULL")]
+		public decimal sm_received
+		{
+			get
+			{
+				return this._sm_received;
+			}
+			set
+			{
+				if ((this._sm_received != value))
+				{
+					this._sm_received = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_sm_paidcommission", DbType="Decimal(18,3) NOT NULL")]
+		public decimal sm_paidcommission
+		{
+			get
+			{
+				return this._sm_paidcommission;
+			}
+			set
+			{
+				if ((this._sm_paidcommission != value))
+				{
+					this._sm_paidcommission = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_sm_paidpacking", DbType="Decimal(18,3) NOT NULL")]
+		public decimal sm_paidpacking
+		{
+			get
+			{
+				return this._sm_paidpacking;
+			}
+			set
+			{
+				if ((this._sm_paidpacking != value))
+				{
+					this._sm_paidpacking = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_sm_iscommissionclose", DbType="Bit")]
+		public System.Nullable<bool> sm_iscommissionclose
+		{
+			get
+			{
+				return this._sm_iscommissionclose;
+			}
+			set
+			{
+				if ((this._sm_iscommissionclose != value))
+				{
+					this._sm_iscommissionclose = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_sm_ispackingclose", DbType="Bit")]
+		public System.Nullable<bool> sm_ispackingclose
+		{
+			get
+			{
+				return this._sm_ispackingclose;
+			}
+			set
+			{
+				if ((this._sm_ispackingclose != value))
+				{
+					this._sm_ispackingclose = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_users_uid", DbType="BigInt")]
+		public System.Nullable<long> users_uid
+		{
+			get
+			{
+				return this._users_uid;
+			}
+			set
+			{
+				if ((this._users_uid != value))
+				{
+					this._users_uid = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_sm_udate", DbType="DateTime")]
+		public System.Nullable<System.DateTime> sm_udate
+		{
+			get
+			{
+				return this._sm_udate;
+			}
+			set
+			{
+				if ((this._sm_udate != value))
+				{
+					this._sm_udate = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_sm_desc", DbType="NVarChar(50)")]
+		public string sm_desc
+		{
+			get
+			{
+				return this._sm_desc;
+			}
+			set
+			{
+				if ((this._sm_desc != value))
+				{
+					this._sm_desc = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_sm_isclose", DbType="Bit")]
+		public System.Nullable<bool> sm_isclose
+		{
+			get
+			{
+				return this._sm_isclose;
+			}
+			set
+			{
+				if ((this._sm_isclose != value))
+				{
+					this._sm_isclose = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_sm_taxamount", DbType="Decimal(18,3) NOT NULL")]
+		public decimal sm_taxamount
+		{
+			get
+			{
+				return this._sm_taxamount;
+			}
+			set
+			{
+				if ((this._sm_taxamount != value))
+				{
+					this._sm_taxamount = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_sm_taxpercentage", DbType="Decimal(18,3) NOT NULL")]
+		public decimal sm_taxpercentage
+		{
+			get
+			{
+				return this._sm_taxpercentage;
+			}
+			set
+			{
+				if ((this._sm_taxpercentage != value))
+				{
+					this._sm_taxpercentage = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_sm_roundamount", DbType="Decimal(18,3)")]
+		public System.Nullable<decimal> sm_roundamount
+		{
+			get
+			{
+				return this._sm_roundamount;
+			}
+			set
+			{
+				if ((this._sm_roundamount != value))
+				{
+					this._sm_roundamount = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_so_id", DbType="BigInt")]
+		public System.Nullable<long> so_id
+		{
+			get
+			{
+				return this._so_id;
+			}
+			set
+			{
+				if ((this._so_id != value))
+				{
+					this._so_id = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_sm_isdraft", DbType="Bit")]
+		public System.Nullable<bool> sm_isdraft
+		{
+			get
+			{
+				return this._sm_isdraft;
+			}
+			set
+			{
+				if ((this._sm_isdraft != value))
+				{
+					this._sm_isdraft = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_com_id", DbType="BigInt")]
+		public System.Nullable<long> com_id
+		{
+			get
+			{
+				return this._com_id;
+			}
+			set
+			{
+				if ((this._com_id != value))
+				{
+					this._com_id = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_sm_istaxable", DbType="Bit NOT NULL")]
+		public bool sm_istaxable
+		{
+			get
+			{
+				return this._sm_istaxable;
+			}
+			set
+			{
+				if ((this._sm_istaxable != value))
+				{
+					this._sm_istaxable = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_sm_isimport", DbType="Bit")]
+		public System.Nullable<bool> sm_isimport
+		{
+			get
+			{
+				return this._sm_isimport;
+			}
+			set
+			{
+				if ((this._sm_isimport != value))
+				{
+					this._sm_isimport = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_sm_guid", DbType="UniqueIdentifier")]
+		public System.Nullable<System.Guid> sm_guid
+		{
+			get
+			{
+				return this._sm_guid;
+			}
+			set
+			{
+				if ((this._sm_guid != value))
+				{
+					this._sm_guid = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_sm_agid", DbType="BigInt")]
+		public System.Nullable<long> sm_agid
+		{
+			get
+			{
+				return this._sm_agid;
+			}
+			set
+			{
+				if ((this._sm_agid != value))
+				{
+					this._sm_agid = value;
+				}
+			}
+		}
+	}
+	
+	public partial class usp_salesorderdetailsSelectResult
+	{
+		
+		private long _od_id;
+		
+		private long _so_id;
+		
+		private long _so_refno;
+		
+		private System.Nullable<System.DateTime> _so_date;
+		
+		private decimal _so_totqty;
+		
+		private string _led_name;
+		
+		private bool _led_isfreight;
+		
+		private string _led_ratetype;
+		
+		private long _led_id;
+		
+		private string _led_address;
+		
+		private string _led_address1;
+		
+		private string _led_address2;
+		
+		private long _cat_id;
+		
+		private string _cat_name;
+		
+		private long _item_id;
+		
+		private string _item_tamilname;
+		
+		private bool _od_istaxable;
+		
+		private decimal _item_perunitrate;
+		
+		private decimal _item_perunitrateb;
+		
+		private decimal _item_perunitratec;
+		
+		private long _com_id;
+		
+		private string _item_code;
+		
+		private string _item_name;
+		
+		private string _item_unit;
+		
+		private string _item_unittype;
+		
+		private int _item_quantity;
+		
+		private decimal _item_purchaserate;
+		
+		private decimal _item_costrate;
+		
+		private decimal _item_mrp;
+		
+		private decimal _item_specialrate;
+		
+		private decimal _item_supersepecialrate;
+		
+		private decimal _item_wholesalerate;
+		
+		private decimal _od_qty;
+		
+		private decimal _od_soldqty;
+		
+		private decimal _od_pendingqty;
+		
+		private System.Nullable<long> _com_id1;
+		
+		private decimal _item_taxpercentage;
+		
+		private bool _item_istaxable;
+		
+		private string _led_ratetype1;
+		
+		private decimal _item_perunitrate1;
+		
+		private decimal _od_rate;
+		
+		private decimal _od_unitvalue;
+		
+		private System.Nullable<long> _led_agid;
+		
+		public usp_salesorderdetailsSelectResult()
+		{
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_od_id", DbType="BigInt NOT NULL")]
+		public long od_id
+		{
+			get
+			{
+				return this._od_id;
+			}
+			set
+			{
+				if ((this._od_id != value))
+				{
+					this._od_id = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_so_id", DbType="BigInt NOT NULL")]
+		public long so_id
+		{
+			get
+			{
+				return this._so_id;
+			}
+			set
+			{
+				if ((this._so_id != value))
+				{
+					this._so_id = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_so_refno", DbType="BigInt NOT NULL")]
+		public long so_refno
+		{
+			get
+			{
+				return this._so_refno;
+			}
+			set
+			{
+				if ((this._so_refno != value))
+				{
+					this._so_refno = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_so_date", DbType="DateTime")]
+		public System.Nullable<System.DateTime> so_date
+		{
+			get
+			{
+				return this._so_date;
+			}
+			set
+			{
+				if ((this._so_date != value))
+				{
+					this._so_date = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_so_totqty", DbType="Decimal(18,3) NOT NULL")]
+		public decimal so_totqty
+		{
+			get
+			{
+				return this._so_totqty;
+			}
+			set
+			{
+				if ((this._so_totqty != value))
+				{
+					this._so_totqty = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_led_name", DbType="NVarChar(100) NOT NULL", CanBeNull=false)]
+		public string led_name
+		{
+			get
+			{
+				return this._led_name;
+			}
+			set
+			{
+				if ((this._led_name != value))
+				{
+					this._led_name = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_led_isfreight", DbType="Bit NOT NULL")]
+		public bool led_isfreight
+		{
+			get
+			{
+				return this._led_isfreight;
+			}
+			set
+			{
+				if ((this._led_isfreight != value))
+				{
+					this._led_isfreight = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_led_ratetype", DbType="NVarChar(100) NOT NULL", CanBeNull=false)]
+		public string led_ratetype
+		{
+			get
+			{
+				return this._led_ratetype;
+			}
+			set
+			{
+				if ((this._led_ratetype != value))
+				{
+					this._led_ratetype = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_led_id", DbType="BigInt NOT NULL")]
+		public long led_id
+		{
+			get
+			{
+				return this._led_id;
+			}
+			set
+			{
+				if ((this._led_id != value))
+				{
+					this._led_id = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_led_address", DbType="NVarChar(500)")]
+		public string led_address
+		{
+			get
+			{
+				return this._led_address;
+			}
+			set
+			{
+				if ((this._led_address != value))
+				{
+					this._led_address = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_led_address1", DbType="NVarChar(100) NOT NULL", CanBeNull=false)]
+		public string led_address1
+		{
+			get
+			{
+				return this._led_address1;
+			}
+			set
+			{
+				if ((this._led_address1 != value))
+				{
+					this._led_address1 = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_led_address2", DbType="NVarChar(100) NOT NULL", CanBeNull=false)]
+		public string led_address2
+		{
+			get
+			{
+				return this._led_address2;
+			}
+			set
+			{
+				if ((this._led_address2 != value))
+				{
+					this._led_address2 = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_cat_id", DbType="BigInt NOT NULL")]
+		public long cat_id
+		{
+			get
+			{
+				return this._cat_id;
+			}
+			set
+			{
+				if ((this._cat_id != value))
+				{
+					this._cat_id = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_cat_name", DbType="NVarChar(100) NOT NULL", CanBeNull=false)]
+		public string cat_name
+		{
+			get
+			{
+				return this._cat_name;
+			}
+			set
+			{
+				if ((this._cat_name != value))
+				{
+					this._cat_name = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_item_id", DbType="BigInt NOT NULL")]
+		public long item_id
+		{
+			get
+			{
+				return this._item_id;
+			}
+			set
+			{
+				if ((this._item_id != value))
+				{
+					this._item_id = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_item_tamilname", DbType="NVarChar(100) NOT NULL", CanBeNull=false)]
+		public string item_tamilname
+		{
+			get
+			{
+				return this._item_tamilname;
+			}
+			set
+			{
+				if ((this._item_tamilname != value))
+				{
+					this._item_tamilname = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_od_istaxable", DbType="Bit NOT NULL")]
+		public bool od_istaxable
+		{
+			get
+			{
+				return this._od_istaxable;
+			}
+			set
+			{
+				if ((this._od_istaxable != value))
+				{
+					this._od_istaxable = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_item_perunitrate", DbType="Decimal(18,3) NOT NULL")]
+		public decimal item_perunitrate
+		{
+			get
+			{
+				return this._item_perunitrate;
+			}
+			set
+			{
+				if ((this._item_perunitrate != value))
+				{
+					this._item_perunitrate = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_item_perunitrateb", DbType="Decimal(18,3) NOT NULL")]
+		public decimal item_perunitrateb
+		{
+			get
+			{
+				return this._item_perunitrateb;
+			}
+			set
+			{
+				if ((this._item_perunitrateb != value))
+				{
+					this._item_perunitrateb = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_item_perunitratec", DbType="Decimal(18,3) NOT NULL")]
+		public decimal item_perunitratec
+		{
+			get
+			{
+				return this._item_perunitratec;
+			}
+			set
+			{
+				if ((this._item_perunitratec != value))
+				{
+					this._item_perunitratec = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_com_id", DbType="BigInt NOT NULL")]
+		public long com_id
+		{
+			get
+			{
+				return this._com_id;
+			}
+			set
+			{
+				if ((this._com_id != value))
+				{
+					this._com_id = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_item_code", DbType="NVarChar(100) NOT NULL", CanBeNull=false)]
+		public string item_code
+		{
+			get
+			{
+				return this._item_code;
+			}
+			set
+			{
+				if ((this._item_code != value))
+				{
+					this._item_code = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_item_name", DbType="NVarChar(100) NOT NULL", CanBeNull=false)]
+		public string item_name
+		{
+			get
+			{
+				return this._item_name;
+			}
+			set
+			{
+				if ((this._item_name != value))
+				{
+					this._item_name = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_item_unit", DbType="NVarChar(100) NOT NULL", CanBeNull=false)]
+		public string item_unit
+		{
+			get
+			{
+				return this._item_unit;
+			}
+			set
+			{
+				if ((this._item_unit != value))
+				{
+					this._item_unit = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_item_unittype", DbType="NVarChar(100) NOT NULL", CanBeNull=false)]
+		public string item_unittype
+		{
+			get
+			{
+				return this._item_unittype;
+			}
+			set
+			{
+				if ((this._item_unittype != value))
+				{
+					this._item_unittype = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_item_quantity", DbType="Int NOT NULL")]
+		public int item_quantity
+		{
+			get
+			{
+				return this._item_quantity;
+			}
+			set
+			{
+				if ((this._item_quantity != value))
+				{
+					this._item_quantity = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_item_purchaserate", DbType="Decimal(18,3) NOT NULL")]
+		public decimal item_purchaserate
+		{
+			get
+			{
+				return this._item_purchaserate;
+			}
+			set
+			{
+				if ((this._item_purchaserate != value))
+				{
+					this._item_purchaserate = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_item_costrate", DbType="Decimal(18,3) NOT NULL")]
+		public decimal item_costrate
+		{
+			get
+			{
+				return this._item_costrate;
+			}
+			set
+			{
+				if ((this._item_costrate != value))
+				{
+					this._item_costrate = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_item_mrp", DbType="Decimal(18,3) NOT NULL")]
+		public decimal item_mrp
+		{
+			get
+			{
+				return this._item_mrp;
+			}
+			set
+			{
+				if ((this._item_mrp != value))
+				{
+					this._item_mrp = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_item_specialrate", DbType="Decimal(18,3) NOT NULL")]
+		public decimal item_specialrate
+		{
+			get
+			{
+				return this._item_specialrate;
+			}
+			set
+			{
+				if ((this._item_specialrate != value))
+				{
+					this._item_specialrate = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_item_supersepecialrate", DbType="Decimal(18,3) NOT NULL")]
+		public decimal item_supersepecialrate
+		{
+			get
+			{
+				return this._item_supersepecialrate;
+			}
+			set
+			{
+				if ((this._item_supersepecialrate != value))
+				{
+					this._item_supersepecialrate = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_item_wholesalerate", DbType="Decimal(18,3) NOT NULL")]
+		public decimal item_wholesalerate
+		{
+			get
+			{
+				return this._item_wholesalerate;
+			}
+			set
+			{
+				if ((this._item_wholesalerate != value))
+				{
+					this._item_wholesalerate = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_od_qty", DbType="Decimal(18,3) NOT NULL")]
+		public decimal od_qty
+		{
+			get
+			{
+				return this._od_qty;
+			}
+			set
+			{
+				if ((this._od_qty != value))
+				{
+					this._od_qty = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_od_soldqty", DbType="Decimal(18,3) NOT NULL")]
+		public decimal od_soldqty
+		{
+			get
+			{
+				return this._od_soldqty;
+			}
+			set
+			{
+				if ((this._od_soldqty != value))
+				{
+					this._od_soldqty = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_od_pendingqty", DbType="Decimal(18,3) NOT NULL")]
+		public decimal od_pendingqty
+		{
+			get
+			{
+				return this._od_pendingqty;
+			}
+			set
+			{
+				if ((this._od_pendingqty != value))
+				{
+					this._od_pendingqty = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_com_id1", DbType="BigInt")]
+		public System.Nullable<long> com_id1
+		{
+			get
+			{
+				return this._com_id1;
+			}
+			set
+			{
+				if ((this._com_id1 != value))
+				{
+					this._com_id1 = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_item_taxpercentage", DbType="Decimal(18,3) NOT NULL")]
+		public decimal item_taxpercentage
+		{
+			get
+			{
+				return this._item_taxpercentage;
+			}
+			set
+			{
+				if ((this._item_taxpercentage != value))
+				{
+					this._item_taxpercentage = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_item_istaxable", DbType="Bit NOT NULL")]
+		public bool item_istaxable
+		{
+			get
+			{
+				return this._item_istaxable;
+			}
+			set
+			{
+				if ((this._item_istaxable != value))
+				{
+					this._item_istaxable = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_led_ratetype1", DbType="NVarChar(100) NOT NULL", CanBeNull=false)]
+		public string led_ratetype1
+		{
+			get
+			{
+				return this._led_ratetype1;
+			}
+			set
+			{
+				if ((this._led_ratetype1 != value))
+				{
+					this._led_ratetype1 = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_item_perunitrate1", DbType="Decimal(18,3) NOT NULL")]
+		public decimal item_perunitrate1
+		{
+			get
+			{
+				return this._item_perunitrate1;
+			}
+			set
+			{
+				if ((this._item_perunitrate1 != value))
+				{
+					this._item_perunitrate1 = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_od_rate", DbType="Decimal(18,3) NOT NULL")]
+		public decimal od_rate
+		{
+			get
+			{
+				return this._od_rate;
+			}
+			set
+			{
+				if ((this._od_rate != value))
+				{
+					this._od_rate = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_od_unitvalue", DbType="Decimal(18,3) NOT NULL")]
+		public decimal od_unitvalue
+		{
+			get
+			{
+				return this._od_unitvalue;
+			}
+			set
+			{
+				if ((this._od_unitvalue != value))
+				{
+					this._od_unitvalue = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_led_agid", DbType="BigInt")]
+		public System.Nullable<long> led_agid
+		{
+			get
+			{
+				return this._led_agid;
+			}
+			set
+			{
+				if ((this._led_agid != value))
+				{
+					this._led_agid = value;
+				}
+			}
+		}
+	}
+	
+	public partial class usp_NewOutstandingReportResult
+	{
+		
+		private long _sm_id;
+		
+		private long _led_id;
+		
+		private System.Nullable<long> _sm_agid;
+		
+		private string _led_accountcode;
+		
+		private long _agid;
+		
+		private System.Nullable<int> _dayscount;
+		
+		private System.Nullable<bool> _isclose;
+		
+		private System.Nullable<bool> _sm_isdraft;
+		
+		private string _led_name;
+		
+		private string _led_address;
+		
+		private string _led_address1;
+		
+		private string _led_address2;
+		
+		private System.Nullable<System.DateTime> _sm_date;
+		
+		private string _sm_refno;
+		
+		private decimal _billamt;
+		
+		private decimal _received;
+		
+		private System.Nullable<decimal> _balanceamt;
+		
+		private System.Nullable<long> _item_id;
+		
+		private string _item_name;
+		
+		private string _item_unit;
+		
+		private int _item_quantity;
+		
+		private string _cat_name;
+		
+		private decimal _qty;
+		
+		private decimal _totalqty;
+		
+		private string _Type;
+		
+		public usp_NewOutstandingReportResult()
+		{
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_sm_id", DbType="BigInt NOT NULL")]
+		public long sm_id
+		{
+			get
+			{
+				return this._sm_id;
+			}
+			set
+			{
+				if ((this._sm_id != value))
+				{
+					this._sm_id = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_led_id", DbType="BigInt NOT NULL")]
+		public long led_id
+		{
+			get
+			{
+				return this._led_id;
+			}
+			set
+			{
+				if ((this._led_id != value))
+				{
+					this._led_id = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_sm_agid", DbType="BigInt")]
+		public System.Nullable<long> sm_agid
+		{
+			get
+			{
+				return this._sm_agid;
+			}
+			set
+			{
+				if ((this._sm_agid != value))
+				{
+					this._sm_agid = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_led_accountcode", DbType="NVarChar(50)")]
+		public string led_accountcode
+		{
+			get
+			{
+				return this._led_accountcode;
+			}
+			set
+			{
+				if ((this._led_accountcode != value))
+				{
+					this._led_accountcode = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_agid", DbType="BigInt NOT NULL")]
+		public long agid
+		{
+			get
+			{
+				return this._agid;
+			}
+			set
+			{
+				if ((this._agid != value))
+				{
+					this._agid = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_dayscount", DbType="Int")]
+		public System.Nullable<int> dayscount
+		{
+			get
+			{
+				return this._dayscount;
+			}
+			set
+			{
+				if ((this._dayscount != value))
+				{
+					this._dayscount = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_isclose", DbType="Bit")]
+		public System.Nullable<bool> isclose
+		{
+			get
+			{
+				return this._isclose;
+			}
+			set
+			{
+				if ((this._isclose != value))
+				{
+					this._isclose = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_sm_isdraft", DbType="Bit")]
+		public System.Nullable<bool> sm_isdraft
+		{
+			get
+			{
+				return this._sm_isdraft;
+			}
+			set
+			{
+				if ((this._sm_isdraft != value))
+				{
+					this._sm_isdraft = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_led_name", DbType="NVarChar(100) NOT NULL", CanBeNull=false)]
+		public string led_name
+		{
+			get
+			{
+				return this._led_name;
+			}
+			set
+			{
+				if ((this._led_name != value))
+				{
+					this._led_name = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_led_address", DbType="NVarChar(500)")]
+		public string led_address
+		{
+			get
+			{
+				return this._led_address;
+			}
+			set
+			{
+				if ((this._led_address != value))
+				{
+					this._led_address = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_led_address1", DbType="NVarChar(100) NOT NULL", CanBeNull=false)]
+		public string led_address1
+		{
+			get
+			{
+				return this._led_address1;
+			}
+			set
+			{
+				if ((this._led_address1 != value))
+				{
+					this._led_address1 = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_led_address2", DbType="NVarChar(100) NOT NULL", CanBeNull=false)]
+		public string led_address2
+		{
+			get
+			{
+				return this._led_address2;
+			}
+			set
+			{
+				if ((this._led_address2 != value))
+				{
+					this._led_address2 = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_sm_date", DbType="DateTime")]
+		public System.Nullable<System.DateTime> sm_date
+		{
+			get
+			{
+				return this._sm_date;
+			}
+			set
+			{
+				if ((this._sm_date != value))
+				{
+					this._sm_date = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_sm_refno", DbType="NVarChar(100)")]
+		public string sm_refno
+		{
+			get
+			{
+				return this._sm_refno;
+			}
+			set
+			{
+				if ((this._sm_refno != value))
+				{
+					this._sm_refno = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_billamt", DbType="Decimal(18,3) NOT NULL")]
+		public decimal billamt
+		{
+			get
+			{
+				return this._billamt;
+			}
+			set
+			{
+				if ((this._billamt != value))
+				{
+					this._billamt = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_received", DbType="Decimal(18,3) NOT NULL")]
+		public decimal received
+		{
+			get
+			{
+				return this._received;
+			}
+			set
+			{
+				if ((this._received != value))
+				{
+					this._received = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_balanceamt", DbType="Decimal(19,3)")]
+		public System.Nullable<decimal> balanceamt
+		{
+			get
+			{
+				return this._balanceamt;
+			}
+			set
+			{
+				if ((this._balanceamt != value))
+				{
+					this._balanceamt = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_item_id", DbType="BigInt")]
+		public System.Nullable<long> item_id
+		{
+			get
+			{
+				return this._item_id;
+			}
+			set
+			{
+				if ((this._item_id != value))
+				{
+					this._item_id = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_item_name", DbType="NVarChar(100) NOT NULL", CanBeNull=false)]
+		public string item_name
+		{
+			get
+			{
+				return this._item_name;
+			}
+			set
+			{
+				if ((this._item_name != value))
+				{
+					this._item_name = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_item_unit", DbType="NVarChar(100) NOT NULL", CanBeNull=false)]
+		public string item_unit
+		{
+			get
+			{
+				return this._item_unit;
+			}
+			set
+			{
+				if ((this._item_unit != value))
+				{
+					this._item_unit = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_item_quantity", DbType="Int NOT NULL")]
+		public int item_quantity
+		{
+			get
+			{
+				return this._item_quantity;
+			}
+			set
+			{
+				if ((this._item_quantity != value))
+				{
+					this._item_quantity = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_cat_name", DbType="NVarChar(100) NOT NULL", CanBeNull=false)]
+		public string cat_name
+		{
+			get
+			{
+				return this._cat_name;
+			}
+			set
+			{
+				if ((this._cat_name != value))
+				{
+					this._cat_name = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_qty", DbType="Decimal(18,3) NOT NULL")]
+		public decimal qty
+		{
+			get
+			{
+				return this._qty;
+			}
+			set
+			{
+				if ((this._qty != value))
+				{
+					this._qty = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_totalqty", DbType="Decimal(18,3) NOT NULL")]
+		public decimal totalqty
+		{
+			get
+			{
+				return this._totalqty;
+			}
+			set
+			{
+				if ((this._totalqty != value))
+				{
+					this._totalqty = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Type", DbType="VarChar(13) NOT NULL", CanBeNull=false)]
+		public string Type
+		{
+			get
+			{
+				return this._Type;
+			}
+			set
+			{
+				if ((this._Type != value))
+				{
+					this._Type = value;
+				}
+			}
+		}
+	}
+	
+	public partial class usp_purchasedetailsSelectResult
+	{
+		
+		private long _pd_id;
+		
+		private System.Nullable<long> _pm_id;
+		
+		private long _pm_no;
+		
+		private decimal _pm_totamount;
+		
+		private decimal _pm_totqty;
+		
+		private System.Nullable<System.DateTime> _pm_date;
+		
+		private System.Nullable<long> _item_id;
+		
+		private string _item_name;
+		
+		private System.Nullable<long> _cat_id;
+		
+		private string _cat_name;
+		
+		private string _pd_particulars;
+		
+		private decimal _pd_qty;
+		
+		private decimal _pd_unitvalue;
+		
+		private decimal _pd_prate;
+		
+		private decimal _pd_amount;
+		
+		private decimal _pd_totfrieght;
+		
+		private decimal _pd_taxpercentage;
+		
+		private decimal _pd_taxamount;
+		
+		private string _item_unit;
+		
+		private int _item_quantity;
+		
+		private string _item_fullname;
+		
+		private bool _item_istaxable;
+		
+		private string _item_hsncode;
+		
+		private System.Nullable<long> _led_id;
+		
+		private string _led_name;
+		
+		public usp_purchasedetailsSelectResult()
+		{
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_pd_id", DbType="BigInt NOT NULL")]
+		public long pd_id
+		{
+			get
+			{
+				return this._pd_id;
+			}
+			set
+			{
+				if ((this._pd_id != value))
+				{
+					this._pd_id = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_pm_id", DbType="BigInt")]
+		public System.Nullable<long> pm_id
+		{
+			get
+			{
+				return this._pm_id;
+			}
+			set
+			{
+				if ((this._pm_id != value))
+				{
+					this._pm_id = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_pm_no", DbType="BigInt NOT NULL")]
+		public long pm_no
+		{
+			get
+			{
+				return this._pm_no;
+			}
+			set
+			{
+				if ((this._pm_no != value))
+				{
+					this._pm_no = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_pm_totamount", DbType="Decimal(18,3) NOT NULL")]
+		public decimal pm_totamount
+		{
+			get
+			{
+				return this._pm_totamount;
+			}
+			set
+			{
+				if ((this._pm_totamount != value))
+				{
+					this._pm_totamount = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_pm_totqty", DbType="Decimal(18,3) NOT NULL")]
+		public decimal pm_totqty
+		{
+			get
+			{
+				return this._pm_totqty;
+			}
+			set
+			{
+				if ((this._pm_totqty != value))
+				{
+					this._pm_totqty = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_pm_date", DbType="DateTime")]
+		public System.Nullable<System.DateTime> pm_date
+		{
+			get
+			{
+				return this._pm_date;
+			}
+			set
+			{
+				if ((this._pm_date != value))
+				{
+					this._pm_date = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_item_id", DbType="BigInt")]
+		public System.Nullable<long> item_id
+		{
+			get
+			{
+				return this._item_id;
+			}
+			set
+			{
+				if ((this._item_id != value))
+				{
+					this._item_id = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_item_name", DbType="NVarChar(100) NOT NULL", CanBeNull=false)]
+		public string item_name
+		{
+			get
+			{
+				return this._item_name;
+			}
+			set
+			{
+				if ((this._item_name != value))
+				{
+					this._item_name = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_cat_id", DbType="BigInt")]
+		public System.Nullable<long> cat_id
+		{
+			get
+			{
+				return this._cat_id;
+			}
+			set
+			{
+				if ((this._cat_id != value))
+				{
+					this._cat_id = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_cat_name", DbType="NVarChar(100) NOT NULL", CanBeNull=false)]
+		public string cat_name
+		{
+			get
+			{
+				return this._cat_name;
+			}
+			set
+			{
+				if ((this._cat_name != value))
+				{
+					this._cat_name = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_pd_particulars", DbType="NVarChar(100) NOT NULL", CanBeNull=false)]
+		public string pd_particulars
+		{
+			get
+			{
+				return this._pd_particulars;
+			}
+			set
+			{
+				if ((this._pd_particulars != value))
+				{
+					this._pd_particulars = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_pd_qty", DbType="Decimal(18,3) NOT NULL")]
+		public decimal pd_qty
+		{
+			get
+			{
+				return this._pd_qty;
+			}
+			set
+			{
+				if ((this._pd_qty != value))
+				{
+					this._pd_qty = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_pd_unitvalue", DbType="Decimal(18,3) NOT NULL")]
+		public decimal pd_unitvalue
+		{
+			get
+			{
+				return this._pd_unitvalue;
+			}
+			set
+			{
+				if ((this._pd_unitvalue != value))
+				{
+					this._pd_unitvalue = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_pd_prate", DbType="Decimal(18,3) NOT NULL")]
+		public decimal pd_prate
+		{
+			get
+			{
+				return this._pd_prate;
+			}
+			set
+			{
+				if ((this._pd_prate != value))
+				{
+					this._pd_prate = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_pd_amount", DbType="Decimal(18,3) NOT NULL")]
+		public decimal pd_amount
+		{
+			get
+			{
+				return this._pd_amount;
+			}
+			set
+			{
+				if ((this._pd_amount != value))
+				{
+					this._pd_amount = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_pd_totfrieght", DbType="Decimal(18,3) NOT NULL")]
+		public decimal pd_totfrieght
+		{
+			get
+			{
+				return this._pd_totfrieght;
+			}
+			set
+			{
+				if ((this._pd_totfrieght != value))
+				{
+					this._pd_totfrieght = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_pd_taxpercentage", DbType="Decimal(18,3) NOT NULL")]
+		public decimal pd_taxpercentage
+		{
+			get
+			{
+				return this._pd_taxpercentage;
+			}
+			set
+			{
+				if ((this._pd_taxpercentage != value))
+				{
+					this._pd_taxpercentage = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_pd_taxamount", DbType="Decimal(18,3) NOT NULL")]
+		public decimal pd_taxamount
+		{
+			get
+			{
+				return this._pd_taxamount;
+			}
+			set
+			{
+				if ((this._pd_taxamount != value))
+				{
+					this._pd_taxamount = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_item_unit", DbType="NVarChar(100) NOT NULL", CanBeNull=false)]
+		public string item_unit
+		{
+			get
+			{
+				return this._item_unit;
+			}
+			set
+			{
+				if ((this._item_unit != value))
+				{
+					this._item_unit = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_item_quantity", DbType="Int NOT NULL")]
+		public int item_quantity
+		{
+			get
+			{
+				return this._item_quantity;
+			}
+			set
+			{
+				if ((this._item_quantity != value))
+				{
+					this._item_quantity = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_item_fullname", DbType="NVarChar(100) NOT NULL", CanBeNull=false)]
+		public string item_fullname
+		{
+			get
+			{
+				return this._item_fullname;
+			}
+			set
+			{
+				if ((this._item_fullname != value))
+				{
+					this._item_fullname = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_item_istaxable", DbType="Bit NOT NULL")]
+		public bool item_istaxable
+		{
+			get
+			{
+				return this._item_istaxable;
+			}
+			set
+			{
+				if ((this._item_istaxable != value))
+				{
+					this._item_istaxable = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_item_hsncode", DbType="NVarChar(100) NOT NULL", CanBeNull=false)]
+		public string item_hsncode
+		{
+			get
+			{
+				return this._item_hsncode;
+			}
+			set
+			{
+				if ((this._item_hsncode != value))
+				{
+					this._item_hsncode = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_led_id", DbType="BigInt")]
+		public System.Nullable<long> led_id
+		{
+			get
+			{
+				return this._led_id;
+			}
+			set
+			{
+				if ((this._led_id != value))
+				{
+					this._led_id = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_led_name", DbType="NVarChar(100) NOT NULL", CanBeNull=false)]
+		public string led_name
+		{
+			get
+			{
+				return this._led_name;
+			}
+			set
+			{
+				if ((this._led_name != value))
+				{
+					this._led_name = value;
 				}
 			}
 		}

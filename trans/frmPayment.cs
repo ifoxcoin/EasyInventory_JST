@@ -901,16 +901,16 @@ namespace standard.trans
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle8 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle9 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle10 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle11 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle12 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle13 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle7 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle9 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle10 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle11 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle12 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle13 = new System.Windows.Forms.DataGridViewCellStyle();
             this.tablemain = new System.Windows.Forms.TableLayoutPanel();
             this.lbltitle = new System.Windows.Forms.Label();
             this.tableentry = new System.Windows.Forms.TableLayoutPanel();
@@ -940,6 +940,16 @@ namespace standard.trans
             this.cmdview = new mylib.lightbutton();
             this.pnlentry = new System.Windows.Forms.Panel();
             this.dgvpayment = new mylib.mygrid();
+            this.osno = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.cBillNo = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.cBilldate = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.cBillAmt = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.cpaid = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.cExistpaid = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.cNewBalance = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.cDayscount = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.cCompany = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.cPMId = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.tableview = new System.Windows.Forms.TableLayoutPanel();
             this.dglist = new mylib.mygrid();
             this.ldelete = new System.Windows.Forms.DataGridViewImageColumn();
@@ -974,16 +984,6 @@ namespace standard.trans
             this.ledgermasterViewBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.cmdexit = new mylib.lightbutton();
             this.pnlview = new System.Windows.Forms.Panel();
-            this.osno = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.cBillNo = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.cBilldate = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.cBillAmt = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.cpaid = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.cExistpaid = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.cNewBalance = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.cDayscount = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.cCompany = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.cPMId = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.tablemain.SuspendLayout();
             this.tableentry.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.ledgermasterCityBindingSource)).BeginInit();
@@ -1481,6 +1481,96 @@ namespace standard.trans
             this.dgvpayment.RowsRemoved += new System.Windows.Forms.DataGridViewRowsRemovedEventHandler(this.dgopen_RowsRemoved);
             this.dgvpayment.KeyDown += new System.Windows.Forms.KeyEventHandler(this.dgopen_KeyDown);
             // 
+            // osno
+            // 
+            this.osno.HeaderText = "SNO";
+            this.osno.Name = "osno";
+            this.osno.ReadOnly = true;
+            this.osno.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.osno.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            this.osno.Width = 45;
+            // 
+            // cBillNo
+            // 
+            this.cBillNo.HeaderText = "BILL NO";
+            this.cBillNo.Name = "cBillNo";
+            this.cBillNo.ReadOnly = true;
+            this.cBillNo.Width = 150;
+            // 
+            // cBilldate
+            // 
+            this.cBilldate.HeaderText = "BILL DATE";
+            this.cBilldate.Name = "cBilldate";
+            this.cBilldate.ReadOnly = true;
+            this.cBilldate.Width = 150;
+            // 
+            // cBillAmt
+            // 
+            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            dataGridViewCellStyle3.Format = "N2";
+            this.cBillAmt.DefaultCellStyle = dataGridViewCellStyle3;
+            this.cBillAmt.HeaderText = "BILL AMOUNT";
+            this.cBillAmt.Name = "cBillAmt";
+            this.cBillAmt.ReadOnly = true;
+            this.cBillAmt.Width = 150;
+            // 
+            // cpaid
+            // 
+            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            dataGridViewCellStyle4.Format = "N2";
+            this.cpaid.DefaultCellStyle = dataGridViewCellStyle4;
+            this.cpaid.HeaderText = "PAID";
+            this.cpaid.MaxInputLength = 10;
+            this.cpaid.Name = "cpaid";
+            this.cpaid.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.cpaid.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            this.cpaid.Width = 150;
+            // 
+            // cExistpaid
+            // 
+            dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            dataGridViewCellStyle5.Format = "N2";
+            this.cExistpaid.DefaultCellStyle = dataGridViewCellStyle5;
+            this.cExistpaid.HeaderText = "ALREADY PAID";
+            this.cExistpaid.Name = "cExistpaid";
+            this.cExistpaid.ReadOnly = true;
+            this.cExistpaid.Width = 150;
+            // 
+            // cNewBalance
+            // 
+            dataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            dataGridViewCellStyle6.Format = "N2";
+            this.cNewBalance.DefaultCellStyle = dataGridViewCellStyle6;
+            this.cNewBalance.HeaderText = "NEW BALANCE";
+            this.cNewBalance.Name = "cNewBalance";
+            this.cNewBalance.ReadOnly = true;
+            this.cNewBalance.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.cNewBalance.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            this.cNewBalance.Width = 150;
+            // 
+            // cDayscount
+            // 
+            dataGridViewCellStyle7.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            this.cDayscount.DefaultCellStyle = dataGridViewCellStyle7;
+            this.cDayscount.HeaderText = "DAYS COUNT";
+            this.cDayscount.Name = "cDayscount";
+            this.cDayscount.ReadOnly = true;
+            this.cDayscount.Width = 150;
+            // 
+            // cCompany
+            // 
+            this.cCompany.HeaderText = "COMPANY";
+            this.cCompany.Name = "cCompany";
+            this.cCompany.ReadOnly = true;
+            this.cCompany.Width = 250;
+            // 
+            // cPMId
+            // 
+            this.cPMId.HeaderText = "SMID";
+            this.cPMId.Name = "cPMId";
+            this.cPMId.ReadOnly = true;
+            this.cPMId.Visible = false;
+            // 
             // tableview
             // 
             this.tableview.CellBorderStyle = System.Windows.Forms.TableLayoutPanelCellBorderStyle.Inset;
@@ -1909,96 +1999,6 @@ namespace standard.trans
             this.pnlview.Name = "pnlview";
             this.pnlview.Size = new System.Drawing.Size(1364, 731);
             this.pnlview.TabIndex = 12;
-            // 
-            // osno
-            // 
-            this.osno.HeaderText = "SNO";
-            this.osno.Name = "osno";
-            this.osno.ReadOnly = true;
-            this.osno.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-            this.osno.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
-            this.osno.Width = 45;
-            // 
-            // cBillNo
-            // 
-            this.cBillNo.HeaderText = "BILL NO";
-            this.cBillNo.Name = "cBillNo";
-            this.cBillNo.ReadOnly = true;
-            this.cBillNo.Width = 150;
-            // 
-            // cBilldate
-            // 
-            this.cBilldate.HeaderText = "BILL DATE";
-            this.cBilldate.Name = "cBilldate";
-            this.cBilldate.ReadOnly = true;
-            this.cBilldate.Width = 150;
-            // 
-            // cBillAmt
-            // 
-            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            dataGridViewCellStyle3.Format = "N2";
-            this.cBillAmt.DefaultCellStyle = dataGridViewCellStyle3;
-            this.cBillAmt.HeaderText = "BILL AMOUNT";
-            this.cBillAmt.Name = "cBillAmt";
-            this.cBillAmt.ReadOnly = true;
-            this.cBillAmt.Width = 150;
-            // 
-            // cpaid
-            // 
-            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            dataGridViewCellStyle4.Format = "N2";
-            this.cpaid.DefaultCellStyle = dataGridViewCellStyle4;
-            this.cpaid.HeaderText = "PAID";
-            this.cpaid.MaxInputLength = 10;
-            this.cpaid.Name = "cpaid";
-            this.cpaid.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-            this.cpaid.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
-            this.cpaid.Width = 150;
-            // 
-            // cExistpaid
-            // 
-            dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            dataGridViewCellStyle5.Format = "N2";
-            this.cExistpaid.DefaultCellStyle = dataGridViewCellStyle5;
-            this.cExistpaid.HeaderText = "ALREADY PAID";
-            this.cExistpaid.Name = "cExistpaid";
-            this.cExistpaid.ReadOnly = true;
-            this.cExistpaid.Width = 150;
-            // 
-            // cNewBalance
-            // 
-            dataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            dataGridViewCellStyle6.Format = "N2";
-            this.cNewBalance.DefaultCellStyle = dataGridViewCellStyle6;
-            this.cNewBalance.HeaderText = "NEW BALANCE";
-            this.cNewBalance.Name = "cNewBalance";
-            this.cNewBalance.ReadOnly = true;
-            this.cNewBalance.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-            this.cNewBalance.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
-            this.cNewBalance.Width = 150;
-            // 
-            // cDayscount
-            // 
-            dataGridViewCellStyle7.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            this.cDayscount.DefaultCellStyle = dataGridViewCellStyle7;
-            this.cDayscount.HeaderText = "DAYS COUNT";
-            this.cDayscount.Name = "cDayscount";
-            this.cDayscount.ReadOnly = true;
-            this.cDayscount.Width = 150;
-            // 
-            // cCompany
-            // 
-            this.cCompany.HeaderText = "COMPANY";
-            this.cCompany.Name = "cCompany";
-            this.cCompany.ReadOnly = true;
-            this.cCompany.Width = 250;
-            // 
-            // cPMId
-            // 
-            this.cPMId.HeaderText = "SMID";
-            this.cPMId.Name = "cPMId";
-            this.cPMId.ReadOnly = true;
-            this.cPMId.Visible = false;
             // 
             // frmPayment
             // 

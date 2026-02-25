@@ -270,26 +270,6 @@ namespace standard.master
             this.txtSearch = new System.Windows.Forms.TextBox();
             this.lblSearch = new System.Windows.Forms.Label();
             this.dgview = new System.Windows.Forms.DataGridView();
-            this.uspcategorySelectResultBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.tblEntry = new System.Windows.Forms.TableLayoutPanel();
-            this.lblHSNCode = new System.Windows.Forms.Label();
-            this.label1 = new System.Windows.Forms.Label();
-            this.txtCategory = new System.Windows.Forms.TextBox();
-            this.label2 = new System.Windows.Forms.Label();
-            this.cboCompany = new System.Windows.Forms.ComboBox();
-            this.companyBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.lblCode = new System.Windows.Forms.Label();
-            this.lblTamilName = new System.Windows.Forms.Label();
-            this.txtTamilName = new System.Windows.Forms.TextBox();
-            this.txtCode = new System.Windows.Forms.TextBox();
-            this.lblTamil = new System.Windows.Forms.Label();
-            this.txtHSNCode = new System.Windows.Forms.TextBox();
-            this.tblCommand = new System.Windows.Forms.TableLayoutPanel();
-            this.cmdclose = new mylib.lightbutton();
-            this.btnClear = new mylib.lightbutton();
-            this.btnDelete = new mylib.lightbutton();
-            this.btnSave = new mylib.lightbutton();
-            this.uspcompanySelectResultBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.ccat_id = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.cCategory = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.cat_udate = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -304,6 +284,26 @@ namespace standard.master
             this.usersuidDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.catudateDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.cCompany = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.uspcategorySelectResultBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.tblEntry = new System.Windows.Forms.TableLayoutPanel();
+            this.label1 = new System.Windows.Forms.Label();
+            this.txtCategory = new System.Windows.Forms.TextBox();
+            this.label2 = new System.Windows.Forms.Label();
+            this.cboCompany = new System.Windows.Forms.ComboBox();
+            this.companyBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.lblCode = new System.Windows.Forms.Label();
+            this.lblTamilName = new System.Windows.Forms.Label();
+            this.txtTamilName = new System.Windows.Forms.TextBox();
+            this.txtCode = new System.Windows.Forms.TextBox();
+            this.lblTamil = new System.Windows.Forms.Label();
+            this.lblHSNCode = new System.Windows.Forms.Label();
+            this.txtHSNCode = new System.Windows.Forms.TextBox();
+            this.tblCommand = new System.Windows.Forms.TableLayoutPanel();
+            this.cmdclose = new mylib.lightbutton();
+            this.btnClear = new mylib.lightbutton();
+            this.btnDelete = new mylib.lightbutton();
+            this.btnSave = new mylib.lightbutton();
+            this.uspcompanySelectResultBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.a1Paneltitle.SuspendLayout();
             this.tblMain.SuspendLayout();
             this.tblSearch.SuspendLayout();
@@ -325,11 +325,10 @@ namespace standard.master
             this.a1Paneltitle.GradientStartColor = System.Drawing.Color.White;
             this.a1Paneltitle.Image = null;
             this.a1Paneltitle.ImageLocation = new System.Drawing.Point(4, 4);
-            this.a1Paneltitle.Location = new System.Drawing.Point(5, 6);
-            this.a1Paneltitle.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.a1Paneltitle.Location = new System.Drawing.Point(4, 4);
             this.a1Paneltitle.Name = "a1Paneltitle";
             this.a1Paneltitle.ShadowOffSet = 0;
-            this.a1Paneltitle.Size = new System.Drawing.Size(1319, 44);
+            this.a1Paneltitle.Size = new System.Drawing.Size(878, 29);
             this.a1Paneltitle.TabIndex = 0;
             // 
             // lbltitle
@@ -339,10 +338,9 @@ namespace standard.master
             this.lbltitle.BackColor = System.Drawing.Color.Transparent;
             this.lbltitle.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lbltitle.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.lbltitle.Location = new System.Drawing.Point(38, 8);
-            this.lbltitle.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lbltitle.Location = new System.Drawing.Point(25, 5);
             this.lbltitle.Name = "lbltitle";
-            this.lbltitle.Size = new System.Drawing.Size(116, 28);
+            this.lbltitle.Size = new System.Drawing.Size(76, 18);
             this.lbltitle.TabIndex = 1;
             this.lbltitle.Text = "Category";
             this.lbltitle.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -359,35 +357,33 @@ namespace standard.master
             this.tblMain.Controls.Add(this.tblCommand, 0, 4);
             this.tblMain.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tblMain.Location = new System.Drawing.Point(0, 0);
-            this.tblMain.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.tblMain.Name = "tblMain";
             this.tblMain.RowCount = 5;
-            this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 54F));
+            this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 35F));
             this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 39F));
-            this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 69F));
+            this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 45F));
             this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 61F));
-            this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 69F));
-            this.tblMain.Size = new System.Drawing.Size(1329, 768);
+            this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 45F));
+            this.tblMain.Size = new System.Drawing.Size(886, 499);
             this.tblMain.TabIndex = 2;
             // 
             // tblSearch
             // 
             this.tblSearch.ColumnCount = 6;
-            this.tblSearch.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 354F));
-            this.tblSearch.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 368F));
-            this.tblSearch.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 208F));
-            this.tblSearch.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 330F));
-            this.tblSearch.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 30F));
+            this.tblSearch.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 236F));
+            this.tblSearch.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 245F));
+            this.tblSearch.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 139F));
+            this.tblSearch.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 220F));
+            this.tblSearch.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tblSearch.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tblSearch.Controls.Add(this.txtSearch, 1, 0);
             this.tblSearch.Controls.Add(this.lblSearch, 0, 0);
             this.tblSearch.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tblSearch.Location = new System.Drawing.Point(5, 284);
-            this.tblSearch.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.tblSearch.Location = new System.Drawing.Point(4, 184);
             this.tblSearch.Name = "tblSearch";
             this.tblSearch.RowCount = 1;
             this.tblSearch.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tblSearch.Size = new System.Drawing.Size(1319, 59);
+            this.tblSearch.Size = new System.Drawing.Size(878, 39);
             this.tblSearch.TabIndex = 3;
             // 
             // txtSearch
@@ -395,11 +391,10 @@ namespace standard.master
             this.txtSearch.BackColor = System.Drawing.Color.White;
             this.txtSearch.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.txtSearch.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtSearch.Location = new System.Drawing.Point(358, 5);
-            this.txtSearch.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.txtSearch.Location = new System.Drawing.Point(239, 3);
             this.txtSearch.MaxLength = 50;
             this.txtSearch.Name = "txtSearch";
-            this.txtSearch.Size = new System.Drawing.Size(358, 35);
+            this.txtSearch.Size = new System.Drawing.Size(239, 26);
             this.txtSearch.TabIndex = 1;
             this.txtSearch.TextChanged += new System.EventHandler(this.txtSearch_TextChanged);
             // 
@@ -410,10 +405,9 @@ namespace standard.master
             this.lblSearch.BackColor = System.Drawing.Color.Transparent;
             this.lblSearch.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblSearch.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.lblSearch.Location = new System.Drawing.Point(4, 15);
-            this.lblSearch.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblSearch.Location = new System.Drawing.Point(3, 10);
             this.lblSearch.Name = "lblSearch";
-            this.lblSearch.Size = new System.Drawing.Size(314, 28);
+            this.lblSearch.Size = new System.Drawing.Size(202, 18);
             this.lblSearch.TabIndex = 0;
             this.lblSearch.Text = "Search By Category Name";
             this.lblSearch.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -464,8 +458,7 @@ namespace standard.master
             this.dgview.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dgview.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Bold);
             this.dgview.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.dgview.Location = new System.Drawing.Point(5, 354);
-            this.dgview.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.dgview.Location = new System.Drawing.Point(4, 230);
             this.dgview.Name = "dgview";
             this.dgview.RightToLeft = System.Windows.Forms.RightToLeft.No;
             dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
@@ -480,277 +473,9 @@ namespace standard.master
             dataGridViewCellStyle4.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.dgview.RowsDefaultCellStyle = dataGridViewCellStyle4;
             this.dgview.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgview.Size = new System.Drawing.Size(1319, 337);
+            this.dgview.Size = new System.Drawing.Size(878, 218);
             this.dgview.TabIndex = 4;
             this.dgview.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgview_CellDoubleClick);
-            // 
-            // uspcategorySelectResultBindingSource
-            // 
-            this.uspcategorySelectResultBindingSource.DataSource = typeof(standard.classes.usp_categorySelectResult);
-            // 
-            // tblEntry
-            // 
-            this.tblEntry.ColumnCount = 4;
-            this.tblEntry.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 300F));
-            this.tblEntry.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 370F));
-            this.tblEntry.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 300F));
-            this.tblEntry.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tblEntry.Controls.Add(this.label1, 0, 1);
-            this.tblEntry.Controls.Add(this.txtCategory, 1, 1);
-            this.tblEntry.Controls.Add(this.label2, 0, 0);
-            this.tblEntry.Controls.Add(this.cboCompany, 1, 0);
-            this.tblEntry.Controls.Add(this.lblCode, 0, 2);
-            this.tblEntry.Controls.Add(this.lblTamilName, 2, 0);
-            this.tblEntry.Controls.Add(this.txtTamilName, 3, 0);
-            this.tblEntry.Controls.Add(this.txtCode, 1, 2);
-            this.tblEntry.Controls.Add(this.lblTamil, 3, 1);
-            this.tblEntry.Controls.Add(this.lblHSNCode, 2, 1);
-            this.tblEntry.Controls.Add(this.txtHSNCode, 2, 2);
-            this.tblEntry.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tblEntry.Location = new System.Drawing.Point(5, 61);
-            this.tblEntry.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.tblEntry.Name = "tblEntry";
-            this.tblEntry.RowCount = 3;
-            this.tblEntry.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
-            this.tblEntry.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
-            this.tblEntry.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
-            this.tblEntry.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tblEntry.Size = new System.Drawing.Size(1319, 212);
-            this.tblEntry.TabIndex = 2;
-            // 
-            // lblHSNCode
-            // 
-            this.lblHSNCode.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.lblHSNCode.AutoSize = true;
-            this.lblHSNCode.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
-            this.lblHSNCode.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.lblHSNCode.Location = new System.Drawing.Point(673, 91);
-            this.lblHSNCode.Name = "lblHSNCode";
-            this.lblHSNCode.Size = new System.Drawing.Size(127, 28);
-            this.lblHSNCode.TabIndex = 29;
-            this.lblHSNCode.Text = "HSN Code";
-            this.lblHSNCode.Visible = false;
-            // 
-            // label1
-            // 
-            this.label1.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.label1.AutoSize = true;
-            this.label1.BackColor = System.Drawing.Color.Transparent;
-            this.label1.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.label1.Location = new System.Drawing.Point(4, 91);
-            this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(191, 28);
-            this.label1.TabIndex = 0;
-            this.label1.Text = "Category Name";
-            this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // txtCategory
-            // 
-            this.txtCategory.BackColor = System.Drawing.Color.White;
-            this.txtCategory.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.txtCategory.Font = new System.Drawing.Font("Tahoma", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtCategory.Location = new System.Drawing.Point(304, 75);
-            this.txtCategory.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.txtCategory.MaxLength = 50;
-            this.txtCategory.Name = "txtCategory";
-            this.txtCategory.Size = new System.Drawing.Size(360, 34);
-            this.txtCategory.TabIndex = 1;
-            this.txtCategory.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtCategory_KeyDown);
-            // 
-            // label2
-            // 
-            this.label2.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.label2.AutoSize = true;
-            this.label2.BackColor = System.Drawing.Color.Transparent;
-            this.label2.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
-            this.label2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.label2.Location = new System.Drawing.Point(3, 21);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(119, 28);
-            this.label2.TabIndex = 0;
-            this.label2.Text = "Company";
-            this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // cboCompany
-            // 
-            this.cboCompany.DataSource = this.companyBindingSource;
-            this.cboCompany.DisplayMember = "com_name";
-            this.cboCompany.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.cboCompany.DropDownHeight = 120;
-            this.cboCompany.Font = new System.Drawing.Font("Tahoma", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cboCompany.FormattingEnabled = true;
-            this.cboCompany.IntegralHeight = false;
-            this.cboCompany.ItemHeight = 27;
-            this.cboCompany.Location = new System.Drawing.Point(303, 3);
-            this.cboCompany.Name = "cboCompany";
-            this.cboCompany.Size = new System.Drawing.Size(364, 35);
-            this.cboCompany.TabIndex = 2;
-            this.cboCompany.ValueMember = "com_id";
-            this.cboCompany.KeyDown += new System.Windows.Forms.KeyEventHandler(this.cboCompany_KeyDown);
-            // 
-            // companyBindingSource
-            // 
-            this.companyBindingSource.DataSource = typeof(standard.classes.company);
-            // 
-            // lblCode
-            // 
-            this.lblCode.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.lblCode.AutoSize = true;
-            this.lblCode.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
-            this.lblCode.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.lblCode.Location = new System.Drawing.Point(3, 162);
-            this.lblCode.Name = "lblCode";
-            this.lblCode.Size = new System.Drawing.Size(69, 28);
-            this.lblCode.TabIndex = 3;
-            this.lblCode.Text = "Code";
-            // 
-            // lblTamilName
-            // 
-            this.lblTamilName.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.lblTamilName.AutoSize = true;
-            this.lblTamilName.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
-            this.lblTamilName.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.lblTamilName.Location = new System.Drawing.Point(689, 21);
-            this.lblTamilName.Name = "lblTamilName";
-            this.lblTamilName.Size = new System.Drawing.Size(262, 28);
-            this.lblTamilName.TabIndex = 5;
-            this.lblTamilName.Text = "Category Tamil Name";
-            // 
-            // txtTamilName
-            // 
-            this.txtTamilName.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
-            this.txtTamilName.Location = new System.Drawing.Point(973, 3);
-            this.txtTamilName.Name = "txtTamilName";
-            this.txtTamilName.Size = new System.Drawing.Size(343, 35);
-            this.txtTamilName.TabIndex = 6;
-            this.txtTamilName.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtTamilName_KeyDown);
-            this.txtTamilName.KeyUp += new System.Windows.Forms.KeyEventHandler(this.txtTamilName_KeyUp);
-            this.txtTamilName.Leave += new System.EventHandler(this.txtTamilName_Leave);
-            // 
-            // txtCode
-            // 
-            this.txtCode.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.txtCode.Font = new System.Drawing.Font("Tahoma", 11F);
-            this.txtCode.Location = new System.Drawing.Point(304, 159);
-            this.txtCode.Name = "txtCode";
-            this.txtCode.Size = new System.Drawing.Size(361, 34);
-            this.txtCode.TabIndex = 4;
-            this.txtCode.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtCode_KeyDown);
-            // 
-            // lblTamil
-            // 
-            this.lblTamil.BackColor = System.Drawing.Color.White;
-            this.lblTamil.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.lblTamil.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
-            this.lblTamil.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.lblTamil.Location = new System.Drawing.Point(974, 70);
-            this.lblTamil.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.lblTamil.Name = "lblTamil";
-            this.tblEntry.SetRowSpan(this.lblTamil, 2);
-            this.lblTamil.Size = new System.Drawing.Size(341, 75);
-            this.lblTamil.TabIndex = 28;
-            // 
-            // txtHSNCode
-            // 
-            this.txtHSNCode.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.txtHSNCode.Font = new System.Drawing.Font("Tahoma", 11F);
-            this.txtHSNCode.Location = new System.Drawing.Point(673, 159);
-            this.txtHSNCode.Name = "txtHSNCode";
-            this.txtHSNCode.Size = new System.Drawing.Size(294, 34);
-            this.txtHSNCode.TabIndex = 30;
-            this.txtHSNCode.Visible = false;
-            this.txtHSNCode.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtHSNCode_KeyDown);
-            // 
-            // tblCommand
-            // 
-            this.tblCommand.ColumnCount = 5;
-            this.tblCommand.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tblCommand.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 150F));
-            this.tblCommand.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 150F));
-            this.tblCommand.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 150F));
-            this.tblCommand.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 150F));
-            this.tblCommand.Controls.Add(this.cmdclose, 4, 0);
-            this.tblCommand.Controls.Add(this.btnClear, 3, 0);
-            this.tblCommand.Controls.Add(this.btnDelete, 2, 0);
-            this.tblCommand.Controls.Add(this.btnSave, 1, 0);
-            this.tblCommand.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tblCommand.Location = new System.Drawing.Point(5, 702);
-            this.tblCommand.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.tblCommand.Name = "tblCommand";
-            this.tblCommand.RowCount = 1;
-            this.tblCommand.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tblCommand.Size = new System.Drawing.Size(1319, 60);
-            this.tblCommand.TabIndex = 5;
-            // 
-            // cmdclose
-            // 
-            this.cmdclose.AutoSize = true;
-            this.cmdclose.BackColor = System.Drawing.Color.Transparent;
-            this.cmdclose.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cmdclose.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(41)))), ((int)(((byte)(66)))), ((int)(((byte)(122)))));
-            this.cmdclose.Location = new System.Drawing.Point(1173, 5);
-            this.cmdclose.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.cmdclose.Name = "cmdclose";
-            this.cmdclose.Size = new System.Drawing.Size(135, 50);
-            this.cmdclose.TabIndex = 3;
-            this.cmdclose.Text = "&Close";
-            this.cmdclose.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            this.cmdclose.UseVisualStyleBackColor = false;
-            this.cmdclose.Click += new System.EventHandler(this.cmdclose_Click);
-            // 
-            // btnClear
-            // 
-            this.btnClear.AutoSize = true;
-            this.btnClear.BackColor = System.Drawing.Color.Transparent;
-            this.btnClear.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnClear.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(41)))), ((int)(((byte)(66)))), ((int)(((byte)(122)))));
-            this.btnClear.Location = new System.Drawing.Point(1023, 5);
-            this.btnClear.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.btnClear.Name = "btnClear";
-            this.btnClear.Size = new System.Drawing.Size(135, 50);
-            this.btnClear.TabIndex = 2;
-            this.btnClear.Text = "&Clear";
-            this.btnClear.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            this.btnClear.UseVisualStyleBackColor = false;
-            this.btnClear.Click += new System.EventHandler(this.btnClear_Click);
-            // 
-            // btnDelete
-            // 
-            this.btnDelete.AutoSize = true;
-            this.btnDelete.BackColor = System.Drawing.Color.Transparent;
-            this.btnDelete.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnDelete.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(41)))), ((int)(((byte)(66)))), ((int)(((byte)(122)))));
-            this.btnDelete.Location = new System.Drawing.Point(873, 5);
-            this.btnDelete.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.btnDelete.Name = "btnDelete";
-            this.btnDelete.Size = new System.Drawing.Size(135, 50);
-            this.btnDelete.TabIndex = 1;
-            this.btnDelete.Text = "&Delete";
-            this.btnDelete.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            this.btnDelete.UseVisualStyleBackColor = false;
-            this.btnDelete.Click += new System.EventHandler(this.btnDelete_Click);
-            // 
-            // btnSave
-            // 
-            this.btnSave.AutoSize = true;
-            this.btnSave.BackColor = System.Drawing.Color.Transparent;
-            this.btnSave.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnSave.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(41)))), ((int)(((byte)(66)))), ((int)(((byte)(122)))));
-            this.btnSave.Location = new System.Drawing.Point(723, 5);
-            this.btnSave.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.btnSave.Name = "btnSave";
-            this.btnSave.Size = new System.Drawing.Size(135, 50);
-            this.btnSave.TabIndex = 0;
-            this.btnSave.Text = "&Save";
-            this.btnSave.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            this.btnSave.UseVisualStyleBackColor = false;
-            this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
-            // 
-            // uspcompanySelectResultBindingSource
-            // 
-            this.uspcompanySelectResultBindingSource.DataSource = typeof(standard.classes.usp_companySelectResult);
             // 
             // ccat_id
             // 
@@ -854,14 +579,280 @@ namespace standard.master
             this.cCompany.ReadOnly = true;
             this.cCompany.Width = 250;
             // 
+            // uspcategorySelectResultBindingSource
+            // 
+            this.uspcategorySelectResultBindingSource.DataSource = typeof(standard.classes.usp_categorySelectResult);
+            // 
+            // tblEntry
+            // 
+            this.tblEntry.ColumnCount = 4;
+            this.tblEntry.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 200F));
+            this.tblEntry.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 247F));
+            this.tblEntry.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 200F));
+            this.tblEntry.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tblEntry.Controls.Add(this.label1, 0, 1);
+            this.tblEntry.Controls.Add(this.txtCategory, 1, 1);
+            this.tblEntry.Controls.Add(this.label2, 0, 0);
+            this.tblEntry.Controls.Add(this.cboCompany, 1, 0);
+            this.tblEntry.Controls.Add(this.lblCode, 0, 2);
+            this.tblEntry.Controls.Add(this.lblTamilName, 2, 0);
+            this.tblEntry.Controls.Add(this.txtTamilName, 3, 0);
+            this.tblEntry.Controls.Add(this.txtCode, 1, 2);
+            this.tblEntry.Controls.Add(this.lblTamil, 3, 1);
+            this.tblEntry.Controls.Add(this.lblHSNCode, 2, 1);
+            this.tblEntry.Controls.Add(this.txtHSNCode, 2, 2);
+            this.tblEntry.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tblEntry.Location = new System.Drawing.Point(4, 40);
+            this.tblEntry.Name = "tblEntry";
+            this.tblEntry.RowCount = 3;
+            this.tblEntry.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
+            this.tblEntry.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
+            this.tblEntry.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
+            this.tblEntry.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 13F));
+            this.tblEntry.Size = new System.Drawing.Size(878, 137);
+            this.tblEntry.TabIndex = 2;
+            // 
+            // label1
+            // 
+            this.label1.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.label1.AutoSize = true;
+            this.label1.BackColor = System.Drawing.Color.Transparent;
+            this.label1.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
+            this.label1.Location = new System.Drawing.Point(3, 58);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(123, 18);
+            this.label1.TabIndex = 0;
+            this.label1.Text = "Category Name";
+            this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // txtCategory
+            // 
+            this.txtCategory.BackColor = System.Drawing.Color.White;
+            this.txtCategory.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.txtCategory.Font = new System.Drawing.Font("Tahoma", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtCategory.Location = new System.Drawing.Point(203, 48);
+            this.txtCategory.MaxLength = 50;
+            this.txtCategory.Name = "txtCategory";
+            this.txtCategory.Size = new System.Drawing.Size(241, 25);
+            this.txtCategory.TabIndex = 1;
+            this.txtCategory.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtCategory_KeyDown);
+            // 
+            // label2
+            // 
+            this.label2.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.label2.AutoSize = true;
+            this.label2.BackColor = System.Drawing.Color.Transparent;
+            this.label2.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
+            this.label2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
+            this.label2.Location = new System.Drawing.Point(2, 13);
+            this.label2.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(76, 18);
+            this.label2.TabIndex = 0;
+            this.label2.Text = "Company";
+            this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // cboCompany
+            // 
+            this.cboCompany.DataSource = this.companyBindingSource;
+            this.cboCompany.DisplayMember = "com_name";
+            this.cboCompany.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.cboCompany.DropDownHeight = 120;
+            this.cboCompany.Font = new System.Drawing.Font("Tahoma", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cboCompany.FormattingEnabled = true;
+            this.cboCompany.IntegralHeight = false;
+            this.cboCompany.ItemHeight = 18;
+            this.cboCompany.Location = new System.Drawing.Point(202, 2);
+            this.cboCompany.Margin = new System.Windows.Forms.Padding(2);
+            this.cboCompany.Name = "cboCompany";
+            this.cboCompany.Size = new System.Drawing.Size(243, 26);
+            this.cboCompany.TabIndex = 2;
+            this.cboCompany.ValueMember = "com_id";
+            this.cboCompany.KeyDown += new System.Windows.Forms.KeyEventHandler(this.cboCompany_KeyDown);
+            // 
+            // companyBindingSource
+            // 
+            this.companyBindingSource.DataSource = typeof(standard.classes.company);
+            // 
+            // lblCode
+            // 
+            this.lblCode.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblCode.AutoSize = true;
+            this.lblCode.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
+            this.lblCode.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
+            this.lblCode.Location = new System.Drawing.Point(2, 104);
+            this.lblCode.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.lblCode.Name = "lblCode";
+            this.lblCode.Size = new System.Drawing.Size(45, 18);
+            this.lblCode.TabIndex = 3;
+            this.lblCode.Text = "Code";
+            // 
+            // lblTamilName
+            // 
+            this.lblTamilName.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.lblTamilName.AutoSize = true;
+            this.lblTamilName.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
+            this.lblTamilName.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
+            this.lblTamilName.Location = new System.Drawing.Point(463, 13);
+            this.lblTamilName.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.lblTamilName.Name = "lblTamilName";
+            this.lblTamilName.Size = new System.Drawing.Size(168, 18);
+            this.lblTamilName.TabIndex = 5;
+            this.lblTamilName.Text = "Category Tamil Name";
+            // 
+            // txtTamilName
+            // 
+            this.txtTamilName.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
+            this.txtTamilName.Location = new System.Drawing.Point(649, 2);
+            this.txtTamilName.Margin = new System.Windows.Forms.Padding(2);
+            this.txtTamilName.Name = "txtTamilName";
+            this.txtTamilName.Size = new System.Drawing.Size(227, 26);
+            this.txtTamilName.TabIndex = 6;
+            this.txtTamilName.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtTamilName_KeyDown);
+            this.txtTamilName.KeyUp += new System.Windows.Forms.KeyEventHandler(this.txtTamilName_KeyUp);
+            this.txtTamilName.Leave += new System.EventHandler(this.txtTamilName_Leave);
+            // 
+            // txtCode
+            // 
+            this.txtCode.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.txtCode.Font = new System.Drawing.Font("Tahoma", 11F);
+            this.txtCode.Location = new System.Drawing.Point(202, 101);
+            this.txtCode.Margin = new System.Windows.Forms.Padding(2);
+            this.txtCode.Name = "txtCode";
+            this.txtCode.Size = new System.Drawing.Size(242, 25);
+            this.txtCode.TabIndex = 4;
+            this.txtCode.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtCode_KeyDown);
+            // 
+            // lblTamil
+            // 
+            this.lblTamil.BackColor = System.Drawing.Color.White;
+            this.lblTamil.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.lblTamil.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
+            this.lblTamil.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
+            this.lblTamil.Location = new System.Drawing.Point(650, 45);
+            this.lblTamil.Name = "lblTamil";
+            this.tblEntry.SetRowSpan(this.lblTamil, 2);
+            this.lblTamil.Size = new System.Drawing.Size(225, 49);
+            this.lblTamil.TabIndex = 28;
+            // 
+            // lblHSNCode
+            // 
+            this.lblHSNCode.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblHSNCode.AutoSize = true;
+            this.lblHSNCode.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
+            this.lblHSNCode.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
+            this.lblHSNCode.Location = new System.Drawing.Point(449, 58);
+            this.lblHSNCode.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.lblHSNCode.Name = "lblHSNCode";
+            this.lblHSNCode.Size = new System.Drawing.Size(82, 18);
+            this.lblHSNCode.TabIndex = 29;
+            this.lblHSNCode.Text = "HSN Code";
+            this.lblHSNCode.Visible = false;
+            // 
+            // txtHSNCode
+            // 
+            this.txtHSNCode.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.txtHSNCode.Font = new System.Drawing.Font("Tahoma", 11F);
+            this.txtHSNCode.Location = new System.Drawing.Point(449, 101);
+            this.txtHSNCode.Margin = new System.Windows.Forms.Padding(2);
+            this.txtHSNCode.Name = "txtHSNCode";
+            this.txtHSNCode.Size = new System.Drawing.Size(196, 25);
+            this.txtHSNCode.TabIndex = 30;
+            this.txtHSNCode.Visible = false;
+            this.txtHSNCode.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtHSNCode_KeyDown);
+            // 
+            // tblCommand
+            // 
+            this.tblCommand.ColumnCount = 5;
+            this.tblCommand.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tblCommand.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 100F));
+            this.tblCommand.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 100F));
+            this.tblCommand.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 100F));
+            this.tblCommand.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 100F));
+            this.tblCommand.Controls.Add(this.cmdclose, 4, 0);
+            this.tblCommand.Controls.Add(this.btnClear, 3, 0);
+            this.tblCommand.Controls.Add(this.btnDelete, 2, 0);
+            this.tblCommand.Controls.Add(this.btnSave, 1, 0);
+            this.tblCommand.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tblCommand.Location = new System.Drawing.Point(4, 455);
+            this.tblCommand.Name = "tblCommand";
+            this.tblCommand.RowCount = 1;
+            this.tblCommand.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tblCommand.Size = new System.Drawing.Size(878, 40);
+            this.tblCommand.TabIndex = 5;
+            // 
+            // cmdclose
+            // 
+            this.cmdclose.AutoSize = true;
+            this.cmdclose.BackColor = System.Drawing.Color.Transparent;
+            this.cmdclose.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cmdclose.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(41)))), ((int)(((byte)(66)))), ((int)(((byte)(122)))));
+            this.cmdclose.Location = new System.Drawing.Point(781, 3);
+            this.cmdclose.Name = "cmdclose";
+            this.cmdclose.Size = new System.Drawing.Size(90, 32);
+            this.cmdclose.TabIndex = 3;
+            this.cmdclose.Text = "&Close";
+            this.cmdclose.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.cmdclose.UseVisualStyleBackColor = false;
+            this.cmdclose.Click += new System.EventHandler(this.cmdclose_Click);
+            // 
+            // btnClear
+            // 
+            this.btnClear.AutoSize = true;
+            this.btnClear.BackColor = System.Drawing.Color.Transparent;
+            this.btnClear.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnClear.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(41)))), ((int)(((byte)(66)))), ((int)(((byte)(122)))));
+            this.btnClear.Location = new System.Drawing.Point(681, 3);
+            this.btnClear.Name = "btnClear";
+            this.btnClear.Size = new System.Drawing.Size(90, 32);
+            this.btnClear.TabIndex = 2;
+            this.btnClear.Text = "&Clear";
+            this.btnClear.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.btnClear.UseVisualStyleBackColor = false;
+            this.btnClear.Click += new System.EventHandler(this.btnClear_Click);
+            // 
+            // btnDelete
+            // 
+            this.btnDelete.AutoSize = true;
+            this.btnDelete.BackColor = System.Drawing.Color.Transparent;
+            this.btnDelete.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnDelete.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(41)))), ((int)(((byte)(66)))), ((int)(((byte)(122)))));
+            this.btnDelete.Location = new System.Drawing.Point(581, 3);
+            this.btnDelete.Name = "btnDelete";
+            this.btnDelete.Size = new System.Drawing.Size(90, 32);
+            this.btnDelete.TabIndex = 1;
+            this.btnDelete.Text = "&Delete";
+            this.btnDelete.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.btnDelete.UseVisualStyleBackColor = false;
+            this.btnDelete.Click += new System.EventHandler(this.btnDelete_Click);
+            // 
+            // btnSave
+            // 
+            this.btnSave.AutoSize = true;
+            this.btnSave.BackColor = System.Drawing.Color.Transparent;
+            this.btnSave.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnSave.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(41)))), ((int)(((byte)(66)))), ((int)(((byte)(122)))));
+            this.btnSave.Location = new System.Drawing.Point(481, 3);
+            this.btnSave.Name = "btnSave";
+            this.btnSave.Size = new System.Drawing.Size(90, 32);
+            this.btnSave.TabIndex = 0;
+            this.btnSave.Text = "&Save";
+            this.btnSave.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.btnSave.UseVisualStyleBackColor = false;
+            this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
+            // 
+            // uspcompanySelectResultBindingSource
+            // 
+            this.uspcompanySelectResultBindingSource.DataSource = typeof(standard.classes.usp_companySelectResult);
+            // 
             // frmCategory
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(191)))), ((int)(((byte)(219)))), ((int)(((byte)(254)))));
-            this.ClientSize = new System.Drawing.Size(1329, 768);
+            this.ClientSize = new System.Drawing.Size(886, 499);
             this.Controls.Add(this.tblMain);
-            this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.Name = "frmCategory";
             this.ShowIcon = false;
             this.Text = "Category";

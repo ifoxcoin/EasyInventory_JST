@@ -211,6 +211,9 @@ namespace standard.trans
         private DataGridViewTextBoxColumn cMrp;
         private Label label7;
         private decimalbox txttottax;
+        private Label label8;
+        private ComboBox cboAgent;
+        private BindingSource ledgermasterBindingSource1;
         private DataGridViewTextBoxColumn pmidDataGridViewTextBoxColumn;
 
         public frmPurchase()
@@ -354,11 +357,27 @@ namespace standard.trans
                              {
                                  a.led_id,
                                  a.led_name,
-                                 a.led_address2
+                                 a.led_address2,
+                                 a.led_agid
                              } into x
                              orderby x.led_id
                              select x;
+                var Agent = from a in inventoryDataContext.ledgermasters
+                             where a.led_accounttype == "AGENT" || a.led_id == 0
+                            select new
+                             {
+                                 a.led_id,
+                                 a.led_name,
+                                 a.led_address2,
+                                 a.led_agid
+                             } into x
+                             orderby x.led_id
+                            select x;
+
                 ledgermasterBindingSource.DataSource = source.OrderBy(x => x.led_address2);
+                ledgermasterBindingSource1.DataSource = Agent.OrderBy(x => x.led_id);
+                cboAgent.SelectedIndex = -1;
+                cboAgent.Text = "--Select--";
                 ledgermasterViewBindingSource.DataSource = source.OrderBy(x => x.led_address2);
                 ledgermasteCityViewrBindingSource.DataSource = source.Select(x => x.led_address2).Distinct();
                 usppurchasemasterSelectResultBindingSource.DataSource = inventoryDataContext.usp_purchasemasterSelect(null, null, null, null, null, null);
@@ -473,12 +492,13 @@ namespace standard.trans
                             purchasemaster.pm_desc = "";
                             purchasemaster.pm_id = 1L;
                             purchasemaster.pm_paid = 0;
+                            purchasemaster.pm_agid = Convert.ToInt64(cboAgent.SelectedValue);
                             if (id == 0)
                             {
                                 long? no = 0L;
                                 inventoryDataContext.usp_setYearNo("pur_no", global.sysdate, ref no, null);
                                 purchasemaster.pm_no = Convert.ToInt64(no);
-                                inventoryDataContext.usp_purchasemasterInsert(ref id, purchasemaster.pm_no, purchasemaster.pm_date, purchasemaster.led_id, purchasemaster.pm_totqty, purchasemaster.pm_totamount, purchasemaster.pm_discountpercentage, purchasemaster.pm_discountamount, purchasemaster.pm_wages, purchasemaster.pm_frieght, purchasemaster.pm_billno, purchasemaster.com_id, global.ucode, global.sysdate, purchasemaster.pm_desc, false, purchasemaster.pm_paid, purchasemaster.pm_totaltaxamount, false);
+                                inventoryDataContext.usp_purchasemasterInsert(ref id, purchasemaster.pm_no, purchasemaster.pm_date, purchasemaster.led_id, purchasemaster.pm_totqty, purchasemaster.pm_totamount, purchasemaster.pm_discountpercentage, purchasemaster.pm_discountamount, purchasemaster.pm_wages, purchasemaster.pm_frieght, purchasemaster.pm_billno, purchasemaster.com_id, global.ucode, global.sysdate, purchasemaster.pm_desc, false, purchasemaster.pm_paid, purchasemaster.pm_totaltaxamount, false, purchasemaster.pm_agid);
                                 foreach (DataGridViewRow item2 in (IEnumerable)dgvPurchase.Rows)
                                 {
                                     if (!item2.IsNewRow)
@@ -521,7 +541,7 @@ namespace standard.trans
                                     purchasemaster.pm_guid = null;
                                 }
 
-                                inventoryDataContext.usp_purchasemasterUpdate(Convert.ToInt64(id), purchasemaster.pm_no, purchasemaster.pm_date, purchasemaster.led_id, purchasemaster.pm_totqty, purchasemaster.pm_totamount, purchasemaster.pm_discountpercentage, purchasemaster.pm_discountamount, purchasemaster.pm_wages, purchasemaster.pm_frieght, purchasemaster.pm_billno, purchasemaster.com_id, global.ucode, global.sysdate, purchasemaster.pm_desc, false, purchasemaster.pm_paid, purchasemaster.pm_totaltaxamount, purchasemaster.pm_isimport, purchasemaster.pm_guid);
+                                inventoryDataContext.usp_purchasemasterUpdate(Convert.ToInt64(id), purchasemaster.pm_no, purchasemaster.pm_date, purchasemaster.led_id, purchasemaster.pm_totqty, purchasemaster.pm_totamount, purchasemaster.pm_discountpercentage, purchasemaster.pm_discountamount, purchasemaster.pm_wages, purchasemaster.pm_frieght, purchasemaster.pm_billno, purchasemaster.com_id, global.ucode, global.sysdate, purchasemaster.pm_desc, false, purchasemaster.pm_paid, purchasemaster.pm_totaltaxamount, purchasemaster.pm_isimport, purchasemaster.pm_guid, purchasemaster.pm_agid);
                                 inventoryDataContext.usp_purchasedetailsDelete(Convert.ToInt32(id));
                                 inventoryDataContext.usp_stockDelete(Convert.ToInt32(id), "PURCHASE");
                                 foreach (DataGridViewRow item3 in (IEnumerable)dgvPurchase.Rows)
@@ -1135,6 +1155,11 @@ namespace standard.trans
                     txtDiscountRate.Text = current.pm_discountamount.ToString();
                     txtWages.Text = current.pm_wages.ToString();
                     txtFrieght.Text = current.pm_frieght.ToString();
+                    if (current.pm_agid != null && cboAgent.Items.Count > 0)
+                    {
+                        cboAgent.SelectedValue = current.pm_agid;
+                    }
+
                     txttottax.Text = current.pm_totaltaxamount.ToString();
                 }
             }
@@ -1271,6 +1296,7 @@ namespace standard.trans
                     {
                         lblAddress.Text = item.led_address + "," + item.led_address1 + "," + item.led_address2 + "-" + item.led_pincode;
                         chkIsFrieght.Checked = item.led_isfreight;
+                        cboAgent.SelectedValue = item.led_agid;
                     }
 
                 }
@@ -1410,7 +1436,7 @@ namespace standard.trans
                     guid = Guid.NewGuid();
                     InventoryDataContext inventoryDataContext = new InventoryDataContext();
                     purchasemaster purchasemaster = inventoryDataContext.purchasemasters.FirstOrDefault(x => x.pm_id == master.pm_id);
-                    inventoryDataContext.usp_purchasemasterUpdate(master.pm_id, purchasemaster.pm_no, purchasemaster.pm_date, purchasemaster.led_id, purchasemaster.pm_totqty, purchasemaster.pm_totamount, purchasemaster.pm_discountpercentage, purchasemaster.pm_discountamount, purchasemaster.pm_wages, purchasemaster.pm_frieght, purchasemaster.pm_billno, purchasemaster.com_id, global.ucode, global.sysdate, purchasemaster.pm_desc, purchasemaster.pm_isclose, purchasemaster.pm_paid, purchasemaster.pm_totaltaxamount, purchasemaster.pm_isimport, guid);
+                    inventoryDataContext.usp_purchasemasterUpdate(master.pm_id, purchasemaster.pm_no, purchasemaster.pm_date, purchasemaster.led_id, purchasemaster.pm_totqty, purchasemaster.pm_totamount, purchasemaster.pm_discountpercentage, purchasemaster.pm_discountamount, purchasemaster.pm_wages, purchasemaster.pm_frieght, purchasemaster.pm_billno, purchasemaster.com_id, global.ucode, global.sysdate, purchasemaster.pm_desc, purchasemaster.pm_isclose, purchasemaster.pm_paid, purchasemaster.pm_totaltaxamount, purchasemaster.pm_isimport, guid, purchasemaster.pm_agid);
                 }
 
                 string companyName = master.com_id == 2 ? "JEYAKKODI TRADERS 2025-2026" : master.com_id == 1 ? "SAAMY TRADE LINKS 2025-2026" : "Unknown Company";
@@ -1692,7 +1718,7 @@ namespace standard.trans
                                 if (purchasemaster != null)
                                 {
                                     inventoryDataContext.usp_purchasemasterUpdate(
-                               pmid, purchasemaster.pm_no, purchasemaster.pm_date, purchasemaster.led_id, purchasemaster.pm_totqty, purchasemaster.pm_totamount, purchasemaster.pm_discountpercentage, purchasemaster.pm_discountamount, purchasemaster.pm_wages, purchasemaster.pm_frieght, purchasemaster.pm_billno, purchasemaster.com_id, global.ucode, global.sysdate, purchasemaster.pm_desc, purchasemaster.pm_isclose, purchasemaster.pm_paid, purchasemaster.pm_totaltaxamount, true, purchasemaster.pm_guid
+                               pmid, purchasemaster.pm_no, purchasemaster.pm_date, purchasemaster.led_id, purchasemaster.pm_totqty, purchasemaster.pm_totamount, purchasemaster.pm_discountpercentage, purchasemaster.pm_discountamount, purchasemaster.pm_wages, purchasemaster.pm_frieght, purchasemaster.pm_billno, purchasemaster.com_id, global.ucode, global.sysdate, purchasemaster.pm_desc, purchasemaster.pm_isclose, purchasemaster.pm_paid, purchasemaster.pm_totaltaxamount, true, purchasemaster.pm_guid, purchasemaster.pm_agid
                                     );
                                 }
                             }
@@ -1811,7 +1837,7 @@ namespace standard.trans
                         if (purchasemaster != null)
                         {
                             db.usp_purchasemasterUpdate(
-                                master.pm_id, purchasemaster.pm_no, purchasemaster.pm_date, purchasemaster.led_id, purchasemaster.pm_totqty, purchasemaster.pm_totamount, purchasemaster.pm_discountpercentage, purchasemaster.pm_discountamount, purchasemaster.pm_wages, purchasemaster.pm_frieght, purchasemaster.pm_billno, purchasemaster.com_id, global.ucode, global.sysdate, purchasemaster.pm_desc, purchasemaster.pm_isclose, purchasemaster.pm_paid, purchasemaster.pm_totaltaxamount, true, purchasemaster.pm_guid
+                                master.pm_id, purchasemaster.pm_no, purchasemaster.pm_date, purchasemaster.led_id, purchasemaster.pm_totqty, purchasemaster.pm_totamount, purchasemaster.pm_discountpercentage, purchasemaster.pm_discountamount, purchasemaster.pm_wages, purchasemaster.pm_frieght, purchasemaster.pm_billno, purchasemaster.com_id, global.ucode, global.sysdate, purchasemaster.pm_desc, purchasemaster.pm_isclose, purchasemaster.pm_paid, purchasemaster.pm_totaltaxamount, true, purchasemaster.pm_guid, purchasemaster.pm_agid
                             );
                         }
                     }
@@ -1822,7 +1848,7 @@ namespace standard.trans
                         if (purchasemaster != null)
                         {
                             db.usp_purchasemasterUpdate(
-                                master.pm_id, purchasemaster.pm_no, purchasemaster.pm_date, purchasemaster.led_id, purchasemaster.pm_totqty, purchasemaster.pm_totamount, purchasemaster.pm_discountpercentage, purchasemaster.pm_discountamount, purchasemaster.pm_wages, purchasemaster.pm_frieght, purchasemaster.pm_billno, purchasemaster.com_id, global.ucode, global.sysdate, purchasemaster.pm_desc, purchasemaster.pm_isclose, purchasemaster.pm_paid, purchasemaster.pm_totaltaxamount, true, purchasemaster.pm_guid
+                                master.pm_id, purchasemaster.pm_no, purchasemaster.pm_date, purchasemaster.led_id, purchasemaster.pm_totqty, purchasemaster.pm_totamount, purchasemaster.pm_discountpercentage, purchasemaster.pm_discountamount, purchasemaster.pm_wages, purchasemaster.pm_frieght, purchasemaster.pm_billno, purchasemaster.com_id, global.ucode, global.sysdate, purchasemaster.pm_desc, purchasemaster.pm_isclose, purchasemaster.pm_paid, purchasemaster.pm_totaltaxamount, true, purchasemaster.pm_guid, purchasemaster.pm_agid
                             );
                         }
                     }
@@ -1895,6 +1921,9 @@ namespace standard.trans
             this.label2 = new System.Windows.Forms.Label();
             this.cboCity = new System.Windows.Forms.ComboBox();
             this.ledgermasterCityBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.label8 = new System.Windows.Forms.Label();
+            this.cboAgent = new System.Windows.Forms.ComboBox();
+            this.ledgermasterBindingSource1 = new System.Windows.Forms.BindingSource(this.components);
             this.tablecmd = new System.Windows.Forms.TableLayoutPanel();
             this.cmdsave = new mylib.lightbutton();
             this.cmdrefresh = new mylib.lightbutton();
@@ -1956,9 +1985,7 @@ namespace standard.trans
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.lblBillNo = new System.Windows.Forms.Label();
             this.dtptdate = new System.Windows.Forms.DateTimePicker();
-            this.importDate = new System.Windows.Forms.DateTimePicker();
             this.lblfdate = new System.Windows.Forms.Label();
-            this.lblImportDate = new System.Windows.Forms.Label();
             this.lblhyp = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
             this.dtpfdate = new System.Windows.Forms.DateTimePicker();
@@ -1967,6 +1994,8 @@ namespace standard.trans
             this.cboSupplierView = new System.Windows.Forms.ComboBox();
             this.ledgermasterViewBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.cmdList = new mylib.lightbutton();
+            this.lblImportDate = new System.Windows.Forms.Label();
+            this.importDate = new System.Windows.Forms.DateTimePicker();
             this.importButton = new System.Windows.Forms.Button();
             this.label5 = new System.Windows.Forms.Label();
             this.cboCityView = new System.Windows.Forms.ComboBox();
@@ -1977,6 +2006,7 @@ namespace standard.trans
             ((System.ComponentModel.ISupportInitialize)(this.ledgermasterBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.companyBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ledgermasterCityBindingSource)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ledgermasterBindingSource1)).BeginInit();
             this.tablecmd.SuspendLayout();
             this.tablesum.SuspendLayout();
             this.pnlentry.SuspendLayout();
@@ -2010,7 +2040,7 @@ namespace standard.trans
             this.tablemain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tablemain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 100F));
             this.tablemain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 64F));
-            this.tablemain.Size = new System.Drawing.Size(1638, 719);
+            this.tablemain.Size = new System.Drawing.Size(1671, 719);
             this.tablemain.TabIndex = 0;
             // 
             // lbltitle
@@ -2028,13 +2058,16 @@ namespace standard.trans
             // 
             // tableentry
             // 
-            this.tableentry.ColumnCount = 6;
+            this.tableentry.ColumnCount = 9;
             this.tableentry.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 196F));
             this.tableentry.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 236F));
-            this.tableentry.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 250F));
-            this.tableentry.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 274F));
+            this.tableentry.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 182F));
+            this.tableentry.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 307F));
+            this.tableentry.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 128F));
+            this.tableentry.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 180F));
             this.tableentry.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 120F));
-            this.tableentry.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 546F));
+            this.tableentry.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 170F));
+            this.tableentry.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableentry.Controls.Add(this.label1, 0, 0);
             this.tableentry.Controls.Add(this.cbopurfrom, 3, 1);
             this.tableentry.Controls.Add(this.lblfrom, 2, 1);
@@ -2049,6 +2082,8 @@ namespace standard.trans
             this.tableentry.Controls.Add(this.cboCompany, 5, 0);
             this.tableentry.Controls.Add(this.label2, 4, 1);
             this.tableentry.Controls.Add(this.cboCity, 5, 1);
+            this.tableentry.Controls.Add(this.label8, 6, 0);
+            this.tableentry.Controls.Add(this.cboAgent, 7, 0);
             this.tableentry.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableentry.Location = new System.Drawing.Point(8, 47);
             this.tableentry.Margin = new System.Windows.Forms.Padding(6);
@@ -2057,19 +2092,20 @@ namespace standard.trans
             this.tableentry.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
             this.tableentry.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
             this.tableentry.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
-            this.tableentry.Size = new System.Drawing.Size(1622, 138);
+            this.tableentry.Size = new System.Drawing.Size(1655, 138);
             this.tableentry.TabIndex = 0;
+            this.tableentry.Paint += new System.Windows.Forms.PaintEventHandler(this.tableentry_Paint);
             // 
             // label1
             // 
+            this.label1.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.label1.AutoSize = true;
-            this.label1.Dock = System.Windows.Forms.DockStyle.Left;
             this.label1.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold);
             this.label1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.label1.Location = new System.Drawing.Point(6, 0);
+            this.label1.Location = new System.Drawing.Point(6, 11);
             this.label1.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(80, 46);
+            this.label1.Size = new System.Drawing.Size(80, 23);
             this.label1.TabIndex = 4;
             this.label1.Text = "Bill No.";
             // 
@@ -2082,7 +2118,7 @@ namespace standard.trans
             this.cbopurfrom.DisplayMember = "led_name";
             this.cbopurfrom.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold);
             this.cbopurfrom.FormattingEnabled = true;
-            this.cbopurfrom.Location = new System.Drawing.Point(688, 53);
+            this.cbopurfrom.Location = new System.Drawing.Point(620, 53);
             this.cbopurfrom.Margin = new System.Windows.Forms.Padding(6);
             this.cbopurfrom.Name = "cbopurfrom";
             this.cbopurfrom.Size = new System.Drawing.Size(262, 31);
@@ -2141,7 +2177,7 @@ namespace standard.trans
             this.dtppurdate.CustomFormat = "dd-MM-yyyy";
             this.dtppurdate.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold);
             this.dtppurdate.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-            this.dtppurdate.Location = new System.Drawing.Point(688, 6);
+            this.dtppurdate.Location = new System.Drawing.Point(620, 6);
             this.dtppurdate.Margin = new System.Windows.Forms.Padding(6);
             this.dtppurdate.Name = "dtppurdate";
             this.dtppurdate.Size = new System.Drawing.Size(262, 30);
@@ -2180,9 +2216,9 @@ namespace standard.trans
             this.chkIsFrieght.AutoSize = true;
             this.chkIsFrieght.Enabled = false;
             this.chkIsFrieght.ForeColor = System.Drawing.Color.Red;
-            this.chkIsFrieght.Location = new System.Drawing.Point(685, 95);
+            this.chkIsFrieght.Location = new System.Drawing.Point(617, 95);
             this.chkIsFrieght.Name = "chkIsFrieght";
-            this.chkIsFrieght.Size = new System.Drawing.Size(268, 27);
+            this.chkIsFrieght.Size = new System.Drawing.Size(275, 27);
             this.chkIsFrieght.TabIndex = 12;
             this.chkIsFrieght.Text = "Frieght Charge Applicable";
             this.chkIsFrieght.UseVisualStyleBackColor = true;
@@ -2203,7 +2239,7 @@ namespace standard.trans
             this.label4.AutoSize = true;
             this.label4.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold);
             this.label4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.label4.Location = new System.Drawing.Point(962, 11);
+            this.label4.Location = new System.Drawing.Point(927, 11);
             this.label4.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(99, 23);
@@ -2219,10 +2255,10 @@ namespace standard.trans
             this.cboCompany.DisplayMember = "com_name";
             this.cboCompany.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold);
             this.cboCompany.FormattingEnabled = true;
-            this.cboCompany.Location = new System.Drawing.Point(1082, 7);
+            this.cboCompany.Location = new System.Drawing.Point(1055, 7);
             this.cboCompany.Margin = new System.Windows.Forms.Padding(6);
             this.cboCompany.Name = "cboCompany";
-            this.cboCompany.Size = new System.Drawing.Size(187, 31);
+            this.cboCompany.Size = new System.Drawing.Size(150, 31);
             this.cboCompany.TabIndex = 15;
             this.cboCompany.ValueMember = "com_id";
             this.cboCompany.KeyDown += new System.Windows.Forms.KeyEventHandler(this.cboCompany_KeyDown);
@@ -2237,7 +2273,7 @@ namespace standard.trans
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold);
             this.label2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.label2.Location = new System.Drawing.Point(962, 57);
+            this.label2.Location = new System.Drawing.Point(927, 57);
             this.label2.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(48, 23);
@@ -2254,10 +2290,10 @@ namespace standard.trans
             this.cboCity.DisplayMember = "led_address2";
             this.cboCity.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold);
             this.cboCity.FormattingEnabled = true;
-            this.cboCity.Location = new System.Drawing.Point(1082, 53);
+            this.cboCity.Location = new System.Drawing.Point(1055, 53);
             this.cboCity.Margin = new System.Windows.Forms.Padding(6);
             this.cboCity.Name = "cboCity";
-            this.cboCity.Size = new System.Drawing.Size(282, 31);
+            this.cboCity.Size = new System.Drawing.Size(150, 31);
             this.cboCity.TabIndex = 4;
             this.cboCity.ValueMember = "led_id";
             this.cboCity.Visible = false;
@@ -2266,6 +2302,39 @@ namespace standard.trans
             // ledgermasterCityBindingSource
             // 
             this.ledgermasterCityBindingSource.DataSource = typeof(standard.classes.ledgermaster);
+            // 
+            // label8
+            // 
+            this.label8.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.label8.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
+            this.label8.Location = new System.Drawing.Point(1235, 11);
+            this.label8.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(66, 23);
+            this.label8.TabIndex = 16;
+            this.label8.Text = "Agent";
+            this.label8.Click += new System.EventHandler(this.label8_Click);
+            // 
+            // cboAgent
+            // 
+            this.cboAgent.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.cboAgent.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
+            this.cboAgent.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
+            this.cboAgent.DataSource = this.ledgermasterBindingSource1;
+            this.cboAgent.DisplayMember = "led_name";
+            this.cboAgent.FormattingEnabled = true;
+            this.cboAgent.Location = new System.Drawing.Point(1355, 7);
+            this.cboAgent.Margin = new System.Windows.Forms.Padding(6);
+            this.cboAgent.Name = "cboAgent";
+            this.cboAgent.Size = new System.Drawing.Size(150, 31);
+            this.cboAgent.TabIndex = 17;
+            this.cboAgent.ValueMember = "led_id";
+            this.cboAgent.SelectedIndexChanged += new System.EventHandler(this.comboBox1_SelectedIndexChanged);
+            this.cboAgent.KeyDown += new System.Windows.Forms.KeyEventHandler(this.cboAgent_KeyDown);
+            // 
+            // ledgermasterBindingSource1
+            // 
+            this.ledgermasterBindingSource1.DataSource = typeof(standard.classes.ledgermaster);
             // 
             // tablecmd
             // 
@@ -2285,7 +2354,7 @@ namespace standard.trans
             this.tablecmd.Name = "tablecmd";
             this.tablecmd.RowCount = 1;
             this.tablecmd.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tablecmd.Size = new System.Drawing.Size(1622, 52);
+            this.tablecmd.Size = new System.Drawing.Size(1655, 52);
             this.tablecmd.TabIndex = 3;
             // 
             // cmdsave
@@ -2293,7 +2362,7 @@ namespace standard.trans
             this.cmdsave.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdsave.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold);
             this.cmdsave.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(41)))), ((int)(((byte)(66)))), ((int)(((byte)(122)))));
-            this.cmdsave.Location = new System.Drawing.Point(988, 6);
+            this.cmdsave.Location = new System.Drawing.Point(1021, 6);
             this.cmdsave.Margin = new System.Windows.Forms.Padding(6);
             this.cmdsave.Name = "cmdsave";
             this.cmdsave.Size = new System.Drawing.Size(148, 40);
@@ -2307,7 +2376,7 @@ namespace standard.trans
             this.cmdrefresh.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdrefresh.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold);
             this.cmdrefresh.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(41)))), ((int)(((byte)(66)))), ((int)(((byte)(122)))));
-            this.cmdrefresh.Location = new System.Drawing.Point(1148, 6);
+            this.cmdrefresh.Location = new System.Drawing.Point(1181, 6);
             this.cmdrefresh.Margin = new System.Windows.Forms.Padding(6);
             this.cmdrefresh.Name = "cmdrefresh";
             this.cmdrefresh.Size = new System.Drawing.Size(148, 40);
@@ -2321,7 +2390,7 @@ namespace standard.trans
             this.cmdclose.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdclose.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold);
             this.cmdclose.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(41)))), ((int)(((byte)(66)))), ((int)(((byte)(122)))));
-            this.cmdclose.Location = new System.Drawing.Point(1468, 6);
+            this.cmdclose.Location = new System.Drawing.Point(1501, 6);
             this.cmdclose.Margin = new System.Windows.Forms.Padding(6);
             this.cmdclose.Name = "cmdclose";
             this.cmdclose.Size = new System.Drawing.Size(148, 40);
@@ -2335,7 +2404,7 @@ namespace standard.trans
             this.cmdview.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdview.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold);
             this.cmdview.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(41)))), ((int)(((byte)(66)))), ((int)(((byte)(122)))));
-            this.cmdview.Location = new System.Drawing.Point(1308, 6);
+            this.cmdview.Location = new System.Drawing.Point(1341, 6);
             this.cmdview.Margin = new System.Windows.Forms.Padding(6);
             this.cmdview.Name = "cmdview";
             this.cmdview.Size = new System.Drawing.Size(148, 40);
@@ -2376,7 +2445,7 @@ namespace standard.trans
             this.tablesum.RowCount = 2;
             this.tablesum.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tablesum.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tablesum.Size = new System.Drawing.Size(1622, 88);
+            this.tablesum.Size = new System.Drawing.Size(1655, 88);
             this.tablesum.TabIndex = 2;
             // 
             // lblnetamt
@@ -2643,7 +2712,7 @@ namespace standard.trans
             this.pnlentry.Location = new System.Drawing.Point(8, 199);
             this.pnlentry.Margin = new System.Windows.Forms.Padding(6);
             this.pnlentry.Name = "pnlentry";
-            this.pnlentry.Size = new System.Drawing.Size(1622, 344);
+            this.pnlentry.Size = new System.Drawing.Size(1655, 344);
             this.pnlentry.TabIndex = 1;
             // 
             // dgvPurchase
@@ -2687,7 +2756,7 @@ namespace standard.trans
             this.dgvPurchase.RowsDefaultCellStyle = dataGridViewCellStyle9;
             this.dgvPurchase.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect;
             this.dgvPurchase.ShowCellToolTips = false;
-            this.dgvPurchase.Size = new System.Drawing.Size(1622, 344);
+            this.dgvPurchase.Size = new System.Drawing.Size(1655, 344);
             this.dgvPurchase.TabIndex = 1;
             this.dgvPurchase.CellEndEdit += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgopen_CellEndEdit);
             this.dgvPurchase.EditingControlShowing += new System.Windows.Forms.DataGridViewEditingControlShowingEventHandler(this.dgvPurchase_EditingControlShowing);
@@ -2826,7 +2895,7 @@ namespace standard.trans
             this.tableview.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 101F));
             this.tableview.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableview.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 18F));
-            this.tableview.Size = new System.Drawing.Size(1638, 719);
+            this.tableview.Size = new System.Drawing.Size(1671, 719);
             this.tableview.TabIndex = 0;
             // 
             // dglist
@@ -2875,7 +2944,7 @@ namespace standard.trans
             this.dglist.RowHeadersVisible = false;
             this.dglist.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect;
             this.dglist.ShowCellToolTips = false;
-            this.dglist.Size = new System.Drawing.Size(1622, 526);
+            this.dglist.Size = new System.Drawing.Size(1655, 526);
             this.dglist.TabIndex = 1;
             this.dglist.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dglist_CellContentClick);
             this.dglist.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dglist_CellDoubleClick);
@@ -2908,14 +2977,6 @@ namespace standard.trans
             this.lprint.ReadOnly = true;
             this.lprint.Resizable = System.Windows.Forms.DataGridViewTriState.False;
             this.lprint.Width = 65;
-            // 
-            // isImport
-            // 
-            this.isImport.DataPropertyName = "pm_isimport";
-            this.isImport.HeaderText = "IMPORT STATUS";
-            this.isImport.Name = "isImport";
-            this.isImport.ReadOnly = true;
-            this.isImport.Width = 160;
             // 
             // pmnoDataGridViewTextBoxColumn
             // 
@@ -3012,6 +3073,14 @@ namespace standard.trans
             this.lImport.Resizable = System.Windows.Forms.DataGridViewTriState.False;
             this.lImport.Width = 150;
             // 
+            // isImport
+            // 
+            this.isImport.DataPropertyName = "pm_isimport";
+            this.isImport.HeaderText = "IMPORT STATUS";
+            this.isImport.Name = "isImport";
+            this.isImport.ReadOnly = true;
+            this.isImport.Width = 160;
+            // 
             // pmdescDataGridViewTextBoxColumn
             // 
             this.pmdescDataGridViewTextBoxColumn.DataPropertyName = "pm_desc";
@@ -3089,7 +3158,7 @@ namespace standard.trans
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(1628, 95);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(1661, 95);
             this.tableLayoutPanel1.TabIndex = 7;
             // 
             // lblBillNo
@@ -3196,32 +3265,6 @@ namespace standard.trans
             this.cmdexit.UseVisualStyleBackColor = false;
             this.cmdexit.Click += new System.EventHandler(this.cmdexit_Click);
             // 
-            // lblImportDate
-            // 
-            this.lblImportDate.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.lblImportDate.AutoSize = true;
-            this.lblImportDate.Font = new System.Drawing.Font("Tahoma", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblImportDate.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.lblImportDate.Location = new System.Drawing.Point(826, 13);
-            this.lblImportDate.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.lblImportDate.Name = "lblImportDate";
-            this.lblImportDate.Size = new System.Drawing.Size(110, 25);
-            this.lblImportDate.TabIndex = 30;
-            this.lblImportDate.Text = "Import Date";
-            // 
-            // importDate
-            // 
-            this.importDate.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.importDate.CustomFormat = "dd-MM-yyyy";
-            this.importDate.Font = new System.Drawing.Font("Tahoma", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.importDate.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-            this.importDate.Location = new System.Drawing.Point(150, 9);
-            this.importDate.Margin = new System.Windows.Forms.Padding(0);
-            this.importDate.Name = "importDate";
-            this.importDate.Size = new System.Drawing.Size(159, 33);
-            this.importDate.TabIndex = 1;
-            this.importDate.KeyDown += new System.Windows.Forms.KeyEventHandler(this.dtptdate_KeyDown);
-            // 
             // cboSupplierView
             // 
             this.cboSupplierView.Anchor = System.Windows.Forms.AnchorStyles.Left;
@@ -3258,14 +3301,40 @@ namespace standard.trans
             this.cmdList.UseVisualStyleBackColor = false;
             this.cmdList.Click += new System.EventHandler(this.cmdList_Click);
             // 
+            // lblImportDate
+            // 
+            this.lblImportDate.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblImportDate.AutoSize = true;
+            this.lblImportDate.Font = new System.Drawing.Font("Tahoma", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblImportDate.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
+            this.lblImportDate.Location = new System.Drawing.Point(1192, 11);
+            this.lblImportDate.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblImportDate.Name = "lblImportDate";
+            this.lblImportDate.Size = new System.Drawing.Size(142, 25);
+            this.lblImportDate.TabIndex = 30;
+            this.lblImportDate.Text = "Import Date";
+            // 
+            // importDate
+            // 
+            this.importDate.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.importDate.CustomFormat = "dd-MM-yyyy";
+            this.importDate.Font = new System.Drawing.Font("Tahoma", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.importDate.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
+            this.importDate.Location = new System.Drawing.Point(1355, 7);
+            this.importDate.Margin = new System.Windows.Forms.Padding(0);
+            this.importDate.Name = "importDate";
+            this.importDate.Size = new System.Drawing.Size(159, 33);
+            this.importDate.TabIndex = 1;
+            this.importDate.KeyDown += new System.Windows.Forms.KeyEventHandler(this.dtptdate_KeyDown);
+            // 
             // importButton
             // 
-            this.importButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.importButton.BackColor = System.Drawing.Color.Red;
+            this.importButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.importButton.ForeColor = System.Drawing.Color.White;
-            this.importButton.Location = new System.Drawing.Point(1024, 50);
+            this.importButton.Location = new System.Drawing.Point(1525, 3);
             this.importButton.Name = "importButton";
-            this.importButton.Size = new System.Drawing.Size(217, 40);
+            this.importButton.Size = new System.Drawing.Size(100, 40);
             this.importButton.TabIndex = 16;
             this.importButton.Text = "Tally Import";
             this.importButton.UseVisualStyleBackColor = false;
@@ -3303,7 +3372,7 @@ namespace standard.trans
             this.pnlview.Location = new System.Drawing.Point(0, 0);
             this.pnlview.Margin = new System.Windows.Forms.Padding(6);
             this.pnlview.Name = "pnlview";
-            this.pnlview.Size = new System.Drawing.Size(1638, 719);
+            this.pnlview.Size = new System.Drawing.Size(1671, 719);
             this.pnlview.TabIndex = 12;
             // 
             // frmPurchase
@@ -3311,7 +3380,7 @@ namespace standard.trans
             this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 23F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(191)))), ((int)(((byte)(219)))), ((int)(((byte)(254)))));
-            this.ClientSize = new System.Drawing.Size(1638, 719);
+            this.ClientSize = new System.Drawing.Size(1671, 719);
             this.Controls.Add(this.tablemain);
             this.Controls.Add(this.pnlview);
             this.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold);
@@ -3329,6 +3398,7 @@ namespace standard.trans
             ((System.ComponentModel.ISupportInitialize)(this.ledgermasterBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.companyBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ledgermasterCityBindingSource)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ledgermasterBindingSource1)).EndInit();
             this.tablecmd.ResumeLayout(false);
             this.tablesum.ResumeLayout(false);
             this.tablesum.PerformLayout();
@@ -3429,6 +3499,30 @@ namespace standard.trans
         }
 
         private void cboCompany_KeyDown(object sender, KeyEventArgs e)
+        {
+           
+            if (e.KeyCode == Keys.Return && cbopurfrom.Text.Trim() != string.Empty)
+            {
+                cboAgent.Focus();
+            }
+        }
+
+        private void label8_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void tableentry_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void cboAgent_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Return)
             {

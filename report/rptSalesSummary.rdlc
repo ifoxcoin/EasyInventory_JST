@@ -359,6 +359,7 @@
                         <PaddingBottom>2pt</PaddingBottom>
                       </Style>
                     </Textbox>
+                    <rd:Selected>true</rd:Selected>
                   </CellContents>
                 </TablixCell>
                 <TablixCell>
@@ -900,6 +901,12 @@
             </TablixMember>
             <TablixMember>
               <Group Name="Details" />
+              <SortExpressions>
+                <SortExpression>
+                  <Value>=Fields!sm_date.Value</Value>
+                  <Direction>Descending</Direction>
+                </SortExpression>
+              </SortExpressions>
             </TablixMember>
             <TablixMember>
               <KeepWithGroup>Before</KeepWithGroup>

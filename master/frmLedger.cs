@@ -1,4 +1,4 @@
-using mylib;
+﻿using mylib;
 using standard.classes;
 using System;
 using System.ComponentModel;
@@ -443,7 +443,7 @@ namespace standard.master
                 }
                 else if (MessageBox.Show("Are you sure to update?", "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.No)
                 {
-                    inventoryDataContext.usp_ledgermasterUpdate(id, ledgermaster.led_agid, ledgermaster.led_accountcode, ledgermaster.led_accounttype, ledgermaster.led_name, ledgermaster.led_stlname, ledgermaster.led_address, ledgermaster.led_address1, ledgermaster.led_shippingaddress1, ledgermaster.led_shippingaddress2, ledgermaster.led_address2, ledgermaster.led_state, ledgermaster.led_tname, ledgermaster.led_taddress, ledgermaster.led_taddress1, ledgermaster.led_taddress2, ledgermaster.led_pincode, ledgermaster.led_transport, ledgermaster.led_ownerphone, ledgermaster.led_ownername, "" , "", ledgermaster.led_deliveryorder, ledgermaster.led_vehicleno, ledgermaster.led_tin, ledgermaster.led_isfreight, ledgermaster.led_check, ledgermaster.led_cst, ledgermaster.led_refno, global.ucode, global.comid, ledgermaster.rt_id, ledgermaster.vh_id, global.sysdate, ledgermaster.led_ratetype, ledgermaster.led_disper);
+                    inventoryDataContext.usp_ledgermasterUpdate(id, ledgermaster.led_agid, ledgermaster.led_accountcode, ledgermaster.led_accounttype, ledgermaster.led_name, ledgermaster.led_stlname, ledgermaster.led_address, ledgermaster.led_address1, ledgermaster.led_shippingaddress1, ledgermaster.led_shippingaddress2, ledgermaster.led_address2, ledgermaster.led_state, ledgermaster.led_tname, ledgermaster.led_taddress, ledgermaster.led_taddress1, ledgermaster.led_taddress2, ledgermaster.led_pincode, ledgermaster.led_transport, ledgermaster.led_ownerphone, ledgermaster.led_ownername, "", "", ledgermaster.led_deliveryorder, ledgermaster.led_vehicleno, ledgermaster.led_tin, ledgermaster.led_isfreight, ledgermaster.led_check, ledgermaster.led_cst, ledgermaster.led_refno, global.ucode, global.comid, ledgermaster.rt_id, ledgermaster.vh_id, global.sysdate, ledgermaster.led_ratetype, ledgermaster.led_disper);
                     MessageBox.Show("Record updated successfully...", "Information", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
                     goto IL_0521;
                 }
@@ -542,6 +542,7 @@ namespace standard.master
             }
             if (cboType.Text == "Customer")
             {
+                cboReference.Enabled = true;
                 cboAreaCode.Enabled = true;
                 cboVehicleNo.Enabled = true;
                 cboratetype.Enabled = true;
@@ -785,7 +786,7 @@ namespace standard.master
             // 
             // a1Paneltitle
             // 
-            this.a1Paneltitle.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.a1Paneltitle.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.a1Paneltitle.BorderColor = System.Drawing.Color.Gray;
             this.a1Paneltitle.Controls.Add(this.lbltitle);
@@ -996,8 +997,8 @@ namespace standard.master
             this.dgview.AllowUserToResizeRows = false;
             dataGridViewCellStyle1.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
             this.dgview.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
-            this.dgview.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+            this.dgview.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.dgview.AutoGenerateColumns = false;
             this.dgview.BackgroundColor = System.Drawing.Color.White;
@@ -2444,8 +2445,8 @@ namespace standard.master
             {
                 // Load data from your database (item table)
                 InventoryDataContext db = new InventoryDataContext();
-                var ledgers = db.ledgermasters.ToList();
-
+                var ledgers = db.ledgermasters.Where(x => x.led_accounttype != "Agent").ToList();
+                var agents = db.ledgermasters.Where(x => x.led_accounttype == "Agent").ToList();
                 if (ledgers.Count == 0)
                 {
                     MessageBox.Show("No records to export.", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -2463,20 +2464,21 @@ namespace standard.master
                 worksheet.Cells[1, 2] = "Jeyakkodi Party Name";
                 worksheet.Cells[1, 3] = "Saamy Party Name";
                 worksheet.Cells[1, 4] = "Party Type";
-                worksheet.Cells[1, 5] = "Address 1";
-                worksheet.Cells[1, 6] = "Address 2";
-                worksheet.Cells[1, 7] = "City";
-                worksheet.Cells[1, 8] = "Shipping Address 1";
-                worksheet.Cells[1, 9] = "Shipping Address 2";
-                worksheet.Cells[1, 10] = "State";
-                worksheet.Cells[1, 11] = "State Code";
-                worksheet.Cells[1, 12] = "PinCode";
-                worksheet.Cells[1, 13] = "Owner Name";
-                worksheet.Cells[1, 14] = "Phone No.";
-                worksheet.Cells[1, 15] = "GSTIN";
-                worksheet.Cells[1, 16] = "Rate Type";
-                worksheet.Cells[1, 17] = "Freight Charge";
-                worksheet.Cells[1, 18] = "Company ID";
+                worksheet.Cells[1, 5] = "Agent Name";
+                worksheet.Cells[1, 6] = "Address 1";
+                worksheet.Cells[1, 7] = "Address 2";
+                worksheet.Cells[1, 8] = "City";
+                worksheet.Cells[1, 9] = "Shipping Address 1";
+                worksheet.Cells[1, 10] = "Shipping Address 2";
+                worksheet.Cells[1, 11] = "State";
+                worksheet.Cells[1, 12] = "State Code";
+                worksheet.Cells[1, 13] = "PinCode";
+                worksheet.Cells[1, 14] = "Owner Name";
+                worksheet.Cells[1, 15] = "Phone No.";
+                worksheet.Cells[1, 16] = "GSTIN";
+                worksheet.Cells[1, 17] = "Rate Type";
+                worksheet.Cells[1, 18] = "Freight Charge";
+                worksheet.Cells[1, 19] = "Company ID";
 
                 // ===== Progress bar setup =====
                 progressBar1.Visible = true;
@@ -2498,24 +2500,31 @@ namespace standard.master
 
                 foreach (var ledger in ledgers)
                 {
+                    string agentName = "";
+                    if (ledger.led_agid > 0)
+                    {
+                        agentName = agents.Where(x => x.led_id == ledger.led_agid).Select(x => x.led_name).FirstOrDefault() ?? "";
+                    }
                     worksheet.Cells[row, 1] = ledger.led_id;
                     worksheet.Cells[row, 2] = ledger.led_name;
                     worksheet.Cells[row, 3] = ledger.led_stlname;
                     worksheet.Cells[row, 4] = ledger.led_accounttype;
-                    worksheet.Cells[row, 5] = ledger.led_address;
-                    worksheet.Cells[row, 6] = ledger.led_address1;
-                    worksheet.Cells[row, 7] = ledger.led_address2;
-                    worksheet.Cells[row, 8] = ledger.led_shippingaddress1;
-                    worksheet.Cells[row, 9] = ledger.led_shippingaddress2;
-                    worksheet.Cells[row, 10] = ledger.led_state;
-                    worksheet.Cells[row, 11] = ledger.led_accountcode;
-                    worksheet.Cells[row, 12] = ledger.led_pincode;
-                    worksheet.Cells[row, 13] = ledger.led_ownername;
-                    worksheet.Cells[row, 14] = ledger.led_ownerphone;
-                    worksheet.Cells[row, 15] = ledger.led_tin;
-                    worksheet.Cells[row, 16] = ledger.led_ratetype;
-                    worksheet.Cells[row, 17] = ledger.led_isfreight;
-                    worksheet.Cells[row, 18] = ledger.com_id;
+                    worksheet.Cells[row, 5] = agentName;
+                    worksheet.Cells[row, 6] = ledger.led_address;
+                    worksheet.Cells[row, 7] = ledger.led_address1;
+                    worksheet.Cells[row, 8] = ledger.led_address2;
+                    worksheet.Cells[row, 9] = ledger.led_shippingaddress1;
+                    worksheet.Cells[row, 10] = ledger.led_shippingaddress2;
+                    worksheet.Cells[row, 11] = ledger.led_state;
+                    worksheet.Cells[row, 12] = ledger.led_accountcode;
+                    worksheet.Cells[row, 13] = ledger.led_pincode;
+                    worksheet.Cells[row, 14] = ledger.led_ownername;
+                    worksheet.Cells[row, 15] = ledger.led_ownerphone;
+                    worksheet.Cells[row, 16] = ledger.led_tin;
+                    worksheet.Cells[row, 17] = ledger.led_ratetype;
+                    worksheet.Cells[row, 18] = ledger.led_isfreight;
+                    worksheet.Cells[row, 19] = ledger.com_id;
+                    worksheet.Cells[row, 20] = ledger.led_agid;
                     row++;
 
                     // ===== Update Progress =====
@@ -2618,6 +2627,51 @@ namespace standard.master
                         continue;
                     }
 
+                    // 👉 Read Agent Name from Excel (Column 5)
+                    string excelAgentName = Convert.ToString((range.Cells[row, 5] as Excel.Range)?.Value2)?.Trim() ?? "";
+                    int agentId = 0;
+                    if (!string.IsNullOrWhiteSpace(excelAgentName))
+                    {
+                        // 1️⃣ Check Agent exists in LedgerMaster
+                        var existingAgent = db.ledgermasters
+                                              .FirstOrDefault(x => x.led_name == excelAgentName
+                                                                && x.led_accounttype == "Agent");                        
+
+                        // 2️⃣ IF Agent already exists → use that ID
+                        if (existingAgent != null)
+                        {
+                            agentId = Convert.ToInt32(existingAgent.led_id);
+                        }
+                        else
+                        {
+                            //// 3️⃣ Agent NOT exists → Create NEW Agent ledger
+                            //var newAgent = new ledgermaster()
+                            //{
+                            //    led_name = excelAgentName,
+                            //    led_stlname = excelAgentName,
+                            //    led_accounttype = "Agent",
+                            //    led_address = "",
+                            //    led_address1 = "",
+                            //    led_address2 = "",
+                            //    led_state = "",
+                            //    led_pincode = "",
+                            //    led_tin = "",
+                            //    led_ratetype = "",
+                            //    led_agid = 0
+                            //};
+
+                            //db.ledgermasters.Add(newAgent);
+                            //db.SaveChanges();   // 🔴 VERY IMPORTANT (to generate led_id)
+
+                            //// 4️⃣ Assign newly created Agent ID
+                            //existingItem.led_agid = newAgent.led_id;
+                        }
+                    }
+                    else
+                    {
+                        // No agent in excel
+                        agentId = 0;
+                    }
 
                     string ledIdText = Convert.ToString((range.Cells[row, 1] as Excel.Range)?.Value2);
 
@@ -2633,25 +2687,26 @@ namespace standard.master
                             existingItem.led_name = GetString(range.Cells[row, 2]);
                             existingItem.led_stlname = GetString(range.Cells[row, 3]);
                             existingItem.led_accounttype = GetString(range.Cells[row, 4]);
-                            existingItem.led_address = GetString(range.Cells[row, 5]);
-                            existingItem.led_address1 = GetString(range.Cells[row, 6]);
-                            existingItem.led_address2 = GetString(range.Cells[row, 7]);
-                            existingItem.led_shippingaddress1 = GetString(range.Cells[row, 8]);
-                            existingItem.led_shippingaddress2 = GetString(range.Cells[row, 9]);
-                            existingItem.led_state = GetString(range.Cells[row, 10]);
-                            existingItem.led_accountcode = GetString(range.Cells[row, 11]);
-                            existingItem.led_pincode = GetString(range.Cells[row, 12]);
-                            existingItem.led_ownername = GetString(range.Cells[row, 13]);
-                            existingItem.led_ownerphone = GetString(range.Cells[row, 14]);
-                            existingItem.led_tin = GetString(range.Cells[row, 15]);
-                            existingItem.led_ratetype = GetString(range.Cells[row, 16]);
+                            existingItem.led_agid = agentId;
+                            existingItem.led_address = GetString(range.Cells[row, 6]);
+                            existingItem.led_address1 = GetString(range.Cells[row, 7]);
+                            existingItem.led_address2 = GetString(range.Cells[row, 8]);
+                            existingItem.led_shippingaddress1 = GetString(range.Cells[row, 9]);
+                            existingItem.led_shippingaddress2 = GetString(range.Cells[row, 10]);
+                            existingItem.led_state = GetString(range.Cells[row, 11]);
+                            existingItem.led_accountcode = GetString(range.Cells[row, 12]);
+                            existingItem.led_pincode = GetString(range.Cells[row, 13]);
+                            existingItem.led_ownername = GetString(range.Cells[row, 14]);
+                            existingItem.led_ownerphone = GetString(range.Cells[row, 15]);
+                            existingItem.led_tin = GetString(range.Cells[row, 16]);
+                            existingItem.led_ratetype = GetString(range.Cells[row, 17]);
 
                             // For boolean, treat non-empty as true if needed, otherwise default false
-                            var boolVal = (range.Cells[row, 17] as Excel.Range)?.Value2;
+                            var boolVal = (range.Cells[row, 18] as Excel.Range)?.Value2;
                             existingItem.led_isfreight = boolVal != null && Convert.ToBoolean(boolVal);
 
                             // For int, handle safely (default 0 if null)
-                            var intVal = (range.Cells[row, 18] as Excel.Range)?.Value2;
+                            var intVal = (range.Cells[row, 19] as Excel.Range)?.Value2;
                             existingItem.com_id = intVal != null ? Convert.ToInt32(intVal) : 0;
                         }
 
@@ -2665,24 +2720,25 @@ namespace standard.master
                                 led_name = GetString(range.Cells[row, 2]),
                                 led_stlname = GetString(range.Cells[row, 3]),
                                 led_accounttype = GetString(range.Cells[row, 4]),
-                                led_address = GetString(range.Cells[row, 5]),
-                                led_address1 = GetString(range.Cells[row, 6]),
-                                led_address2 = GetString(range.Cells[row, 7]),
-                                led_shippingaddress1 = GetString(range.Cells[row, 8]),
-                                led_shippingaddress2 = GetString(range.Cells[row, 9]),
-                                led_state = GetString(range.Cells[row, 10]),
-                                led_accountcode = GetString(range.Cells[row, 11]),
-                                led_pincode = GetString(range.Cells[row, 12]),
-                                led_ownername = GetString(range.Cells[row, 13]),
-                                led_ownerphone = GetString(range.Cells[row, 14]),
-                                led_tin = GetString(range.Cells[row, 15]),
-                                led_ratetype = GetString(range.Cells[row, 16]),
+                                led_agid = agentId,
+                                led_address = GetString(range.Cells[row, 6]),
+                                led_address1 = GetString(range.Cells[row, 7]),
+                                led_address2 = GetString(range.Cells[row, 8]),
+                                led_shippingaddress1 = GetString(range.Cells[row, 9]),
+                                led_shippingaddress2 = GetString(range.Cells[row, 10]),
+                                led_state = GetString(range.Cells[row, 11]),
+                                led_accountcode = GetString(range.Cells[row, 12]),
+                                led_pincode = GetString(range.Cells[row, 13]),
+                                led_ownername = GetString(range.Cells[row, 14]),
+                                led_ownerphone = GetString(range.Cells[row, 15]),
+                                led_tin = GetString(range.Cells[row, 16]),
+                                led_ratetype = GetString(range.Cells[row, 17]),
 
                                 // boolean safe convert
-                                led_isfreight = Convert.ToBoolean((range.Cells[row, 17] as Excel.Range)?.Value2 ?? false),
+                                led_isfreight = Convert.ToBoolean((range.Cells[row, 18] as Excel.Range)?.Value2 ?? false),
 
                                 // int safe convert
-                                com_id = Convert.ToInt32((range.Cells[row, 18] as Excel.Range)?.Value2 ?? 0),
+                                com_id = Convert.ToInt32((range.Cells[row, 19] as Excel.Range)?.Value2 ?? 0),
 
                                 users_uid = 1,
                                 led_udate = DateTime.Now.Date

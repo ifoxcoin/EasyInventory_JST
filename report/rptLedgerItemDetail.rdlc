@@ -377,18 +377,19 @@
                         <PaddingBottom>2pt</PaddingBottom>
                       </Style>
                     </Textbox>
+                    <rd:Selected>true</rd:Selected>
                   </CellContents>
                 </TablixCell>
                 <TablixCell>
                   <CellContents>
-                    <Textbox Name="rec_date">
+                    <Textbox Name="BillDate">
                       <CanGrow>true</CanGrow>
                       <KeepTogether>true</KeepTogether>
                       <Paragraphs>
                         <Paragraph>
                           <TextRuns>
                             <TextRun>
-                              <Value>=Format(Fields!BillDate.Value,"dd-MM-yyyy")</Value>
+                              <Value>=Fields!BillDate.Value</Value>
                               <Style>
                                 <FontFamily>tahoma</FontFamily>
                                 <Color>White</Color>
@@ -398,7 +399,7 @@
                           <Style />
                         </Paragraph>
                       </Paragraphs>
-                      <rd:DefaultName>rec_date</rd:DefaultName>
+                      <rd:DefaultName>BillDate</rd:DefaultName>
                       <Style>
                         <Border>
                           <Color>LightGrey</Color>
@@ -625,7 +626,6 @@
                         <PaddingBottom>2pt</PaddingBottom>
                       </Style>
                     </Textbox>
-                    <rd:Selected>true</rd:Selected>
                   </CellContents>
                 </TablixCell>
               </TablixCells>
@@ -942,6 +942,12 @@
             </TablixMember>
             <TablixMember>
               <Group Name="Details" />
+              <SortExpressions>
+                <SortExpression>
+                  <Value>=Fields!BillDate.Value</Value>
+                  <Direction>Descending</Direction>
+                </SortExpression>
+              </SortExpressions>
               <TablixMembers>
                 <TablixMember />
               </TablixMembers>

@@ -309,6 +309,7 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
     <EmbeddedResource Include="report\rptLedgersOutstandingedited.rdlc" />
+    <EmbeddedResource Include="report\rptAgentwise.rdlc" />
     <EmbeddedResource Include="report\rptSalesOrderDetail.rdlc" />
     <EmbeddedResource Include="report\rptSalesInvoice2.rdlc" />
     <EmbeddedResource Include="report\rptSalesInvoice1.rdlc" />
@@ -466,7 +467,9 @@
     <None Include="Properties\DataSources\standard.classes.usp_ledgermasterSelectResult1.datasource" />
     <None Include="Properties\DataSources\standard.classes.usp_LedgerOutstandingRptResult.datasource" />
     <None Include="Properties\DataSources\standard.classes.usp_LedgerwiseOutstandingReportResult.datasource" />
+    <None Include="Properties\DataSources\standard.classes.usp_NewOutstandingReportResult.datasource" />
     <None Include="Properties\DataSources\standard.classes.usp_OutstandingReportResult.datasource" />
+    <None Include="Properties\DataSources\standard.classes.usp_purchasedetailsSelectResult.datasource" />
     <None Include="Properties\DataSources\standard.classes.usp_routeSelectResult.datasource" />
     <None Include="Properties\DataSources\standard.classes.usp_salesdetailsSelectResult.datasource" />
     <None Include="Properties\DataSources\standard.classes.usp_salesdetailsSelectResult1.datasource" />
