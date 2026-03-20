@@ -32,6 +32,7 @@
             Microsoft.Reporting.WinForms.ReportDataSource reportDataSource1 = new Microsoft.Reporting.WinForms.ReportDataSource();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.tablelist = new System.Windows.Forms.TableLayoutPanel();
+            this.chkTotal = new System.Windows.Forms.CheckBox();
             this.lblReference = new System.Windows.Forms.Label();
             this.btnSend = new mylib.lightbutton();
             this.btnClear = new mylib.lightbutton();
@@ -115,6 +116,7 @@
             this.tablelist.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 12.7551F));
             this.tablelist.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 53.57143F));
             this.tablelist.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
+            this.tablelist.Controls.Add(this.chkTotal, 6, 0);
             this.tablelist.Controls.Add(this.lblReference, 4, 2);
             this.tablelist.Controls.Add(this.btnSend, 9, 2);
             this.tablelist.Controls.Add(this.btnClear, 8, 2);
@@ -146,16 +148,31 @@
             this.tablelist.Size = new System.Drawing.Size(1274, 130);
             this.tablelist.TabIndex = 4;
             // 
+            // chkTotal
+            // 
+            this.chkTotal.Appearance = System.Windows.Forms.Appearance.Button;
+            this.chkTotal.BackColor = System.Drawing.Color.Red;
+            this.chkTotal.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.chkTotal.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
+            this.chkTotal.Location = new System.Drawing.Point(746, 3);
+            this.chkTotal.Name = "chkTotal";
+            this.chkTotal.Size = new System.Drawing.Size(148, 37);
+            this.chkTotal.TabIndex = 50;
+            this.chkTotal.Text = "Total Items";
+            this.chkTotal.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.chkTotal.UseVisualStyleBackColor = false;
+            this.chkTotal.CheckedChanged += new System.EventHandler(this.chkTotal_CheckedChanged);
+            // 
             // lblReference
             // 
             this.lblReference.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblReference.AutoSize = true;
             this.lblReference.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
             this.lblReference.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.lblReference.Location = new System.Drawing.Point(524, 99);
+            this.lblReference.Location = new System.Drawing.Point(524, 96);
             this.lblReference.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.lblReference.Name = "lblReference";
-            this.lblReference.Size = new System.Drawing.Size(85, 18);
+            this.lblReference.Size = new System.Drawing.Size(105, 23);
             this.lblReference.TabIndex = 24;
             this.lblReference.Text = "Reference";
             this.lblReference.Visible = false;
@@ -225,7 +242,6 @@
             this.chkIsSummary.BackColor = System.Drawing.Color.Red;
             this.chkIsSummary.Checked = true;
             this.chkIsSummary.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkIsSummary.Dock = System.Windows.Forms.DockStyle.Fill;
             this.chkIsSummary.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.chkIsSummary.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
             this.chkIsSummary.Location = new System.Drawing.Point(3, 46);
@@ -244,10 +260,10 @@
             this.dtpfdate.CustomFormat = "dd-MM-yyyy";
             this.dtpfdate.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
             this.dtpfdate.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-            this.dtpfdate.Location = new System.Drawing.Point(159, 8);
+            this.dtpfdate.Location = new System.Drawing.Point(159, 6);
             this.dtpfdate.Margin = new System.Windows.Forms.Padding(5);
             this.dtpfdate.Name = "dtpfdate";
-            this.dtpfdate.Size = new System.Drawing.Size(132, 26);
+            this.dtpfdate.Size = new System.Drawing.Size(132, 30);
             this.dtpfdate.TabIndex = 0;
             this.dtpfdate.KeyDown += new System.Windows.Forms.KeyEventHandler(this.dtpfdate_KeyDown);
             // 
@@ -257,10 +273,10 @@
             this.lblLedger.AutoSize = true;
             this.lblLedger.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold);
             this.lblLedger.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.lblLedger.Location = new System.Drawing.Point(1149, 12);
+            this.lblLedger.Location = new System.Drawing.Point(1149, 0);
             this.lblLedger.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.lblLedger.Name = "lblLedger";
-            this.lblLedger.Size = new System.Drawing.Size(60, 18);
+            this.lblLedger.Size = new System.Drawing.Size(67, 43);
             this.lblLedger.TabIndex = 24;
             this.lblLedger.Text = "Ledger";
             this.lblLedger.Visible = false;
@@ -272,10 +288,10 @@
             this.cboName.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
             this.cboName.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cboName.FormattingEnabled = true;
-            this.cboName.Location = new System.Drawing.Point(1228, 8);
+            this.cboName.Location = new System.Drawing.Point(1228, 6);
             this.cboName.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.cboName.Name = "cboName";
-            this.cboName.Size = new System.Drawing.Size(41, 26);
+            this.cboName.Size = new System.Drawing.Size(41, 31);
             this.cboName.TabIndex = 25;
             this.cboName.Visible = false;
             this.cboName.SelectedIndexChanged += new System.EventHandler(this.cboName_SelectedIndexChanged);
@@ -292,7 +308,7 @@
             this.cboCity.Location = new System.Drawing.Point(1228, 90);
             this.cboCity.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.cboCity.Name = "cboCity";
-            this.cboCity.Size = new System.Drawing.Size(41, 26);
+            this.cboCity.Size = new System.Drawing.Size(41, 31);
             this.cboCity.TabIndex = 25;
             this.cboCity.ValueMember = "led_id";
             this.cboCity.Visible = false;
@@ -310,7 +326,7 @@
             this.cboCityName.FormattingEnabled = true;
             this.cboCityName.Location = new System.Drawing.Point(373, 89);
             this.cboCityName.Name = "cboCityName";
-            this.cboCityName.Size = new System.Drawing.Size(143, 22);
+            this.cboCityName.Size = new System.Drawing.Size(143, 26);
             this.cboCityName.TabIndex = 42;
             this.cboCityName.ValueMember = "led_id";
             this.cboCityName.Visible = false;
@@ -322,7 +338,7 @@
             this.lblCityName.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
             this.lblCityName.Location = new System.Drawing.Point(304, 86);
             this.lblCityName.Name = "lblCityName";
-            this.lblCityName.Size = new System.Drawing.Size(63, 36);
+            this.lblCityName.Size = new System.Drawing.Size(59, 44);
             this.lblCityName.TabIndex = 41;
             this.lblCityName.Text = "Customer City ";
             this.lblCityName.TextAlign = System.Drawing.ContentAlignment.TopCenter;
@@ -336,7 +352,7 @@
             this.lblCity.Location = new System.Drawing.Point(5, 86);
             this.lblCity.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.lblCity.Name = "lblCity";
-            this.lblCity.Size = new System.Drawing.Size(131, 18);
+            this.lblCity.Size = new System.Drawing.Size(104, 44);
             this.lblCity.TabIndex = 24;
             this.lblCity.Text = "Search By Route";
             this.lblCity.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -353,7 +369,7 @@
             this.cboRoute.FormattingEnabled = true;
             this.cboRoute.Location = new System.Drawing.Point(157, 89);
             this.cboRoute.Name = "cboRoute";
-            this.cboRoute.Size = new System.Drawing.Size(141, 26);
+            this.cboRoute.Size = new System.Drawing.Size(141, 31);
             this.cboRoute.TabIndex = 44;
             this.cboRoute.ValueMember = "rt_id";
             this.cboRoute.Visible = false;
@@ -392,7 +408,7 @@
             this.cboVehicleNo.Location = new System.Drawing.Point(524, 4);
             this.cboVehicleNo.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.cboVehicleNo.Name = "cboVehicleNo";
-            this.cboVehicleNo.Size = new System.Drawing.Size(214, 26);
+            this.cboVehicleNo.Size = new System.Drawing.Size(214, 31);
             this.cboVehicleNo.TabIndex = 48;
             this.cboVehicleNo.ValueMember = "vh_id";
             // 
@@ -501,7 +517,7 @@
             this.lbltitle.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
             this.lbltitle.Location = new System.Drawing.Point(10, 6);
             this.lbltitle.Name = "lbltitle";
-            this.lbltitle.Size = new System.Drawing.Size(139, 19);
+            this.lbltitle.Size = new System.Drawing.Size(171, 24);
             this.lbltitle.TabIndex = 1;
             this.lbltitle.Text = "LOAD WAY BILL";
             this.lbltitle.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -553,7 +569,7 @@
             // 
             // frmNewTransactionRpt
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 14F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 18F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(191)))), ((int)(((byte)(219)))), ((int)(((byte)(254)))));
             this.ClientSize = new System.Drawing.Size(1284, 503);
@@ -623,5 +639,6 @@
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel2;
         private mylib.lightbutton cmdList;
         private mylib.lightbutton cmdexit;
+        private System.Windows.Forms.CheckBox chkTotal;
     }
 }

@@ -818,25 +818,35 @@ namespace standard.trans
                                     }
 
 
-                                    var existingOrderDetail = inventoryDataContext.salesorderdetails.Where(od => od.so_id == salesmaster.so_id && od.od_id == salesdetail.sd_odid).FirstOrDefault();
+                                    var existingOrderDetail = inventoryDataContext.salesorderdetails.Where(od => od.so_id == salesmaster.so_id && od.item_id == salesdetail.item_id && od.com_id == salesmaster.com_id).FirstOrDefault();
                                     if (existingOrderDetail != null)
                                     {
-                                        salesorderdetails.so_id = existingOrderDetail.so_id;
-                                        salesorderdetails.od_id = existingOrderDetail.od_id;
-                                        salesorderdetails.od_rate = existingOrderDetail.od_rate;
-                                        salesorderdetails.item_id = existingOrderDetail.item_id;
-                                        salesorderdetails.com_id = existingOrderDetail.com_id;
-                                        salesorderdetails.od_istaxable = existingOrderDetail.od_istaxable;
-
-                                        inventoryDataContext.usp_salesorderdetailsUpdate(salesorderdetails.od_id, salesorderdetails.so_id, salesdetail.item_id, salesdetail.sd_qty, salesdetail.sd_unitvalue, salesorderdetails.od_soldqty, salesorderdetails.od_pendingqty, salesdetail.sd_perunitrate, salesorderdetails.com_id, salesorderdetails.od_istaxable);
+                                        inventoryDataContext.usp_salesorderdetailsUpdate(
+                                            existingOrderDetail.od_id,
+                                            existingOrderDetail.so_id,
+                                            salesdetail.item_id,
+                                            salesdetail.sd_qty,
+                                            salesdetail.sd_unitvalue,
+                                            salesorderdetails.od_soldqty,
+                                            salesorderdetails.od_pendingqty,
+                                            salesdetail.sd_perunitrate,
+                                            salesmaster.com_id,
+                                            existingOrderDetail.od_istaxable
+                                        );
                                     }
                                     else
                                     {
-                                        salesorderdetails.so_id = salesmaster.so_id;
-                                        salesorderdetails.item_id = salesdetail.item_id;
-                                        salesorderdetails.od_rate = salesdetail.sd_perunitrate;
-
-                                        inventoryDataContext.usp_salesorderdetailsInsert(salesorderdetails.so_id, salesdetail.item_id, salesdetail.sd_qty, salesdetail.sd_unitvalue, salesdetail.sd_qty, 0, salesdetail.sd_perunitrate, salesorderdetails.com_id, salesorderdetails.od_istaxable);
+                                        inventoryDataContext.usp_salesorderdetailsInsert(
+                                            salesmaster.so_id,
+                                            salesdetail.item_id,
+                                            salesdetail.sd_qty,
+                                            salesdetail.sd_unitvalue,
+                                            salesdetail.sd_qty,
+                                            0,
+                                            salesdetail.sd_perunitrate,
+                                            salesmaster.com_id,
+                                            salesorderdetails.od_istaxable
+                                        );
                                     }
 
 
@@ -1581,7 +1591,7 @@ namespace standard.trans
                     num2 = current.sm_disamount;
                     num3 = current.sm_taxamount;
                     num4 = current.sm_taxpercentage;
-                    if (current.sm_agid != null &&cboAgent.Items.Count > 0)
+                    if (current.sm_agid != null && cboAgent.Items.Count > 0)
                     {
                         cboAgent.SelectedValue = current.sm_agid;
                     }
@@ -1927,7 +1937,7 @@ namespace standard.trans
                     xml.AppendLine($"            <VOUCHERNUMBER>{voucherNumber}</VOUCHERNUMBER>");
                     xml.AppendLine($"            <PARTYLEDGERNAME>{partyLedger}</PARTYLEDGERNAME>");
                     xml.AppendLine("            <VOUCHERTYPENAME>Gst Sales</VOUCHERTYPENAME>");
-                    xml.AppendLine("            <CLASSNAME>SALES</CLASSNAME>");                   
+                    xml.AppendLine("            <CLASSNAME>SALES</CLASSNAME>");
                     xml.AppendLine($"            <BASICBUYERNAME>{partyLedger}</BASICBUYERNAME>");
                     xml.AppendLine($"            <BASICBASEPARTYNAME>{partyLedger}</BASICBASEPARTYNAME>");
                     xml.AppendLine($"            <PARTYGSTIN>{partyGSTIN}</PARTYGSTIN>");
@@ -2593,7 +2603,7 @@ namespace standard.trans
                                         salesmaster.sm_roundamount, salesmaster.sm_iscommissionclose, salesmaster.sm_ispackingclose,
                                         global.ucode, global.sysdate, salesmaster.sm_desc, salesmaster.sm_isclose,
                                         salesmaster.sm_isdraft, salesmaster.so_id, salesmaster.com_id,
-                                        salesmaster.sm_istaxable, true, salesmaster.sm_guid,salesmaster.sm_agid
+                                        salesmaster.sm_istaxable, true, salesmaster.sm_guid, salesmaster.sm_agid
                                     );
                                 }
                             }
@@ -2744,7 +2754,7 @@ namespace standard.trans
                                 salesmaster.sm_roundamount, salesmaster.sm_iscommissionclose, salesmaster.sm_ispackingclose,
                                 global.ucode, global.sysdate, salesmaster.sm_desc, salesmaster.sm_isclose,
                                 salesmaster.sm_isdraft, salesmaster.so_id, salesmaster.com_id,
-                                salesmaster.sm_istaxable, true, salesmaster.sm_guid,salesmaster.sm_agid
+                                salesmaster.sm_istaxable, true, salesmaster.sm_guid, salesmaster.sm_agid
                             );
                         }
                     }
@@ -2844,7 +2854,7 @@ namespace standard.trans
 
         private void cbocompany_KeyDown(object sender, KeyEventArgs e)
         {
-         
+
             if (e.KeyCode == Keys.Return || e.KeyCode == Keys.Tab)
             {
                 cboAgent.Focus();
@@ -3027,7 +3037,7 @@ namespace standard.trans
                         if (Convert.ToDecimal(dgvSales["cQty", r].Value) >= 1)
                         {
                             decimal.TryParse(Convert.ToString(dgvSales["cRate", r].Value), out rate);
-                            decimal.TryParse(Convert.ToString(dgvSales["cQty", r].Value), out qty);                           
+                            decimal.TryParse(Convert.ToString(dgvSales["cQty", r].Value), out qty);
                             decimal.TryParse(Convert.ToString(dgvSales["cTaxPercentage", r].Value), out taxPercentage);
                             dgvSales["cAmount", r].Value = ((rate > 0m && qty > 0m) ? ((object)((rate * qty) + ((rate * qty) * taxPercentage / 100))) : null);
                             calacTotal();

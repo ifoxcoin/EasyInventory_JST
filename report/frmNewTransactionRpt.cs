@@ -392,6 +392,20 @@ namespace standard.report
                         ReportDataSource reportsource = new ReportDataSource("usp_getCustomerByRoute", data.ToList());
                         reportViewer1.LocalReport.DataSources.Add(reportsource);
                     }
+                    if (_ReportType == "TotalItems")
+                    {
+
+                        var data = db.usp_getLoadwayBySalesOrder(vehicleId, dtpfdate.Value).ToList().OrderBy(x => x.led_deliveryorder);
+                        var summaryData = db.usp_getKgSummaryBySalesOrder(vehicleId, dtpfdate.Value).ToList();
+                        List<ReportParameter> list = new List<ReportParameter>();
+                        list.Add(new ReportParameter("BillDate", dtpfdate.Value.ToString("dd-MM-yyyy")));
+                        reportViewer1.LocalReport.ReportEmbeddedResource = "standard.report.rptSalesTotalItemList.rdlc";
+                        ReportDataSource reportsource = new ReportDataSource("usp_getLoadwayBySalesOrder", data.ToList());
+                        ReportDataSource reportsource1 = new ReportDataSource("usp_getKgSummaryBySalesOrder", summaryData);
+                        reportViewer1.LocalReport.DataSources.Add(reportsource1);
+                        reportViewer1.LocalReport.DataSources.Add(reportsource);
+                        reportViewer1.LocalReport.SetParameters(list);
+                    }
 
                 }
                 // reportViewer1.SetDisplayMode(DisplayMode.PrintLayout);
@@ -762,7 +776,7 @@ namespace standard.report
                 chkIsSummary.Text = "KACHATHU";
                 chkLorryBill.Visible = false;
                 chkIsSummary.BackColor = Color.Green;
-
+                reportViewer1.Reset();
             }
             else
             {
@@ -771,6 +785,7 @@ namespace standard.report
                 chkLorryBill.Visible = true;
                 chkIsSummary.BackColor = Color.Red;
                 chkLorryBill.Checked = true;
+                reportViewer1.Reset();
             }
         }
 
@@ -781,6 +796,7 @@ namespace standard.report
                 _ReportType = "WithRate";
                 chkLorryBill.Text = "With Rate";
                 chkLorryBill.BackColor = Color.Green;
+                reportViewer1.Reset();
 
             }
             else
@@ -788,6 +804,27 @@ namespace standard.report
                 _ReportType = "WithOutRate";
                 chkLorryBill.Text = "WithOut Rate";
                 chkLorryBill.BackColor = Color.Red;
+                reportViewer1.Reset();
+            }
+        }
+
+        private void chkTotal_CheckedChanged(object sender, EventArgs e)
+        {
+            if (chkTotal.Checked == false)
+            {
+                _ReportType = "LOADWAY";
+                chkIsSummary.Visible = true;
+                chkLorryBill.Visible = true;
+                chkTotal.BackColor = Color.Red;
+                reportViewer1.Reset();
+            }
+            else
+            {    
+                _ReportType = "TotalItems";
+                chkIsSummary.Visible = false;
+                chkLorryBill.Visible = false;
+                chkTotal.BackColor = Color.Green;
+                reportViewer1.Reset();
             }
         }
     }
