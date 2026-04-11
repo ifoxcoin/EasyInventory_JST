@@ -1439,7 +1439,7 @@ namespace standard.trans
                     inventoryDataContext.usp_purchasemasterUpdate(master.pm_id, purchasemaster.pm_no, purchasemaster.pm_date, purchasemaster.led_id, purchasemaster.pm_totqty, purchasemaster.pm_totamount, purchasemaster.pm_discountpercentage, purchasemaster.pm_discountamount, purchasemaster.pm_wages, purchasemaster.pm_frieght, purchasemaster.pm_billno, purchasemaster.com_id, global.ucode, global.sysdate, purchasemaster.pm_desc, purchasemaster.pm_isclose, purchasemaster.pm_paid, purchasemaster.pm_totaltaxamount, purchasemaster.pm_isimport, guid, purchasemaster.pm_agid);
                 }
 
-                string companyName = master.com_id == 2 ? "JEYAKKODI TRADERS 2025-2026" : master.com_id == 1 ? "SAAMY TRADE LINKS 2025-2026" : "Unknown Company";
+                string companyName = master.com_id == 2 ? "JEYAKKODI TRADERS 2026-2027" : master.com_id == 1 ? "SAAMY TRADE LINKS 2026-2027" : "Unknown Company";
                 string purchaseLedger = master.com_id == 2 ? "Purchase GST" : master.com_id == 1 ? "PURCHASES GST" : "Unknown Type";
                 string supplierLedger = master.com_id == 2 ? master.led_name : master.com_id == 1 ? master.led_stlname : null;
                 string supplierGSTIN = master.led_tin ?? "";
