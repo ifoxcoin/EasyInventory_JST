@@ -386,9 +386,24 @@ namespace standard.trans
         {
             dtpsaldate.MinDate = DateTimePicker.MinimumDateTime;
             dtpsaldate.MaxDate = DateTime.MaxValue;
-            dtpsaldate.Value = DateTime.Today;
-            TimeSpan value = new TimeSpan(30, 0, 0, 0, 0);
-            dtpfdate.Value = dtpfdate.Value.Subtract(value);
+
+            DateTime today = DateTime.Today;
+            DateTime financialYearStart;
+
+            if (today.Month >= 4)
+            {
+                // April to December → current year April 1
+                financialYearStart = new DateTime(today.Year, 4, 1);
+            }
+            else
+            {
+                // Jan to March → previous year April 1
+                financialYearStart = new DateTime(today.Year - 1, 4, 1);
+            }
+
+            dtpsaldate.Value = today;
+            dtpfdate.Value = financialYearStart;
+
             InventoryDataContext inventoryDataContext = new InventoryDataContext();
             using (inventoryDataContext)
             {

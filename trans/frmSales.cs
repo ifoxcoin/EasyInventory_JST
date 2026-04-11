@@ -468,8 +468,22 @@ namespace standard.trans
         {
             dtpsaldate.MinDate = DateTimePicker.MinimumDateTime;
             dtpsaldate.MaxDate = DateTime.MaxValue; // Or DateTime.Today.AddYears(1)
-            dtpsaldate.Value = DateTime.Today;
-            dtpfdate.Value = DateTime.Today.AddDays(-30);
+           DateTime today = DateTime.Today;
+DateTime financialYearStart;
+
+if (today.Month >= 4)
+{
+    // April to December → current year April 1
+    financialYearStart = new DateTime(today.Year, 4, 1);
+}
+else
+{
+    // Jan to March → previous year April 1
+    financialYearStart = new DateTime(today.Year - 1, 4, 1);
+}
+
+dtpsaldate.Value = today;
+dtpfdate.Value = financialYearStart;
 
             InventoryDataContext inventoryDataContext = new InventoryDataContext();
             using (inventoryDataContext)
@@ -763,6 +777,7 @@ namespace standard.trans
                                     salesdetail.sd_odid = Convert.ToInt32(salesorderItem.Cells["cOdID"].Value);
                                     decimal sd_orderqty = Convert.ToDecimal(salesorderItem.Cells["cOrderQty"].Value);
                                     salesdetail.sd_qty = Convert.ToInt32(sd_qty);
+                                    salesorderdetails.od_soldqty = Convert.ToInt32(sd_qty);
                                     salesdetail.sd_unitvalue = Convert.ToDecimal(salesorderItem.Cells["cUnitValue"].Value);
                                     salesdetail.sd_taxpercentage = Convert.ToDecimal(salesorderItem.Cells["cTaxPercentage"].Value);
                                     salesdetail.sd_taxamount = Convert.ToDecimal(salesorderItem.Cells["cTaxAmount"].Value);
@@ -818,7 +833,7 @@ namespace standard.trans
                                     }
 
 
-                                    var existingOrderDetail = inventoryDataContext.salesorderdetails.Where(od => od.so_id == salesmaster.so_id && od.item_id == salesdetail.item_id && od.com_id == salesmaster.com_id).FirstOrDefault();
+                                    var existingOrderDetail = inventoryDataContext.salesorderdetails.Where(od => od.od_id == salesdetail.sd_odid && od.item_id == salesdetail.item_id && od.com_id == salesmaster.com_id).FirstOrDefault();
                                     if (existingOrderDetail != null)
                                     {
                                         inventoryDataContext.usp_salesorderdetailsUpdate(
@@ -3630,6 +3645,7 @@ namespace standard.trans
             this.lednameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.companyDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.smtotqtyDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.isTaxableDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.smnetamountDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.smdisamountDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.smpackingchargeDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -4927,6 +4943,7 @@ namespace standard.trans
             this.smrefnoDataGridViewTextBoxColumn,
             this.smdateDataGridViewTextBoxColumn,
             this.lednameDataGridViewTextBoxColumn,
+            this.isTaxableDataGridViewTextBoxColumn,
             this.companyDataGridViewTextBoxColumn,
             this.smtotqtyDataGridViewTextBoxColumn,
             this.smnetamountDataGridViewTextBoxColumn,
@@ -5074,6 +5091,14 @@ namespace standard.trans
             this.companyDataGridViewTextBoxColumn.Name = "companyDataGridViewTextBoxColumn";
             this.companyDataGridViewTextBoxColumn.ReadOnly = true;
             this.companyDataGridViewTextBoxColumn.Width = 200;
+            // 
+            // isTaxableDataGridViewTextBoxColumn
+            // 
+            this.isTaxableDataGridViewTextBoxColumn.DataPropertyName = "item_istaxable";
+            this.isTaxableDataGridViewTextBoxColumn.HeaderText = "Taxable";
+            this.isTaxableDataGridViewTextBoxColumn.Name = "taxStatus";
+            this.isTaxableDataGridViewTextBoxColumn.ReadOnly = true;
+            this.isTaxableDataGridViewTextBoxColumn.Width = 200;
             // 
             // smtotqtyDataGridViewTextBoxColumn
             // 
@@ -5269,7 +5294,7 @@ namespace standard.trans
             this.cboCustomerView.DisplayMember = "led_name";
             this.cboCustomerView.Font = new System.Drawing.Font("Tahoma", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cboCustomerView.FormattingEnabled = true;
-            this.cboCustomerView.Location = new System.Drawing.Point(597, 5);
+            this.cboCustomerView.Location = new System.Drawing.Point(597, 6);
             this.cboCustomerView.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.cboCustomerView.Name = "cboCustomerView";
             this.cboCustomerView.Size = new System.Drawing.Size(221, 39);
@@ -5388,7 +5413,7 @@ namespace standard.trans
             this.cboCompany.DisplayMember = "com_name";
             this.cboCompany.Font = new System.Drawing.Font("Tahoma", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cboCompany.FormattingEnabled = true;
-            this.cboCompany.Location = new System.Drawing.Point(979, 5);
+            this.cboCompany.Location = new System.Drawing.Point(979, 6);
             this.cboCompany.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.cboCompany.Name = "cboCompany";
             this.cboCompany.Size = new System.Drawing.Size(230, 39);

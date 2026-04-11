@@ -345,8 +345,23 @@ namespace standard.trans
         {
             dtppurdate.MinDate = DateTimePicker.MinimumDateTime;
             dtppurdate.MaxDate = DateTime.MaxValue; // Or DateTime.Today.AddYears(1)
-            dtppurdate.Value = DateTime.Today;
-            dtpfdate.Value = DateTime.Today.AddDays(-30);
+
+            DateTime today = DateTime.Today;
+            DateTime financialYearStart;
+
+            if (today.Month >= 4)
+            {
+                // April to December → current year April 1
+                financialYearStart = new DateTime(today.Year, 4, 1);
+            }
+            else
+            {
+                // Jan to March → previous year April 1
+                financialYearStart = new DateTime(today.Year - 1, 4, 1);
+            }
+
+            dtppurdate.Value = today;
+            dtpfdate.Value = financialYearStart;
 
             InventoryDataContext inventoryDataContext = new InventoryDataContext();
             using (inventoryDataContext)

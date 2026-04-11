@@ -183,17 +183,27 @@ namespace standard.trans
 
         private void LoadData()
         {
-            DateTime now = DateTime.Now;
-            if (now < dtprecdate.MinDate)
-                dtprecdate.Value = dtprecdate.MinDate;
-            else if (now > dtprecdate.MaxDate)
-                dtprecdate.Value = dtprecdate.MaxDate;
-            else
-                dtprecdate.Value = now;
-
             // For dtpfdate
             DateTime subtracted = dtpfdate.Value.Subtract(new TimeSpan(30, 0, 0, 0, 0));
             dtpfdate.Value = subtracted < dtpfdate.MinDate ? dtpfdate.MinDate : subtracted;
+
+            DateTime today = DateTime.Today;
+            DateTime financialYearStart;
+
+            if (today.Month >= 4)
+            {
+                // April to December → current year April 1
+                financialYearStart = new DateTime(today.Year, 4, 1);
+            }
+            else
+            {
+                // Jan to March → previous year April 1
+                financialYearStart = new DateTime(today.Year - 1, 4, 1);
+            }
+
+            dtprecdate.Value = today;
+            dtpfdate.Value = financialYearStart;
+
             InventoryDataContext inventoryDataContext = new InventoryDataContext();
             using (inventoryDataContext)
             {
