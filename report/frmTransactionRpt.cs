@@ -149,6 +149,9 @@ namespace standard.report
             }
             if (_ReportName == "Ledger Outstanding Report" || _ReportName == "Supplier Outstanding Report")
             {
+                chkIsSummary.Visible = true;
+                chkIsSummary.BackColor = Color.Green;
+                chkIsSummary.ForeColor = Color.White;
                 btnSend.Visible = true;
             }
             if (_ReportName == "Sales Report")
@@ -369,24 +372,39 @@ namespace standard.report
 
                 else if (_ReportName == "Ledger Outstanding Report")
                 {
-
                     if (cboName.Text == "")
                     {
                         MessageBox.Show("Please Select any PartyName...");
                         return;
                     }
-                    //List<ReportParameter> rparam = new List<ReportParameter>();
-                    //rparam.Add(new ReportParameter("city", cboCity.Text));
-                    //rparam.Add(new ReportParameter("partyname", cboName.Text));
-                    reportViewer1.RefreshReport();
-                    var data = db.usp_LedgerOutstandingRpt(ledid, dtpfdate.Value, dtptdate.Value);
-                    var ledgerData = db.usp_ledgermasterSelect(ledid, null, null, null, null, null, null);
-                    reportViewer1.LocalReport.ReportEmbeddedResource = "standard.report.rptLedgersOutstanding.rdlc";
-                    //reportViewer1.LocalReport.SetParameters(rparam);
-                    ReportDataSource reportsource = new ReportDataSource("DataSet1", data.ToList());
-                    ReportDataSource reportsource_Ledger = new ReportDataSource("DataSet2", ledgerData.ToList());
-                    reportViewer1.LocalReport.DataSources.Add(reportsource);
-                    reportViewer1.LocalReport.DataSources.Add(reportsource_Ledger);
+                    if (_ReportType == "Summary")
+                    {
+                        
+                        //List<ReportParameter> rparam = new List<ReportParameter>();
+                        //rparam.Add(new ReportParameter("city", cboCity.Text));
+                        //rparam.Add(new ReportParameter("partyname", cboName.Text));
+                        reportViewer1.RefreshReport();
+                        var data = db.usp_NewLedgerOutstandingRpt(ledid, dtpfdate.Value, dtptdate.Value);
+                        var ledgerData = db.usp_ledgermasterSelect(ledid, null, null, null, null, null, null);
+                        reportViewer1.LocalReport.ReportEmbeddedResource = "standard.report.rptLedgersOutstandingSummary.rdlc";
+                        //reportViewer1.LocalReport.SetParameters(rparam);
+                        ReportDataSource reportsource = new ReportDataSource("DataSet1", data.ToList());
+                        ReportDataSource reportsource_Ledger = new ReportDataSource("DataSet2", ledgerData.ToList());
+                        reportViewer1.LocalReport.DataSources.Add(reportsource);
+                        reportViewer1.LocalReport.DataSources.Add(reportsource_Ledger);
+                    }
+                    else
+                    {
+                        reportViewer1.RefreshReport();
+                        var data = db.usp_LedgerOutstandingRpt(ledid, dtpfdate.Value, dtptdate.Value);
+                        var ledgerData = db.usp_ledgermasterSelect(ledid, null, null, null, null, null, null);
+                        reportViewer1.LocalReport.ReportEmbeddedResource = "standard.report.rptLedgersOutstanding.rdlc";
+                        ReportDataSource reportsource = new ReportDataSource("DataSet1", data.ToList());
+                        ReportDataSource reportsource_Ledger = new ReportDataSource("DataSet2", ledgerData.ToList());
+                        reportViewer1.LocalReport.DataSources.Add(reportsource);
+                        reportViewer1.LocalReport.DataSources.Add(reportsource_Ledger);
+                    }
+                    
                 }
 
                 else if (_ReportName == "Supplier Outstanding Report")
@@ -397,18 +415,34 @@ namespace standard.report
                         MessageBox.Show("Please Select any PartyName...");
                         return;
                     }
-                    //List<ReportParameter> rparam = new List<ReportParameter>();
-                    //rparam.Add(new ReportParameter("city", cboCity.Text));
-                    //rparam.Add(new ReportParameter("partyname", cboName.Text));
-                    reportViewer1.RefreshReport();
-                    var data = db.usp_SupplierOutstandingRpt(ledid, dtpfdate.Value, dtptdate.Value);
-                    var ledgerData = db.usp_ledgermasterSelect(ledid, null, null, null, null, null, null);
-                    reportViewer1.LocalReport.ReportEmbeddedResource = "standard.report.rptSupplierOutstanding.rdlc";
-                    //reportViewer1.LocalReport.SetParameters(rparam);
-                    ReportDataSource reportsource = new ReportDataSource("DataSet1", data.ToList());
-                    ReportDataSource reportsource_Ledger = new ReportDataSource("DataSet2", ledgerData.ToList());
-                    reportViewer1.LocalReport.DataSources.Add(reportsource);
-                    reportViewer1.LocalReport.DataSources.Add(reportsource_Ledger);
+                    if (_ReportType == "Summary")
+                    {
+                        //List<ReportParameter> rparam = new List<ReportParameter>();
+                        //rparam.Add(new ReportParameter("city", cboCity.Text));
+                        //rparam.Add(new ReportParameter("partyname", cboName.Text));
+                        reportViewer1.RefreshReport();
+                        var data = db.usp_NewSupplierOutstandingRpt(ledid, dtpfdate.Value, dtptdate.Value);
+                        var ledgerData = db.usp_ledgermasterSelect(ledid, null, null, null, null, null, null);
+                        reportViewer1.LocalReport.ReportEmbeddedResource = "standard.report.rptSupplierOutstandingSummary.rdlc";
+                        //reportViewer1.LocalReport.SetParameters(rparam);
+                        ReportDataSource reportsource = new ReportDataSource("DataSet1", data.ToList());
+                        ReportDataSource reportsource_Ledger = new ReportDataSource("DataSet2", ledgerData.ToList());
+                        reportViewer1.LocalReport.DataSources.Add(reportsource);
+                        reportViewer1.LocalReport.DataSources.Add(reportsource_Ledger);
+                    }
+                    else
+                    {
+                        reportViewer1.RefreshReport();
+                        var data = db.usp_SupplierOutstandingRpt(ledid, dtpfdate.Value, dtptdate.Value);
+                        var ledgerData = db.usp_ledgermasterSelect(ledid, null, null, null, null, null, null);
+                        reportViewer1.LocalReport.ReportEmbeddedResource = "standard.report.rptSupplierOutstanding.rdlc";
+                        //reportViewer1.LocalReport.SetParameters(rparam);
+                        ReportDataSource reportsource = new ReportDataSource("DataSet1", data.ToList());
+                        ReportDataSource reportsource_Ledger = new ReportDataSource("DataSet2", ledgerData.ToList());
+                        reportViewer1.LocalReport.DataSources.Add(reportsource);
+                        reportViewer1.LocalReport.DataSources.Add(reportsource_Ledger);
+                    }
+
                 }
                 else if (_ReportName == "AgentCommission Report")
                 {
@@ -502,7 +536,7 @@ namespace standard.report
 
         private void chkIsSummary_CheckedChanged(object sender, EventArgs e)
         {
-            if (chkIsSummary.Checked == false)
+            if (chkIsSummary.Checked == false && _ReportName != "Ledger Outstanding Report" && _ReportName != "Supplier Outstanding Report")
             {
                 _ReportType = "Detail";
                 chkIsSummary.Text = "DETAILED";
@@ -512,10 +546,26 @@ namespace standard.report
                 cboItemName.Visible = true;
 
             }
-            else
+            else if (chkIsSummary.Checked == true && _ReportName != "Ledger Outstanding Report" && _ReportName != "Supplier Outstanding Report")
             {
                 _ReportType = "Summary";
                 chkIsSummary.Text = "SUMMARY";
+                chkIsSummary.BackColor = Color.Red;
+                chkIsSummary.ForeColor = Color.White;
+                label1.Visible = false;
+                cboItemName.Visible = false;
+            }
+            else if (chkIsSummary.Checked == true && (_ReportName == "Ledger Outstanding Report" || _ReportName == "Supplier Outstanding Report"))
+            {
+                _ReportType = "Summary";
+                chkIsSummary.Text = "SUMMARY";
+                chkIsSummary.BackColor = Color.Green;
+                chkIsSummary.ForeColor = Color.White;
+            }
+            else if (chkIsSummary.Checked == false && (_ReportName == "Ledger Outstanding Report" || _ReportName == "Supplier Outstanding Report"))
+            {
+                _ReportType = "Detail";
+                chkIsSummary.Text = "DETAILED";
                 chkIsSummary.BackColor = Color.Red;
                 chkIsSummary.ForeColor = Color.White;
                 label1.Visible = false;
