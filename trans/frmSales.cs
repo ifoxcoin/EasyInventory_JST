@@ -851,7 +851,7 @@ dtpfdate.Value = financialYearStart;
                                     }
                                     else
                                     {
-                                        inventoryDataContext.usp_salesorderdetailsInsert(
+                                     var result=   inventoryDataContext.usp_salesorderdetailsInsert(
                                             salesmaster.so_id,
                                             salesdetail.item_id,
                                             salesdetail.sd_qty,
@@ -862,13 +862,19 @@ dtpfdate.Value = financialYearStart;
                                             salesmaster.com_id,
                                             salesorderdetails.od_istaxable
                                         );
+                                        var order = result.FirstOrDefault();
+
+                                        if (order != null)
+                                        {
+                                            salesorderItem.Cells["cOdID"].Value = order.od_id;
+                                        }
                                     }
 
 
                                 }
                             }
 
-
+                         
                             inventoryDataContext.usp_salesdetailsDelete(id);
                             inventoryDataContext.usp_stockDelete(id, "SALES");
                             foreach (DataGridViewRow item3 in (IEnumerable)dgvSales.Rows)
@@ -882,7 +888,6 @@ dtpfdate.Value = financialYearStart;
                                     salesdetail.item_id = Convert.ToInt32(item3.Cells["cItemID"].Value);
                                     decimal sd_qty = Convert.ToDecimal(item3.Cells["cQty"].Value);
                                     salesdetail.sd_odid = Convert.ToInt32(item3.Cells["cOdID"].Value);
-
                                     decimal sd_orderqty = Convert.ToDecimal(item3.Cells["cOrderQty"].Value);
                                     salesdetail.sd_qty = Convert.ToInt32(sd_qty);
                                     salesdetail.sd_orderqty = Convert.ToInt32(sd_orderqty);

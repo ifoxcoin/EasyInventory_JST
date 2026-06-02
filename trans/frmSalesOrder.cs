@@ -1239,28 +1239,60 @@ namespace standard.trans
             var com2tax = com2taxlist.FirstOrDefault();
             bool isConverted = false;
 
+            var allItems = com1list.Concat(com1taxlist).Concat(com2list).Concat(com2taxlist).ToList();
+
+            var lowStockItems = new List<string>();
+
+            foreach (var item in allItems)
+            {
+                var stock = inventoryDataContext.usp_stockSelect(item.item_id, null, null, null, null).FirstOrDefault()?.stock ?? 0;
+
+                var itemName = inventoryDataContext.items.Where(i => i.item_id == item.item_id).Select(i => i.item_name).FirstOrDefault() ?? "Unknown Item";
+
+                if (stock < item.od_qty)
+                {
+                    lowStockItems.Add(
+                        $"• {itemName} (Available: {stock}, Order: {item.od_qty}, Required: {item.od_qty - stock})"
+                    );
+                }
+            }
+
+            if (lowStockItems.Any())
+            {
+                string message = "Insufficient stock for the following items:\n\n"
+                                 + string.Join("\n", lowStockItems);
+
+                MessageBox.Show(
+                    message,
+                    "Stock Alert",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
+
+                return; // STOP ENTIRE CONVERSION
+            }
+
             if (com1list.Count > 0 && com1.com_id == 1)
             {
                 var firstItem = com1list.FirstOrDefault();
 
-                var lowStockItems = new List<string>();
-                foreach (var item in com1list)
-                {
-                    var stock = inventoryDataContext.usp_stockSelect(item.item_id, null, null, null, null).FirstOrDefault()?.stock ?? 0;
-                    var itemName = inventoryDataContext.items.Where(i => i.item_id == item.item_id).Select(i => i.item_name).FirstOrDefault() ?? "Unknown Item";
+                //var lowStockItems = new List<string>();
+                //foreach (var item in com1list)
+                //{
+                //    var stock = inventoryDataContext.usp_stockSelect(item.item_id, null, null, null, null).FirstOrDefault()?.stock ?? 0;
+                //    var itemName = inventoryDataContext.items.Where(i => i.item_id == item.item_id).Select(i => i.item_name).FirstOrDefault() ?? "Unknown Item";
 
-                    if (stock < item.od_qty)
-                    {
-                        lowStockItems.Add($"• {itemName} (Available: {stock}, Order: {item.od_qty}, Required: {item.od_qty - stock})");
-                    }
-                }
+                //    if (stock < item.od_qty)
+                //    {
+                //        lowStockItems.Add($"• {itemName} (Available: {stock}, Order: {item.od_qty}, Required: {item.od_qty - stock})");
+                //    }
+                //}
 
-                if (lowStockItems.Any())
-                {
-                    string message = "Insufficient stock for the following items:\n\n" + string.Join("\n", lowStockItems);
-                    MessageBox.Show(message, "Stock Alert", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    return; // stop saving
-                }
+                //if (lowStockItems.Any())
+                //{
+                //    string message = "Insufficient stock for the following items:\n\n" + string.Join("\n", lowStockItems);
+                //    MessageBox.Show(message, "Stock Alert", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                //    return; // stop saving
+                //}
 
 
                 long? no = 0L;
@@ -1329,24 +1361,24 @@ namespace standard.trans
             {
                 var firstItem = com1taxlist.FirstOrDefault();
 
-                var lowStockItems = new List<string>();
-                foreach (var item in com1taxlist)
-                {
-                    var stock = inventoryDataContext.usp_stockSelect(item.item_id, null, null, null, null).FirstOrDefault()?.stock ?? 0;
-                    var itemName = inventoryDataContext.items.Where(i => i.item_id == item.item_id).Select(i => i.item_name).FirstOrDefault() ?? "Unknown Item";
+                //var lowStockItems = new List<string>();
+                //foreach (var item in com1taxlist)
+                //{
+                //    var stock = inventoryDataContext.usp_stockSelect(item.item_id, null, null, null, null).FirstOrDefault()?.stock ?? 0;
+                //    var itemName = inventoryDataContext.items.Where(i => i.item_id == item.item_id).Select(i => i.item_name).FirstOrDefault() ?? "Unknown Item";
 
-                    if (stock < item.od_qty)
-                    {
-                        lowStockItems.Add($"• {itemName} (Available: {stock}, Order: {item.od_qty}, Required: {item.od_qty - stock})");
-                    }
-                }
+                //    if (stock < item.od_qty)
+                //    {
+                //        lowStockItems.Add($"• {itemName} (Available: {stock}, Order: {item.od_qty}, Required: {item.od_qty - stock})");
+                //    }
+                //}
 
-                if (lowStockItems.Any())
-                {
-                    string message = "Insufficient stock for the following items:\n\n" + string.Join("\n", lowStockItems);
-                    MessageBox.Show(message, "Stock Alert", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    return; // stop saving
-                }
+                //if (lowStockItems.Any())
+                //{
+                //    string message = "Insufficient stock for the following items:\n\n" + string.Join("\n", lowStockItems);
+                //    MessageBox.Show(message, "Stock Alert", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                //    return; // stop saving
+                //}
 
                 long? no = 0L;
                 inventoryDataContext.usp_setYearNo("sal_no", global.sysdate, ref no, firstItem.com_id);
@@ -1414,24 +1446,24 @@ namespace standard.trans
             {
                 var secondItem = com2list.FirstOrDefault();
 
-                var lowStockItems = new List<string>();
-                foreach (var item in com2list)
-                {
-                    var stock = inventoryDataContext.usp_stockSelect(item.item_id, null, null, null, null).FirstOrDefault()?.stock ?? 0;
-                    var itemName = inventoryDataContext.items.Where(i => i.item_id == item.item_id).Select(i => i.item_name).FirstOrDefault() ?? "Unknown Item";
+                //var lowStockItems = new List<string>();
+                //foreach (var item in com2list)
+                //{
+                //    var stock = inventoryDataContext.usp_stockSelect(item.item_id, null, null, null, null).FirstOrDefault()?.stock ?? 0;
+                //    var itemName = inventoryDataContext.items.Where(i => i.item_id == item.item_id).Select(i => i.item_name).FirstOrDefault() ?? "Unknown Item";
 
-                    if (stock < item.od_qty)
-                    {
-                        lowStockItems.Add($"• {itemName} (Available: {stock}, Order: {item.od_qty}, Required: {item.od_qty - stock})");
-                    }
-                }
+                //    if (stock < item.od_qty)
+                //    {
+                //        lowStockItems.Add($"• {itemName} (Available: {stock}, Order: {item.od_qty}, Required: {item.od_qty - stock})");
+                //    }
+                //}
 
-                if (lowStockItems.Any())
-                {
-                    string message = "Insufficient stock for the following items:\n\n" + string.Join("\n", lowStockItems);
-                    MessageBox.Show(message, "Stock Alert", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    return; // stop saving
-                }
+                //if (lowStockItems.Any())
+                //{
+                //    string message = "Insufficient stock for the following items:\n\n" + string.Join("\n", lowStockItems);
+                //    MessageBox.Show(message, "Stock Alert", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                //    return; // stop saving
+                //}
 
                 long? no = 0L;
                 inventoryDataContext.usp_setYearNo("sal_no", global.sysdate, ref no, secondItem.com_id);
@@ -1495,24 +1527,24 @@ namespace standard.trans
             }
             if (com2taxlist.Count > 0 && com2tax.com_id == 2)
             {
-                var lowStockItems = new List<string>();
-                foreach (var item in com2taxlist)
-                {
-                    var stock = inventoryDataContext.usp_stockSelect(item.item_id, null, null, null, null).FirstOrDefault()?.stock ?? 0;
-                    var itemName = inventoryDataContext.items.Where(i => i.item_id == item.item_id).Select(i => i.item_name).FirstOrDefault() ?? "Unknown Item";
+                //var lowStockItems = new List<string>();
+                //foreach (var item in com2taxlist)
+                //{
+                //    var stock = inventoryDataContext.usp_stockSelect(item.item_id, null, null, null, null).FirstOrDefault()?.stock ?? 0;
+                //    var itemName = inventoryDataContext.items.Where(i => i.item_id == item.item_id).Select(i => i.item_name).FirstOrDefault() ?? "Unknown Item";
 
-                    if (stock < item.od_qty)
-                    {
-                        lowStockItems.Add($"• {itemName} (Available: {stock}, Order: {item.od_qty}, Required: {item.od_qty - stock})");
-                    }
-                }
+                //    if (stock < item.od_qty)
+                //    {
+                //        lowStockItems.Add($"• {itemName} (Available: {stock}, Order: {item.od_qty}, Required: {item.od_qty - stock})");
+                //    }
+                //}
 
-                if (lowStockItems.Any())
-                {
-                    string message = "Insufficient stock for the following items:\n\n" + string.Join("\n", lowStockItems);
-                    MessageBox.Show(message, "Stock Alert", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    return; // stop saving
-                }
+                //if (lowStockItems.Any())
+                //{
+                //    string message = "Insufficient stock for the following items:\n\n" + string.Join("\n", lowStockItems);
+                //    MessageBox.Show(message, "Stock Alert", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                //    return; // stop saving
+                //}
 
                 var secondItem = com2taxlist.FirstOrDefault();
                 long? no = 0L;

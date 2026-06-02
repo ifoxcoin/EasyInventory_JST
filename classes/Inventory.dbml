@@ -2826,4 +2826,32 @@
       <Column Name="sd_totfrieght" Type="System.Decimal" DbType="Decimal(18,3) NOT NULL" CanBeNull="false" />
     </ElementType>
   </Function>
+  <Function Name="dbo.usp_NewLedgerOutstandingRpt" Method="usp_NewLedgerOutstandingRpt">
+    <Parameter Name="led_id" Type="System.Int64" DbType="BigInt" />
+    <Parameter Name="fdate" Type="System.DateTime" DbType="Date" />
+    <Parameter Name="tdate" Type="System.DateTime" DbType="Date" />
+    <ElementType Name="usp_NewLedgerOutstandingRptResult">
+      <Column Name="PartyName" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="ID" Type="System.Int64" DbType="BigInt NOT NULL" CanBeNull="false" />
+      <Column Name="TransactionDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="BillNo" Type="System.Int64" DbType="BigInt NOT NULL" CanBeNull="false" />
+      <Column Name="BillAmount" Type="System.Decimal" DbType="Decimal(18,3) NOT NULL" CanBeNull="false" />
+      <Column Name="Received" Type="System.Decimal" DbType="Decimal(18,3) NOT NULL" CanBeNull="false" />
+      <Column Name="Outstanding" Type="System.Decimal" DbType="Decimal(19,3)" CanBeNull="true" />
+    </ElementType>
+  </Function>
+  <Function Name="dbo.usp_NewSupplierOutstandingRpt" Method="usp_NewSupplierOutstandingRpt">
+    <Parameter Name="led_id" Type="System.Int64" DbType="BigInt" />
+    <Parameter Name="fdate" Type="System.DateTime" DbType="Date" />
+    <Parameter Name="tdate" Type="System.DateTime" DbType="Date" />
+    <ElementType Name="usp_NewSupplierOutstandingRptResult">
+      <Column Name="PartyName" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="ID" Type="System.Int64" DbType="BigInt NOT NULL" CanBeNull="false" />
+      <Column Name="TransactionDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="BillNo" Type="System.Int64" DbType="BigInt NOT NULL" CanBeNull="false" />
+      <Column Name="BillAmount" Type="System.Decimal" DbType="Decimal(18,3) NOT NULL" CanBeNull="false" />
+      <Column Name="PaidAmount" Type="System.Decimal" DbType="Decimal(18,3) NOT NULL" CanBeNull="false" />
+      <Column Name="Outstanding" Type="System.Decimal" DbType="Decimal(19,3)" CanBeNull="true" />
+    </ElementType>
+  </Function>
 </Database>
