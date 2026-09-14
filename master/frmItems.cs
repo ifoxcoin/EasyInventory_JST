@@ -151,6 +151,7 @@ namespace standard.master
         private Label label16;
         private TextBox txtTallyName;
         private Label label18;
+        private CheckBox chkIsSeparateBill;
         private BindingSource searchcategoryBindingSource;
 
         public frmItems()
@@ -192,6 +193,7 @@ namespace standard.master
             txtTaxPercentage.Text = "0";
             chkIsUnitPerRate.Checked = false;
             chkTaxable.Checked = false;
+            chkIsSeparateBill.Checked = false;
             txtUnitPerRateA.Text = "0";
             txtUnitPerRateB.Text = "0";
             txtUnitPerRateC.Text = "0";
@@ -252,6 +254,7 @@ namespace standard.master
                     cboCategory.SelectedValue = item.cat_id;
                     chkIsUnitPerRate.Checked = item.item_isunitperrate;
                     chkTaxable.Checked = item.item_istaxable;
+                    chkIsSeparateBill.Checked = item.IsSeparateBill;
                     txtUnitPerRateA.Text = item.item_perunitrate.ToString("N2");
                     txtUnitPerRateB.Text = item.item_perunitrateb.ToString("N2");
                     txtUnitPerRateC.Text = item.item_perunitratec.ToString("N2");
@@ -321,6 +324,7 @@ namespace standard.master
                 it.cat_id = Convert.ToInt32(cboCategory.SelectedValue);
                 it.item_isunitperrate = chkIsUnitPerRate.Checked;
                 it.item_istaxable = chkTaxable.Checked;
+                it.IsSeparateBill = chkIsSeparateBill.Checked;
                 decimal perUnitRateA = 0, perUnitRateB = 0, perUnitRateC = 0, purUnitRate = 0;
 
                 decimal.TryParse(txtUnitPerRateA.Text.Trim(), out perUnitRateA);
@@ -399,14 +403,14 @@ namespace standard.master
                     {
                         if (MessageBox.Show("Are you sure to save?", "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.No)
                         {
-                            inventoryDataContext.usp_itemInsert(it.item_code, it.item_serial, it.item_name, it.item_fullname, it.item_tamilname, it.cat_id, it.item_isunitperrate, it.item_istaxable, it.item_perunitrate, it.item_perunitrateb, it.item_perunitratec, it.item_purunitrate, it.item_unit, it.item_quantity, it.item_unittype, it.item_purchaserate, it.item_costrate, it.item_mrp, it.item_wholesalerate, it.item_specialrate, it.item_supersepecialrate, it.item_taxpercentage, it.item_cgst, it.item_sgst, it.item_hsncode, global.ucode, it.com_id, global.sysdate);
+                            inventoryDataContext.usp_itemInsert(it.item_code, it.item_serial, it.item_name, it.item_fullname, it.item_tamilname, it.cat_id, it.item_isunitperrate, it.item_istaxable, it.IsSeparateBill, it.item_perunitrate, it.item_perunitrateb, it.item_perunitratec, it.item_purunitrate, it.item_unit, it.item_quantity, it.item_unittype, it.item_purchaserate, it.item_costrate, it.item_mrp, it.item_wholesalerate, it.item_specialrate, it.item_supersepecialrate, it.item_taxpercentage, it.item_cgst, it.item_sgst, it.item_hsncode, global.ucode, it.com_id, global.sysdate);
                             MessageBox.Show("Record saved successfully...", "Information", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
                             goto IL_0602;
                         }
                     }
                     else if (MessageBox.Show("Are you sure to update?", "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.No)
                     {
-                        inventoryDataContext.usp_itemUpdate(id, it.item_code, it.item_serial, it.item_name, it.item_fullname, it.item_tamilname, it.cat_id, it.item_isunitperrate, it.item_istaxable, it.item_perunitrate, it.item_perunitrateb, it.item_perunitratec, it.item_purunitrate, it.item_unit, it.item_quantity, it.item_unittype, it.item_purchaserate, it.item_costrate, it.item_mrp, it.item_wholesalerate, it.item_specialrate, it.item_supersepecialrate, it.item_taxpercentage, it.item_cgst, it.item_sgst, it.item_hsncode, global.ucode, it.com_id, global.sysdate);
+                        inventoryDataContext.usp_itemUpdate(id, it.item_code, it.item_serial, it.item_name, it.item_fullname, it.item_tamilname, it.cat_id, it.item_isunitperrate, it.item_istaxable, it.IsSeparateBill, it.item_perunitrate, it.item_perunitrateb, it.item_perunitratec, it.item_purunitrate, it.item_unit, it.item_quantity, it.item_unittype, it.item_purchaserate, it.item_costrate, it.item_mrp, it.item_wholesalerate, it.item_specialrate, it.item_supersepecialrate, it.item_taxpercentage, it.item_cgst, it.item_sgst, it.item_hsncode, global.ucode, it.com_id, global.sysdate);
                         MessageBox.Show("Record updated successfully...", "Information", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
                         goto IL_0602;
                     }
@@ -568,6 +572,7 @@ namespace standard.master
             this.uspcategorySelectResultBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.uspitemSelectResultBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.uspitemSelectResultBindingSource1 = new System.Windows.Forms.BindingSource(this.components);
+            this.chkIsSeparateBill = new System.Windows.Forms.CheckBox();
             this.a1Paneltitle.SuspendLayout();
             this.tblMain.SuspendLayout();
             this.tblSearch.SuspendLayout();
@@ -1164,15 +1169,16 @@ namespace standard.master
             this.tblEntry.Controls.Add(this.txtPRate, 3, 4);
             this.tblEntry.Controls.Add(this.progressBar1, 5, 7);
             this.tblEntry.Controls.Add(this.lblTamil, 4, 5);
-            this.tblEntry.Controls.Add(this.lblProgress, 4, 7);
-            this.tblEntry.Controls.Add(this.txtSGST, 5, 6);
             this.tblEntry.Controls.Add(this.label15, 5, 5);
-            this.tblEntry.Controls.Add(this.txtCGST, 5, 4);
-            this.tblEntry.Controls.Add(this.label14, 4, 4);
             this.tblEntry.Controls.Add(this.txtMRP, 6, 7);
             this.tblEntry.Controls.Add(this.txtItemFullName, 6, 6);
-            this.tblEntry.Controls.Add(this.txtCostRate, 6, 5);
-            this.tblEntry.Controls.Add(this.txtItemCode, 6, 4);
+            this.tblEntry.Controls.Add(this.txtItemCode, 4, 7);
+            this.tblEntry.Controls.Add(this.txtCGST, 6, 4);
+            this.tblEntry.Controls.Add(this.txtSGST, 6, 5);
+            this.tblEntry.Controls.Add(this.txtCostRate, 5, 6);
+            this.tblEntry.Controls.Add(this.label14, 6, 3);
+            this.tblEntry.Controls.Add(this.lblProgress, 2, 2);
+            this.tblEntry.Controls.Add(this.chkIsSeparateBill, 5, 4);
             this.tblEntry.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tblEntry.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.tblEntry.Location = new System.Drawing.Point(5, 49);
@@ -1187,6 +1193,7 @@ namespace standard.master
             this.tblEntry.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 12.49918F));
             this.tblEntry.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 12.50167F));
             this.tblEntry.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 12.50328F));
+            this.tblEntry.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tblEntry.Size = new System.Drawing.Size(1742, 293);
             this.tblEntry.TabIndex = 2;
             // 
@@ -1818,9 +1825,9 @@ namespace standard.master
             // 
             this.lblProgress.AutoSize = true;
             this.lblProgress.Dock = System.Windows.Forms.DockStyle.Right;
-            this.lblProgress.Location = new System.Drawing.Point(1316, 252);
+            this.lblProgress.Location = new System.Drawing.Point(782, 72);
             this.lblProgress.Name = "lblProgress";
-            this.lblProgress.Size = new System.Drawing.Size(16, 41);
+            this.lblProgress.Size = new System.Drawing.Size(16, 36);
             this.lblProgress.TabIndex = 52;
             this.lblProgress.Text = " ";
             this.lblProgress.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -1829,10 +1836,10 @@ namespace standard.master
             // 
             this.txtSGST.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.txtSGST.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.txtSGST.Location = new System.Drawing.Point(1338, 219);
+            this.txtSGST.Location = new System.Drawing.Point(1605, 183);
             this.txtSGST.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.txtSGST.Name = "txtSGST";
-            this.txtSGST.Size = new System.Drawing.Size(259, 30);
+            this.txtSGST.Size = new System.Drawing.Size(134, 30);
             this.txtSGST.TabIndex = 37;
             this.txtSGST.Text = "0";
             this.txtSGST.Visible = false;
@@ -1857,10 +1864,10 @@ namespace standard.master
             // 
             this.txtCGST.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.txtCGST.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.txtCGST.Location = new System.Drawing.Point(1338, 147);
+            this.txtCGST.Location = new System.Drawing.Point(1605, 147);
             this.txtCGST.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.txtCGST.Name = "txtCGST";
-            this.txtCGST.Size = new System.Drawing.Size(259, 30);
+            this.txtCGST.Size = new System.Drawing.Size(134, 30);
             this.txtCGST.TabIndex = 37;
             this.txtCGST.Text = "0";
             this.txtCGST.Visible = false;
@@ -1872,7 +1879,7 @@ namespace standard.master
             this.label14.BackColor = System.Drawing.Color.Transparent;
             this.label14.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label14.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.label14.Location = new System.Drawing.Point(1072, 150);
+            this.label14.Location = new System.Drawing.Point(1606, 114);
             this.label14.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label14.Name = "label14";
             this.label14.Size = new System.Drawing.Size(61, 23);
@@ -1912,7 +1919,7 @@ namespace standard.master
             this.txtCostRate.BackColor = System.Drawing.Color.White;
             this.txtCostRate.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.txtCostRate.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtCostRate.Location = new System.Drawing.Point(1606, 184);
+            this.txtCostRate.Location = new System.Drawing.Point(1339, 220);
             this.txtCostRate.Margin = new System.Windows.Forms.Padding(4);
             this.txtCostRate.MaxLength = 50;
             this.txtCostRate.Name = "txtCostRate";
@@ -1928,7 +1935,7 @@ namespace standard.master
             this.txtItemCode.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.txtItemCode.Enabled = false;
             this.txtItemCode.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtItemCode.Location = new System.Drawing.Point(1606, 148);
+            this.txtItemCode.Location = new System.Drawing.Point(1072, 256);
             this.txtItemCode.Margin = new System.Windows.Forms.Padding(4);
             this.txtItemCode.MaxLength = 50;
             this.txtItemCode.Name = "txtItemCode";
@@ -2035,6 +2042,18 @@ namespace standard.master
             // uspitemSelectResultBindingSource1
             // 
             this.uspitemSelectResultBindingSource1.DataSource = typeof(standard.classes.usp_itemSelectResult);
+            // 
+            // chkIsSeparateBill
+            // 
+            this.chkIsSeparateBill.AutoSize = true;
+            this.chkIsSeparateBill.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
+            this.chkIsSeparateBill.Location = new System.Drawing.Point(1338, 146);
+            this.chkIsSeparateBill.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.chkIsSeparateBill.Name = "chkIsSeparateBill";
+            this.chkIsSeparateBill.Size = new System.Drawing.Size(172, 27);
+            this.chkIsSeparateBill.TabIndex = 58;
+            this.chkIsSeparateBill.Text = "Is SeparateBill";
+            this.chkIsSeparateBill.UseVisualStyleBackColor = true;
             // 
             // frmItems
             // 

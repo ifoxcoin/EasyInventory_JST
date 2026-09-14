@@ -749,7 +749,7 @@ dtpfdate.Value = financialYearStart;
 
                             // Step 2: Get existing order details from DB
                             var existingOrderDetails = inventoryDataContext.salesorderdetails
-                                .Where(od => od.so_id == salesmaster.so_id && od.com_id == salesmaster.com_id && od.com_id == salesmaster.com_id && od.od_istaxable == salesmaster.sm_istaxable)
+                                .Where(od => od.so_id == salesmaster.so_id && od.com_id == salesmaster.com_id && od.com_id == salesmaster.com_id && od.od_istaxable == salesmaster.sm_istaxable && od.item_id == salesdetail.item_id)
                                 .ToList();
 
                             foreach (var orderDetail in existingOrderDetails)

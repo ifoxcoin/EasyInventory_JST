@@ -1203,6 +1203,7 @@ namespace standard.trans
             List<usp_salesorderdetailsSelectResult> com2list = new List<usp_salesorderdetailsSelectResult>();
             List<usp_salesorderdetailsSelectResult> com1taxlist = new List<usp_salesorderdetailsSelectResult>();
             List<usp_salesorderdetailsSelectResult> com2taxlist = new List<usp_salesorderdetailsSelectResult>();
+            List<usp_salesorderdetailsSelectResult> com1billseparatelist = new List<usp_salesorderdetailsSelectResult>();
 
             var result = salesOrderResult.FirstOrDefault();
             if (result.so_isclose == true)
@@ -1217,17 +1218,24 @@ namespace standard.trans
 
                 if (sod.com_id == 1 && sod.item_istaxable == false)
                 {
-                    com1list.Add(sod);
-                }
-                else if (sod.com_id == 1 && sod.item_istaxable == true)
+                    if(sod.IsSeparateBill == false)
+                    {
+                        com1list.Add(sod);
+                    }
+                    else
+                    {
+                        com1billseparatelist.Add(sod);
+                    }
+                }                
+                else if (sod.com_id == 1 && sod.item_istaxable == true && sod.IsSeparateBill == false)
                 {
                     com1taxlist.Add(sod);
                 }
-                else if (sod.com_id == 2 && sod.item_istaxable == false)
+                else if (sod.com_id == 2 && sod.item_istaxable == false && sod.IsSeparateBill == false)
                 {
                     com2list.Add(sod);
                 }
-                else if (sod.com_id == 2 && sod.item_istaxable == true)
+                else if (sod.com_id == 2 && sod.item_istaxable == true && sod.IsSeparateBill == false)
                 {
                     com2taxlist.Add(sod);
                 }
@@ -1237,6 +1245,7 @@ namespace standard.trans
             var com2 = com2list.FirstOrDefault();
             var com1tax = com1taxlist.FirstOrDefault();
             var com2tax = com2taxlist.FirstOrDefault();
+            var separateBill = com1billseparatelist.FirstOrDefault();
             bool isConverted = false;
 
             var allItems = com1list.Concat(com1taxlist).Concat(com2list).Concat(com2taxlist).ToList();
@@ -1525,6 +1534,7 @@ namespace standard.trans
                 }
                 isConverted = true;
             }
+
             if (com2taxlist.Count > 0 && com2tax.com_id == 2)
             {
                 //var lowStockItems = new List<string>();
@@ -1608,6 +1618,93 @@ namespace standard.trans
                 }
                 isConverted = true;
             }
+
+            if (com1billseparatelist.Count > 0)
+            {
+                var firstItem = com1billseparatelist.FirstOrDefault();
+
+                //var lowStockItems = new List<string>();
+                //foreach (var item in com1billseparatelist)
+                //{
+                //    var stock = inventoryDataContext.usp_stockSelect(item.item_id, null, null, null, null).FirstOrDefault()?.stock ?? 0;
+                //    var itemName = inventoryDataContext.items.Where(i => i.item_id == item.item_id).Select(i => i.item_name).FirstOrDefault() ?? "Unknown Item";
+
+                //    if (stock < item.od_qty)
+                //    {
+                //        lowStockItems.Add($"• {itemName} (Available: {stock}, Order: {item.od_qty}, Required: {item.od_qty - stock})");
+                //    }
+                //}
+
+                //if (lowStockItems.Any())
+                //{
+                //    string message = "Insufficient stock for the following items:\n\n" + string.Join("\n", lowStockItems);
+                //    MessageBox.Show(message, "Stock Alert", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                //    return; // stop saving
+                //}
+
+
+                long? no = 0L;
+                inventoryDataContext.usp_setYearNo("sal_no", global.sysdate, ref no, firstItem.com_id);
+                salesmaster.sm_refno = Convert.ToInt64(no);
+                salesmaster.sm_bookno = "S";
+                salesmaster.sm_totqty = com1billseparatelist.Sum(x => x.od_qty);
+                salesmaster.sm_date = firstItem.so_date;
+                salesmaster.led_id = firstItem.led_id;
+                salesmaster.so_id = firstItem.so_id;
+                salesorder.so_refno = firstItem.so_refno;
+                salesorder.so_totqty = firstItem.so_totqty;
+                salesorder.so_status = "Fully Converted";
+                salesmaster.com_id = firstItem.com_id;
+                salesmaster.sm_istaxable = firstItem.item_istaxable;
+                salesmaster.sm_agid = firstItem.led_agid;
+                inventoryDataContext.usp_salesmasterInsert(ref id, salesmaster.sm_bookno, salesmaster.sm_refno, salesmaster.sm_date, salesmaster.led_id, salesmaster.sm_totqty, salesmaster.sm_totamount, salesmaster.sm_itemcount, salesmaster.sm_profit, salesmaster.sm_disamount, salesmaster.sm_taxamount, salesmaster.sm_taxpercentage, salesmaster.sm_packingcharge, salesmaster.sm_netamount, salesmaster.sm_received, salesmaster.sm_paidcommission, salesmaster.sm_paidpacking, salesmaster.sm_roundamount, false, false, global.ucode, global.sysdate, salesmaster.sm_desc, false, false, salesmaster.so_id, salesmaster.com_id, salesmaster.sm_istaxable, false, salesmaster.sm_agid);
+
+                inventoryDataContext.usp_salesorderUpdate(salesmaster.so_id, salesorder.so_refno, salesmaster.sm_date, salesmaster.led_id, salesorder.so_totqty, salesorder.so_status, global.ucode, global.sysdate, true);
+                salesdetail.sm_id = id;
+
+                foreach (var com1SOD in com1billseparatelist)
+                {
+                    salesdetail.sd_odid = com1SOD.od_id;
+                    salesdetail.item_id = com1SOD.item_id;
+                    salesdetail.sd_qty = com1SOD.od_qty;
+                    salesdetail.sd_orderqty = com1SOD.od_qty;
+                    salesdetail.sd_unit = com1SOD.item_unit;
+                    salesdetail.sd_unitvalue = com1SOD.od_unitvalue;
+                    salesdetail.sd_itemunittype = com1SOD.item_unittype;
+                    salesdetail.sd_taxpercentage = com1SOD.item_taxpercentage;
+                    salesdetail.sd_perunitrate = com1SOD.od_rate;
+                    salesorderdetail.com_id = com1SOD.com_id;
+                    salesorderdetail.od_istaxable = com1SOD.od_istaxable;
+                    salesdetail.sd_rate = Convert.ToDecimal(com1SOD.od_rate * com1SOD.item_quantity);
+
+                    if (com1SOD.cat_id == 39)
+                    {
+                        salesorderdetail.od_pendingqty = com1SOD.od_unitvalue;
+                    }
+                    else
+                    {
+                        salesorderdetail.od_pendingqty = com1SOD.od_qty;
+                    }
+                    //decimal? stock = Convert.ToDecimal(item2.Cells["cStock"].Value);
+                    //salesdetail.sd_totfrieght = Convert.ToDecimal(txtFrieght.Text);
+                    inventoryDataContext.usp_salesdetailsInsert(id, salesdetail.item_id, salesdetail.sd_qty, salesdetail.sd_orderqty, salesdetail.sd_rate, salesdetail.sd_costrate, salesdetail.sd_totamount, salesdetail.sd_taxpercentage, salesdetail.sd_taxamount,
+                            salesdetail.sd_unit, salesdetail.sd_unitvalue, salesdetail.sd_itemunittype, salesdetail.sd_totfrieght, salesdetail.sd_perunitrate, salesdetail.sd_odid);
+
+                    inventoryDataContext.usp_salesorderdetailsUpdate(com1SOD.od_id, com1SOD.so_id, com1SOD.item_id, com1SOD.od_qty, com1SOD.od_unitvalue, 0, salesorderdetail.od_pendingqty, com1SOD.od_rate, com1SOD.com_id, com1SOD.od_istaxable);
+
+                    var catid = inventoryDataContext.items.Where(i => i.item_id == salesdetail.item_id).Select(i => i.cat_id).FirstOrDefault();
+                    if (catid == 39)
+                    {
+                        inventoryDataContext.usp_stockInsert(id, "SALES", salesdetail.item_id, com1SOD.com_id, 0m, salesdetail.sd_unitvalue, global.sysdate);
+                    }
+                    else
+                    {
+                        inventoryDataContext.usp_stockInsert(id, "SALES", salesdetail.item_id, com1SOD.com_id, 0m, salesdetail.sd_qty, global.sysdate);
+                    }
+                }
+                isConverted = true;
+            }
+
             if (isConverted && showMessage)
             {
                 MessageBox.Show("Record Converted successfully...", "Information", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
@@ -2552,7 +2649,7 @@ namespace standard.trans
             this.tablemain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tablemain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 100F));
             this.tablemain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 60F));
-            this.tablemain.Size = new System.Drawing.Size(1456, 749);
+            this.tablemain.Size = new System.Drawing.Size(1646, 747);
             this.tablemain.TabIndex = 0;
             // 
             // tableentry
@@ -2586,7 +2683,7 @@ namespace standard.trans
             this.tableentry.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tableentry.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tableentry.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tableentry.Size = new System.Drawing.Size(1442, 86);
+            this.tableentry.Size = new System.Drawing.Size(1632, 86);
             this.tableentry.TabIndex = 4;
             // 
             // chkIsFrieght
@@ -2772,7 +2869,7 @@ namespace standard.trans
             this.lbltitle.AutoSize = true;
             this.lbltitle.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lbltitle.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.lbltitle.Location = new System.Drawing.Point(638, 4);
+            this.lbltitle.Location = new System.Drawing.Point(733, 4);
             this.lbltitle.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.lbltitle.Name = "lbltitle";
             this.lbltitle.Size = new System.Drawing.Size(180, 29);
@@ -2793,13 +2890,13 @@ namespace standard.trans
             this.tablecmd.Controls.Add(this.cmdclose, 4, 0);
             this.tablecmd.Controls.Add(this.cmdview, 3, 0);
             this.tablecmd.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tablecmd.Location = new System.Drawing.Point(7, 694);
+            this.tablecmd.Location = new System.Drawing.Point(7, 692);
             this.tablecmd.Margin = new System.Windows.Forms.Padding(5, 7, 5, 7);
             this.tablecmd.Name = "tablecmd";
             this.tablecmd.RowCount = 1;
             this.tablecmd.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tablecmd.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 46F));
-            this.tablecmd.Size = new System.Drawing.Size(1442, 46);
+            this.tablecmd.Size = new System.Drawing.Size(1632, 46);
             this.tablecmd.TabIndex = 3;
             // 
             // lblGSTIN
@@ -2820,7 +2917,7 @@ namespace standard.trans
             this.cmdsave.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.cmdsave.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold);
             this.cmdsave.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(41)))), ((int)(((byte)(66)))), ((int)(((byte)(122)))));
-            this.cmdsave.Location = new System.Drawing.Point(927, 7);
+            this.cmdsave.Location = new System.Drawing.Point(1117, 7);
             this.cmdsave.Margin = new System.Windows.Forms.Padding(5, 7, 5, 7);
             this.cmdsave.Name = "cmdsave";
             this.cmdsave.Size = new System.Drawing.Size(120, 32);
@@ -2834,7 +2931,7 @@ namespace standard.trans
             this.cmdrefresh.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.cmdrefresh.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold);
             this.cmdrefresh.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(41)))), ((int)(((byte)(66)))), ((int)(((byte)(122)))));
-            this.cmdrefresh.Location = new System.Drawing.Point(1057, 7);
+            this.cmdrefresh.Location = new System.Drawing.Point(1247, 7);
             this.cmdrefresh.Margin = new System.Windows.Forms.Padding(5, 7, 5, 7);
             this.cmdrefresh.Name = "cmdrefresh";
             this.cmdrefresh.Size = new System.Drawing.Size(120, 32);
@@ -2848,7 +2945,7 @@ namespace standard.trans
             this.cmdclose.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.cmdclose.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold);
             this.cmdclose.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(41)))), ((int)(((byte)(66)))), ((int)(((byte)(122)))));
-            this.cmdclose.Location = new System.Drawing.Point(1317, 7);
+            this.cmdclose.Location = new System.Drawing.Point(1507, 7);
             this.cmdclose.Margin = new System.Windows.Forms.Padding(5, 7, 5, 7);
             this.cmdclose.Name = "cmdclose";
             this.cmdclose.Size = new System.Drawing.Size(120, 32);
@@ -2862,7 +2959,7 @@ namespace standard.trans
             this.cmdview.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.cmdview.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold);
             this.cmdview.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(41)))), ((int)(((byte)(66)))), ((int)(((byte)(122)))));
-            this.cmdview.Location = new System.Drawing.Point(1187, 7);
+            this.cmdview.Location = new System.Drawing.Point(1377, 7);
             this.cmdview.Margin = new System.Windows.Forms.Padding(5, 7, 5, 7);
             this.cmdview.Name = "cmdview";
             this.cmdview.Size = new System.Drawing.Size(120, 32);
@@ -2891,13 +2988,13 @@ namespace standard.trans
             this.tablesum.Controls.Add(this.txttotqty, 1, 0);
             this.tablesum.Controls.Add(this.tableLayoutPanel2, 11, 0);
             this.tablesum.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tablesum.Location = new System.Drawing.Point(7, 592);
+            this.tablesum.Location = new System.Drawing.Point(7, 590);
             this.tablesum.Margin = new System.Windows.Forms.Padding(5, 7, 5, 7);
             this.tablesum.Name = "tablesum";
             this.tablesum.RowCount = 2;
             this.tablesum.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tablesum.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tablesum.Size = new System.Drawing.Size(1442, 86);
+            this.tablesum.Size = new System.Drawing.Size(1632, 86);
             this.tablesum.TabIndex = 2;
             // 
             // lbltotqty
@@ -2955,7 +3052,7 @@ namespace standard.trans
             this.pnlentry.Location = new System.Drawing.Point(7, 146);
             this.pnlentry.Margin = new System.Windows.Forms.Padding(5, 7, 5, 7);
             this.pnlentry.Name = "pnlentry";
-            this.pnlentry.Size = new System.Drawing.Size(1442, 430);
+            this.pnlentry.Size = new System.Drawing.Size(1632, 428);
             this.pnlentry.TabIndex = 1;
             // 
             // dgvSales
@@ -3005,7 +3102,7 @@ namespace standard.trans
             this.dgvSales.RowsDefaultCellStyle = dataGridViewCellStyle11;
             this.dgvSales.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect;
             this.dgvSales.ShowCellToolTips = false;
-            this.dgvSales.Size = new System.Drawing.Size(1442, 430);
+            this.dgvSales.Size = new System.Drawing.Size(1632, 428);
             this.dgvSales.TabIndex = 0;
             this.dgvSales.CellEndEdit += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvSales_CellEndEdit);
             this.dgvSales.EditingControlShowing += new System.Windows.Forms.DataGridViewEditingControlShowingEventHandler(this.dgvSales_EditingControlShowing);
@@ -3231,7 +3328,7 @@ namespace standard.trans
             this.pnlview.Location = new System.Drawing.Point(0, 0);
             this.pnlview.Margin = new System.Windows.Forms.Padding(5, 7, 5, 7);
             this.pnlview.Name = "pnlview";
-            this.pnlview.Size = new System.Drawing.Size(1456, 749);
+            this.pnlview.Size = new System.Drawing.Size(1646, 747);
             this.pnlview.TabIndex = 12;
             // 
             // tableview
@@ -3251,7 +3348,7 @@ namespace standard.trans
             this.tableview.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 110F));
             this.tableview.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableview.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 10F));
-            this.tableview.Size = new System.Drawing.Size(1456, 749);
+            this.tableview.Size = new System.Drawing.Size(1646, 747);
             this.tableview.TabIndex = 0;
             // 
             // lblsubtitle
@@ -3260,7 +3357,7 @@ namespace standard.trans
             this.lblsubtitle.AutoSize = true;
             this.lblsubtitle.Font = new System.Drawing.Font("Tahoma", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblsubtitle.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(100)))), ((int)(((byte)(151)))));
-            this.lblsubtitle.Location = new System.Drawing.Point(590, 3);
+            this.lblsubtitle.Location = new System.Drawing.Point(685, 3);
             this.lblsubtitle.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.lblsubtitle.Name = "lblsubtitle";
             this.lblsubtitle.Size = new System.Drawing.Size(275, 33);
@@ -3310,7 +3407,7 @@ namespace standard.trans
             this.dglist.RowHeadersWidth = 51;
             this.dglist.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect;
             this.dglist.ShowCellToolTips = false;
-            this.dglist.Size = new System.Drawing.Size(1442, 569);
+            this.dglist.Size = new System.Drawing.Size(1632, 567);
             this.dglist.TabIndex = 1;
             this.dglist.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dglist_CellContentClick);
             this.dglist.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dglist_CellDoubleClick);
@@ -3496,7 +3593,7 @@ namespace standard.trans
             this.tableLayoutPanel1.RowCount = 2;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(1446, 104);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(1636, 104);
             this.tableLayoutPanel1.TabIndex = 0;
             // 
             // dtptdate
@@ -3522,7 +3619,7 @@ namespace standard.trans
             this.cboCustomerView.DisplayMember = "led_name";
             this.cboCustomerView.Font = new System.Drawing.Font("Tahoma", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cboCustomerView.FormattingEnabled = true;
-            this.cboCustomerView.Location = new System.Drawing.Point(871, 5);
+            this.cboCustomerView.Location = new System.Drawing.Point(871, 6);
             this.cboCustomerView.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.cboCustomerView.Name = "cboCustomerView";
             this.cboCustomerView.Size = new System.Drawing.Size(265, 39);
@@ -3599,7 +3696,7 @@ namespace standard.trans
             this.cboCityView.DisplayMember = "led_address2";
             this.cboCityView.Font = new System.Drawing.Font("Tahoma", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cboCityView.FormattingEnabled = true;
-            this.cboCityView.Location = new System.Drawing.Point(504, 5);
+            this.cboCityView.Location = new System.Drawing.Point(504, 6);
             this.cboCityView.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.cboCityView.Name = "cboCityView";
             this.cboCityView.Size = new System.Drawing.Size(230, 39);
@@ -3747,7 +3844,7 @@ namespace standard.trans
             this.AutoScaleDimensions = new System.Drawing.SizeF(16F, 31F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(191)))), ((int)(((byte)(219)))), ((int)(((byte)(254)))));
-            this.ClientSize = new System.Drawing.Size(1456, 749);
+            this.ClientSize = new System.Drawing.Size(1646, 747);
             this.Controls.Add(this.tablemain);
             this.Controls.Add(this.pnlview);
             this.Font = new System.Drawing.Font("Tahoma", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
